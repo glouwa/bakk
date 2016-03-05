@@ -1,0 +1,14 @@
+.directory
+
+*.config
+*.files
+*.includes
+*.creator
+*.autosave
+
+data
+**/node_modules
+
+
+
+
