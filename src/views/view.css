@@ -1,0 +1,627 @@
+html {
+    overflow-y:scroll;
+}
+
+#body{
+    background-color:#fafafa;
+    font-family:calibri, arial;
+    font-size:10pt;
+    padding: 0;
+    margin: 0;
+}
+
+/*
+@media (min-width: 1024px) {
+    #body{
+        width: 1007;
+    }
+}*/
+
+#header{
+    /*background-color:#00CC66;
+    color:#ffffff;
+    font-weight:bold;*/
+    color:#666666;
+    text-align:right;
+    padding: 0;
+
+    background-color:#eeeeee;
+    color:#666666;
+    border-bottom-color: #CACACA;
+    border-bottom-width: 1;
+    border-bottom-style: dashed;
+
+}
+
+#thisId{
+    float:left;
+    font-size: 20;
+}
+
+#footer{
+    background-color:#eeeeee;
+    color:#666666;
+    border-top-color: #CACACA;
+    border-top-width: 1;
+    border-top-style: dashed;
+    text-align: right;
+    font-size: 11;
+    margin-top: 40px;
+    padding: 10 10 15 10;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+}
+
+.paper{
+    background-color:#ffffff;
+    border-style:solid;
+    border-color:#C4E8D6; // #d5d5d5; //#e0e0e0;
+    border-width:1px;
+    border-radius:4px;
+    width:100%;
+    margin: 25 1% 65 1%;
+    padding-bottom: 1;
+    box-shadow: 0.5px 0.5px 3px #e0e0e0;
+}
+
+@media (min-width: 900px) {
+    .paper{
+        width: 47%;
+    }
+}
+
+@media (min-width: 1350px) {
+    .paper{
+        width: 47%;
+    }
+}
+
+.jobButton{
+    min-width: 5;
+    text-align: center;
+    font-size: 12px;
+    float: right;
+    height: 18px;
+    //background: linear-gradient(#F6F6F6, #DDDDDD );
+    padding: 3 12 0 13;
+    border-width: 1;
+    //border-color: #A5A5A5 #9A9A9A #949494 #9B9B9B;
+    border-style: solid;
+    border-radius: 2px;
+    margin-left: -1;
+    position: relative;
+    overflow: hidden;
+    cursor: hand;
+
+    background: linear-gradient(#f8f8f8, #efefef );
+    border-color: #e0e0e0 #dAdAdA #d4d4d4 #dBdBdB;
+}
+
+.jobButton-down{
+    background: linear-gradient(#DDDDDD, #F6F6F6);
+}
+
+.jobButton-disabled{
+    background: linear-gradient(#F6F6F6, #eeeeee );
+    color: #383838;
+    border-color: #c5c5c5 #bAbAbA #b4b4b4 #bBbBbB;
+}
+
+.jobButton-line{
+    min-width: 38;
+    text-align: center;
+    float: right;
+    height: 17px;
+    background: linear-gradient(#FdFdFd, #f5f5f5 );
+    padding: 3 12 0 13;
+    border-width: 1;
+    border-color: #e5e5e5 #dAdAdA #d4d4d4 #dBdBdB;
+    border-style: solid;
+    border-radius: 2px;
+    margin: -3 0 -3 -1;
+    position: relative;
+    overflow: hidden;
+    cursor: hand;
+}
+
+.jobButton-line-down{
+    background: linear-gradient(#DDDDDD, #F6F6F6);
+}
+
+.jobButton-line-disabled{
+    background: linear-gradient(#F6F6F6, #eeeeee );
+    color: #383838;
+    border-color: #c5c5c5 #bAbAbA #b4b4b4 #bBbBbB;
+}
+
+.jobButtonBackground{
+   transition: all 400ms linear;
+}
+
+.paper .pheader{
+    background-color: #00CC66;
+    color: #ffffff;
+    border-radius: 3px 3px 0 0;
+    text-align: center;
+    padding: 0 11 0 11;
+    height: 22;
+    overflow: hidden;    
+}
+
+.tab{
+    float: left;
+    margin: 4 0 -2 0;
+    padding: 1 20 0 20;
+    cursor: hand;
+    border-style:solid;
+    border-color: transparent;
+    border-width:0 0 3 0;
+    border-radius: 2pt;
+}
+
+.tab:hover{
+    background-color: #02D96E;
+}
+
+.tab-active{
+    float: left;
+    margin: 4 0 -2 0;
+    padding: 1 30 0 6;
+    cursor: hand;
+    font-weight: normal;
+    background-color: #FDFDFD;
+    border-radius: 2pt;
+    color: #00CC66;
+    height: 20;
+    position: relative;
+}
+
+.paper .pheader .close{
+    position: absolute;
+    top: 1;
+    right: 3;
+    color: lightgrey;
+}
+
+.paper .pheader .close:hover{
+    color: #D02424;
+}
+
+.tab-add{
+    float: left;
+    margin: 4 0 -2 0;
+    padding: 1 20 0 20;
+    cursor: hand;
+}
+.tab-add:hover{
+    font-weight: bold;
+}
+
+.a3expander{
+    clear: both;
+    border-style: dashed none none none;
+    border-color: #b0b0b0;
+    border-width: 1;
+}
+
+/*
+.firstobject{
+    padding: 15 10;
+    overflow: hidden;
+    clear: both;
+}
+
+.viewObject{
+    border-style: dashed;
+    border-color: #b0b0b0;
+    border-width: 1 0 0 0;
+    padding: 10 0 0 0;
+}
+.viewObject:first-child{
+    border-width: 0;
+}
+*/
+
+.btab-header{
+    border-style: solid none none;
+    border-width: 1;
+    border-color: #F0F0F0;
+    border-radius: 0 0 3px 3px;
+    text-align: center;
+    padding: 0 11 0 11;
+    height: 24;
+}
+
+.btab{
+    float: right;
+    padding: 0 20 0 20;
+    cursor: hand;
+    border-style:solid;
+    border-color: transparent;
+    border-width:0 0 3 0;
+    color: #CCCCCC;
+}
+
+.btab:hover{
+    background-color: #F5F5F5;
+}
+
+.btab-active{
+    float: right;
+    margin: -1 0 -10 0;
+    padding: 1 20 0 20;
+    cursor: hand;
+    font-weight: normal;
+    background-color: #fff;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    color: #000000;
+    border-style: none solid solid solid;
+    border-width: 1;
+    border-color: #FAFAFA #F5F5F5 #F5F5F5 #FAFAFA;
+    height: 17px;
+}
+
+/*-query--------------------------------------------------------------------------------------*/
+
+/*
+.search{
+    clear: left;
+}*/
+
+.buttonRight{
+    float: right;
+    line-height: 23px;
+    margin-left: 5;
+    font-size: 18px;
+    color: lightgray;
+    cursor: hand;
+    -webkit-user-select: none;
+}
+
+/*-auto------------------------------------------------------------------------------------*/
+
+.expander-header{
+    clear: both;
+    display: inline-block;
+    padding: 2 0 2 0;
+    margin: 0 0 0 5;
+    width: calc(100% - 6px);
+}
+.expander-header:hover{
+    background-color: #fcfcfc;
+    border-style: dashed none dashed dashed;
+    border-width: 1;
+    border-color: #B0B0B0;
+    margin: -1 0 -1 4;
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+}
+
+.lineFramePrimitive{
+    width: 100%;
+    clear: both;
+    display: inline-block;
+    padding: 2 0 2 0;
+    margin: 0 0 0 5;
+    width: calc(100% - 6px);
+}
+
+.lineFramePrimitive:hover{
+    background-color: #fcfcfc;
+    border-style: dashed none dashed dashed;
+    border-width: 1;
+    border-color: #B0B0B0;
+    margin: -1 0 -1 4;
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+}
+
+.primitiveValue{
+    float: right;
+    text-align: right;
+    border: 0;
+    outline: none;
+    margin: 0 10 0 0;    
+}
+
+/*
+.primitiveValue:hover{
+    border-color: lightgray;
+    border-width: 1;
+    border-style: none solid none solid;
+    margin: 0 9 0 0;
+}*/
+
+.lineFrame{
+    width: 100%;
+    padding: 1 0 1 0;
+    position: relative;
+}
+
+/*
+.lineFrame:hover{
+    background-color: #fcfcfc;
+}*/
+
+/*-status------------------------------------------------------------------------------------*/
+
+/*
+#status{
+
+    clear: left;
+}*/
+
+.jobAndSubjobs .jobState{
+    display: inline-block;
+    width: 100%;
+    padding: 1 0 1 0;
+    cursor: hand;
+    height: 11;
+}
+
+.jobAndSubjobs .jobState:hover{
+    background-color: #fcfcfc;
+}
+
+.jobAndSubjobs .jobState .progress{
+    float: left;
+    width: 130px;
+    height: 12px;
+    background-color:#EEEEEE;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25) inset;
+    position:relative;
+    margin-left: 10;
+}
+
+.jobAndSubjobs .jobState .lastWorker{
+    padding: 0 0 0 10;
+    margin: -2 0 0 0;
+    height: 14;
+    float: left;
+}
+
+.jobAndSubjobs .jobState .lastLog{
+    padding: 0 0 0 5;
+    margin: -2 0 0 0;
+    overflow: hidden;
+    height: 14;
+    float: left;
+    max-width: 250;
+
+}
+
+.jobAndSubjobs .jobState .state{
+    float: right;
+    clear: right;
+    margin: -1 10 2 0;
+    height: 9;
+    font-size: 12;
+    -webkit-user-select: none;
+}
+
+.searchStatusProgress{
+    float: left;
+}
+
+
+.search-progress-block{
+    height: 12px;
+    position:absolute;
+}
+
+.jobLog{
+    max-height: 200;
+    margin: 1 10 2 10;
+    display: none;
+    border-style:solid;
+    border-color:#e0e0e0;
+    border-width:1;
+    list-style-type: none;
+    padding: 0;
+    overflow: auto;
+    clear: both;
+}
+
+.jobLog li{
+    border-style:solid;
+    border-color:#f0f0f0;
+    border-width:0 0 1 0;
+    clear: both;
+}
+
+.jobLog li .head{
+    border-style:solid;
+    border-color:#e0e0e0;
+    border-width:0 1 0 4;
+    padding:0 4 0 4;
+    min-width: 35;
+    float: left;
+}
+
+.jobLog li .logText{
+    margin:-1 5 -1 5;
+    padding:0;
+    min-width: 27;
+    float: none;
+    display: inline-block;
+    text-align: right;
+}
+
+.subJobs{
+    margin: 0 0 0 10;
+    clear: both;
+}
+
+/*-------------------------------------------------------------------------------------------*/
+
+.networkNode{
+    margin: 20 10;
+    background-color: #fefefe;
+    border-style: solid;
+    border-color: #E3E9FF #C8D2F5 #C8D2F5 #E3E9FF;
+    border-width: 1px;
+    box-shadow: 0px -3px 10px rgba(0, 0, 0, 0.015) inset;
+    position: relative;
+}
+
+.networkView .networkNode{
+    margin: -1 10 0 10;
+}
+
+.networkNode .header{
+    overflow: hidden;
+    padding: 5 10 5 10;
+}
+
+.networkNode .headerBar{
+    background-color: #80CCE6;
+    position: absolute;
+    width: 3px;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-color: #FAFAFA;
+    border-width: 1px;
+    border-style: none solid none none;
+}
+
+.networkNode .nodeHeaderText{
+    float:left;
+    line-height: 23px;
+    min-width: 30;
+}
+
+.networkNode .errorSimList {
+    list-style-type: none;
+    overflow: auto;
+    clear: left;
+    padding: 10 40 10 40;
+    margin: 10 0 10 0;
+    border-style: dashed;
+    border-color: #b0b0b0;
+    border-width: 0 0 0 0;
+}
+
+.networkNode .errorSimList:empty{
+    margin: 0;
+}
+
+.networkNode li{
+    clear:left;
+}
+
+.networkNode .checkLeft{
+    width: 30;
+    line-height: 23px;
+    font-size: 18px;
+    color: #00CC66;
+    cursor: hand;
+    float:right;
+    text-align:right;
+    -webkit-user-select: none;
+}
+
+/*-------------------------------------------------------------------------------------------*/
+
+progress[value]{
+    width: 130px;
+    height: 15px;
+    background-color:green;
+}
+
+progress[value]::-webkit-progress-bar {
+    background-color: #eee;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25) inset;
+    maring:20 0 0 0;
+}
+
+progress[value]::-webkit-progress-value {
+    background-color:#00CC66;
+}
+
+input[type=range]{
+    -webkit-appearance: none;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    width: 300px;
+    height: 5px;
+    background: #ddd;
+    border: none;
+    border-radius: 3px;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1) inset;
+    cursor: hand;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    background:#00CC66; /* #D8C289; /*#DABA68;#daa520;*/
+    margin-top: -4px;
+    box-shadow: -1px -1px 3px rgba(0, 0, 0, 0.2) inset;
+}
+
+input[type=range]:disabled::-webkit-slider-thumb {
+    background:lightgray;
+}
+
+input[type=range]:focus {
+    outline: none;
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #ccc;
+}
+
+/*-components--------------------------------------------------------------------------------*/
+
+#lslider-prefix{
+    margin:4 0 0 10;
+    float:left;
+}
+
+#lslider-postfix{
+    margin:4 0 0 2;
+    float:left;
+}
+
+#lslider-value{
+    margin:4 0 0 1;
+    float:left;
+    width:20;
+    text-align: right;
+}
+
+#lslider-slider{
+    float:left;
+    margin: 9 0 0 10;
+    width: 80;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    background-color: #FCFCFC;
+}
+::-webkit-scrollbar:horizontal{
+    display: none;
+}
+::-webkit-scrollbar:hover {
+    background-color: #FCFCFC;
+}
+
+::-webkit-scrollbar-thumb:vertical {
+    background: rgba(0,0,0,0.07);
+}
+::-webkit-scrollbar-thumb:vertical:active {
+    background: rgba(0,0,0,0.5);
+}
+::-webkit-scrollbar-thumb:vertical:hover {
+    background: rgba(0,0,0,0.5);
+}

@@ -1,0 +1,5 @@
+(function(exports)
+{
+
+})
+(typeof exports === 'undefined' ? this['jp']={} : exports)
