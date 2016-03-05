@@ -1,4 +1,5 @@
 .directory
+.desktop
 
 *.config
 *.files
@@ -8,7 +9,3 @@
 
 data
 **/node_modules
-
-
-
-
