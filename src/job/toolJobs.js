@@ -63,7 +63,8 @@
                     }
                 })}
 
-                xmlhttp.open("GET", (inBrowser ? '':'http://'+config.server.ws+':1337/---/---/') + args.url, true)
+                xmlhttp.open("GET", (inBrowser ? '':'http://' + exports.config.server.wshost + ':' + exports.config.server.httpport + '/---/---/') 
+                                    + args.url, true)
                 xmlhttp.send()
             }
         })
