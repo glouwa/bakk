@@ -95,3 +95,4 @@ var network = require('./workerNetwork').network
 network.onConnectionChanged = app.onNetworkStateChange
 network.onMessage = app.onMessage
 network.sim = sim
+network.connect('ws://' + config.server.wshost + ':' + config.server.wsport)

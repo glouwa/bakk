@@ -68,9 +68,6 @@ network.connect = function(url)
         network.onConnectionChanged('Disconnected', connection)
     })
 }
-
-network.connect('ws://localhost:1336')
-
 exports.network = network
 
 

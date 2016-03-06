@@ -2,7 +2,7 @@
 {
     exports.type = 'Set<Config>'
     exports.server = {}
-    exports.server.wshost          = 'localhost'
+    exports.server.wshost          = '10.0.0.1'
     exports.server.wsport          = 1336
     exports.server.httpport        = 1337
     exports.client = {}

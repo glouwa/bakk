@@ -1,0 +1,494 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3a0e3b76-e682-438f-87f5-49679529284e}</ProjectGuid>
+    <ProjectHome />
+    <ProjectView>ShowAllFiles</ProjectView>
+    <StartupFile>src\server\worker.js</StartupFile>
+    <WorkingDirectory>src\server\</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <StartWebBrowser>False</StartWebBrowser>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <ItemGroup>
+    <Content Include="README.md" />
+    <Content Include="img\text-x-json.png" />
+    <Content Include="img\application-xhtml+xml.svg" />
+    <Content Include="img\bqm-diff.svg" />
+    <Content Include="img\text-html.svg" />
+    <Content Include="img\text-x-javascript.svg" />
+    <Content Include="projects\model3d.css" />
+    <Compile Include="projects\localAjax.js" />
+    <Compile Include="projects\localOutput.js" />
+    <Compile Include="projects\localSetIteration.js" />
+    <Compile Include="projects\model3d.js" />
+    <Compile Include="projects\prime.js" />
+    <Compile Include="projects\primeCpp.js" />
+    <Compile Include="projects\serverBakk.js" />
+    <Compile Include="projects\serverCmd.js" />
+    <Compile Include="projects\serverFolder.js" />
+    <Compile Include="projects\serverFragmentFolder.js" />
+    <Compile Include="projects\serverOuput.js" />
+    <Compile Include="projects\serverWorkers.js" />
+    <Content Include="src\package.json" />
+    <Compile Include="src\config.js" />
+    <Compile Include="src\messages.js" />
+    <Compile Include="src\sim.js" />
+    <Compile Include="src\tools.js" />
+    <Content Include="img\loadgif\ball.gif" />
+    <Content Include="img\loadgif\hexagon.gif" />
+    <Content Include="img\loadgif\loader_profile.gif" />
+    <Content Include="img\loadgif\loading.gif" />
+    <Content Include="img\loadgif\loading_spinner.gif" />
+    <Content Include="img\loadgif\spinner.dae0035f.gif" />
+    <Compile Include="src\job\job.js" />
+    <Compile Include="src\job\jobLogic.js" />
+    <Compile Include="src\job\toolJobs.js" />
+    <Compile Include="src\server\network.js" />
+    <Compile Include="src\server\server.js" />
+    <Compile Include="src\server\worker.js" />
+    <Compile Include="src\server\workerNetwork.js" />
+    <Compile Include="src\types\mvj.js" />
+    <Compile Include="src\types\node.js" />
+    <Compile Include="src\types\project.js" />
+    <Compile Include="src\types\pSet.js" />
+    <Content Include="src\views\acetest.html" />
+    <Content Include="src\views\view.html" />
+    <Content Include="src\views\vistest.html" />
+    <Content Include="src\views\view.css" />
+    <Compile Include="src\views\client.js" />
+    <Compile Include="src\views\network.js" />
+    <Compile Include="src\views\setView.js" />
+    <Compile Include="src\views\view.js" />
+    <Compile Include="src\views\a3Views\decorators.js" />
+    <Compile Include="src\views\a3Views\graphView.js" />
+    <Compile Include="src\views\a3Views\jobStatusView.js" />
+    <Compile Include="src\views\a3Views\jobView.js" />
+    <Compile Include="src\views\a3Views\networkNodeView.js" />
+    <Compile Include="src\views\a3Views\networkView.js" />
+    <Compile Include="src\views\a3Views\projectView.js" />
+    <Compile Include="src\views\lib\base.js" />
+    <Compile Include="src\views\lib\HackTimer.js" />
+    <Compile Include="src\views\lib\jquery-1.11.3.js" />
+    <Compile Include="src\views\lib\jquery.color-2.1.0.js" />
+    <Compile Include="src\views\lineViews\comboBox.js" />
+    <Compile Include="src\views\lineViews\decorators.js" />
+    <Compile Include="src\views\lineViews\labeledSlider.js" />
+    <Compile Include="src\views\lineViews\primitives.js" />
+    <Compile Include="src\views\lib\ace\ace.js" />
+    <Compile Include="src\views\lib\ace\ext-beautify.js" />
+    <Compile Include="src\views\lib\ace\ext-chromevox.js" />
+    <Compile Include="src\views\lib\ace\ext-elastic_tabstops_lite.js" />
+    <Compile Include="src\views\lib\ace\ext-emmet.js" />
+    <Compile Include="src\views\lib\ace\ext-error_marker.js" />
+    <Compile Include="src\views\lib\ace\ext-keybinding_menu.js" />
+    <Compile Include="src\views\lib\ace\ext-language_tools.js" />
+    <Compile Include="src\views\lib\ace\ext-linking.js" />
+    <Compile Include="src\views\lib\ace\ext-modelist.js" />
+    <Compile Include="src\views\lib\ace\ext-old_ie.js" />
+    <Compile Include="src\views\lib\ace\ext-searchbox.js" />
+    <Compile Include="src\views\lib\ace\ext-settings_menu.js" />
+    <Compile Include="src\views\lib\ace\ext-spellcheck.js" />
+    <Compile Include="src\views\lib\ace\ext-split.js" />
+    <Compile Include="src\views\lib\ace\ext-static_highlight.js" />
+    <Compile Include="src\views\lib\ace\ext-statusbar.js" />
+    <Compile Include="src\views\lib\ace\ext-textarea.js" />
+    <Compile Include="src\views\lib\ace\ext-themelist.js" />
+    <Compile Include="src\views\lib\ace\ext-whitespace.js" />
+    <Compile Include="src\views\lib\ace\keybinding-emacs.js" />
+    <Compile Include="src\views\lib\ace\keybinding-vim.js" />
+    <Compile Include="src\views\lib\ace\mode-abap.js" />
+    <Compile Include="src\views\lib\ace\mode-abc.js" />
+    <Compile Include="src\views\lib\ace\mode-actionscript.js" />
+    <Compile Include="src\views\lib\ace\mode-ada.js" />
+    <Compile Include="src\views\lib\ace\mode-apache_conf.js" />
+    <Compile Include="src\views\lib\ace\mode-applescript.js" />
+    <Compile Include="src\views\lib\ace\mode-asciidoc.js" />
+    <Compile Include="src\views\lib\ace\mode-assembly_x86.js" />
+    <Compile Include="src\views\lib\ace\mode-autohotkey.js" />
+    <Compile Include="src\views\lib\ace\mode-batchfile.js" />
+    <Compile Include="src\views\lib\ace\mode-c9search.js" />
+    <Compile Include="src\views\lib\ace\mode-cirru.js" />
+    <Compile Include="src\views\lib\ace\mode-clojure.js" />
+    <Compile Include="src\views\lib\ace\mode-cobol.js" />
+    <Compile Include="src\views\lib\ace\mode-coffee.js" />
+    <Compile Include="src\views\lib\ace\mode-coldfusion.js" />
+    <Compile Include="src\views\lib\ace\mode-csharp.js" />
+    <Compile Include="src\views\lib\ace\mode-css.js" />
+    <Compile Include="src\views\lib\ace\mode-curly.js" />
+    <Compile Include="src\views\lib\ace\mode-c_cpp.js" />
+    <Compile Include="src\views\lib\ace\mode-d.js" />
+    <Compile Include="src\views\lib\ace\mode-dart.js" />
+    <Compile Include="src\views\lib\ace\mode-diff.js" />
+    <Compile Include="src\views\lib\ace\mode-django.js" />
+    <Compile Include="src\views\lib\ace\mode-dockerfile.js" />
+    <Compile Include="src\views\lib\ace\mode-dot.js" />
+    <Compile Include="src\views\lib\ace\mode-eiffel.js" />
+    <Compile Include="src\views\lib\ace\mode-ejs.js" />
+    <Compile Include="src\views\lib\ace\mode-elixir.js" />
+    <Compile Include="src\views\lib\ace\mode-elm.js" />
+    <Compile Include="src\views\lib\ace\mode-erlang.js" />
+    <Compile Include="src\views\lib\ace\mode-forth.js" />
+    <Compile Include="src\views\lib\ace\mode-ftl.js" />
+    <Compile Include="src\views\lib\ace\mode-gcode.js" />
+    <Compile Include="src\views\lib\ace\mode-gherkin.js" />
+    <Compile Include="src\views\lib\ace\mode-gitignore.js" />
+    <Compile Include="src\views\lib\ace\mode-glsl.js" />
+    <Compile Include="src\views\lib\ace\mode-golang.js" />
+    <Compile Include="src\views\lib\ace\mode-groovy.js" />
+    <Compile Include="src\views\lib\ace\mode-haml.js" />
+    <Compile Include="src\views\lib\ace\mode-handlebars.js" />
+    <Compile Include="src\views\lib\ace\mode-haskell.js" />
+    <Compile Include="src\views\lib\ace\mode-haxe.js" />
+    <Compile Include="src\views\lib\ace\mode-html.js" />
+    <Compile Include="src\views\lib\ace\mode-html_elixir.js" />
+    <Compile Include="src\views\lib\ace\mode-html_ruby.js" />
+    <Compile Include="src\views\lib\ace\mode-ini.js" />
+    <Compile Include="src\views\lib\ace\mode-io.js" />
+    <Compile Include="src\views\lib\ace\mode-jack.js" />
+    <Compile Include="src\views\lib\ace\mode-jade.js" />
+    <Compile Include="src\views\lib\ace\mode-java.js" />
+    <Compile Include="src\views\lib\ace\mode-javascript.js" />
+    <Compile Include="src\views\lib\ace\mode-json.js" />
+    <Compile Include="src\views\lib\ace\mode-jsoniq.js" />
+    <Compile Include="src\views\lib\ace\mode-jsp.js" />
+    <Compile Include="src\views\lib\ace\mode-jsx.js" />
+    <Compile Include="src\views\lib\ace\mode-julia.js" />
+    <Compile Include="src\views\lib\ace\mode-latex.js" />
+    <Compile Include="src\views\lib\ace\mode-lean.js" />
+    <Compile Include="src\views\lib\ace\mode-less.js" />
+    <Compile Include="src\views\lib\ace\mode-liquid.js" />
+    <Compile Include="src\views\lib\ace\mode-lisp.js" />
+    <Compile Include="src\views\lib\ace\mode-livescript.js" />
+    <Compile Include="src\views\lib\ace\mode-live_script.js" />
+    <Compile Include="src\views\lib\ace\mode-logiql.js" />
+    <Compile Include="src\views\lib\ace\mode-lsl.js" />
+    <Compile Include="src\views\lib\ace\mode-lua.js" />
+    <Compile Include="src\views\lib\ace\mode-luapage.js" />
+    <Compile Include="src\views\lib\ace\mode-lucene.js" />
+    <Compile Include="src\views\lib\ace\mode-makefile.js" />
+    <Compile Include="src\views\lib\ace\mode-markdown.js" />
+    <Compile Include="src\views\lib\ace\mode-mask.js" />
+    <Compile Include="src\views\lib\ace\mode-matlab.js" />
+    <Compile Include="src\views\lib\ace\mode-maze.js" />
+    <Compile Include="src\views\lib\ace\mode-mel.js" />
+    <Compile Include="src\views\lib\ace\mode-mipsassembler.js" />
+    <Compile Include="src\views\lib\ace\mode-mips_assembler.js" />
+    <Compile Include="src\views\lib\ace\mode-mushcode.js" />
+    <Compile Include="src\views\lib\ace\mode-mysql.js" />
+    <Compile Include="src\views\lib\ace\mode-nix.js" />
+    <Compile Include="src\views\lib\ace\mode-objectivec.js" />
+    <Compile Include="src\views\lib\ace\mode-ocaml.js" />
+    <Compile Include="src\views\lib\ace\mode-pascal.js" />
+    <Compile Include="src\views\lib\ace\mode-perl.js" />
+    <Compile Include="src\views\lib\ace\mode-pgsql.js" />
+    <Compile Include="src\views\lib\ace\mode-php.js" />
+    <Compile Include="src\views\lib\ace\mode-plain_text.js" />
+    <Compile Include="src\views\lib\ace\mode-powershell.js" />
+    <Compile Include="src\views\lib\ace\mode-praat.js" />
+    <Compile Include="src\views\lib\ace\mode-prolog.js" />
+    <Compile Include="src\views\lib\ace\mode-properties.js" />
+    <Compile Include="src\views\lib\ace\mode-protobuf.js" />
+    <Compile Include="src\views\lib\ace\mode-python.js" />
+    <Compile Include="src\views\lib\ace\mode-r.js" />
+    <Compile Include="src\views\lib\ace\mode-rdoc.js" />
+    <Compile Include="src\views\lib\ace\mode-rhtml.js" />
+    <Compile Include="src\views\lib\ace\mode-ruby.js" />
+    <Compile Include="src\views\lib\ace\mode-rust.js" />
+    <Compile Include="src\views\lib\ace\mode-sass.js" />
+    <Compile Include="src\views\lib\ace\mode-scad.js" />
+    <Compile Include="src\views\lib\ace\mode-scala.js" />
+    <Compile Include="src\views\lib\ace\mode-scheme.js" />
+    <Compile Include="src\views\lib\ace\mode-scss.js" />
+    <Compile Include="src\views\lib\ace\mode-sh.js" />
+    <Compile Include="src\views\lib\ace\mode-sjs.js" />
+    <Compile Include="src\views\lib\ace\mode-smarty.js" />
+    <Compile Include="src\views\lib\ace\mode-snippets.js" />
+    <Compile Include="src\views\lib\ace\mode-soy_template.js" />
+    <Compile Include="src\views\lib\ace\mode-space.js" />
+    <Compile Include="src\views\lib\ace\mode-sql.js" />
+    <Compile Include="src\views\lib\ace\mode-sqlserver.js" />
+    <Compile Include="src\views\lib\ace\mode-stylus.js" />
+    <Compile Include="src\views\lib\ace\mode-svg.js" />
+    <Compile Include="src\views\lib\ace\mode-swift.js" />
+    <Compile Include="src\views\lib\ace\mode-swig.js" />
+    <Compile Include="src\views\lib\ace\mode-tcl.js" />
+    <Compile Include="src\views\lib\ace\mode-tex.js" />
+    <Compile Include="src\views\lib\ace\mode-text.js" />
+    <Compile Include="src\views\lib\ace\mode-textile.js" />
+    <Compile Include="src\views\lib\ace\mode-toml.js" />
+    <Compile Include="src\views\lib\ace\mode-twig.js" />
+    <Compile Include="src\views\lib\ace\mode-typescript.js" />
+    <Compile Include="src\views\lib\ace\mode-vala.js" />
+    <Compile Include="src\views\lib\ace\mode-vbscript.js" />
+    <Compile Include="src\views\lib\ace\mode-velocity.js" />
+    <Compile Include="src\views\lib\ace\mode-verilog.js" />
+    <Compile Include="src\views\lib\ace\mode-vhdl.js" />
+    <Compile Include="src\views\lib\ace\mode-xml.js" />
+    <Compile Include="src\views\lib\ace\mode-xquery.js" />
+    <Compile Include="src\views\lib\ace\mode-yaml.js" />
+    <Compile Include="src\views\lib\ace\theme-ambiance.js" />
+    <Compile Include="src\views\lib\ace\theme-chaos.js" />
+    <Compile Include="src\views\lib\ace\theme-chrome.js" />
+    <Compile Include="src\views\lib\ace\theme-clouds.js" />
+    <Compile Include="src\views\lib\ace\theme-clouds_midnight.js" />
+    <Compile Include="src\views\lib\ace\theme-cobalt.js" />
+    <Compile Include="src\views\lib\ace\theme-crimson_editor.js" />
+    <Compile Include="src\views\lib\ace\theme-dawn.js" />
+    <Compile Include="src\views\lib\ace\theme-dreamweaver.js" />
+    <Compile Include="src\views\lib\ace\theme-eclipse.js" />
+    <Compile Include="src\views\lib\ace\theme-github.js" />
+    <Compile Include="src\views\lib\ace\theme-idle_fingers.js" />
+    <Compile Include="src\views\lib\ace\theme-iplastic.js" />
+    <Compile Include="src\views\lib\ace\theme-katzenmilch.js" />
+    <Compile Include="src\views\lib\ace\theme-kr_theme.js" />
+    <Compile Include="src\views\lib\ace\theme-kuroir.js" />
+    <Compile Include="src\views\lib\ace\theme-merbivore.js" />
+    <Compile Include="src\views\lib\ace\theme-merbivore_soft.js" />
+    <Compile Include="src\views\lib\ace\theme-monokai.js" />
+    <Compile Include="src\views\lib\ace\theme-mono_industrial.js" />
+    <Compile Include="src\views\lib\ace\theme-pastel_on_dark.js" />
+    <Compile Include="src\views\lib\ace\theme-solarized_dark.js" />
+    <Compile Include="src\views\lib\ace\theme-solarized_light.js" />
+    <Compile Include="src\views\lib\ace\theme-sqlserver.js" />
+    <Compile Include="src\views\lib\ace\theme-terminal.js" />
+    <Compile Include="src\views\lib\ace\theme-textmate.js" />
+    <Compile Include="src\views\lib\ace\theme-tomorrow.js" />
+    <Compile Include="src\views\lib\ace\theme-tomorrow_night.js" />
+    <Compile Include="src\views\lib\ace\theme-tomorrow_night_blue.js" />
+    <Compile Include="src\views\lib\ace\theme-tomorrow_night_bright.js" />
+    <Compile Include="src\views\lib\ace\theme-tomorrow_night_eighties.js" />
+    <Compile Include="src\views\lib\ace\theme-twilight.js" />
+    <Compile Include="src\views\lib\ace\theme-vibrant_ink.js" />
+    <Compile Include="src\views\lib\ace\theme-xcode.js" />
+    <Compile Include="src\views\lib\ace\worker-coffee.js" />
+    <Compile Include="src\views\lib\ace\worker-css.js" />
+    <Compile Include="src\views\lib\ace\worker-html.js" />
+    <Compile Include="src\views\lib\ace\worker-javascript.js" />
+    <Compile Include="src\views\lib\ace\worker-json.js" />
+    <Compile Include="src\views\lib\ace\worker-lua.js" />
+    <Compile Include="src\views\lib\ace\worker-php.js" />
+    <Compile Include="src\views\lib\ace\worker-xml.js" />
+    <Compile Include="src\views\lib\ace\worker-xquery.js" />
+    <Compile Include="src\views\lib\ace\snippets\abap.js" />
+    <Compile Include="src\views\lib\ace\snippets\abc.js" />
+    <Compile Include="src\views\lib\ace\snippets\actionscript.js" />
+    <Compile Include="src\views\lib\ace\snippets\ada.js" />
+    <Compile Include="src\views\lib\ace\snippets\apache_conf.js" />
+    <Compile Include="src\views\lib\ace\snippets\applescript.js" />
+    <Compile Include="src\views\lib\ace\snippets\asciidoc.js" />
+    <Compile Include="src\views\lib\ace\snippets\assembly_x86.js" />
+    <Compile Include="src\views\lib\ace\snippets\autohotkey.js" />
+    <Compile Include="src\views\lib\ace\snippets\batchfile.js" />
+    <Compile Include="src\views\lib\ace\snippets\c9search.js" />
+    <Compile Include="src\views\lib\ace\snippets\cirru.js" />
+    <Compile Include="src\views\lib\ace\snippets\clojure.js" />
+    <Compile Include="src\views\lib\ace\snippets\cobol.js" />
+    <Compile Include="src\views\lib\ace\snippets\coffee.js" />
+    <Compile Include="src\views\lib\ace\snippets\coldfusion.js" />
+    <Compile Include="src\views\lib\ace\snippets\csharp.js" />
+    <Compile Include="src\views\lib\ace\snippets\css.js" />
+    <Compile Include="src\views\lib\ace\snippets\curly.js" />
+    <Compile Include="src\views\lib\ace\snippets\c_cpp.js" />
+    <Compile Include="src\views\lib\ace\snippets\d.js" />
+    <Compile Include="src\views\lib\ace\snippets\dart.js" />
+    <Compile Include="src\views\lib\ace\snippets\diff.js" />
+    <Compile Include="src\views\lib\ace\snippets\django.js" />
+    <Compile Include="src\views\lib\ace\snippets\dockerfile.js" />
+    <Compile Include="src\views\lib\ace\snippets\dot.js" />
+    <Compile Include="src\views\lib\ace\snippets\eiffel.js" />
+    <Compile Include="src\views\lib\ace\snippets\ejs.js" />
+    <Compile Include="src\views\lib\ace\snippets\elixir.js" />
+    <Compile Include="src\views\lib\ace\snippets\elm.js" />
+    <Compile Include="src\views\lib\ace\snippets\erlang.js" />
+    <Compile Include="src\views\lib\ace\snippets\forth.js" />
+    <Compile Include="src\views\lib\ace\snippets\ftl.js" />
+    <Compile Include="src\views\lib\ace\snippets\gcode.js" />
+    <Compile Include="src\views\lib\ace\snippets\gherkin.js" />
+    <Compile Include="src\views\lib\ace\snippets\gitignore.js" />
+    <Compile Include="src\views\lib\ace\snippets\glsl.js" />
+    <Compile Include="src\views\lib\ace\snippets\golang.js" />
+    <Compile Include="src\views\lib\ace\snippets\groovy.js" />
+    <Compile Include="src\views\lib\ace\snippets\haml.js" />
+    <Compile Include="src\views\lib\ace\snippets\handlebars.js" />
+    <Compile Include="src\views\lib\ace\snippets\haskell.js" />
+    <Compile Include="src\views\lib\ace\snippets\haxe.js" />
+    <Compile Include="src\views\lib\ace\snippets\html.js" />
+    <Compile Include="src\views\lib\ace\snippets\html_elixir.js" />
+    <Compile Include="src\views\lib\ace\snippets\html_ruby.js" />
+    <Compile Include="src\views\lib\ace\snippets\ini.js" />
+    <Compile Include="src\views\lib\ace\snippets\io.js" />
+    <Compile Include="src\views\lib\ace\snippets\jack.js" />
+    <Compile Include="src\views\lib\ace\snippets\jade.js" />
+    <Compile Include="src\views\lib\ace\snippets\java.js" />
+    <Compile Include="src\views\lib\ace\snippets\javascript.js" />
+    <Compile Include="src\views\lib\ace\snippets\json.js" />
+    <Compile Include="src\views\lib\ace\snippets\jsoniq.js" />
+    <Compile Include="src\views\lib\ace\snippets\jsp.js" />
+    <Compile Include="src\views\lib\ace\snippets\jsx.js" />
+    <Compile Include="src\views\lib\ace\snippets\julia.js" />
+    <Compile Include="src\views\lib\ace\snippets\latex.js" />
+    <Compile Include="src\views\lib\ace\snippets\lean.js" />
+    <Compile Include="src\views\lib\ace\snippets\less.js" />
+    <Compile Include="src\views\lib\ace\snippets\liquid.js" />
+    <Compile Include="src\views\lib\ace\snippets\lisp.js" />
+    <Compile Include="src\views\lib\ace\snippets\livescript.js" />
+    <Compile Include="src\views\lib\ace\snippets\live_script.js" />
+    <Compile Include="src\views\lib\ace\snippets\logiql.js" />
+    <Compile Include="src\views\lib\ace\snippets\lsl.js" />
+    <Compile Include="src\views\lib\ace\snippets\lua.js" />
+    <Compile Include="src\views\lib\ace\snippets\luapage.js" />
+    <Compile Include="src\views\lib\ace\snippets\lucene.js" />
+    <Compile Include="src\views\lib\ace\snippets\makefile.js" />
+    <Compile Include="src\views\lib\ace\snippets\markdown.js" />
+    <Compile Include="src\views\lib\ace\snippets\mask.js" />
+    <Compile Include="src\views\lib\ace\snippets\matlab.js" />
+    <Compile Include="src\views\lib\ace\snippets\maze.js" />
+    <Compile Include="src\views\lib\ace\snippets\mel.js" />
+    <Compile Include="src\views\lib\ace\snippets\mipsassembler.js" />
+    <Compile Include="src\views\lib\ace\snippets\mips_assembler.js" />
+    <Compile Include="src\views\lib\ace\snippets\mushcode.js" />
+    <Compile Include="src\views\lib\ace\snippets\mysql.js" />
+    <Compile Include="src\views\lib\ace\snippets\nix.js" />
+    <Compile Include="src\views\lib\ace\snippets\objectivec.js" />
+    <Compile Include="src\views\lib\ace\snippets\ocaml.js" />
+    <Compile Include="src\views\lib\ace\snippets\pascal.js" />
+    <Compile Include="src\views\lib\ace\snippets\perl.js" />
+    <Compile Include="src\views\lib\ace\snippets\pgsql.js" />
+    <Compile Include="src\views\lib\ace\snippets\php.js" />
+    <Compile Include="src\views\lib\ace\snippets\plain_text.js" />
+    <Compile Include="src\views\lib\ace\snippets\powershell.js" />
+    <Compile Include="src\views\lib\ace\snippets\praat.js" />
+    <Compile Include="src\views\lib\ace\snippets\prolog.js" />
+    <Compile Include="src\views\lib\ace\snippets\properties.js" />
+    <Compile Include="src\views\lib\ace\snippets\protobuf.js" />
+    <Compile Include="src\views\lib\ace\snippets\python.js" />
+    <Compile Include="src\views\lib\ace\snippets\r.js" />
+    <Compile Include="src\views\lib\ace\snippets\rdoc.js" />
+    <Compile Include="src\views\lib\ace\snippets\rhtml.js" />
+    <Compile Include="src\views\lib\ace\snippets\ruby.js" />
+    <Compile Include="src\views\lib\ace\snippets\rust.js" />
+    <Compile Include="src\views\lib\ace\snippets\sass.js" />
+    <Compile Include="src\views\lib\ace\snippets\scad.js" />
+    <Compile Include="src\views\lib\ace\snippets\scala.js" />
+    <Compile Include="src\views\lib\ace\snippets\scheme.js" />
+    <Compile Include="src\views\lib\ace\snippets\scss.js" />
+    <Compile Include="src\views\lib\ace\snippets\sh.js" />
+    <Compile Include="src\views\lib\ace\snippets\sjs.js" />
+    <Compile Include="src\views\lib\ace\snippets\smarty.js" />
+    <Compile Include="src\views\lib\ace\snippets\snippets.js" />
+    <Compile Include="src\views\lib\ace\snippets\soy_template.js" />
+    <Compile Include="src\views\lib\ace\snippets\space.js" />
+    <Compile Include="src\views\lib\ace\snippets\sql.js" />
+    <Compile Include="src\views\lib\ace\snippets\sqlserver.js" />
+    <Compile Include="src\views\lib\ace\snippets\stylus.js" />
+    <Compile Include="src\views\lib\ace\snippets\svg.js" />
+    <Compile Include="src\views\lib\ace\snippets\swift.js" />
+    <Compile Include="src\views\lib\ace\snippets\swig.js" />
+    <Compile Include="src\views\lib\ace\snippets\tcl.js" />
+    <Compile Include="src\views\lib\ace\snippets\tex.js" />
+    <Compile Include="src\views\lib\ace\snippets\text.js" />
+    <Compile Include="src\views\lib\ace\snippets\textile.js" />
+    <Compile Include="src\views\lib\ace\snippets\toml.js" />
+    <Compile Include="src\views\lib\ace\snippets\twig.js" />
+    <Compile Include="src\views\lib\ace\snippets\typescript.js" />
+    <Compile Include="src\views\lib\ace\snippets\vala.js" />
+    <Compile Include="src\views\lib\ace\snippets\vbscript.js" />
+    <Compile Include="src\views\lib\ace\snippets\velocity.js" />
+    <Compile Include="src\views\lib\ace\snippets\verilog.js" />
+    <Compile Include="src\views\lib\ace\snippets\vhdl.js" />
+    <Compile Include="src\views\lib\ace\snippets\xml.js" />
+    <Compile Include="src\views\lib\ace\snippets\xquery.js" />
+    <Compile Include="src\views\lib\ace\snippets\yaml.js" />
+    <Content Include="src\views\lib\vis\dist\vis.css" />
+    <Content Include="src\views\lib\vis\dist\vis.min.css" />
+    <Compile Include="src\views\lib\vis\dist\vis.js" />
+    <Compile Include="src\views\lib\vis\dist\vis.min.js" />
+    <Content Include="src\views\lib\vis\dist\img\network\acceptDeleteIcon.png" />
+    <Content Include="src\views\lib\vis\dist\img\network\addNodeIcon.png" />
+    <Content Include="src\views\lib\vis\dist\img\network\backIcon.png" />
+    <Content Include="src\views\lib\vis\dist\img\network\connectIcon.png" />
+    <Content Include="src\views\lib\vis\dist\img\network\cross.png" />
+    <Content Include="src\views\lib\vis\dist\img\network\cross2.png" />
+    <Content Include="src\views\lib\vis\dist\img\network\deleteIcon.png" />
+    <Content Include="src\views\lib\vis\dist\img\network\downArrow.png" />
+    <Content Include="src\views\lib\vis\dist\img\network\editIcon.png" />
+    <Content Include="src\views\lib\vis\dist\img\network\leftArrow.png" />
+    <Content Include="src\views\lib\vis\dist\img\network\minus.png" />
+    <Content Include="src\views\lib\vis\dist\img\network\plus.png" />
+    <Content Include="src\views\lib\vis\dist\img\network\rightArrow.png" />
+    <Content Include="src\views\lib\vis\dist\img\network\upArrow.png" />
+    <Content Include="src\views\lib\vis\dist\img\network\zoomExtends.png" />
+    <Content Include="src\views\lib\vis\dist\img\timeline\delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin" />
+    <Folder Include="bin\posix64" />
+    <Folder Include="img" />
+    <Folder Include="img\loadgif" />
+    <Folder Include="projects" />
+    <Folder Include="src" />
+    <Folder Include="src\job" />
+    <Folder Include="src\server" />
+    <Folder Include="src\types" />
+    <Folder Include="src\views" />
+    <Folder Include="src\views\a3Views" />
+    <Folder Include="src\views\lib" />
+    <Folder Include="src\views\lib\ace" />
+    <Folder Include="src\views\lib\ace\snippets" />
+    <Folder Include="src\views\lib\vis" />
+    <Folder Include="src\views\lib\vis\dist" />
+    <Folder Include="src\views\lib\vis\dist\img" />
+    <Folder Include="src\views\lib\vis\dist\img\network" />
+    <Folder Include="src\views\lib\vis\dist\img\timeline" />
+    <Folder Include="src\views\lineViews" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <!--Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them.-->
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:48022/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost:1337</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

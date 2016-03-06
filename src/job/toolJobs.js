@@ -62,7 +62,7 @@
                     }
                 })}
 
-                xmlhttp.open("GET", (inBrowser ? '':'http://localhost:1337/---/---/') + args.url, true)
+                xmlhttp.open("GET", (inBrowser ? '':'http://'+config.server.ws+':1337/---/---/') + args.url, true)
                 xmlhttp.send()
             }
         })
