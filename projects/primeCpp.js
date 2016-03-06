@@ -21,7 +21,7 @@ function findPrimes(j, diff)
                         node: nodes[idx],                        
                         realJob: jw=> tj.spawn(
                             jw,
-                            '../../bin/posix64/prime',
+                            '../../bin/posix64/prime.exe',
                             [jw.params.begin.valueOf(), jw.params.end.valueOf()],
                             function onStdOut(jw, data) {
                                 // arguments.callee.count = arguments.callee.count.count || 1

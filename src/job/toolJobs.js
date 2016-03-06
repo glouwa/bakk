@@ -6,14 +6,6 @@
     exports.jm = undefined
     exports.config = undefined
 
-    /*
-    exports.wrap = function(k, o)
-    {
-        var wrap = {}
-        wrap[k] = o
-        return wrap
-    }*/
-
     //-----------------------------------------------------------------------------------------
 
     exports.ajaxJob = function(args)
@@ -30,7 +22,7 @@
             },
             onCall: function(j)
             {
-                xmlhttp.onreadystatechange = function() { j.exception2localError(function()
+                xmlhttp.onreadystatechange = ()=> j.exception2localError(()=>
                 {
                     if (canceled)
                     {
@@ -61,7 +53,7 @@
                         else
                             j.ret('fatal', 'error at xhr ' + xmlhttp.status)
                     }
-                })}
+                })
 
                 xmlhttp.open("GET", (inBrowser ? '':'http://' + exports.config.server.wshost + ':' + exports.config.server.httpport + '/---/---/') 
                                     + args.url, true)
