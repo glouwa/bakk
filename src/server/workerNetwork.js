@@ -7,32 +7,26 @@ network.onMessage = undefined
 network.onConnectionChanged = undefined
 network.connections = {}
 network.nextFreeConnectionId = 1
-network.connectionCount = function() { return Object.keys(network.connections).length }
-network.sendMulticast = function(receivers, msg)
+network.connectionCount = ()=> Object.keys(network.connections).length
+network.sendMulticast = (receivers, msg)=>
 {
-    receivers.forEach(function (cid)
-    {
-        network.connections[cid].send(msg)
-    })
+    receivers.forEach(cid=> network.connections[cid].send(msg))
 }
-network.sendBroadcast = function(msg)
+network.sendBroadcast = msg=>
 {
-    network.connections.forEach(function (conn, idx, cid)
-    {
-        conn.send(msg)
-    })
+    network.connections.forEach((conn, idx, cid)=> conn.send(msg))
 }
-network.connect = function(url)
+network.connect = url=>
 {
     network.ws = new WebSocket(url);
     var connection = {}
 
-    network.ws.on('open', function()
+    network.ws.on('open', ()=>
     {
         console.log('on open')
         connection.id = 0 //network.nextFreeConnectionId++
-        connection.close = function() { ws.close() }
-        connection.send = function(msg)
+        connection.close = ()=> ws.close()
+        connection.send = msg=>
         {            
             try
             {
@@ -49,7 +43,7 @@ network.connect = function(url)
         network.connections[connection.id] = connection
         network.onConnectionChanged('Connected', connection)
     })
-    network.ws.on('message', function(msg)
+    network.ws.on('message', msg=>
     {
         try
         {
@@ -62,10 +56,11 @@ network.connect = function(url)
             console.error(e.stack)
         }
     })
-    network.ws.on('close', function(code, msg)
+    network.ws.on('close', (code, msg)=>
     {
         delete network.connections[connection.id]
-        network.onConnectionChanged('Disconnected', connection)
+        network.onConnectionChanged('Disconnected', connection)        
+        setTimeout(()=> network.connect(url), config.client.reconnectIntervall)
     })
 }
 exports.network = network

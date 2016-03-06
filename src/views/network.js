@@ -4,21 +4,21 @@ network.nextFreeConnectionId = 0 // zählt einfach hoch, nur zum debugen
 network.onConnectionChanged = undefined
 network.allConnectionIds = ()=> Object.keys(network.connections)
 network.server = {}
-network.server.send  = ()=> { throw new Error("Websocket never opened") }
+network.server.send = ()=> { throw new Error("Websocket never opened") }
 network.server.close = ()=> {} // nothing to do
-network.connect   = (url)=>
+network.connect = url=>
 {
     try
     {        
         var ws = new WebSocket(url)
         network.onConnectionChanged('Connecting', network.server)
 
-        ws.onopen = () =>
+        ws.onopen = ()=>
         {            
             network.server = {}
             network.server.id = network.nextFreeConnectionId++
             network.server.close = () => ws.close()
-            network.server.send = (msg) =>
+            network.server.send = msg=>
             {
                 try
                 {
@@ -37,7 +37,7 @@ network.connect   = (url)=>
             network.isUp = true
             network.onConnectionChanged('Connected', network.server)
         }
-        ws.onmessage = (ev) =>
+        ws.onmessage = ev=>
         {
             try
             {
@@ -51,14 +51,14 @@ network.connect   = (url)=>
                 console.error(e.stack)
             }
         }
-        ws.onclose = (ev) =>
+        ws.onclose = ev=>
         {
             if (network.isUp)
             {
                 network.isUp = false
                 network.onConnectionChanged('Disconnected', network.server)
             }
-            setTimeout(() => network.connect(url), config.client.reconnectIntervall)
+            setTimeout(()=> network.connect(url), config.client.reconnectIntervall)
         }
     }
     catch(e)

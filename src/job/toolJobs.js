@@ -4,6 +4,7 @@
         XMLHttpRequest = require('xhr2')
 
     exports.jm = undefined
+    exports.config = undefined
 
     /*
     exports.wrap = function(k, o)

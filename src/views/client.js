@@ -22,6 +22,8 @@ app.init = function()
     jf.nextFreeId = 0
 
     tj.jm = jf
+    tj.config = config
+
     mvj.jm = jf
 
     sim.config = config.clientDefaultSimConfig
