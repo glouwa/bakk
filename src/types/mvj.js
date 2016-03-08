@@ -61,25 +61,60 @@
             || typeof o === 'string'
             || typeof o === 'undefined'
             || typeof o === 'null'
-            //|| typeof o === 'function'
+            || typeof o === 'function'
+    }
+
+    exports.jm = undefined
+    exports.onCommit = function() {}
+
+    exports.PrimitiveModel = function(i)
+    {
+        var primitiveBox = typeof i === 'function'
+                         ? function() { return primitiveBox.value.apply(this, arguments) }
+                         : {}
+
+        Object.defineProperty(primitiveBox, 'isLeafType',{ writable:true, value:true })
+        Object.defineProperty(primitiveBox, 'value',     { writable:true, value:i })
+        Object.defineProperty(primitiveBox, 'valueOf',   { writable:true, value:function()
+        {
+            return this.value !== undefined
+                 ? this.value.valueOf()
+                 : undefined
+        }})
+        Object.defineProperty(primitiveBox, 'toJSON', { writable:true, value:function()
+        {
+            if (this.value === undefined)
+                return
+            return this.value//.valueOf()
+        }})
+        Object.defineProperty(primitiveBox, 'toString', { writable:true, value:function()
+        {
+            if (this.value === undefined)
+                return 'undefined'
+            return this.value.toString()
+        }})
+
+        return primitiveBox
     }
 
     function box(obj)
-    {
-        if (typeof obj === 'function')  return obj // wth? functions werden direkt verwendet und objecte nicht? (z. 34)
-        if (isPrimitive(obj))           return new exports.PrimitiveModel(obj)
+    {      
+        if (isPrimitive(obj))
+        {
+            return exports.PrimitiveModel(obj)
+        }
         else
         {
             var boxed = obj instanceof Array ? [] : {}
             if (obj.type == 'Job')
-            {                
+            {
                 boxed.__proto__ = exports.jm.jobPrototype
 
                 if(obj.isProxy)
                     exports.jm.remoteJobs[obj.id.valueOf()] = boxed
             }
 
-            if (obj.type == 'Folder' && app.model.registry.types.folder)                            
+            if (obj.type == 'Folder' && app.model.registry.types.folder)
                 boxed.__proto__ = app.model.registry.types.folder
 
             if (obj.type == 'Set<FragmentFolder>' && app.model.registry.types.fragmentFolderSet)
@@ -90,24 +125,6 @@
 
             return boxed
         }
-    }
-
-    exports.jm = undefined
-    exports.onCommit = function() {}
-
-    exports.PrimitiveModel = function(i)
-    {
-        this.value = i
-        this.valueOf = function()
-        {
-            return this.value !== undefined ? this.value.valueOf() : undefined
-        }
-        this.toJSON = function()
-        {
-            if (this.value === undefined) return
-            return this.value.valueOf()
-        }
-        // this.toString ?
     }
 
     exports.path2wrapper = function(path, obj)
@@ -171,10 +188,10 @@
         {
             var changes = { diff:diff, sender:model, newMembers:{}, deletedMembers:{} }
 
-            if (model instanceof exports.PrimitiveModel)
+            if (model.isLeafType)
             {
                 //*** boolean, number, string, undefined, null
-                console.assert(isPrimitive(diff) || diff instanceof exports.PrimitiveModel, 'Model is primitive but diff is not', model, diff)
+                console.assert(isPrimitive(diff) || diff.isLeafType, 'Model is primitive but diff is not', model, diff)
 
                 if (isPrimitive(diff))
                     model.value = diff
@@ -190,6 +207,7 @@
                 if (v === 'deadbeef')
                 {
                     changes.deletedMembers[id] = model[id]
+                    exports.destroy(model[id])
                     delete model[id]
                 }
                 else if (!model[id])

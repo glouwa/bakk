@@ -86,7 +86,7 @@ function jobStateGraphView(jobModel)
                     })
                 })
 
-                if (!(v instanceof mvj.PrimitiveModel))
+                if (!v.isLeafType)
                 {
                     updateJob({ newMembers:v }, v.path)
                     v.on('change', updateJob)
@@ -262,7 +262,7 @@ function jobStateView(level)
         progress.addBlock(jobModel, origin)
 
         lastworker.innerText = (''+jobModel.state.lastWorker)!= 'undefined'?''+jobModel.state.lastWorker:'-'
-        lastlog.innerText = jobModel.state.log.valueOf()
+        lastlog.innerText = jobModel.state.log//.valueOf()
         state.innerText = config.getIcon(jobModel.state)
     }
 

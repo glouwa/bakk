@@ -8,10 +8,8 @@ function onDragStart(ev, model)
 
 function lineFramePrimitive(name, model)
 {
-    var n = name.charAt(0).toUpperCase() + name.slice(1)
-    n = model instanceof mvj.PrimitiveModel ? n : n+'*'
-    // 𝟘�𝕊ℕℝ𝔹
-    im = { 'null':'𝟘', 'undefined':'�', 'string':'𝕊', 'number':'ℕ', 'number':'ℝ', 'boolean':'𝔹' }
+    var n = name.charAt(0).toUpperCase() + name.slice(1)        
+    im = { 'null':'␀', 'undefined':'␥', 'string':'𝕊', 'number':'ℕ', 'number':'ℝ', 'boolean':'𝔹' }
 
     var view = document.createElement('div')
         view.className = 'lineFramePrimitive'

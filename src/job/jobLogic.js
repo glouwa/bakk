@@ -179,6 +179,8 @@
                     newSubJobs.push(parent.subjobs[newSj.id] || app.model.jobs[newSj.id.valueOf()])
                 }
 
+                console.assert(lastCreatedIdx > 0, 'subjoblogic with 0 subjobs?')
+
                 parent.updateJob({ state:{ type:'running', detail:'delegating', log:args.desc }})
                 newSubJobs.forEach(sj=> sj.call())
             }

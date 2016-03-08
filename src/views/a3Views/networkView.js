@@ -51,7 +51,7 @@ function systemGraphView(networkModel)
         if (changes.newMembers)
             changes.newMembers.forEach(function(v, k, idx)
             {
-                if (!(v instanceof mvj.PrimitiveModel))
+                if (!v.isLeafType)
                 {
                     var parentPathStrong = v.path.substr(0, v.path.lastIndexOf('.'))
                     var parentPath = changes.sender.path

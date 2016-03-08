@@ -65,6 +65,9 @@
             if (j.params)
                 set.update({ begin:j.params.begin, end:j.params.end })
 
+            if (!set.begin.valueOf() == undefined || !set.end.valueOf() == undefined)
+                throw new Error('set.begin or set.end is undefined')
+
             // create items
             for (var idx = set.begin.valueOf(); idx <= set.end.valueOf(); idx++)                
                 set.data.update(idx.toString(), set.ictor(idx))

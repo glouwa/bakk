@@ -83,26 +83,29 @@
             var clone = this instanceof Array ? [] : {}
             for(var i in this)
             {
-                if(typeof this[i] == 'object' && this[i] != null)
+                var v = this[i]
+                if(typeof v == 'object' && v != null)
                 {
-                    if (i !== 'data')
-                        clone[i] = this[i].pack()
+                    if (v.isLeafType)
+                        clone[i] = v.value
+                    else if (i !== 'data')
+                        clone[i] = v.pack() // todo: remove that shit
                     else
                         clone[i] = {}
                 }
-                else if (typeof this[i] == 'function')
+                else if (typeof v == 'function')
                 {
-                    clone['$' + i] = '(' + this[i].toString() + ')'
-                    clone[i] = this[i]
+                    clone['$' + i] = '(' + v.toString() + ')'
+                    clone[i] = v
                     //console.warn('stringifying function ' + i)
                 }
                 else
                 {
-                    clone[i] = this[i]
+                    clone[i] = v
                 }
             }
 
-            if (this.onCall)   clone['$onCall'] = '(' + this.onCall.toString() + ')'
+            if (this.onCall)   clone['$onCall']   = '(' + this.onCall.toString()   + ')'
             if (this.onCancel) clone['$onCancel'] = '(' + this.onCancel.toString() + ')'
             return clone
         },
