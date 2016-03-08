@@ -34,7 +34,8 @@ app.init = function()
         document.title = jf.workerId
         $('#thisId').text(jf.workerId)
 
-        rootJob({ onCall:j=> app.model.projects['↻'](j) }).call()
+        if (app.model.projects['↻'])
+            rootJob({ onCall:j=> app.model.projects['↻'](j) }).call()
     })
 
     // network -----------------------------------------------------
@@ -66,7 +67,7 @@ app.init = function()
         projects: // fileset(path, 'Set<Project>', (filename)=> project(filename))
         {
             type:'Set<Project>',
-            '↻': function(j) // muss ein service sein wegen timeout ! nein, params.config narchträglich setzen!
+            '↻': function(j)
             {
                 this.update({
                     '↻': 'deadbeef',
@@ -167,14 +168,13 @@ app.onMessage = function(c, parsed)
 {
     var channelHandlers =
     {
-        onWsMessage: function(c, parsed)
+        onWsMessage: (c, parsed)=>
         {
             sim.log('app', 'log', '⟵', parsed)
-
             var messageHandlers =
             {
-                onServerHallo: function(c, serverHallo) {
-                    app.update(serverHallo.diff)
+                onServerHallo: (c, parsed)=> {
+                    app.update(parsed.diff)
 
                     var mynodeInfo = {
                         type: 'Client',
@@ -183,22 +183,17 @@ app.onMessage = function(c, parsed)
                         simconfig: config.clientDefaultSimConfig
                     }                    
 
-                    app.commit('model.network.'+app.clientId, mynodeInfo)
+                    app.commit('model.network.' + app.clientId, mynodeInfo)
                     sim.config = app.model.network[app.clientId.valueOf()].simconfig
                 },
 
-                onNetworkInfo: function(c, parsed) {
-                    app.update(parsed.path, parsed.diff)
-                },
-
-                onReload: function(c, parsed) {
-                    location.reload(true)
-                }
+                onNetworkInfo: (c, parsed)=> app.update(parsed.path, parsed.diff),
+                onReload:      (c, parsed)=> location.reload(true)
 
             }['on'+parsed.type](c, parsed)
         },
 
-        onJobMessage: function(c, parsed)
+        onJobMessage: (c, parsed)=>
         {
             sim.log('job', 'log', '⟵', parsed)
             jf.onReceive(c, parsed, code=> eval(code), app)

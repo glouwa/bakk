@@ -47,8 +47,8 @@ function graphConfig(obj)
     if (!type)
         return graphConfigMap.def
 
-    if (type instanceof mvj.PrimitiveModel) // todo: ???
-        type = type.value
+    //if (type instanceof mvj.PrimitiveModel) // todo: ???
+        //type = type.value
 
     //if (!graphConfigMap[type])
         //console.warn('no graphconfig fpr type ', type)

@@ -49,8 +49,8 @@ function project(url)
                         if (projectDiff.views)
                             app.model.registry.views.update(projectDiff.views)
 
-                        project.update(Object.assign(projectDiff, {
-                            '↻': 'deadbeef',
+                        project.update(Object.assign(projectDiff, {                            
+                            '↻':'deadbeef',
                             '✕': function free(j) {},
                             '👁 j.args': instantiate,
                             '▸ j.src': instantiate$run

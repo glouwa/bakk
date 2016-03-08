@@ -1,5 +1,8 @@
 (function(exports, inNode)
 {
+    exports.jm = undefined
+    exports.onCommit = function() {}
+
     var Emitter = {}
     Emitter.on = function(event, fn)
     {
@@ -64,10 +67,7 @@
             || typeof o === 'function'
     }
 
-    exports.jm = undefined
-    exports.onCommit = function() {}
-
-    exports.PrimitiveModel = function(i)
+    exports.primitiveModel = function(i)
     {
         var primitiveBox = typeof i === 'function'
                          ? function() { return primitiveBox.value.apply(this, arguments) }
@@ -101,7 +101,7 @@
     {      
         if (isPrimitive(obj))
         {
-            return exports.PrimitiveModel(obj)
+            return exports.primitiveModel(obj)
         }
         else
         {
@@ -189,29 +189,27 @@
             var changes = { diff:diff, sender:model, newMembers:{}, deletedMembers:{} }
 
             if (model.isLeafType)
-            {
-                //*** boolean, number, string, undefined, null
-                console.assert(isPrimitive(diff) || diff.isLeafType, 'Model is primitive but diff is not', model, diff)
+            {                
+                console.assert(isPrimitive(diff) || diff.isLeafType,                        'Model is primitive but diff is not', model, diff)
 
                 if (isPrimitive(diff))
                     model.value = diff
                 else
                     model.value = diff.value
             }
-            else diff.forEach(function(v, id, idx)
-            {
-                //*** [] or {}
+            else diff.forEach(function(v, id, idx) // [] or {}
+            {                
                 console.assert(!isPrimitive(diff),                                          'Model is not primitive but diff is')
-                if (v === 'deadbeef' && !model[id]) console.trace(                          'Trying to delete non existing member ' + id)
+                console.assert(!(v === 'deadbeef' && !model[id]),                           'Trying to delete non existing member ' + id)
 
                 if (v === 'deadbeef')
                 {
                     changes.deletedMembers[id] = model[id]
-                    //exports.destroy(model[id])
+                    model[id].destroyOwn(model)
                     delete model[id]
                 }
                 else if (!model[id])
-                {
+                {                    
                     var p = model.path == '' ? id : (model.path + '.' + id)
                     model[id] = exports.model(p, v, noEvents, inShadow)
                     changes.newMembers[id] = model[id]
@@ -232,6 +230,19 @@
                 model.emit('change', changes)
 
             return model
+        }})
+        Object.defineProperty(model, 'destroyOwn', { writable:true, value: function(parent, noEvents, inShadow)
+        {
+            var changes = { diff:{}, sender:model, newMembers:{}, deletedMembers:{} }
+
+            model.forEach((v, id, idx)=>
+            {
+                v.destroyOwn(model)
+                changes.deletedMembers[id] = model[id]
+            })
+
+            if (!noEvents)
+                model.emit('change', changes)
         }})
 
         var shadowRoot = noEvents && !inShadow

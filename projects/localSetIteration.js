@@ -44,26 +44,25 @@ new Object({
             set: pSet.lazySet(
                 0,
                 9,
-                function(idx) {
-                    return {
-                        id: idx,
-                        url: '../../data/3dModel/vectorfiles/m' + idx + '.json',
-                        tUrl: '../../data/3dModel/thumbnails/m' + idx + '_thumb.png',
-                        '↻': function(j) {
-                            var element = this
-                            return tj.ajaxJob({
-                                url: this.url.valueOf(),
-                                onData: function(j, s, d) {
+                function(idx) { return {
+                    id: idx,
+                    url: '../../data/3dModel/vectorfiles/m' + idx + '.json',
+                    tUrl: '../../data/3dModel/thumbnails/m' + idx + '_thumb.png',
+                    '↻': function(j) {
+                        var element = this
+                        return tj.ajaxJob({
+                            url: this.url.valueOf(),
+                            onData: (j, s, d)=> {
+                                if (element['↻'])
                                     element.update({
                                         features: JSON.parse(d).features,
-                                        '↻': 'deadbeef',
-                                        '✕': function free(j) { },
+                                        '↻':'deadbeef',
+                                        '✕':j=> {},
                                     })
-                                }
-                            })
-                        }
+                            }
+                        })
                     }
-                }
+                }}
             ),
             config: {
                 requires: 'JS',

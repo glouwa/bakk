@@ -60,13 +60,17 @@ function systemGraphView(networkModel)
                     var sendergc = graphConfig(changes.sender)
                     //console.log('add: ' + parentPath + ' --> ' + v.path + (isLink ? '(link)' : ''))
 
-                    if (!sendergc.showOnly || (sendergc.showOnly && sendergc.showOnly.indexOf(k) !== -1))
+                    if (!sendergc.showOnly ||
+                        (sendergc.showOnly && sendergc.showOnly.indexOf(k) !== -1))
                     {
                         if (isLink)
                         {
                             if (typeof v != 'function')
-                                data.edges.add({ from:parentPath, to:v.path,
-                                                 title:k, physics: false, color:'#FF9800' })
+                                data.edges.add({
+                                    from:parentPath,
+                                    to:v.path,
+                                    title:k, physics: false, color:'#FF9800'
+                                })
                         }
                         else
                         {
@@ -74,11 +78,19 @@ function systemGraphView(networkModel)
                             data.nodes.add(Object.assign({
                                 id:v.path,
                                 model:v,
-                                x:initPos.x, y:initPos.y,
+                                x:initPos.x,
+                                y:initPos.y,
                                 //label:k,
                                 font: { size:'116', color:'rgba(0, 0, 0, 0.08)' }
-                            }, gc))
-                            data.edges.add({ from:parentPath, to:v.path, title:k })
+                            },
+                            gc))
+
+                            data.edges.add({
+                                id:parentPath + ' -to- ' + v.path,
+                                from:parentPath,
+                                to:v.path,
+                                title:k
+                            })
                         }
 
                         var allKidsVisible = !gc.showOnly
@@ -88,7 +100,7 @@ function systemGraphView(networkModel)
                         if (!isLink && (someKidsVisible || allKidsVisible))
                         {
                             var next = v.subjobs || v // todo: newMembers enthalten nie kinder
-                            update({ newMembers:next, sender:next }/*, v.path*/)
+                            update({ newMembers:next, sender:next })
                             next.on('change', update)
                         }
                     }
@@ -97,8 +109,9 @@ function systemGraphView(networkModel)
 
         if (changes.deletedMembers)
             changes.deletedMembers.forEach(function(v, k, idx)
-            {
-                data.nodes.remove({ id:v.path })
+            {                
+                data.nodes.remove({ id:v.path })                
+                data.edges.remove({ id:changes.sender.path + ' -to- ' + v.path })
             })
     }
 
