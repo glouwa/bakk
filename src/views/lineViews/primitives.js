@@ -115,13 +115,11 @@ function codeEdit(model)
     editor.getSession().on('change', function(e)
     {
         var functionCode = editor.getSession().getValue()
-        console.log(functionCode)
-
         var func = eval('('+functionCode+')')
         console.log(func)
 
         if (func)
-            model.prototype = func
+            model.update(func)
     })
 
     return code

@@ -207,7 +207,7 @@
                 if (v === 'deadbeef')
                 {
                     changes.deletedMembers[id] = model[id]
-                    exports.destroy(model[id])
+                    //exports.destroy(model[id])
                     delete model[id]
                 }
                 else if (!model[id])
