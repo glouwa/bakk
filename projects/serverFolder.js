@@ -27,6 +27,7 @@ function folderPrototype()
                             var folderDiff = {}, fileDiff = {}
 
                             files.forEach((v, k, idx)=> {
+
                                 var directory = path.join(dir, v)
 
                                 if (fs.statSync(directory).isDirectory())

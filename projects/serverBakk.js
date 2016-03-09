@@ -18,6 +18,7 @@ function getCmdSet(j, diff)
                     var path = require('path')
                     var files = fs.readdirSync(dir)
 
+                    var cmd = 'Preprocessing'
                     var cmdArgs = ''
                     files.forEach((v, k, idx)=> {
 
@@ -26,12 +27,12 @@ function getCmdSet(j, diff)
                         if (fs.statSync(sub).isDirectory())
                             addCommandsOfFolder(commands, sub)
 
-                        else if (v != 'output.off')
+                        if (path.extname(v) == '.off' && v != 'output.off')
                             cmdArgs += ' ' + v
                     })
 
                     if (cmdArgs)
-                        commands.push({ dir:dir, cmd:'anycmd'+cmdArgs })
+                        commands.push({ dir:dir, cmd:cmd + cmdArgs + ' output.off'})
                 }
 
                 var commands = []
@@ -45,8 +46,11 @@ function getCmdSet(j, diff)
                     job: (idx, node)=> jf.remoteProxyJob({
                         node:node,
                         args:{ command:commands[idx], config:js.params.config },
-                        realJob: jw=> tj.exec(jw, 'shuf -i 1-5 -n 1 | xargs sleep'
-                                              /*jw.params.command.cmd.valueOf()*/)
+                        realJob: jw=> tj.exec(jw,
+                            jw.params.command.cmd.valueOf(), //'shuf -i 0-0 -n 1 | xargs sleep',
+                            (jw, data)=> jw.commitJob({ type:'running', progress:0.5, log:data }),
+                            { cwd:jw.params.command.dir.valueOf() }
+                        )
                     })
                 })
             }

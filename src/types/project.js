@@ -2,29 +2,26 @@ function project(url)
 {
     // PROJECT PART ----------------------------------------------------
 
-    function createJobWithViewFromProject(project, isRoot)
-    {
+    function instantiate(j)
+    {        
         var job = rootJob({
-            params: project.service.args,
-            onCall: (j, params)=> project.service.src(j, params),
+            params: this.service.args,
+            onCall: (j, params)=> this.service.src(j, params),
         })
 
-        if (isRoot)
-            job.update({ isRoot:true })
-
+        job.update({ isRoot:true })
         $('#jobTab')[0].add(job.id, { content:jobAllView(job) })
-        return job
-    }
-
-    function instantiate(j)
-    {
-        createJobWithViewFromProject(this, true)
         j.ret('ok', 'job instanciated and view created')
     }
 
     function instantiate$run(j)
     {
-        var job = createJobWithViewFromProject(this)
+        var job = rootJob({
+            params: this.service.args,
+            onCall: (j, params)=> this.service.src(j, params),
+        })
+
+        $('#jobTab')[0].add(job.id, { content:jobAllView(job) })
         j.delegateToOne({ job:()=> job })
     }
 

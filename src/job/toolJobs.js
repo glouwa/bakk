@@ -145,7 +145,7 @@
 
     //-----------------------------------------------------------------------------------------
 
-    exports.exec = function(j, cmd, onPipeStdOut)
+    exports.exec = function(j, cmd, onPipeStdOut, options)
     {
         var cp = require('child_process')
         var js = require("JSONStream")
@@ -157,7 +157,7 @@
             process.kill()
         }
 
-        process = cp.exec(cmd.valueOf())
+        process = cp.exec(cmd.valueOf(), options)
 
         j.updateJob({
             state: {
@@ -172,13 +172,23 @@
         }))
 
         if (onPipeStdOut)
+        {
             process.stdout
                 .on('data', data=> j.exception2localError(()=> {
                     if (!canceled)
                         onPipeStdOut(j, data)
                  }))
                 .on('error', err=> {})
-                .on('end',   ()=>  {}) // is called after exit :/ */
+                .on('end',   ()=>  {}) // is called after exit :/
+
+            process.stderr
+                .on('data', data=> j.exception2localError(()=> {
+                    if (!canceled)
+                        onPipeStdOut(j, data)
+                 }))
+                .on('error', err=> {})
+                .on('end',   ()=>  {})
+        }
 
         process.on('exit', (code, sig)=> j.exception2localError(()=> {
             if (!canceled && j.flush)
