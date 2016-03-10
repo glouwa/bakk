@@ -275,7 +275,7 @@ html {
 .buttonRight{
     float: right;
     line-height: 23px;
-    margin-left: 5;
+    padding: 0 3;
     font-size: 18px;
     color: lightgray;
     cursor: hand;

@@ -60,7 +60,53 @@ error.exceptionsSelect = function(model)
     return div
 }
 
-function networkNodeView(nodeModel)
+function networkNodeHeader(nodeModel)
+{
+    var header = document.createElement('div')
+        header.className = 'header'
+        var nodeName = document.createElement('div')
+            nodeName.className = 'nodeHeaderName'
+            nodeName.innerText = nodeModel.id.valueOf()
+        var headerHost = document.createElement('div')
+            headerHost.className = 'nodeHeaderName'
+            if (nodeModel.osType)
+                headerHost.innerText = nodeModel.osType + ' ' + nodeModel.hostname
+        var headerText = document.createElement('span')
+            headerText.className = 'nodeHeaderText'
+            headerText.innerText = nodeModel.capabilitys
+                                 ? nodeModel.capabilitys.toString()
+                                 : nodeModel.clientcount.valueOf() + ' clients connected'
+        var headerTotal = document.createElement('span')
+            headerTotal.className = 'nodeHeaderText'
+            if (nodeModel.totalMem)
+                headerTotal.innerText = nodeModel.totalCpus + ', ' + nodeModel.totalMem + ', '
+        var headerFree = document.createElement('div')
+            headerFree.className = 'nodeHeaderFree'
+            function updateFree() { headerFree.innerText = nodeModel.freeCpuPercent + 'cpu, ' + nodeModel.freeMemPercent + 'ram'}
+            if (nodeModel.freeMemPercent)
+            {
+                updateFree()
+                nodeModel.freeMemPercent.on('change', updateFree)
+            }
+            //nodeModel.freeMemPercent.on('change', updateFree)
+        var headerActions = autoJobButtonLineView(nodeModel)
+            headerActions.style.float = 'right'
+
+        var headerBar = document.createElement('div')
+            headerBar.className = 'headerBar'
+            headerBar.style.background = graphConfig(nodeModel).color
+
+    header.appendChild(nodeName)
+    header.appendChild(headerHost)
+    header.appendChild(headerTotal)
+    header.appendChild(headerText)
+    header.appendChild(headerFree)
+    header.appendChild(headerActions)
+    header.appendChild(headerBar)
+    return header
+}
+
+function networkNodeSimConfig(nodeModel)
 {
     var viewFactory =
     {
@@ -71,39 +117,6 @@ function networkNodeView(nodeModel)
     }
 
     var view = document.createElement('div')
-        view.className = 'networkNode'
-        if (nodeModel.id == jf.workerId)
-            view.style.backgroundColor = '#FFFFD0'
-        var header = document.createElement('div')
-            header.className = 'header'            
-            var nodeName = document.createElement('div')
-                nodeName.className = 'nodeHeaderName'
-                nodeName.innerText = nodeModel.id.valueOf()            
-            var headerHost = document.createElement('div')
-                headerHost.className = 'nodeHeaderName'
-                if (nodeModel.osType)
-                    headerHost.innerText = nodeModel.osType + ' ' + nodeModel.hostname
-            var headerText = document.createElement('span')
-                headerText.className = 'nodeHeaderText'
-                headerText.innerText = nodeModel.capabilitys
-                                     ? nodeModel.capabilitys.toString()
-                                     : nodeModel.clientcount.valueOf() + ' clients connected'
-            var headerTotal = document.createElement('span')
-                headerTotal.className = 'nodeHeaderText'
-                if (nodeModel.totalMem)
-                    headerTotal.innerText = nodeModel.totalMem + ', ' + nodeModel.totalCpus + ', '
-            var headerFree = document.createElement('div')
-                headerFree.className = 'nodeHeaderFree'
-                function updateFree() { headerFree.innerText = nodeModel.freeMemPercent + 'ram, ' + nodeModel.freeCpuPercent + 'cpu' }
-                if (nodeModel.freeMemPercent)
-                {
-                    updateFree()
-                    nodeModel.freeMemPercent.on('change', updateFree)
-                }
-                //nodeModel.freeMemPercent.on('change', updateFree)
-            var headerActions = autoJobButtonLineView(nodeModel)
-                headerActions.style.float = 'right'
-
         var simControl = document.createElement('span')
             simControl.className = 'errorSimControl'
             simControl.update = compositeUpdate({
@@ -123,10 +136,10 @@ function networkNodeView(nodeModel)
             })
             simControl.update({ newMembers:nodeModel.simconfig })
             nodeModel.simconfig.on('change', simControl.update)
-        var list = document.createElement('ul')
-            list.className = 'errorSimList'
-            list.update = compositeUpdate({
-                view:list,
+        var simActiveList = document.createElement('ul')
+            simActiveList.className = 'errorSimList'
+            simActiveList.update = compositeUpdate({
+                view:simActiveList,
                 filter:(v, k)=> viewFactory[k],
                 itemDelegate:(v, k)=>
                 {
@@ -159,22 +172,25 @@ function networkNodeView(nodeModel)
                     return errorView
                 }
             })
-            list.update({ newMembers:nodeModel.simconfig })
-            nodeModel.simconfig.on('change', list.update)
-        var headerBar = document.createElement('div')
-            headerBar.className = 'headerBar'
-            headerBar.style.background = graphConfig(nodeModel).color
+            simActiveList.update({ newMembers:nodeModel.simconfig })
+            nodeModel.simconfig.on('change', simActiveList.update)
 
-
-        header.appendChild(nodeName)        
-        header.appendChild(headerHost)
-        header.appendChild(headerTotal)
-        header.appendChild(headerText)
-        header.appendChild(headerFree)
-        header.appendChild(headerActions)
-        header.appendChild(headerBar)
-    view.appendChild(header)
     view.appendChild(simControl)
-    view.appendChild(list)
+    view.appendChild(simActiveList)
+    return view
+}
+
+function networkNodeView(nodeModel)
+{
+    var view = a3expander({
+            model:nodeModel,
+            expanded:false,
+            header:networkNodeHeader(nodeModel),
+            contentFactory:()=> networkNodeSimConfig(nodeModel)
+        })
+        view.className = 'networkNode'
+        if (nodeModel.id == jf.workerId)
+            view.style.backgroundColor = '#FFFFD0'
+
     return view
 }
