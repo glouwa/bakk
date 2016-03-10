@@ -70,15 +70,6 @@ function networkNodeView(nodeModel)
         exception:  function(model) { return error.exceptionsSelect(model) }
     }
 
-    function setToString(set)
-    {
-        var r = ''
-        for (k in set)
-            if (typeof set[k].valueOf() === 'string')
-                r += ', ' + set[k].valueOf()
-        return r
-    }
-
     var view = document.createElement('div')
         view.className = 'networkNode'
         if (nodeModel.id == jf.workerId)
@@ -86,32 +77,52 @@ function networkNodeView(nodeModel)
         var header = document.createElement('div')
             header.className = 'header'            
             var nodeName = document.createElement('div')
-                nodeName.className = 'nodeHeaderText'
-                nodeName.innerText = nodeModel.id.valueOf()
-            var headerText = document.createElement('div')
+                nodeName.className = 'nodeHeaderName'
+                nodeName.innerText = nodeModel.id.valueOf()            
+            var headerHost = document.createElement('div')
+                headerHost.className = 'nodeHeaderName'
+                if (nodeModel.osType)
+                    headerHost.innerText = nodeModel.osType + ' ' + nodeModel.hostname
+            var headerText = document.createElement('span')
                 headerText.className = 'nodeHeaderText'
-                headerText.innerText = nodeModel.capabilitys ? setToString(nodeModel.capabilitys) : nodeModel.clientcount.valueOf() + ' clients connected'
-            header.update = compositeUpdate({
-                view:header,
+                headerText.innerText = nodeModel.capabilitys
+                                     ? nodeModel.capabilitys.toString()
+                                     : nodeModel.clientcount.valueOf() + ' clients connected'
+            var headerTotal = document.createElement('span')
+                headerTotal.className = 'nodeHeaderText'
+                if (nodeModel.totalMem)
+                    headerTotal.innerText = nodeModel.totalMem + ', ' + nodeModel.totalCpus + ', '
+            var headerFree = document.createElement('div')
+                headerFree.className = 'nodeHeaderFree'
+                function updateFree() { headerFree.innerText = nodeModel.freeMemPercent + 'ram, ' + nodeModel.freeCpuPercent + 'cpu' }
+                if (nodeModel.freeMemPercent)
+                {
+                    updateFree()
+                    nodeModel.freeMemPercent.on('change', updateFree)
+                }
+                //nodeModel.freeMemPercent.on('change', updateFree)
+            var headerActions = autoJobButtonLineView(nodeModel)
+                headerActions.style.float = 'right'
+
+        var simControl = document.createElement('span')
+            simControl.className = 'errorSimControl'
+            simControl.update = compositeUpdate({
+                view:simControl,
                 itemDelegate:(v, k)=>
                 {
                     var errorIcon = document.createElement('div')
                     errorIcon.className = 'buttonRight'
                     errorIcon.innerText = v.icon.valueOf()
                     errorIcon.title = v.text.valueOf()
-
-                    errorIcon.onclick = function(){
-
-                        v.active.commit(!v.active.valueOf())
-                    }
+                    errorIcon.onclick = ()=> v.active.commit(!v.active.valueOf())
                     errorIcon.update = ()=> errorIcon.style.color = v.active.valueOf() ? '#00CC66':'#aaa'
                     errorIcon.update()
                     v.active.on('change', errorIcon.update)
                     return errorIcon
                 }
             })
-            header.update({ newMembers:nodeModel.simconfig })
-            nodeModel.simconfig.on('change', header.update)
+            simControl.update({ newMembers:nodeModel.simconfig })
+            nodeModel.simconfig.on('change', simControl.update)
         var list = document.createElement('ul')
             list.className = 'errorSimList'
             list.update = compositeUpdate({
@@ -125,7 +136,7 @@ function networkNodeView(nodeModel)
                             errorIconActive.innerText = v.icon.valueOf()
                             errorIconActive.title = v.text.valueOf()
                         var errorText = document.createElement('div')
-                            errorText.className = 'nodeHeaderText'
+                            errorText.className = 'errorSimEntry'
                             errorText.style.marginRight = 3
                             errorText.innerText = v.text.valueOf()
                         var line = document.createElement('div')
@@ -154,10 +165,16 @@ function networkNodeView(nodeModel)
             headerBar.className = 'headerBar'
             headerBar.style.background = graphConfig(nodeModel).color
 
-        header.appendChild(nodeName)
+
+        header.appendChild(nodeName)        
+        header.appendChild(headerHost)
+        header.appendChild(headerTotal)
         header.appendChild(headerText)
+        header.appendChild(headerFree)
+        header.appendChild(headerActions)
         header.appendChild(headerBar)
     view.appendChild(header)
+    view.appendChild(simControl)
     view.appendChild(list)
     return view
 }

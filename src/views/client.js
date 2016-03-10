@@ -180,7 +180,9 @@ app.onMessage = function(c, parsed)
                         type: 'Client',
                         id: jf.workerId,
                         capabilitys: ['JS'],
-                        simconfig: config.clientDefaultSimConfig
+                        simconfig: config.clientDefaultSimConfig,
+                        osType: 'Browser',
+                        hostname: ''
                     }                    
 
                     app.commit('model.network.' + app.clientId, mynodeInfo)

@@ -38,9 +38,11 @@ function fragmentFolderSet()
                 }
             })
         })},
-        '⛁':function(j) {
-            j.ret('ok', 'gerneated output')
-        }
+        '⚙ all':function(j) {},
+        '🗵 *.off':function(j) {},
+        '🗵 *.obj':function(j) {},
+        '*.off → *.obj':function(j) {},
+        '*.obj → *.off':function(j) {}
     }
 }
 
@@ -85,7 +87,7 @@ function fragmentFolder()
                 }
             })
         })},
-        '⛁':function(j) {
+        '⚙':function(j) {
             var job = rootJob({
                 params: { dir:this.dir, cmd:this.cmd },
                 onCall: j=> {

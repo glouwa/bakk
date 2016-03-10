@@ -6,27 +6,21 @@ function localFind3dModel(j, diff)
     })
 
     j.delegateToSequence(
-        ()=> jf.job({ onCall:(cj, params)=>
-
-            j.params.set.load(cj)
-        }),
-        ()=> jf.job({ onCall:(cj, params)=>
+        ()=> jf.job({ onCall:cj=> j.params.set.load(cj) }),
+        ()=> jf.job({ onCall:cj=> j.params.set.visit(cj, (vj, i, idx, p)=>
         {
-            j.params.set.visit(cj, (vj, i, idx, p)=>
-            {
-                var l = 'compared ' + j.params.set.begin + '-' + idx
-                var v1 = i.features
-                var v2 = j.params.set.data[j.params.selected.valueOf()].features
-                var d  = v1.map((i, idx)=> v2[idx] - i)
-                var r  = d.reduce((acc, c)=> acc + c*c)
-                var l2 = Math.sqrt(r)
-                var m  = l2 < j.params.threshold
-                       ? { [idx]:{ dbEntity:i, diff:l2 } }
-                       : undefined
+            var l = 'compared ' + j.params.set.begin + '-' + idx
+            var v1 = i.features
+            var v2 = j.params.set.data[j.params.selected.valueOf()].features
+            var d  = v1.map((i, idx)=> v2[idx] - i)
+            var r  = d.reduce((acc, c)=> acc + c*c)
+            var l2 = Math.sqrt(r)
+            var m  = l2 < j.params.threshold
+                   ? { [idx]:{ dbEntity:i, diff:l2 } }
+                   : undefined
 
-                vj.updateJob({ state:{ progress:p, type:'running', log:l } }, m)
-            })
-        }})
+            vj.updateJob({ state:{ progress:p, type:'running', log:l } }, m)
+        })})
     )
 }
 

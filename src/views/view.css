@@ -475,6 +475,7 @@ html {
 .networkNode .header{
     overflow: hidden;
     padding: 5 10 5 10;
+    text-align: center;
 }
 
 .networkNode .headerBar{
@@ -489,25 +490,55 @@ html {
     border-style: none solid none none;
 }
 
-.networkNode .nodeHeaderText{
+.networkNode .nodeHeaderName{
     float:left;
     line-height: 23px;
-    min-width: 30;
+    min-width: 30;    
+    text-align: left;
+}
+
+.networkNode .nodeHeaderText{
+    line-height: 23px;
+    color: lightgray;
+}
+
+.networkNode .nodeHeaderFree{
+    float:right;
+    line-height: 23px;
+    min-width: 30;    
+    color: lightgray;
+}
+
+.networkNode .errorSimControl {
+    display:table;
+    margin:15 auto 5 auto;
 }
 
 .networkNode .errorSimList {
     list-style-type: none;
     overflow: auto;
     clear: left;
-    padding: 10 40 10 40;
-    margin: 10 0 10 0;
+    padding: 0 40 10 40;
+    margin: 0 0 10 0;
     border-style: dashed;
     border-color: #b0b0b0;
     border-width: 0 0 0 0;
 }
 
-.networkNode .errorSimList:empty{
-    margin: 0;
+.networkNode .errorSimList {
+    list-style-type: none;
+    overflow: auto;
+    clear: left;
+    padding: 0 40 10 40;
+    margin: 0 0 10 0;
+    border-style: dashed;
+    border-color: #b0b0b0;
+    border-width: 0 0 0 0;
+}
+.networkNode .errorSimEntry{
+    float:left;
+    line-height: 23px;
+    min-width: 30;
 }
 
 .networkNode li{

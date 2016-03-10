@@ -170,7 +170,7 @@
         Object.defineProperty(model, 'emit', { value:Emitter.emit })
         Object.defineProperty(model, '_callbacks', { value:{} })
         Object.defineProperty(model, 'update', { writable:true, value: function(a1, a2)
-        {            
+        {
             var pathUsed = arguments.length === 2 ? true:false
             var wdiff = pathUsed ? exports.path2wrapper(a1, a2) : a1
             var node = model.merge(wdiff)
@@ -237,6 +237,7 @@
 
             model.forEach((v, id, idx)=>
             {
+                // todo: check ownership
                 v.destroyOwn(model)
                 changes.deletedMembers[id] = model[id]
             })
