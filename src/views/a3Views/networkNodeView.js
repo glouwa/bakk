@@ -70,7 +70,8 @@ function networkNodeHeader(nodeModel)
         var headerHost = document.createElement('div')
             headerHost.className = 'nodeHeaderName'
             if (nodeModel.osType)
-                headerHost.innerText = nodeModel.osType + ' ' + nodeModel.hostname
+                headerHost.innerText = nodeModel.osType + ', '
+                                     + nodeModel.hostname
         var headerText = document.createElement('span')
             headerText.className = 'nodeHeaderText'
             headerText.innerText = nodeModel.capabilitys
@@ -79,19 +80,21 @@ function networkNodeHeader(nodeModel)
         var headerTotal = document.createElement('span')
             headerTotal.className = 'nodeHeaderText'
             if (nodeModel.totalMem)
-                headerTotal.innerText = nodeModel.totalCpus + ', ' + nodeModel.totalMem + ', '
+                headerTotal.innerText = nodeModel.totalCpus + ', '
+                                     + nodeModel.totalMem + ', '
         var headerFree = document.createElement('div')
             headerFree.className = 'nodeHeaderFree'
-            function updateFree() { headerFree.innerText = nodeModel.freeCpuPercent + 'cpu, ' + nodeModel.freeMemPercent + 'ram'}
-            if (nodeModel.freeMemPercent)
-            {
+            function updateFree() {
+                headerFree.innerText = nodeModel.freeCpuPercent + 'cpu, '
+                                     + nodeModel.freeMemPercent + 'ram'
+            }
+            if (nodeModel.freeMemPercent) {
                 updateFree()
                 nodeModel.freeMemPercent.on('change', updateFree)
             }
             //nodeModel.freeMemPercent.on('change', updateFree)
         var headerActions = autoJobButtonLineView(nodeModel)
             headerActions.style.float = 'right'
-
         var headerBar = document.createElement('div')
             headerBar.className = 'headerBar'
             headerBar.style.background = graphConfig(nodeModel).color
@@ -110,10 +113,10 @@ function networkNodeSimConfig(nodeModel)
 {
     var viewFactory =
     {
-        delayed:    function(model) { return error.delaySlider(model)      },
-        stopWork:   function(model) { return error.pOfSelect(model)        },
-        disconnect: function(model) { return error.pOfSelect(model)        },
-        exception:  function(model) { return error.exceptionsSelect(model) }
+        delayed:    model=> error.delaySlider(model),
+        stopWork:   model=> error.pOfSelect(model),
+        disconnect: model=> error.pOfSelect(model),
+        exception:  model=> error.exceptionsSelect(model)
     }
 
     var view = document.createElement('div')
@@ -156,7 +159,7 @@ function networkNodeSimConfig(nodeModel)
                             line.style.height = 15
                             line.style.marginLeft = 5
                             line.style.overflow = 'hidden'
-                            line.style.borderBottom = '1px dotted #C3C3C3'
+                            line.style.borderBottom = '1px dotted #e3e3e3'
                         var errorVal = viewFactory[k](v)
                             errorVal.style.float = 'right'
 

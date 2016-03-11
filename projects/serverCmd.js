@@ -16,7 +16,7 @@ function spawnCmd(j)
                 {
                     onStdOut.count = onStdOut.count || 1
                     jw.commitJob(
-                        { type:'running', progress:0.05 },
+                        { type:'running', progress:0.95 },
                         { stdout:data }
                     )
                 }

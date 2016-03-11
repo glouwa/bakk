@@ -175,15 +175,12 @@ function autoJobButtonView(model)
 
 function autoView(model)
 {
-    function objectView(name, model)
+    var lineObjectView = (name, model)=> lineExpander(
     {
-        return  expander(
-        {
-            model: model,
-            header: lineFrame(model, varName(name)),
-            contentFactory: ()=> autoViewLine(model)
-        })
-    }
+        model: model,
+        header: lineFrame(model, varName(name)),
+        contentFactory: ()=> autoViewLine(model)
+    })
 
     function autoViewLine(model)
     {
@@ -194,7 +191,7 @@ function autoView(model)
             filter:v=> typeof v !== 'function',
             itemDelegate:(v, k)=>
             {
-                var viewFactory = viewCollection[modelType(v) + 'View'] || objectView
+                var viewFactory = viewCollection[modelType(v) + 'View'] || lineObjectView
                 return viewFactory(k.toString(), v)
             }
         })

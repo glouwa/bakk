@@ -199,9 +199,9 @@
                 log: 'created',
                 lastWorker: jm.workerId
             }
-            if (!diff.onCancel) diff.onCancel = (j)=> j.ret('canceled', 'default cancel')
-            if (!diff.onUpdate) diff.onUpdate = (j)=> { /*gui update | parent updaet */ }
-            if (!diff.onReturn) diff.onReturn = (j)=> { /*subjoblogic */ }
+            if (!diff.onCancel) diff.onCancel = j=> j.ret('canceled', 'default cancel')
+            if (!diff.onUpdate) diff.onUpdate = j=> { /*gui update | parent updaet */ }
+            if (!diff.onReturn) diff.onReturn = j=> { /*subjoblogic */ }
 
             return diff
         }

@@ -106,6 +106,27 @@ app.init = function()
                 ()=> jf.job({ onCall:sj=> app.model.projects['⤑🖥']['↻'](sj) }),
                 ()=> jf.job({ onCall:sj=> app.model.projects['⤑🖥'].service.src(sj), params:j.params })
             )
+        },        
+        '↻ worker':function(j)
+        {
+            j.delegateToOne({ job:()=> jf.remoteProxyJob({
+                args: j.params,
+                node: network.server,
+                realJob: js=> {
+                    var nodes = app.filterNodes('POSIX64')
+                    js.delegateToFactory({
+                        desc: 'shutting down worker',
+                        end: idx=> idx < nodes.length,
+                        job: idx=> jf.remoteProxyJob({
+                            node: nodes[idx],
+                            realJob: jw=> {
+                                jw.ret('ok', 'will exit now')
+                                process.exit(0)
+                            }
+                        })
+                    })
+                }
+            })})
         },
         '↻ server':function(j)
         {

@@ -124,9 +124,12 @@ function updateWorkerInfo(pf)
     workerInfo.freeMemPercent = (osUtils.freememPercentage()*100).toFixed(0)+'%'
     workerInfo.freeCpuPercent = (pf*100).toFixed(0)+'%'
 
-    var msg = messages.networkInfoMsg('model.network.' + app.clientId, workerInfo)
-    var channelMsg = messages.channelMsg('Ws', msg)
-    network.connections[0].send(channelMsg)
+    if (network.connections[0].send)
+    {
+        var msg = messages.networkInfoMsg('model.network.' + app.clientId, workerInfo)
+        var channelMsg = messages.channelMsg('Ws', msg)
+        network.connections[0].send(channelMsg)
+    }
 
     osUtils.cpuFree(updateWorkerInfo)
 }

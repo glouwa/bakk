@@ -15,6 +15,27 @@ function lineFramePrimitive(name, model)
         view.className = 'lineFramePrimitive'
         view.draggable = true
         view.ondragstart = ev=> onDragStart(ev, model)
+
+        view.onmouseenter = ()=>
+        {
+            if (lineExpander.actHover)
+            {
+                lineExpander.actHover.classList.remove('line-hover')
+                view.stolenFrom = lineExpander.actHover
+            }
+
+            view.classList.add('line-hover')
+            lineExpander.actHover = view
+        }
+
+        view.onmouseleave = ()=>
+        {
+            view.classList.remove('line-hover')
+
+            lineExpander.actHover = view.stolenFrom
+            lineExpander.actHover.classList.add('line-hover')
+        }
+
         var icon = document.createElement('div')
             icon.innerText = '•' //i
             icon.style.float = 'left'
@@ -43,8 +64,8 @@ function lineFrame(model, content)
 {
     var view = document.createElement('div')
         view.className = 'lineFrame'
-        view.draggable = true
-        view.ondragstart = ev=> onDragStart(ev, model)
+        //view.draggable = true
+        //view.ondragstart = ev=> onDragStart(ev, model)
         var type = document.createElement('div')
             type.innerText = modelType(model)
             type.style.float = 'left'
@@ -52,10 +73,13 @@ function lineFrame(model, content)
             type.style.marginTop = 5
             type.style.marginLeft = 2
             type.style.fontSize = 9
+        var autoButtons = autoJobButtonLineView(model)
+            autoButtons.style.paddingRight = 4
+            autoButtons.style.margin = '-1 0 -1 0'
 
         view.appendChild(content)
         view.appendChild(type)
-        view.appendChild(autoJobButtonLineView(model))
+        view.appendChild(autoButtons)
         /*view.update = function(changes)
         {
             content.update(changes)
@@ -64,7 +88,7 @@ function lineFrame(model, content)
     return view
 }
 
-function expander(args)
+function lineExpander(args)
 {
     var h = args.header
     var c = undefined
@@ -78,7 +102,7 @@ function expander(args)
         console.info('creating expander Content')
 
         if (args.model && args.model['↻'])
-            rootJob({ onCall:j=> args.model['↻'](j), params:{ config:{} } }).call()
+            rootJob({ onCall:j=> args.model['↻'](j), params:{ config:{} }}).call()
 
         return c
     }
@@ -89,6 +113,29 @@ function expander(args)
     var view = document.createElement('div')
         view.className = 'expander'
         view.expanded = false
+        view.draggable = true
+        view.ondragstart = ev=> onDragStart(ev, args.model)
+
+        view.onmouseenter = ()=>
+        {
+            if (lineExpander.actHover)
+            {
+                lineExpander.actHover.classList.remove('line-hover')
+                view.stolenFrom = lineExpander.actHover
+            }
+
+            view.classList.add('line-hover')
+            lineExpander.actHover = view
+        }
+
+        view.onmouseleave = ()=>
+        {
+            view.classList.remove('line-hover')
+
+            lineExpander.actHover = view.stolenFrom
+            lineExpander.actHover.classList.add('line-hover')
+        }
+
         var header = document.createElement('div')
             header.className = 'expander-header'
             header.onclick = function()
@@ -112,7 +159,7 @@ function expander(args)
             getContent()
 
         content.style.display = view.expanded ? 'block' : 'none'
-        header.indicator.innerText = view.expanded ? '🞃' : '🞂'   //⌄⌵› ⯈⯆  🞃🞂
+        header.indicator.innerText = view.expanded ? '🞃' : '🞂' //⌄⌵› ⯈⯆  🞃🞂
     }
     view.update()
 
@@ -122,4 +169,5 @@ function expander(args)
     view.appendChild(content)
     return view
 }
+
 

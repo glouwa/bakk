@@ -23,10 +23,9 @@ function findPrimes(j, diff)
                             jw,
                             '../../bin/posix64/prime.exe',
                             [jw.params.begin.valueOf(), jw.params.end.valueOf()],
-                            function onStdOut(jw, data) {
-                                // arguments.callee.count = arguments.callee.count.count || 1
-                                onStdOut.count = onStdOut.count || 1
-                                jw.commitJob(data.state, { [jf.workerId]:onStdOut.count++ })
+                            (jw, data)=> {
+                                arguments.callee.count = arguments.callee.count || 1
+                                jw.commitJob(data.state, { [jf.workerId]:arguments.callee.count++ })
                             }
                         )
                     })
