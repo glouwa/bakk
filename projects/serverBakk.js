@@ -12,6 +12,7 @@ function getCmdSet(j, diff)
             node: network.server,
             args: j.params,
             realJob: js=> {
+
                 function addCommandsOfFolder(commands, dir)
                 {
                     var fs = require('fs')
@@ -47,7 +48,7 @@ function getCmdSet(j, diff)
                         node:node,
                         args:{ command:commands[idx], config:js.params.config },
                         realJob: jw=> tj.exec(jw,
-                            jw.params.command.cmd.valueOf(), //'shuf -i 0-0 -n 1 | xargs sleep',
+                            'shuf -i 0-10 -n 1 | xargs sleep',//jw.params.command.cmd.valueOf(), //
                             (jw, data)=> jw.commitJob({ type:'running', progress:0.5, log:data }),
                             { cwd:jw.params.command.dir.valueOf() }
                         )
@@ -67,7 +68,7 @@ new Object({
         src: getCmdSet,
         args: {
             directory: '../../data/fragmented/',
-            config: { timeout:500 }
+            config: { timeout:10000 }
         },
     },    
     tests: []

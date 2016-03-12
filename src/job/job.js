@@ -11,12 +11,22 @@
         {
             var jp = {}
 
+            Object.defineProperty(jp, 'timer', { writable:true, value:null })
             Object.defineProperty(jp, 'call', { value:function()
             {
                 var j = this
                 j.exception2localError(function call_()
                 {
                     //console.trace('j-' + j.id + ' call')
+                    if (j.params && j.params.config && j.params.config.timeout)
+                    {
+                        j.timer = setTimeout(()=> {
+                            j.cancel()
+                            j.ret('failed', 'timeout ' + j.params.config.timeout)
+
+                        }, j.params.config.timeout.valueOf())
+                    }
+
                     var diff = {
                         id: j.id,
                         state: {
@@ -92,6 +102,8 @@
                     //console.trace('j-' + j.id + ' ret')
                     console.assert(j.state.type != 'returned', 'double return')
 
+                    clearTimeout(j.timer)
+
                     var diff = {
                         state: {
                             progress: 1,
@@ -120,6 +132,10 @@
                 {
                     // same as ret, but without exception2localError
                     // to avoid endless recursionif theres a error at return
+                    console.assert(j.state.type != 'returned', 'double return')
+
+                    clearTimeout(j.timer)
+
                     var diff = {
                         state: {
                             progress: 1,

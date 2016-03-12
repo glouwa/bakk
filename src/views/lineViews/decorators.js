@@ -32,8 +32,11 @@ function lineFramePrimitive(name, model)
         {
             view.classList.remove('line-hover')
 
-            lineExpander.actHover = view.stolenFrom
-            lineExpander.actHover.classList.add('line-hover')
+            if (view.stolenFrom)
+            {
+                lineExpander.actHover = view.stolenFrom
+                lineExpander.actHover.classList.add('line-hover')
+            }
         }
 
         var icon = document.createElement('div')
@@ -132,8 +135,11 @@ function lineExpander(args)
         {
             view.classList.remove('line-hover')
 
-            lineExpander.actHover = view.stolenFrom
-            lineExpander.actHover.classList.add('line-hover')
+            if (view.stolenFrom)
+            {
+                lineExpander.actHover = view.stolenFrom
+                lineExpander.actHover.classList.add('line-hover')
+            }
         }
 
         var header = document.createElement('div')

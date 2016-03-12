@@ -116,7 +116,10 @@ var workerInfo = {
     osType:os.type(),
     totalMem:formatBytes(os.totalmem(), 0),
     totalCpus:osUtils.cpuCount() + 'cores',
-
+    freeMemPercent:'0%',
+    freeCpuPercent:'0%',
+    netInBytes:'0',
+    netOutBytes:'0'
 }
 
 function updateWorkerInfo(pf)

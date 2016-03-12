@@ -153,6 +153,7 @@ app.init = function()
     $('#jobTabPaper').append(tab('jobTab'))
 
     $('#modelTab')[0].add('☍', { content:a3View(app.model) })
+    $('#modelTab')[0].add('🌐', { content:a3View(app.model.projects) })
     $('#jobTab')[0].add('⥂', { content:a3View(app.model.jobs) })
 }
 
