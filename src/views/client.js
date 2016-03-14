@@ -94,58 +94,7 @@ app.init = function()
             views: viewCollection,
             types: { type:'Set<Type>' }
         },
-        '++client':function(j)
-        {
-            window.open('./view.html', '_blank')
-            j.ret('ok', "window.open('./view.html', '_blank') called")
-        },
-        '++worker':function(j)
-        {
-            j.params.amount = 4
-            j.delegateToSequence(
-                ()=> jf.job({ onCall:sj=> app.model.projects['⤑🖥']['↻'](sj) }),
-                ()=> jf.job({ onCall:sj=> app.model.projects['⤑🖥'].service.src(sj), params:j.params })
-            )
-        },        
-        '↻ worker':function(j)
-        {
-            j.delegateToOne({ job:()=> jf.remoteProxyJob({
-                args: j.params,
-                node: network.server,
-                realJob: js=> {
-                    var nodes = app.filterNodes('POSIX64')
-                    js.delegateToFactory({
-                        desc: 'shutting down worker',
-                        end: idx=> idx < nodes.length,
-                        job: idx=> jf.remoteProxyJob({
-                            node: nodes[idx],
-                            realJob: jw=> {
-                                jw.ret('ok', 'will exit now')
-                                process.exit(0)
-                            }
-                        })
-                    })
-                }
-            })})
-        },
-        '↻ server':function(j)
-        {
-            j.delegateToOne({ job:()=> jf.remoteProxyJob({
-                args: j.params,
-                node: network.server,
-                realJob: js=> {
-                    js.ret('ok', 'will exit now')
-                    process.exit(0)
-                }
-            })})
-        },
-        '↻ clients':function(j)
-        {
-            var msg = messages.reloadMsg()
-            var channelMsg = messages.channelMsg('Ws', msg)
-            network.server.send(channelMsg)
-            j.ret('ok', 'reload message sent')
-        },
+
     })
 
     $('#modelTabPaper').append(tab('modelTab'))    
@@ -153,7 +102,16 @@ app.init = function()
     $('#jobTabPaper').append(tab('jobTab'))
 
     $('#modelTab')[0].add('☍', { content:a3View(app.model) })
-    $('#modelTab')[0].add('🌐', { content:a3View(app.model.projects) })
+
+    var div = document.createElement('div')
+    div.appendChild(a3View(app.model.projects))
+    app.model.on('change', changes=>
+    {
+        if (changes.newMembers && changes.newMembers.network)
+            div.insertBefore(a3View(app.model.network), div.firstChild)
+    })
+
+    $('#modelTab')[0].add('🌐', { content:div })
     $('#jobTab')[0].add('⥂', { content:a3View(app.model.jobs) })
 }
 
@@ -173,7 +131,7 @@ app.onNetworkStateChange = function(state, connection)
             $('#thisId').text('Connected')
             $('#connectionState').text('Connected to ' + app.wsUrl.valueOf())
             $('#connectionDate').text('since ' + new Date())
-            app.model.update({ network:{ type:'Network' }})
+            app.model.update({ network:networkType() })
         },
         onDisconnected:()=>
         {

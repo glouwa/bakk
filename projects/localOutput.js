@@ -43,10 +43,8 @@ new Object({
         type: 'Service',
         src: localOutput,
         args: {
-            config: {
-                terminateTimeout: 200
-            }
-        },
+            timeout: 200
+        }
     },
     tests: []
 })

@@ -84,31 +84,6 @@ function jobRootButon(args)// name, args, src, noIcons, obj)
     return view
 }
 
-function compositeUpdate(args)
-{
-    var childViews = {}
-    return function(changes)
-    {
-        if (changes.deletedMembers === 'all'){
-            args.view.innerText = ''
-            childViews = {}
-        }
-
-        if (changes.deletedMembers)
-            changes.deletedMembers.forEach((v, k, idx) => {
-                if (k != 'type' && (!args.filter || args.filter(v, k, idx)))
-                    if (args.view.contains(childViews[k]))
-                        args.view.removeChild(childViews[k])
-            })
-
-        if (changes.newMembers)
-            changes.newMembers.forEach((v, k, idx) => {
-                if (k != 'type' && (!args.filter || args.filter(v, k, idx)))
-                    args.view.appendChild(childViews[k] = args.itemDelegate(v, k, idx))
-            })
-    }
-}
-
 function autoJobButtonLineView(model)
 {
     var view = document.createElement('div')
@@ -125,7 +100,7 @@ function autoJobButtonLineView(model)
         {
             return jobRootButon({
                 name:k,
-                args:{ config:{} },
+                args:{},
                 src:v,
                 obj:model,
                 className:'jobButton-line',
@@ -161,7 +136,7 @@ function autoJobButtonView(model)
 
             return jobRootButon({
                 name:k,
-                args:{ config:{} },
+                args:{},
                 src:v,
                 obj:model,
                 noIcons:true

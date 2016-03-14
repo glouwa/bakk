@@ -6,38 +6,46 @@ function onDragStart(ev, model)
     console.log('ondragstart ' + model.path)
 }
 
+function hoverDiv(model)
+{
+    //var hoverDiv.actHover
+
+    var view = document.createElement('div')
+    view.draggable = true
+    view.ondragstart = ev=> onDragStart(ev, model)
+    view.onmouseenter = ()=>
+    {
+        if (hoverDiv.actHover)
+        {
+            hoverDiv.actHover.classList.remove('line-hover')
+            view.stolenFrom = hoverDiv.actHover
+        }
+
+        view.classList.add('line-hover')
+        hoverDiv.actHover = view
+    }
+
+    view.onmouseleave = ()=>
+    {
+        view.classList.remove('line-hover')
+        hoverDiv.actHover = undefined
+
+        if (view.stolenFrom)
+        {
+            hoverDiv.actHover = view.stolenFrom
+            hoverDiv.actHover.classList.add('line-hover')
+        }
+    }
+    return view
+}
+
 function lineFramePrimitive(name, model)
 {
     var n = name.charAt(0).toUpperCase() + name.slice(1)        
     im = { 'null':'␀', 'undefined':'␥', 'string':'𝕊', 'number':'ℕ', 'number':'ℝ', 'boolean':'𝔹' }
 
-    var view = document.createElement('div')
+    var view = hoverDiv(model)
         view.className = 'lineFramePrimitive'
-        view.draggable = true
-        view.ondragstart = ev=> onDragStart(ev, model)
-
-        view.onmouseenter = ()=>
-        {
-            if (lineExpander.actHover)
-            {
-                lineExpander.actHover.classList.remove('line-hover')
-                view.stolenFrom = lineExpander.actHover
-            }
-
-            view.classList.add('line-hover')
-            lineExpander.actHover = view
-        }
-
-        view.onmouseleave = ()=>
-        {
-            view.classList.remove('line-hover')
-
-            if (view.stolenFrom)
-            {
-                lineExpander.actHover = view.stolenFrom
-                lineExpander.actHover.classList.add('line-hover')
-            }
-        }
 
         var icon = document.createElement('div')
             icon.innerText = '•' //i
@@ -95,8 +103,7 @@ function lineExpander(args)
 {
     var h = args.header
     var c = undefined
-    function getContent()
-    {
+    function getContent() {
         if (c) return c
         c = args.contentFactory()
         c.style.marginLeft = 15
@@ -105,7 +112,7 @@ function lineExpander(args)
         console.info('creating expander Content')
 
         if (args.model && args.model['↻'])
-            rootJob({ onCall:j=> args.model['↻'](j), params:{ config:{} }}).call()
+            rootJob({ onCall:j=> args.model['↻'](j), params:{}}).call()
 
         return c
     }
@@ -113,39 +120,12 @@ function lineExpander(args)
     // args.contentIndent
     // args.treeLevel
 
-    var view = document.createElement('div')
+    var view = hoverDiv(args.model)
         view.className = 'expander'
         view.expanded = false
-        view.draggable = true
-        view.ondragstart = ev=> onDragStart(ev, args.model)
-
-        view.onmouseenter = ()=>
-        {
-            if (lineExpander.actHover)
-            {
-                lineExpander.actHover.classList.remove('line-hover')
-                view.stolenFrom = lineExpander.actHover
-            }
-
-            view.classList.add('line-hover')
-            lineExpander.actHover = view
-        }
-
-        view.onmouseleave = ()=>
-        {
-            view.classList.remove('line-hover')
-
-            if (view.stolenFrom)
-            {
-                lineExpander.actHover = view.stolenFrom
-                lineExpander.actHover.classList.add('line-hover')
-            }
-        }
-
         var header = document.createElement('div')
             header.className = 'expander-header'
-            header.onclick = function()
-            {
+            header.onclick = function() {
                 view.expanded = !view.expanded
                 view.update()
             }
@@ -159,8 +139,7 @@ function lineExpander(args)
             content.style.display = 'inline-block'
             content.style.width = '100%'
 
-    view.update = function()
-    {
+    view.update = function() {
         if (view.expanded)
             getContent()
 

@@ -46,11 +46,13 @@ function getCmdSet(j, diff)
                     desc: 'pooling ' + commands.length + ' processes',
                     job: (idx, node)=> jf.remoteProxyJob({
                         node:node,
-                        args:{ command:commands[idx], config:js.params.config },
+                        args:{ command:commands[idx], timeout:js.params.workerTimeout },
                         realJob: jw=> tj.exec(jw,
-                            'shuf -i 0-10 -n 1 | xargs sleep',//jw.params.command.cmd.valueOf(), //
-                            (jw, data)=> jw.commitJob({ type:'running', progress:0.5, log:data }),
-                            { cwd:jw.params.command.dir.valueOf() }
+                            'shuf -i 0-10 -n 1 | xargs sleep',//jw.params.command.cmd.valueOf(),
+                            (jw, data)=> jw.commitJob(
+                                             { type:'running', progress:0.5, log:data },
+                                             { cwd:jw.params.command.dir.valueOf() }
+                                         )
                         )
                     })
                 })
@@ -68,7 +70,8 @@ new Object({
         src: getCmdSet,
         args: {
             directory: '../../data/fragmented/',
-            config: { timeout:10000 }
+            timeout:10000,
+            workerTimeout:12000
         },
     },    
     tests: []

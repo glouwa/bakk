@@ -30,10 +30,8 @@ new Object({
         type: 'Service',
         src: serverOuput,
         args: {
-            text: 'this text will appear in output',
-            config: {
-                timeout: 500
-            }
+            text: 'this text will appear in output',            
+            timeout: 500
         },
     },
     tests: []

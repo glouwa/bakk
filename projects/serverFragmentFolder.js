@@ -148,7 +148,7 @@ new Object({
         src: insertFolder,
         args: {
             dir: '../../data/fragmented/',
-            config: { timeout:500 }
+            timeout:500
         },
     },
     types: {

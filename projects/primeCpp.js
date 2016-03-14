@@ -119,14 +119,8 @@ new Object({
                 1*10e6,
                 2*10e6,
                 function(j, idx) { return { mid: idx } }
-            ),
-            config: {
-                requires: 'JS, POSIX64',                
-                timeout: 3*60000,
-                ttfbTimeout: 300,
-                responseTimeout: 100,
-                cancelTimeout: 1000
-            }
+            ),            
+            timeout: 3*60000
         },
     },
     tests: [],

@@ -116,7 +116,7 @@ function codeEdit(model)
     {
         var functionCode = editor.getSession().getValue()
         var func = eval('('+functionCode+')')
-        console.log(func)
+        console.log(func.toString())
 
         if (func)
             model.update(func)

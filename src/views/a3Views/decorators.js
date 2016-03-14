@@ -51,7 +51,7 @@ function a3expander(args)
         console.info('creating expander Content')
 
         if (args.model && args.model['↻'])
-            rootJob({ onCall:j=> args.model['↻'](j), params:{ config:{} } }).call()
+            rootJob({ onCall:j=> args.model['↻'](j), params:{} }).call()
 
         return c
     }

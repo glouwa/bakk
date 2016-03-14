@@ -22,8 +22,7 @@ function find3dModel(j, diff)
                     args: {
                         set: js.params.set.shrink(idx, nodes.length),
                         selected: js.params.selected,
-                        threshold: js.params.threshold,
-                        config: js.params.config
+                        threshold: js.params.threshold
                     },
                     realJob: (jw, diff)=> jw.delegateToSequence(
                         ()=> jf.job({ onCall:cj=> jw.params.set.get(cj, jw.params.selected.valueOf(), 'load') }),

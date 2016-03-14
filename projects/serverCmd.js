@@ -52,7 +52,7 @@ new Object({
         src: spawnCmd,
         args: {
             cmd: 'ls ../.. -l',
-            config: { timeout:500 }
+            timeout:500
         },
     },
     tests: [],

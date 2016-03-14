@@ -25,11 +25,8 @@ new Object({
         type: 'Service',
         src: multipleAjaxCalls,
         args: {
-            amount: 5,
-            config: {
-                callProgress: 0.05,
-                timeout: 3000
-            }
+            amount: 5,            
+            timeout: 3000
         },
     },
     tests: []

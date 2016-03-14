@@ -18,13 +18,13 @@
                 j.exception2localError(function call_()
                 {
                     //console.trace('j-' + j.id + ' call')
-                    if (j.params && j.params.config && j.params.config.timeout)
+                    if (j.params && j.params.timeout)
                     {
                         j.timer = setTimeout(()=> {
                             j.cancel()
-                            j.ret('failed', 'timeout ' + j.params.config.timeout)
+                            j.ret('failed', 'timeout ' + j.params.timeout)
 
-                        }, j.params.config.timeout.valueOf())
+                        }, j.params.timeout.valueOf())
                     }
 
                     var diff = {
@@ -132,9 +132,9 @@
                 {
                     // same as ret, but without exception2localError
                     // to avoid endless recursionif theres a error at return
-                    console.assert(j.state.type != 'returned', 'double return')
+                    console.error(this.state.type != 'returned', 'double return')
 
-                    clearTimeout(j.timer)
+                    clearTimeout(this.timer)
 
                     var diff = {
                         state: {
@@ -150,6 +150,8 @@
                 }
                 catch(e)
                 {
+                    // TODO genauer unterscheiden zwischen console und net error report
+                    // weil hier kanns auch exceptions geben die nocht durch eine kaputte verbindung verursacht werden
                     console.warn('error in error report - maybe broken connection?' + e.stack)
                 }
             }})
@@ -204,9 +206,7 @@
 
             diff.type = 'Job'
 
-            //if (diff.parent) diff.pid = diff.parent.id
-            if (!diff.id)     diff.id = jm.workerId + '\u208B' + ljnr.toSubscript()
-            //if (!diff.params) diff.params = { config: {} }
+            if (!diff.id)     diff.id = jm.workerId + '\u208B' + ljnr.toSubscript()            
             if (!diff.state)  diff.state =
             {
                 progress: 0,

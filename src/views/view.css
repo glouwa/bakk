@@ -207,23 +207,11 @@ html {
     border-width: 1;
 }
 
-/*
-.firstobject{
-    padding: 15 10;
-    overflow: hidden;
+.a3expander:first-child{
     clear: both;
-}
-
-.viewObject{
-    border-style: dashed;
-    border-color: #b0b0b0;
-    border-width: 1 0 0 0;
-    padding: 10 0 0 0;
-}
-.viewObject:first-child{
+    border-style: none;
     border-width: 0;
 }
-*/
 
 .btab-header{
     border-style: solid none none;
@@ -329,9 +317,10 @@ html {
 
 .lineFrame{
     width: 100%;
-    padding: 1 0 1 0;
+    padding: 0 0 1 0;
     position: relative;
-    display: inline;
+    /*isplay: inline;*/
+    display: block;
 }
 
 /*-status------------------------------------------------------------------------------------*/

@@ -1,10 +1,35 @@
-function listView(model, delegate, className)
+function compositeUpdate(args)
+{
+    var childViews = {}
+    return function(changes)
+    {
+        if (changes.deletedMembers === 'all'){
+            args.view.innerText = ''
+            childViews = {}
+        }
+
+        if (changes.deletedMembers)
+            changes.deletedMembers.forEach((v, k, idx) => {
+                if (k != 'type' && (!args.filter || args.filter(v, k, idx)))
+                    if (args.view.contains(childViews[k]))
+                        args.view.removeChild(childViews[k])
+            })
+
+        if (changes.newMembers)
+            changes.newMembers.forEach((v, k, idx) => {
+                if (k != 'type' && (!args.filter || args.filter(v, k, idx)))
+                    args.view.appendChild(childViews[k] = args.itemDelegate(v, k, idx))
+            })
+    }
+}
+
+function listView(model, delegate, className, f)
 {
     var view = document.createElement('div')
     if (className)
         view.className = className
 
-    view.update = compositeUpdate({ view:view, itemDelegate:delegate })
+    view.update = compositeUpdate({ view:view, itemDelegate:delegate, filter:f })
     view.update({ newMembers:model })
     model.on('change', view.update)
     return view
@@ -29,8 +54,8 @@ function itemGridView(psetModel, delegate)
                 workers.style.width = 80
                 workers.style.height = 23
                 workers.style.display = 'inline-block'
-            var prev = jobRootButon({ name:'◃', args:{config:{}}, src:createJobHandler(-1), noIcons:true})
-            var next = jobRootButon({ name:'▹', args:{config:{}}, src:createJobHandler(+1), noIcons:true})
+            var prev = jobRootButon({ name:'◃', args:{}, src:createJobHandler(-1), noIcons:true})
+            var next = jobRootButon({ name:'▹', args:{}, src:createJobHandler(+1), noIcons:true})
         var entities = document.createElement('div')
             entities.id = 'entities'
             info.appendChild(workers)

@@ -73,7 +73,7 @@ new Object({
         src: insertFolder,
         args: {
             directory: '../..',
-            config: { timeout:500 }
+            timeout:500
         },
     },
     types: {

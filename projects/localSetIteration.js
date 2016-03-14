@@ -57,14 +57,8 @@ new Object({
                         })
                     }
                 }}
-            ),
-            config: {
-                requires: 'JS',
-                timeout: 7000,
-                ttfbTimeout: 300,
-                responseTimeout: 100,
-                cancelTimeout: 1000
-            }
+            ),            
+            timeout: 7000
         },
     },
     tests: [],    
