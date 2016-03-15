@@ -291,7 +291,7 @@ html {
     border: 1px solid transparent;
 }
 
-.line-hover{
+.expander:hover, .lineFramePrimitive:hover{/*.line-hover, {*/
     background-color: #fcfcfc;
     border-style: dashed none dashed dashed;
     border-width: 1;

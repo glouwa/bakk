@@ -107,7 +107,7 @@ function codeEdit(model)
         editor.setTheme("ace/theme/tomorrow")
         editor.setValue(model.toString(), -1)
         editor.setOptions({
-            maxLines: 55,
+            maxLines: 200,
             fontFamily: "Monospace",
             fontSize: "8pt"
         })

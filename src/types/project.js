@@ -53,7 +53,7 @@ function project(url)
                             '▸ j.src': instantiate$run
                         }))
 
-                        $('#modelTab')[0].add(project.icon, { content:a3View(project) }, 'inBg')
+                        $('#modelTab')[0].add(project.icon, { content:a3View(project) }/*, 'inBg'*/)
                     }
                 })
             })

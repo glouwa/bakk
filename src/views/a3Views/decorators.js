@@ -27,7 +27,7 @@ function a3Frame(model, headerFactory)
             desc.style.float = 'left'
             desc.style.clear = 'left'
             desc.style.marginTop = 4
-            desc.style.marginLeft = 10
+            desc.style.marginLeft = 6
             desc.style.fontSize = 15
         var header = headerFactory(model)
             //buttonHeader.style.marginBottom = 20

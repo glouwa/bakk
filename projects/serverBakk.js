@@ -13,29 +13,24 @@ function getCmdSet(j, diff)
             args: j.params,
             realJob: js=> {
 
-                function addCommandsOfFolder(commands, dir)
-                {
-                    var fs = require('fs')
-                    var path = require('path')
-                    var files = fs.readdirSync(dir)
-
+                function addCommandsOfFolder(commands, dir) {
+                    var fs = require('fs'), path = require('path'), files = fs.readdirSync(dir)
                     var cmd = 'Preprocessing'
                     var cmdArgs = ''
+
                     files.forEach((v, k, idx)=> {
-
                         var sub = path.join(dir, v)
-
                         if (fs.statSync(sub).isDirectory())
                             addCommandsOfFolder(commands, sub)
-
                         if (path.extname(v) == '.off' && v != 'output.off')
                             cmdArgs += ' ' + v
                     })
 
-                    if (cmdArgs)
-                        commands.push({ dir:dir, cmd:cmd + cmdArgs + ' output.off'})
+                    if (cmdArgs) commands.push({
+                        dir:dir,
+                        cmd:cmd+cmdArgs+' output.off'
+                    })
                 }
-
                 var commands = []
                 addCommandsOfFolder(commands, js.params.directory.valueOf())
                 js.updateJob({ state:{ type:'running', log:'collected commands'} }, commands )

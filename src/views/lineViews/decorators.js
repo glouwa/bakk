@@ -7,34 +7,47 @@ function onDragStart(ev, model)
 }
 
 function hoverDiv(model)
-{
-    //var hoverDiv.actHover
+{    
+    var alphaSteps = [1, 0.2, 0.15, 0.1, 0.05]
+
+    function parentHoverDiv(view) {
+        var parent = view.parentElement
+        while(parent && !parent.isHoverDiv)
+            parent = parent.parentElement
+        return parent
+    }
+
+    function foreachParentHoverDivs(down, a) {
+        while(down) {
+            a(down)
+            down = parentHoverDiv(down)
+        }
+    }
 
     var view = document.createElement('div')
     view.draggable = true
+    view.isHoverDiv = true
+    view.model = model
     view.ondragstart = ev=> onDragStart(ev, model)
-    view.onmouseenter = ()=>
-    {
-        if (hoverDiv.actHover)
-        {
-            hoverDiv.actHover.classList.remove('line-hover')
-            view.stolenFrom = hoverDiv.actHover
-        }
-
-        view.classList.add('line-hover')
-        hoverDiv.actHover = view
+    view.onmouseenter = ()=> {
+        var i = 0
+        foreachParentHoverDivs(view, element=> {
+            a = alphaSteps[i++] || 0
+            element.style.backgroundColor = 'rgba(252,252,252,'+a+')'
+            element.style.borderColor = 'rgba(176,176,176,'+a+')'
+        })
     }
 
-    view.onmouseleave = ()=>
-    {
-        view.classList.remove('line-hover')
-        hoverDiv.actHover = undefined
+    view.onmouseleave = ()=> {
+        var i = 0
+        foreachParentHoverDivs(parentHoverDiv(view), element=> {
+            a = alphaSteps[i++] || 0
+            element.style.backgroundColor = 'rgba(252,252,252,'+a+')'
+            element.style.borderColor = 'rgba(176,176,176,'+a+')'
+        })
+        view.style.backgroundColor = 'initial'
+        view.style.borderColor = 'transparent'
 
-        if (view.stolenFrom)
-        {
-            hoverDiv.actHover = view.stolenFrom
-            hoverDiv.actHover.classList.add('line-hover')
-        }
     }
     return view
 }
