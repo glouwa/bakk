@@ -72,17 +72,17 @@ app.init = function()
                 this.update({
                     '↻': 'deadbeef',
                     '✕': function free(j) {},
-                    '🗩': project('../../projects/localOutput.js'),
-                    '↷': project('../../projects/localAjax.js'),
-                    '❄': project('../../projects/localSetIteration.js'),
-                    '⤑🗩': project('../../projects/serverOuput.js'),
-                    '⤑🖥': project('../../projects/serverWorkers.js'),
-                    '⤑❄': project('../../projects/model3d.js'),
-                    '⤑ℙ': project('../../projects/primeCpp.js'),
-                    '⤑📂': project('../../projects/serverFolder.js'),
-                    '⤑💻': project('../../projects/serverCmd.js'),
+                    '⤑🐼': project('../../projects/serverBakk.js'),
                     '⤑💢': project('../../projects/serverFragmentFolder.js'),
-                    '⤑🐼': project('../../projects/serverBakk.js') //⌨
+                    '⤑❄':  project('../../projects/model3d.js'),
+                    '⤑ℙ':  project('../../projects/primeCpp.js'),
+                    '⤑🖥':  project('../../projects/serverWorkers.js'),
+                    '⤑💻': project('../../projects/serverCmd.js'),
+                    '⤑📂':  project('../../projects/serverFolder.js'),
+                    '⤑🗩': project('../../projects/serverOuput.js'),
+                    '❄':   project('../../projects/localSetIteration.js'),
+                    '↷':   project('../../projects/localAjax.js'),
+                    '🗩':  project('../../projects/localOutput.js'),
                 })
                 j.ret('ok', 'all projects created')
             }
@@ -94,7 +94,6 @@ app.init = function()
             views: viewCollection,
             types: { type:'Set<Type>' }
         },
-
     })
 
     $('#modelTabPaper').append(tab('modelTab'))    
@@ -108,7 +107,8 @@ app.init = function()
     app.model.on('change', changes=>
     {
         if (changes.newMembers && changes.newMembers.network)
-            div.insertBefore(a3View(app.model.network), div.firstChild)
+            //div.insertBefore(a3View(app.model.network), div.firstChild)
+            div.appendChild(a3View(app.model.network))
     })
 
     $('#modelTab')[0].add('🌐', { content:div })

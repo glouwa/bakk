@@ -189,7 +189,7 @@
             Object.defineProperty(jp, 'flush', { value:function(reason)
             {                
                 if (this.lastState)
-                    this.updateJob({ state: this.lastState }, this.bunch)
+                    this.updateJob({ state:this.lastState }, this.bunch)
 
                 this.bunch = null
                 this.lastReport = new Date()

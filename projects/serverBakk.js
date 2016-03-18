@@ -12,42 +12,43 @@ function getCmdSet(j, diff)
             node: network.server,
             args: j.params,
             realJob: js=> {
+                var fs = require('fs'), path = require('path')
+                function addCommandsOfFolder(dir, accu) {
+                    accu = accu || { commands:[], outputs:{} }
+                    var cmd = 'Preprocessing', cmdArgs = ''
 
-                function addCommandsOfFolder(commands, dir) {
-                    var fs = require('fs'), path = require('path'), files = fs.readdirSync(dir)
-                    var cmd = 'Preprocessing'
-                    var cmdArgs = ''
-
-                    files.forEach((v, k, idx)=> {
+                    fs.readdirSync(dir).forEach((v, k, idx)=> {
                         var sub = path.join(dir, v)
-                        if (fs.statSync(sub).isDirectory())
-                            addCommandsOfFolder(commands, sub)
-                        if (path.extname(v) == '.off' && v != 'output.off')
-                            cmdArgs += ' ' + v
+                        if (fs.statSync(sub).isDirectory()) addCommandsOfFolder(sub, accu)
+                        if (path.extname(v) == '.off' &&
+                            v != 'output.off')              cmdArgs += ' ' + v
                     })
 
-                    if (cmdArgs) commands.push({
-                        dir:dir,
-                        cmd:cmd+cmdArgs+' output.off'
-                    })
-                }
-                var commands = []
-                addCommandsOfFolder(commands, js.params.directory.valueOf())
-                js.updateJob({ state:{ type:'running', log:'collected commands'} }, commands )
-
+                    if (cmdArgs) {
+                        accu.commands.push({
+                            dir:dir,
+                            cmd:cmd+cmdArgs+' output.off',
+                            outputFile:dir+'/output.off'
+                        })
+                        accu.outputs[dir+'/output.off'] = 'planned'
+                    }
+                    return accu
+                }                
+                var output = addCommandsOfFolder(js.params.directory.valueOf())
+                js.updateJob({ state:{ type:'running', log:'collected commands'} }, output)
                 js.delegateToPool({
                     pool: app.filterNodes('POSIX64'),
-                    count: commands.length,
-                    desc: 'pooling ' + commands.length + ' processes',
+                    count: output.commands.length,
+                    desc: 'pooling ' + output.commands.length + ' processes',
                     job: (idx, node)=> jf.remoteProxyJob({
                         node:node,
-                        args:{ command:commands[idx], timeout:js.params.workerTimeout },
+                        args:{ command:output.commands[idx], timeout:js.params.workerTimeout },
                         realJob: jw=> tj.exec(jw,
-                            'shuf -i 0-10 -n 1 | xargs sleep',//jw.params.command.cmd.valueOf(),
+                            'shuf -i 0-10 -n 1 | xargs sleep && echo echo', //jw.params.command.cmd.valueOf(),
                             (jw, data)=> jw.commitJob(
-                                             { type:'running', progress:0.5, log:data },
-                                             { cwd:jw.params.command.dir.valueOf() }
-                                         )
+                                { type:'running', progress:0.5, log:data },
+                                { outputs:{ [jw.params.command.outputFile.valueOf()]:'ok' }}
+                            )
                         )
                     })
                 })
@@ -65,7 +66,7 @@ new Object({
         src: getCmdSet,
         args: {
             directory: '../../data/fragmented/',
-            timeout:10000,
+            timeout:25000,
             workerTimeout:12000
         },
     },    
