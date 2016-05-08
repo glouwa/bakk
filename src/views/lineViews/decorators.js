@@ -73,9 +73,9 @@ function lineFramePrimitive(name, model)
         var type = document.createElement('div')
             type.innerText = im[modelType(model)] || modelType(model)            
             type.style.float = 'left'
-            type.style.color = '#E6E6E6'
+            type.style.color = '#969696'
             type.style.marginTop = 5
-            type.style.marginLeft = 2
+            type.style.marginLeft = 5
             type.style.fontSize = 9
 
         view.appendChild(icon)
@@ -93,9 +93,9 @@ function lineFrame(model, content)
         var type = document.createElement('div')
             type.innerText = modelType(model)
             type.style.float = 'left'
-            type.style.color = '#E6E6E6'
+            type.style.color = '#969696'
             type.style.marginTop = 5
-            type.style.marginLeft = 2
+            type.style.marginLeft = 5
             type.style.fontSize = 9
         var autoButtons = autoJobButtonLineView(model)
             autoButtons.style.paddingRight = 4

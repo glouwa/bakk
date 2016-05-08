@@ -38,11 +38,11 @@ function fragmentFolderSet()
                 }
             })
         })},
-        '⚙ all':function(j) {},
-        '🗵 *.off':function(j) {},
-        '🗵 *.obj':function(j) {},
-        '*.off → *.obj':function(j) {},
-        '*.obj → *.off':function(j) {}
+        '⚙':function(j) {},
+        '☠ off':function(j) {},
+        '☠ obj':function(j) {},
+        'off → obj':function(j) {},
+        'obj → off':function(j) {}
     }
 }
 

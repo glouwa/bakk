@@ -91,7 +91,7 @@
                 }
 
                 if (pdiff.state.progress == 1)
-                    delete pdiff.state.progress
+                    delete pdiff.state.progress // wtf?
 
                 parent.updateJob(pdiff, outputDiff)
             }

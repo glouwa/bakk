@@ -72,17 +72,17 @@ app.init = function()
                 this.update({
                     '↻': 'deadbeef',
                     '✕': function free(j) {},
-                    '⤑🐼': project('../../projects/serverBakk.js'),
-                    '⤑💢': project('../../projects/serverFragmentFolder.js'),
-                    '⤑❄':  project('../../projects/model3d.js'),
-                    '⤑ℙ':  project('../../projects/primeCpp.js'),
-                    '⤑🖥':  project('../../projects/serverWorkers.js'),
-                    '⤑💻': project('../../projects/serverCmd.js'),
-                    '⤑📂':  project('../../projects/serverFolder.js'),
-                    '⤑🗩': project('../../projects/serverOuput.js'),
-                    '❄':   project('../../projects/localSetIteration.js'),
-                    '↷':   project('../../projects/localAjax.js'),
-                    '🗩':  project('../../projects/localOutput.js'),
+                    '🐼 Process fragment folder on workers': project('../../projects/serverBakk.js'),
+                    '💢 Show fragment folder': project('../../projects/serverFragmentFolder.js'),
+                    '❄ Find similar 3d models on worker':  project('../../projects/model3d.js'),
+                    'ℙ Find prime numbers with C++ on workers':  project('../../projects/primeCpp.js'),
+                    '🖥 Run some workers on server':  project('../../projects/serverWorkers.js'),
+                    '💻 Spawn process on server': project('../../projects/serverCmd.js'),
+                    '📂 Show server folder':  project('../../projects/serverFolder.js'),
+                    '🗩 Generate some output at server': project('../../projects/serverOuput.js'),
+                    '❄ Find similar 3d models locally':   project('../../projects/localSetIteration.js'),
+                    '↷ Multiple AJAX calls loaclly':   project('../../projects/localAjax.js'),
+                    '🗩 Generate some output locally':  project('../../projects/localOutput.js'),
                 })
                 j.ret('ok', 'all projects created')
             }

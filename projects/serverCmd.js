@@ -46,7 +46,7 @@ function cmdResultView(model)
 new Object({
     type: 'Project',
     icon: '⤑💻',
-    desc: 'Spawn process',
+    desc: 'Spawn process on server',
     service: {
         type: 'Service',
         src: spawnCmd,

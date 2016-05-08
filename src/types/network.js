@@ -2,20 +2,25 @@ function networkType()
 {
     var obj = {
         type:'Network',
-        '++client':function(j)
+        '+1 client':function(j)
         {
             window.open('./view.html', '_blank')
             j.ret('ok', "window.open('./view.html', '_blank') called")
         },
-        '++worker':function(j)
+        '+4 worker':function(j)
         {
             j.params.amount = 4
-            j.delegateToSequence(
-                ()=> jf.job({ onCall:sj=> app.model.projects['⤑🖥']['↻'](sj) }),
-                ()=> jf.job({ onCall:sj=> app.model.projects['⤑🖥'].service.src(sj), params:j.params })
-            )
+            if (!app.model.projects['🖥 Run some workers on server']['↻'])
+                j.delegateToSequence(
+                    ()=> jf.job({ onCall:sj=> app.model.projects['🖥 Run some workers on server'].service.src(sj), params:j.params })
+                )
+            else
+                j.delegateToSequence(
+                    ()=> jf.job({ onCall:sj=> app.model.projects['🖥 Run some workers on server']['↻'](sj) }),
+                    ()=> jf.job({ onCall:sj=> app.model.projects['🖥 Run some workers on server'].service.src(sj), params:j.params })
+                )
         },
-        '↻ worker':function(j)
+        '☠ worker':function(j)
         {
             j.delegateToOne({ job:()=> jf.remoteProxyJob({
                 args: j.params,
@@ -36,7 +41,7 @@ function networkType()
                 }
             })})
         },
-        '↻ server':function(j)
+        '☠ server':function(j)
         {
             j.delegateToOne({ job:()=> jf.remoteProxyJob({
                 args: j.params,

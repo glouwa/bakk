@@ -90,8 +90,31 @@ viewCollection.booleanView = function(name, model)
 
 viewCollection.FileView = function(name, model)
 {
-    var view = lineFramePrimitive(name, model)
-    return view
+    return lineFramePrimitive(name, model)
+}
+
+viewCollection.JobView = function(name, model)
+{
+    var view = document.createElement('div')
+        view.className = 'textView'
+        view.innerText = 'asdasd'
+        view.style.textAlign = 'right'
+        view.style.marginRight = '10'
+
+    function updateView()
+    {
+        view.innerText = model.state.log
+    }
+
+    updateView()
+    model.on('change', updateView)
+
+    return lineExpander(
+    {
+        model: model,
+        header: lineFrame(model, varName(name)/*view*/),
+        contentFactory: ()=> autoViewLine(model)
+    })
 }
 
 function codeEdit(model)

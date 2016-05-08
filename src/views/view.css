@@ -111,7 +111,7 @@ html {
 }
 
 .jobButton-line{
-    min-width: 38;
+    min-width: 8;
     text-align: center;
     float: right;
     height: 17px;
@@ -469,14 +469,14 @@ html {
 
 .networkNode .nodeHeaderText{
     line-height: 23px;
-    color: lightgray;
+    color: #969696;
 }
 
 .networkNode .nodeHeaderFree{
     float:right;
     line-height: 23px;
     min-width: 30;    
-    color: lightgray;
+    color: #969696;
 }
 
 .networkNode .errorSimControl {

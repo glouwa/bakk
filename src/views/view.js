@@ -148,33 +148,38 @@ function autoJobButtonView(model)
     return view
 }
 
-function autoView(model)
+// line ----------
+
+function lineObjectView(name, model)
 {
-    var lineObjectView = (name, model)=> lineExpander(
+    return lineExpander(
     {
         model: model,
         header: lineFrame(model, varName(name)),
         contentFactory: ()=> autoViewLine(model)
     })
+}
 
-    function autoViewLine(model)
-    {
-        var view = document.createElement('div')
-        view.className = 'autoLine'
-        view.update = compositeUpdate({
-            view:view,
-            filter:v=> typeof v !== 'function',
-            itemDelegate:(v, k)=>
-            {
-                var viewFactory = viewCollection[modelType(v) + 'View'] || lineObjectView
-                return viewFactory(k.toString(), v)
-            }
-        })
-        view.update({ newMembers:model })
-        model.on('change', view.update)
-        return view
-    }
+function autoViewLine(model)
+{
+    var view = document.createElement('div')
+    view.className = 'autoLine'
+    view.update = compositeUpdate({
+        view:view,
+        filter:v=> typeof v !== 'function',
+        itemDelegate:(v, k)=>
+        {
+            var viewFactory = viewCollection[modelType(v) + 'View'] || lineObjectView
+            return viewFactory(k.toString(), v)
+        }
+    })
+    view.update({ newMembers:model })
+    model.on('change', view.update)
+    return view
+}
 
+function autoView(model)
+{
     var view = document.createElement('div')
         view.classList.add('auto')        
         var treeRoot = autoViewLine(model)
@@ -182,6 +187,8 @@ function autoView(model)
         view.appendChild(treeRoot)
     return view
 }
+
+// a3 ----------
 
 function autoMultiView(model, viewsf)
 {

@@ -40,8 +40,7 @@ network.connect = url=>
         ws.onmessage = ev=>
         {
             try
-            {
-                console.info('received ' + ev.data.length + ' bytes')
+            {                
                 var parsed = messages.parse(ev.data)
                 sim.log('net', 'log', '⟵', parsed)
                 app.onMessage(network.server, parsed)

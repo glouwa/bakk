@@ -148,7 +148,7 @@ function varName(name)
     var view = document.createElement('div')
     view.innerText = name.charAt(0).toUpperCase() + name.slice(1)
     view.style.float = 'left'
-    view.style.color = '#00CC66'
+    view.style.color = '#00AB56'
     return view
 }
 
