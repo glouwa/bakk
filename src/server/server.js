@@ -44,19 +44,22 @@ app.getNodesByCapability = function(criteria)
     return nodes
 }
 
-app.getNodesByType = function(criteria)
+app.getNodesByType = function(criteria, emptyResultIsOk)
 {
     var nodes = []
     app.model.network.forEach(function(nval, nkey, nidx)
     {
+        console.log('###############------')
         criteria.forEach(function(cval, ckey, cidx)
         {
+            console.log('###############')
+            console.log(nval.type.valueOf(), cval, nval.type.valueOf() == cval && cval != 'Server')
             if (nval.type.valueOf() == cval && cval != 'Server')
                 nodes.push(network.connections[nkey])
         })
-    })
-    if (nodes.length == 0)
-        throw new Error('no workers available')
+    })    
+    if (nodes.length == 0 && !emptyResultIsOk)
+        throw new Error('no nodes available')
     return nodes
 }
 

@@ -19,7 +19,7 @@ function networkType()
                             job: idx=> jf.remoteProxyJob({
                                 desc:'sending multicast to ' + nodes[idx].id,
                                 node: nodes[idx],
-                                params: {},
+                                args: js.params,
                                 realJob: jw=> {
                                     jw.ret('ok', 'will exit in ½s')
                                     setTimeout(()=>process.exit(0), 500)
