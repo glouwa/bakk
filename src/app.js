@@ -94,3 +94,5 @@ var clientMessageHandlerFactory = (shortType, type, cap, onConnected)=>
     onReload: function(c, parsed) {}
 })
 
+var osDir = os.type() == 'Linux' ? 'posix64' : 'dotnet'
+var binDir = '../../bin/' + osDir + '/'
