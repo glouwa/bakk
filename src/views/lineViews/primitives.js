@@ -96,14 +96,54 @@ viewCollection.FileView = function(name, model)
 viewCollection.JobView = function(name, model)
 {
     var view = document.createElement('div')
-        view.className = 'textView'
-        view.innerText = 'asdasd'
-        view.style.textAlign = 'right'
-        view.style.marginRight = '10'
+        view.style.marginRight = '5'
+        view.style.float = 'right'
+        var desc = document.createElement('div')
+            desc.className = 'textView'
+            desc.style.float = 'right'            
+            desc.style.marginLeft = 10
+        var sig = document.createElement('div')
+            sig.className = 'textView'
+            sig.style.float = 'right'
+            sig.style.minWidth = 220
+            sig.style.marginLeft = 15
+        var time = document.createElement('div')
+            time.className = 'textView'
+            time.style.float = 'right'
+            time.style.textAlign = 'right'
+            time.style.minWidth = 50
+        var state = document.createElement('div')
+            state.className = 'textView'
+            state.style.float = 'right'
+            state.style.textAlign = 'right'
+            state.style.minWidth = 40
+        view.appendChild(state)
+        view.appendChild(time)
+        view.appendChild(sig)
+        view.appendChild(desc)
 
     function updateView()
     {
-        view.innerText = model.state.log
+        var workTimeMs = model.state.callTime
+                       ? model.state.lastModification.valueOf() - model.state.callTime.valueOf()
+                       : 0
+
+        if (workTimeMs > 1000*60*60)
+            time.innerText = ~~(workTimeMs/(1000*60*60)) + 'h'
+        else if (workTimeMs > 1000*60)
+            time.innerText = ~~(workTimeMs/(1000*60)) + 'm'
+        else if (workTimeMs > 1000)
+            time.innerText = ~~(workTimeMs/1000) + 's'
+        else
+            time.innerText = workTimeMs + 'ms'
+
+        desc.innerText = model.desc + ':'//🠒🠆➞➡→
+        sig.innerText =  '(…) → ' + model.state.log
+
+        if (model.state.type == 'returned')
+            state.innerText = config.getIcon(model.state)
+        else
+            state.innerText = (model.state.progress.valueOf()*100).toFixed(0) + '%'
     }
 
     updateView()
@@ -112,7 +152,7 @@ viewCollection.JobView = function(name, model)
     return lineExpander(
     {
         model: model,
-        header: lineFrame(model, varName(name)/*view*/),
+        header: lineFrame(name, model, view),
         contentFactory: ()=> autoViewLine(model)
     })
 }

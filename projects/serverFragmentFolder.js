@@ -11,7 +11,7 @@ function fragmentFolderSet()
             j.params.dir = this.dir
 
             j.delegateToOne({ job: ()=> jf.remoteProxyJob({
-                node: network.server,
+                node: network.connections[0],
                 args: j.params,
                 realJob: js=> {
                     var fs = require('fs')
@@ -59,7 +59,7 @@ function fragmentFolder()
             j.params.dir = this.dir
 
             j.delegateToOne({ job: ()=> jf.remoteProxyJob({
-                node: network.server,
+                node: network.connections[0],
                 args: j.params,
                 realJob: js=> {
                     var fs = require('fs')
@@ -88,7 +88,7 @@ function fragmentFolder()
             })
         })},
         '⚙':function(j) {
-            var job = rootJob({
+            var job = rootJob({ // warum root job?
                 params: { dir:this.dir, cmd:this.cmd },
                 onCall: j=> {
 
@@ -103,7 +103,7 @@ function fragmentFolder()
                     )
 
                     j.delegateToOne({ job:()=> jf.remoteProxyJob({
-                        node: network.server,
+                        node: network.connections[0],
                         args: j.params,
                         realJob: js=> {
                             tj.exec(js,

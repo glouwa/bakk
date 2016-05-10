@@ -84,7 +84,7 @@ function lineFramePrimitive(name, model)
     return view
 }
 
-function lineFrame(model, content)
+function lineFrame(name, model, content)
 {
     var view = document.createElement('div')
         view.className = 'lineFrame'
@@ -101,8 +101,10 @@ function lineFrame(model, content)
             autoButtons.style.paddingRight = 4
             autoButtons.style.margin = '-1 0 -1 0'
 
-        view.appendChild(content)
+        view.appendChild(varName(name))
         view.appendChild(type)
+        if (content)
+            view.appendChild(content)
         view.appendChild(autoButtons)
         /*view.update = function(changes)
         {
@@ -125,7 +127,7 @@ function lineExpander(args)
         console.info('creating expander Content')
 
         if (args.model && args.model['↻'])
-            rootJob({ onCall:j=> args.model['↻'](j), params:{}}).call()
+            rootJob({ desc:'lexpander', onCall:j=> args.model['↻'](j), params:{}}).call()
 
         return c
     }

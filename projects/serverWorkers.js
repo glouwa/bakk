@@ -3,7 +3,7 @@ function runWorkers(j, diff)
     j.delegateToOne({
         job: () => jf.remoteProxyJob({
             args: j.params,
-            node: network.server,
+            node: network.connections[0],
             realJob: js=> js.delegateToFactory({
                 end: idx=> idx < js.params.amount,
                 job: idx=> tj.spawnJob('node', ['worker.js'], undefined, 0.5)

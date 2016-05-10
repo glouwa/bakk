@@ -1,73 +1,70 @@
 var network = {}
 network.isUp = false
+network.connections = {}
 network.nextFreeConnectionId = 0 // zählt einfach hoch, nur zum debugen
+network.onMessage = undefined
 network.onConnectionChanged = undefined
 network.allConnectionIds = ()=> Object.keys(network.connections)
-network.server = {}
-network.server.send = ()=> { throw new Error("Websocket never opened") }
-network.server.close = ()=> {} // nothing to do
+
 network.connect = url=>
 {
+    var connection = {}
+    connection.ws = new WebSocket(url)
+    connection.ws.onmessage = ev=> receiveMsg(connection, ev.data)
+    connection.ws.onclose = ev=> cleanUpConnection(connection)
+    connection.ws.onopen = ()=>
+    {
+        connection.id = network.nextFreeConnectionId++
+        connection.close = ()=> connection.ws.close()
+        connection.send = msg=> sendMsg(connection, msg)
+
+        network.isUp = true
+        network.connections[connection.id] = connection
+        network.onConnectionChanged('Connected', connection)
+    }
+
+    network.onConnectionChanged('Connecting', connection)
+}
+
+// ------------------------------------------------------------------------------------------
+
+function sendMsg(connection, msg)
+{
     try
-    {        
-        var ws = new WebSocket(url)
-        network.onConnectionChanged('Connecting', network.server)
+    {
+        var data = messages.stringify(msg) // sollte nicht dem try sein
+        connection.ws.send(data)
+        sim.log('net', 'log', '⟶', connection.id, msg)
+        return data.length
+    }
+    catch(e)
+    {
+        connection.ws.close()
+        throw e
+    }
+}
 
-        ws.onopen = ()=>
-        {            
-            network.server = {}
-            network.server.id = network.nextFreeConnectionId++
-            network.server.close = () => ws.close()
-            network.server.send = msg=>
-            {
-                try
-                {
-                    var data = messages.stringify(msg)
-                    console.info('sending ' + data.length + ' bytes')
-                    ws.send(data)
-                    sim.log('net', 'log', '⟶', msg)
-                }
-                catch(e)
-                {
-                    ws.close()
-                    throw e
-                }
-            }
-
-            network.isUp = true
-            network.onConnectionChanged('Connected', network.server)
-        }
-        ws.onmessage = ev=>
-        {
-            try
-            {                
-                var parsed = messages.parse(ev.data)
-                sim.log('net', 'log', '⟵', parsed)
-                app.onMessage(network.server, parsed)
-            }
-            catch(e)
-            {
-                console.error(e.stack)
-            }
-        }
-        ws.onclose = ev=>
-        {
-            if (network.isUp)
-            {
-                network.isUp = false
-                network.onConnectionChanged('Disconnected', network.server)
-            }
-            setTimeout(()=> network.connect(url), config.client.reconnectIntervall)
-        }
+function receiveMsg(connection, msg)
+{
+    try
+    {
+        var parsed = messages.parse(msg)
+        sim.log('net', 'log', '⟵', connection.id, msg.length, parsed)
+        network.onMessage(connection, parsed, msg.length)
     }
     catch(e)
     {
         console.error(e.stack)
+    }
+}
 
-        if (network.isUp)
-        {
-            network.isUp = false
-            network.onConnectionChanged('Disconnected', network.server)
-        }
+function cleanUpConnection(connection)
+{
+    delete network.connections[connection.id]
+    setTimeout(()=> network.connect(url), config.client.reconnectIntervall)
+    if (network.isUp)
+    {
+        network.isUp = false
+        network.onConnectionChanged('Disconnected', connection)
     }
 }

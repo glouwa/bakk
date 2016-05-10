@@ -8,7 +8,7 @@ function spawnCmd(j)
     j.delegateToOne({
         job: ()=> jf.remoteProxyJob({
             args: j.params,
-            node: network.server,
+            node: network.connections[0],
             realJob: js=> tj.exec(
                 js,
                 js.params.cmd,

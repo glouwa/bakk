@@ -1,5 +1,6 @@
 function a3Frame(model, headerFactory)
 {
+    var origHf = headerFactory
     headerFactory = headerFactory || autoJobButtonView
 
     var n = model.path.valueOf().charAt(0).toUpperCase() + model.path.valueOf().slice(1)
@@ -29,11 +30,13 @@ function a3Frame(model, headerFactory)
             desc.style.marginTop = 4
             desc.style.marginLeft = 6
             desc.style.fontSize = 15
+            desc.style.fontStyle = 'italic'
         var header = headerFactory(model)
             //buttonHeader.style.marginBottom = 20
         view.appendChild(name)
         view.appendChild(type)
-        view.appendChild(desc)
+        if (origHf || model.type == 'Project')
+            view.appendChild(desc)
         view.appendChild(header)
     return view
 }
@@ -51,7 +54,7 @@ function a3expander(args)
         console.info('creating expander Content')
 
         if (args.model && args.model['↻'])
-            rootJob({ onCall:j=> args.model['↻'](j), params:{} }).call()
+            rootJob({ desc:'expander ↻', onCall:j=> args.model['↻'](j), params:{} }).call()
 
         return c
     }

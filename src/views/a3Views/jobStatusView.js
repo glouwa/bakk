@@ -38,16 +38,17 @@ function jobStateGraphView(jobModel)
         //label:jobModel.id.valueOf(),
         model:jobModel,
         font: {size:'32'},
-        borderWidth:2
+        //borderWidth:2
     })
     jobModel.state.on('change', function(changes)
     {
         data.nodes.update({
             id:jobModel.path.valueOf(),
-            color:{
+            color:config.getColor(jobModel.state),
+            /*color:{
                 background:config.getColor(jobModel.state),
                 border:deviceColorMap[jobModel.state.lastWorker.valueOf().charAt(0)]
-            }
+            }*/
         })
     })
 
@@ -63,11 +64,12 @@ function jobStateGraphView(jobModel)
                     id:v.path.valueOf(),
                     model:v,
                     font: {size:'32'},
-                    borderWidth:2,
-                    color:{
+                    color:config.getColor(v.state),
+                    //borderWidth:2,
+                    /*color:{
                         background:config.getColor(v.state),
                         border:deviceColorMap[v.state.lastWorker.valueOf().charAt(0)]
-                    }
+                    }*/
                 })
                 data.edges.add({
                     from:parentPath.valueOf(),
@@ -79,10 +81,11 @@ function jobStateGraphView(jobModel)
                 {
                     data.nodes.update({
                         id:v.path.valueOf(),
-                        color:{
+                        color:config.getColor(v.state),
+                        /*color:{
                             background:config.getColor(v.state),
                             border:deviceColorMap[v.state.lastWorker.valueOf().charAt(0)]
-                        }
+                        }*/
                     })
                 })
 
@@ -171,6 +174,7 @@ function jobStateTreeView(jobModel)
     }
 
     var view = document.createElement('div')
+        view.className = 'jobStateTreeView'
         var treeRoot = jobAndSubjobsView(jobModel, 0)
             treeRoot.style.padding = '20 0'
     view.appendChild(treeRoot)

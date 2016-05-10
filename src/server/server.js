@@ -93,7 +93,7 @@ app.onNetworkStateChange = function(state, connection)
 
 // called by Net --------------------------------------------------------------------------
 
-app.onMessage = function(c, parsed)
+app.onMessage = function(c, parsed, pduSize)
 {
     var channelHandlers =
     {
@@ -121,13 +121,13 @@ app.onMessage = function(c, parsed)
             }['on'+parsed.type](c, parsed)
         },
 
-        onJobMessage: function(c, parsed)
+        onJobMessage: function(c, parsed, pduSize)
         {         
             //sim.log('job', 'log', '⟵', parsed)
-            jf.onReceive(c, parsed, code=> eval(code), app)
+            jf.onReceive(c, parsed, code=> eval(code), app, pduSize)
         }
 
-    }['on'+parsed.type+'Message'](c, parsed.payload)
+    }['on'+parsed.type+'Message'](c, parsed.payload, pduSize)
 }
 
 //-------------------------------------------------------------------------------------------
@@ -136,6 +136,7 @@ var network = require('./network').network
 network.onConnectionChanged = app.onNetworkStateChange
 network.onMessage = app.onMessage
 network.sim = sim
+network.listen();
 
 //-------------------------------------------------------------------------------------------
 

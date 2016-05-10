@@ -10,7 +10,7 @@ function findPrimes(j, diff)
         desc: 'delegating to server',
         job: ()=> jf.remoteProxyJob({
             args: j.params,
-            node: network.server,
+            node: network.connections[0],
             realJob: js=> {
                 var nodes = app.filterNodes('POSIX64')
                 js.delegateToFactory({
@@ -108,7 +108,7 @@ function primeStatsView(outputModel)
 new Object({
     type:'Project',
     icon: '⤑ℙ',
-    desc: 'Find prime numbers with C++',
+    desc: 'Find some ℙ with C++',
     service:
     {
         type: 'Service',
@@ -118,7 +118,7 @@ new Object({
             set: pSet.lazySet(
                 1*10e6,
                 2*10e6,
-                function(j, idx) { return { mid: idx } }
+                (j, idx)=> { mid: idx }
             ),            
             timeout: 3*60000
         },

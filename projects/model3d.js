@@ -7,7 +7,7 @@ function find3dModel(j, diff)
     })
 
     j.delegateToOne({job: ()=> jf.remoteProxyJob({
-        node: network.server,
+        node: network.connections[0],
         desc:'hallo welt!',
         args: j.params,
         realJob: (js, diff)=>
@@ -111,7 +111,7 @@ function resultView(outputModel)
 
 function parameterView(argsModel)
 {
-    rootJob({ onCall:j=> argsModel.set.load(j) }).call()
+    rootJob({ desc:'combobox.↻', onCall:j=> argsModel.set.load(j) }).call()
 
     var view = document.createElement("div")
         view.style.display = 'inline-flex'

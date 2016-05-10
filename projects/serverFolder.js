@@ -11,7 +11,7 @@ function folderPrototype()
             j.params.directory = this.directory
 
             j.delegateToOne({ job: ()=> jf.remoteProxyJob({
-                node: network.server,
+                node: network.connections[0],
                 args: j.params,
                 realJob: (js, diff)=> {
                     var fs = require('fs')

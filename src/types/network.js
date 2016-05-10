@@ -24,7 +24,7 @@ function networkType()
         {
             j.delegateToOne({ job:()=> jf.remoteProxyJob({
                 args: j.params,
-                node: network.server,
+                node: network.connections[0],
                 realJob: js=> {
                     var nodes = app.filterNodes('POSIX64')
                     js.delegateToFactory({
@@ -45,7 +45,7 @@ function networkType()
         {
             j.delegateToOne({ job:()=> jf.remoteProxyJob({
                 args: j.params,
-                node: network.server,
+                node: network.connections[0],
                 realJob: js=> {
                     js.ret('ok', 'will exit now')
                     process.exit(0)
@@ -56,7 +56,7 @@ function networkType()
         {
             var msg = messages.reloadMsg()
             var channelMsg = messages.channelMsg('Ws', msg)
-            network.server.send(channelMsg)
+            node: network.connections[0].send(channelMsg)
             j.ret('ok', 'reload message sent')
         }
     }

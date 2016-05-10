@@ -30,18 +30,14 @@ app.onNetworkStateChange = function(state, connection)
 {
     var stateHandlers =
     {
-        onConnected: function()
-        {
-        },
-
-        onDisconnected: function()
-        {
-        }
+        onConnecting: function() {},
+        onConnected: function() {},
+        onDisconnected: function() {}
     }
     stateHandlers['on'+state]()
 }
 
-app.onMessage = function(c, parsed)
+app.onMessage = function(c, parsed, pduSize)
 {
     var channelHandlers =
     {
@@ -64,7 +60,7 @@ app.onMessage = function(c, parsed)
                     }
 
                     //app.networkInfo.update(mynodeInfo)
-                    var msg = messages.networkInfoMsg('model.network.'+app.clientId, mynodeInfo)
+                    var msg = messages.networkInfoMsg('model.network.' + app.clientId, mynodeInfo)
                     var channelMsg = messages.channelMsg('Ws', msg)
                     network.connections[0].send(channelMsg)
                 },
@@ -82,15 +78,26 @@ app.onMessage = function(c, parsed)
             }['on'+parsed.type](c, parsed)
         },
 
-        onJobMessage: function(c, parsed)
+        onJobMessage: function(c, parsed, pduSize)
         {
-            jf.onReceive(c, parsed, code=> eval(code), app)
+            jf.onReceive(c, parsed, code=> eval(code), app, pduSize)
         }
 
-    }['on'+parsed.type+'Message'](c, parsed.payload)
+    }['on'+parsed.type+'Message'](c, parsed.payload, pduSize)
 }
 
 //-------------------------------------------------------------------------------------------
+
+var network = require('./network').network
+network.onConnectionChanged = app.onNetworkStateChange
+network.onMessage = app.onMessage
+network.sim = sim
+network.connect('ws://' + config.server.wshost + ':' + config.server.wsport)
+
+//-------------------------------------------------------------------------------------------
+
+var os  = require('os')
+var osUtils  = require('os-utils')
 
 function formatBytes(bytes, decimals)
 {
@@ -101,15 +108,6 @@ function formatBytes(bytes, decimals)
    var i = Math.floor(Math.log(bytes) / Math.log(k));
    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + '' + sizes[i];
 }
-
-var network = require('./workerNetwork').network
-network.onConnectionChanged = app.onNetworkStateChange
-network.onMessage = app.onMessage
-network.sim = sim
-network.connect('ws://' + config.server.wshost + ':' + config.server.wsport)
-
-var os  = require('os')
-var osUtils  = require('os-utils')
 
 var workerInfo = {
     hostname:os.hostname(),

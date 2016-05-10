@@ -9,7 +9,7 @@ function getCmdSet(j, diff)
     j.delegateToOne({
         desc: 'delegating to server',
         job: ()=> jf.remoteProxyJob({
-            node: network.server,
+            node: network.connections[0],
             args: j.params,
             realJob: js=> {
                 var fs = require('fs'), path = require('path')

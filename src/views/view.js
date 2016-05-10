@@ -44,12 +44,13 @@ function jobRootButon(args)// name, args, src, noIcons, obj)
         {
             jd = jf.job(
             {
+                desc: 'button ' + args.name,
                 isRoot: true,
                 params: args.args,
                 onCall: (j, params)=>
                 {
-                    if (args.obj) args.obj[args.name](j, params)
-                    else          args.src(j, params)
+                    if (args.obj) args.obj[args.name](j, params)   // model obj method?
+                    else          args.src(j, params)              // project service?
                 }
             })
             app.update('model.jobs.'+jd.id, jd)
@@ -155,7 +156,7 @@ function lineObjectView(name, model)
     return lineExpander(
     {
         model: model,
-        header: lineFrame(model, varName(name)),
+        header: lineFrame(name, model /*nix, gar nix*/),
         contentFactory: ()=> autoViewLine(model)
     })
 }

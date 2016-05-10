@@ -12,14 +12,18 @@
             var jp = {}
 
             Object.defineProperty(jp, 'timer', { writable:true, value:null })
+            //Object.defineProperty(jp, 'dasdaesc', { writable:true, enumerable:true, value:'unnamed job' })
+
             Object.defineProperty(jp, 'call', { value:function()
             {
                 var j = this
                 j.exception2localError(function call_()
                 {
                     //console.trace('j-' + j.id + ' call')
+
                     if (j.params && j.params.timeout)
                     {
+                        Object.defineProperty(j, 'timer', { writable:true, value:null })
                         j.timer = setTimeout(()=> {
                             j.cancel()
                             j.ret('failed', 'timeout ' + j.params.timeout)
@@ -34,7 +38,9 @@
                             type: 'calling',
                             detail: 'calling',
                             log: 'calling function',
-                            lastWorker: jm.workerId
+                            lastWorker: jm.workerId,
+                            callTime: Date.now(),
+                            lastModification: Date.now()
                         }
                     }
                     j.merge(diff, !j.isRoot)
@@ -58,7 +64,8 @@
                             type: 'canceling',
                             detail: 'canceling',
                             log: 'canceling',
-                            lastWorker: jm.workerId
+                            lastWorker: jm.workerId,
+                            lastModification: Date.now()
                         }
                     }
                     j.merge(diff, !j.isRoot)
@@ -110,7 +117,8 @@
                             type:'returned',
                             detail:detail,
                             log:log,
-                            lastWorker: jm.workerId
+                            lastWorker: jm.workerId,
+                            lastModification: Date.now()
                         }
                     }
                     j.merge(diff, !j.isRoot)
@@ -213,7 +221,8 @@
                 type: 'idle',   // idle, running, canceling, returned
                 detail: 'idle', // (idle), (userdefined), (canceling), (recoverable, fatal, timeout)
                 log: 'created',
-                lastWorker: jm.workerId
+                lastWorker: jm.workerId,
+                lastModification: Date.now()
             }
             if (!diff.onCancel) diff.onCancel = j=> j.ret('canceled', 'default cancel')
             if (!diff.onUpdate) diff.onUpdate = j=> { /*gui update | parent updaet */ }
@@ -269,7 +278,7 @@
             return proxyJob
         }
 
-        jm.onReceive = function(c, parsed, evalInAppContext, app)
+        jm.onReceive = function(c, parsed, evalInAppContext, app, pduSize)
         {
             try
             {
@@ -279,6 +288,7 @@
                     var jd = jm.job(parsed.diff.unpack(evalInAppContext))
                     jd.onUpdate = function(j, diff, o) { c.send(jobMsg('updateJob', jd.id, diff, o)) }
                     jd.isRemote = true
+                    jd.desc = 'remote order'
 
                     app.update('model.jobs.'+jd.id, jd)
                     job = app.model.jobs[jd.id]
@@ -286,7 +296,7 @@
                     // job.onReturn => unregister
                     jm.remoteJobs[jd.id] = job
                 }
-
+                parsed.diff.state[parsed.type+'-InBytes'] = (job.state[parsed.type+'-InBytes']|0) + pduSize
                 job[parsed.type](parsed.diff, parsed.odiff) // call / cancel / update / return
             }
             catch(e)

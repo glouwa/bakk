@@ -1,10 +1,11 @@
-function project(url)
+function project(url, noView)
 {
     // PROJECT PART ----------------------------------------------------
 
     function createRootJob(project)
     {
-        return rootJob({                                      // create job inst
+        return rootJob({
+            desc:project.desc, // create job inst
             params: project.service.args,
             onCall: (j, params)=> project.service.src(j, params),
         })
@@ -13,7 +14,7 @@ function project(url)
     function instantiateAndRun(j, project)
     {
         var job = createRootJob(project)
-        $('#jobTab')[0].add(job.id, { content:jobAllView(job) }/*, 'inBg'*/) // show
+        if (!noView) $('#jobTab')[0].add(job.id, { content:jobAllView(job) }/*, 'inBg'*/) // show
         j.delegateToOne({ job:()=> job })                        // start
     }
 
@@ -30,7 +31,7 @@ function project(url)
                 if (projectDiff.types)
                     app.model.registry.types.update(projectDiff.types)
 
-                if (projectDiff.views)
+                if (projectDiff.views && !noView)
                     app.model.registry.views.update(projectDiff.views)
 
                 project.update(Object.assign(projectDiff, {
@@ -44,14 +45,14 @@ function project(url)
                     '✎': function(j)
                     {
                         $('#modelTab')[0].add(project.icon, { content:a3View(project) }/*, 'inBg'*/)
-                        j.ret('ok', 'project edit view in new tab opened')
+                        j.ret('ok', '+1 project view')
                     },
                     '⇨': function(j) //…
                     {
                         var job = createRootJob(project)
                         job.update({ isRoot:true })
                         $('#jobTab')[0].add(job.id, { content:jobAllView(job) }) // show
-                        j.ret('ok', 'job instanciated and view created')         // done
+                        j.ret('ok', '+1 idle job, +1 view')         // done
                     },
 
                 }))
@@ -61,7 +62,6 @@ function project(url)
 
     return {
         type: 'Project',
-
         '▸': function(j)
         {
             j.delegateToSequence(

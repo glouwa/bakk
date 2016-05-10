@@ -17,16 +17,15 @@ function rootJob(args)
 
 app.init = function()
 {
+    sim.config = config.clientDefaultSimConfig
+
+    // nicht hin schaun
     jf.jl = jl
     jf.workerId = undefined
     jf.nextFreeId = 0
-
     tj.jm = jf
     tj.config = config
-
     mvj.jm = jf
-
-    sim.config = config.clientDefaultSimConfig
 
     app.clientId.on('change', function(changes)
     {
@@ -35,11 +34,15 @@ app.init = function()
         $('#thisId').text(jf.workerId)
 
         if (app.model.projects['↻'])
-            rootJob({ onCall:j=> app.model.projects['↻'](j) }).call()
+        {
+            rootJob({ desc:'cidChange.↻:', onCall:j=> app.model.projects['↻'](j) }).call()
+            console.assert();
+        }
     })
 
     // network -----------------------------------------------------
 
+    network.onMessage = app.onMessage
     network.onConnectionChanged = app.onNetworkStateChange
     network.connect(app.wsUrl.valueOf())
     mvj.onCommit = function(path, diff)
@@ -48,7 +51,7 @@ app.init = function()
         {
             var msg = messages.networkInfoMsg(path, diff)
             var channelMsg = messages.channelMsg('Ws', msg)
-            network.server.send(channelMsg)
+            node: network.connections[0].send(channelMsg)
 
             sim.log('app', 'log', '⟶', msg)
         }
@@ -58,7 +61,7 @@ app.init = function()
         }
     }
 
-    // end network -----------------------------------------------------
+    // projects ----------------------------------------------------
 
     app.model.update({
         type: 'Model',
@@ -72,19 +75,19 @@ app.init = function()
                 this.update({
                     '↻': 'deadbeef',
                     '✕': function free(j) {},
-                    '🐼 Process fragment folder on workers': project('../../projects/serverBakk.js'),
-                    '💢 Show fragment folder': project('../../projects/serverFragmentFolder.js'),
-                    '❄ Find similar 3d models on worker':  project('../../projects/model3d.js'),
+                    '🐼 Process fragment folder on workers':     project('../../projects/serverBakk.js'),
+                    '💢 Show fragment folder':                   project('../../projects/serverFragmentFolder.js'),
+                    '❄ Find similar 3d models on worker':        project('../../projects/model3d.js'),
                     'ℙ Find prime numbers with C++ on workers':  project('../../projects/primeCpp.js'),
-                    '🖥 Run some workers on server':  project('../../projects/serverWorkers.js'),
-                    '💻 Spawn process on server': project('../../projects/serverCmd.js'),
-                    '📂 Show server folder':  project('../../projects/serverFolder.js'),
+                    '🖥 Run some workers on server':              project('../../projects/serverWorkers.js'),
+                    '💻 Spawn process on server':       project('../../projects/serverCmd.js'),
+                    '📂 Show server folder':             project('../../projects/serverFolder.js'),
                     '🗩 Generate some output at server': project('../../projects/serverOuput.js'),
-                    '❄ Find similar 3d models locally':   project('../../projects/localSetIteration.js'),
-                    '↷ Multiple AJAX calls loaclly':   project('../../projects/localAjax.js'),
+                    '❄ Find similar 3d models locally':  project('../../projects/localSetIteration.js'),
+                    '↷ Multiple AJAX calls loaclly':    project('../../projects/localAjax.js'),
                     '🗩 Generate some output locally':  project('../../projects/localOutput.js'),
                 })
-                j.ret('ok', 'all projects created')
+                j.ret('ok', '+11 projects')
             }
         },
         registry:
@@ -117,34 +120,7 @@ app.init = function()
 
 // called by Net --------------------------------------------------------------------------
 
-app.onNetworkStateChange = function(state, connection)
-{
-    var functionOfState =
-    {
-        onConnecting:()=>
-        {
-            $('#thisId').text()
-            $('#connectionState').text('Auto reconnect to ' + app.wsUrl.valueOf()+ ' \u21c4')
-        },
-        onConnected:()=>
-        {
-            $('#thisId').text('Connected')
-            $('#connectionState').text('Connected to ' + app.wsUrl.valueOf())
-            $('#connectionDate').text('since ' + new Date())
-            app.model.update({ network:networkType() })
-        },
-        onDisconnected:()=>
-        {
-            $('#thisId').text('')
-            $('#connectionState').text('Disconnected')
-            $('#connectionDate').text('')
-            app.model.update({ network:'deadbeef' })
-        }
-
-    }['on'+state]()
-}
-
-app.onMessage = function(c, parsed)
+app.onMessage = function(c, parsed, pduSize)
 {
     var channelHandlers =
     {
@@ -175,11 +151,38 @@ app.onMessage = function(c, parsed)
             }['on'+parsed.type](c, parsed)
         },
 
-        onJobMessage: (c, parsed)=>
+        onJobMessage: (c, parsed, pduSize)=>
         {
-            sim.log('job', 'log', '⟵', parsed)
-            jf.onReceive(c, parsed, code=> eval(code), app)
+            sim.log('job', 'log', '⟵', pduSize, parsed)
+            jf.onReceive(c, parsed, code=> eval(code), app, pduSize)
         }
 
-    }['on'+parsed.type+'Message'](c, parsed.payload)
+    }['on'+parsed.type+'Message'](c, parsed.payload, pduSize)
+}
+
+app.onNetworkStateChange = function(state, connection)
+{
+    var functionOfState =
+    {
+        onConnecting:()=>
+        {
+            $('#thisId').text()
+            $('#connectionState').text('Auto reconnect to ' + app.wsUrl.valueOf()+ ' \u21c4')
+        },
+        onConnected:()=>
+        {
+            $('#thisId').text('Connected')
+            $('#connectionState').text('Connected to ' + app.wsUrl.valueOf())
+            $('#connectionDate').text('since ' + new Date())
+            app.model.update({ network:networkType() })
+        },
+        onDisconnected:()=>
+        {
+            $('#thisId').text('')
+            $('#connectionState').text('Disconnected')
+            $('#connectionDate').text('')
+            app.model.update({ network:'deadbeef' })
+        }
+
+    }['on'+state]()
 }
