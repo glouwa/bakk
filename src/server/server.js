@@ -28,7 +28,7 @@ app.model.network[0].simconfig.on('change', function(changes)
     sim.config = app.model.network[0].simconfig
 })
 
-app.filterNodes = function(criteria)
+app.getNodesByCapability = function(criteria)
 {
     var nodes = []
     app.model.network.forEach(function(nval, nkey, nidx)
@@ -36,6 +36,22 @@ app.filterNodes = function(criteria)
         nval.capabilitys.forEach(function(cval, ckey, cidx)
         {
             if (cval.valueOf() == criteria)
+                nodes.push(network.connections[nkey])
+        })
+    })
+    if (nodes.length == 0)
+        throw new Error('no workers available')
+    return nodes
+}
+
+app.getNodesByType = function(criteria)
+{
+    var nodes = []
+    app.model.network.forEach(function(nval, nkey, nidx)
+    {
+        criteria.forEach(function(cval, ckey, cidx)
+        {
+            if (nval.type.valueOf() == cval && cval != 'Server')
                 nodes.push(network.connections[nkey])
         })
     })

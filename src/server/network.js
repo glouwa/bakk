@@ -18,8 +18,8 @@ network.connect = function(url)
     var connection = {}
     connection.ws = new ClientSocket(url)
     connection.ws.on('message', msg=> receiveMsg(connection, msg))
-    connection.ws.on('close', code=> cleanUpConnection(connection))
-    connection.ws.on('error', err=> cleanUpConnection(connection))
+    connection.ws.on('close', code=> cleanUpConnection(connection, url))
+    connection.ws.on('error', err=> cleanUpConnection(connection, url))
     connection.ws.on('open', ()=>
     {
         connection.id = 0 //network.nextFreeConnectionId++
@@ -86,9 +86,10 @@ function receiveMsg(connection, msg)
     }
 }
 
-function cleanUpConnection(connection)
+function cleanUpConnection(connection, url)
 {
     delete network.connections[connection.id]
+    if (url) setTimeout(()=> network.connect(url), config.client.reconnectIntervall)
     network.onConnectionChanged('Disconnected', connection)
 }
 

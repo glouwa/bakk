@@ -166,8 +166,9 @@
             parent,
             (j, jidx)=> // onReturn
             {
-                if (allHaveState(parent.subjobs, 'type', 'returned'))
-                    parent.ret(resultState(parent), args.desc + ' ' + resultState(parent))
+                if (allHaveState(parent.subjobs, 'type', 'returned')){
+                    console.log('#### closing parent ' + parent.id + ' because ' + j.id)
+                    parent.ret(resultState(parent), args.desc + ' ' + resultState(parent))}
             },
             sjf=> // onCall
             {
@@ -195,15 +196,22 @@
             {
                 if (jidx < subjobFactorys.length)
                     if (j.state.detail.valueOf() === 'ok')
+                    {
+                        console.log('#### next ' + newSubJobs[jidx].id + ' because ' + j.id)
                         newSubJobs[jidx].call()
-
+                    }
                     else if(j.state.detail.valueOf() !== 'canceled')
                         parent.ret('failed', 'failed', 'one subjob failed')
+
                 else
                     console.assert(allHaveState(parent.subjobs, 'type', 'returned'))
 
                 if (allHaveState(parent.subjobs, 'type', 'returned'))
+                {
+                    console.log('#### closing parent ' + parent.id + ' because ' + j.id)
+                    //console.trace('######### ret 2', parent.id, j.id)
                     parent.ret(resultState(parent), parent.state.log)
+                }
             },
             sjf=> // onCall
             {

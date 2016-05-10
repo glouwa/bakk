@@ -47,7 +47,7 @@ app.init = function()
     network.connect(app.wsUrl.valueOf())
     mvj.onCommit = function(path, diff)
     {
-        if (network.isUp)
+        if (network.connections[0])
         {
             var msg = messages.networkInfoMsg(path, diff)
             var channelMsg = messages.channelMsg('Ws', msg)
@@ -109,10 +109,11 @@ app.init = function()
     div.appendChild(a3View(app.model.projects))
     app.model.on('change', changes=>
     {
-        if (changes.newMembers && changes.newMembers.network)            
+        if (changes.newMembers && changes.newMembers.network)
             div.appendChild(a3View(app.model.network))
 
-        // todo: delete old
+        if (changes.deletedMembers && changes.deletedMembers.network)
+            div.removeChild(div.childNodes[1])
     })
 
     $('#modelTab')[0].add('🌐', { content:div })

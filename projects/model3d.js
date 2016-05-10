@@ -12,7 +12,7 @@ function find3dModel(j, diff)
         args: j.params,
         realJob: (js, diff)=>
         {
-            var nodes = app.filterNodes('JS')
+            var nodes = app.getNodesByCapability('JS')
 
             js.delegateToFactory({
                 end: idx=> idx < nodes.length,

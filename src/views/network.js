@@ -1,7 +1,7 @@
 var network = {}
 network.isUp = false
 network.connections = {}
-network.nextFreeConnectionId = 0 // zählt einfach hoch, nur zum debugen
+network.nextFreeConnectionId = 0
 network.onMessage = undefined
 network.onConnectionChanged = undefined
 network.allConnectionIds = ()=> Object.keys(network.connections)
@@ -11,10 +11,10 @@ network.connect = url=>
     var connection = {}
     connection.ws = new WebSocket(url)
     connection.ws.onmessage = ev=> receiveMsg(connection, ev.data)
-    connection.ws.onclose = ev=> cleanUpConnection(connection)
+    connection.ws.onclose = ev=> cleanUpConnection(connection, url)
     connection.ws.onopen = ()=>
     {
-        connection.id = network.nextFreeConnectionId++
+        connection.id = 0
         connection.close = ()=> connection.ws.close()
         connection.send = msg=> sendMsg(connection, msg)
 
@@ -58,13 +58,17 @@ function receiveMsg(connection, msg)
     }
 }
 
-function cleanUpConnection(connection)
+function cleanUpConnection(connection, url)
 {
     delete network.connections[connection.id]
-    setTimeout(()=> network.connect(url), config.client.reconnectIntervall)
+    if (url) setTimeout(()=> network.connect(url), config.client.reconnectIntervall)
     if (network.isUp)
     {
         network.isUp = false
         network.onConnectionChanged('Disconnected', connection)
+    }
+    else
+    {
+        console.assert(false, 'isUp is not useless :(')
     }
 }
