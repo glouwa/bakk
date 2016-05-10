@@ -109,9 +109,10 @@ app.init = function()
     div.appendChild(a3View(app.model.projects))
     app.model.on('change', changes=>
     {
-        if (changes.newMembers && changes.newMembers.network)
-            //div.insertBefore(a3View(app.model.network), div.firstChild)
+        if (changes.newMembers && changes.newMembers.network)            
             div.appendChild(a3View(app.model.network))
+
+        // todo: delete old
     })
 
     $('#modelTab')[0].add('🌐', { content:div })

@@ -1,27 +1,11 @@
-var config   = require('../config.js')
-var sim      = require('../sim.js')
-var messages = require('../messages.js')
-var jff      = require('../job/job.js')
-var jl       = require('../job/jobLogic.js')
-var tj       = require('../job/toolJobs.js')
-var tools    = require('../tools.js')
-var mvj      = require('../types/mvj.js')
+var fs = require('fs')
 
-sim.config = config.serverDefaultSimConfig
+eval(fs.readFileSync('../app.js')+'')
+eval(fs.readFileSync('../types/project.js')+'')
 
-var jf = jff.jm()
 jf.workerId = 'S₀'
-jf.nextFreeId = 0
-jf.jl = jl
 
-tj.jm = jf
-tj.config = config
-
-mvj.jm = jf
-
-//-------------------------------------------------------------------------------------------
-
-var app = mvj.model('',{
+app.update({
     clientId: 0,
     model: {
         network: {
@@ -30,7 +14,9 @@ var app = mvj.model('',{
                 id: jf.workerId,
                 clientcount: 0,
                 capabilitys: [],
-                simconfig: sim.config
+                simconfig: sim.config,
+                osType: os.type(),
+                hostname: os.hostname()
             }
         }
     }
@@ -75,13 +61,7 @@ app.onNetworkStateChange = function(state, connection)
         {
             var path = 'model.network.'+connection.id
 
-            try
-            {
-                app.update(path, 'deadbeef')
-            }
-            catch(e)
-            {
-            }
+            try { app.update(path, 'deadbeef') } catch(e) {}
 
             var msg = messages.networkInfoMsg(path, 'deadbeef')
             var channelMsg = messages.channelMsg('Ws', msg)
@@ -91,43 +71,22 @@ app.onNetworkStateChange = function(state, connection)
     stateHandlers['on'+state]()
 }
 
-// called by Net --------------------------------------------------------------------------
-
-app.onMessage = function(c, parsed, pduSize)
+var messageHandlers =
 {
-    var channelHandlers =
+    onReload: function(c, parsed)
     {
-        onWsMessage: function(c, parsed)
-        {
-            sim.log('app', 'log', '⟵', parsed)
+        var channelMsg = messages.channelMsg('Ws', parsed)
+        network.sendBroadcast(channelMsg)
+    },
 
-            var messageHandlers =
-            {
-                onReload: function(c, parsed)
-                {
-                    var channelMsg = messages.channelMsg('Ws', parsed)
-                    network.sendBroadcast(channelMsg)
-                },
+    onNetworkInfo: function(c, parsed)
+    {
+        app.update(parsed.path, parsed.diff)
 
-                onNetworkInfo: function(c, parsed)
-                {
-                    app.update(parsed.path, parsed.diff)                    
-
-                    var receivers = Object.keys(network.connections).without([c.id.toString()])
-                    var channelMsg = messages.channelMsg('Ws', parsed)
-                    network.sendMulticast(receivers, channelMsg)
-                }
-
-            }['on'+parsed.type](c, parsed)
-        },
-
-        onJobMessage: function(c, parsed, pduSize)
-        {         
-            //sim.log('job', 'log', '⟵', parsed)
-            jf.onReceive(c, parsed, code=> eval(code), app, pduSize)
-        }
-
-    }['on'+parsed.type+'Message'](c, parsed.payload, pduSize)
+        var receivers = Object.keys(network.connections).without([c.id.toString()])
+        var channelMsg = messages.channelMsg('Ws', parsed)
+        network.sendMulticast(receivers, channelMsg)
+    }
 }
 
 //-------------------------------------------------------------------------------------------

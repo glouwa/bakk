@@ -1,90 +1,9 @@
-var config   = require('../config.js')
-var sim      = require('../sim.js')
-var messages = require('../messages.js')
-var jff      = require('../job/job.js')
-var jl       = require('../job/jobLogic.js')
-var tj       = require('../job/toolJobs.js')
-var tools    = require('../tools.js')
-var mvj      = require('../types/mvj.js')
+var fs = require('fs')
 
-sim.config = config.clientDefaultSimConfig
+eval(fs.readFileSync('../app.js')+'')
+eval(fs.readFileSync('../types/project.js')+'')
 
-var jf = jff.jm()
-jf.workerId = undefined
-jf.nextFreeId = 0
-jf.jl = jl
-
-tj.jm = jf
-tj.config = config
-mvj.jm = jf
-
-//-------------------------------------------------------------------------------------------
-
-var app = mvj.model('',{})
-app.clientId = undefined
-//app.networkInfo = model.networkModel(sim, app)
-
-// called by Net --------------------------------------------------------------------------
-
-app.onNetworkStateChange = function(state, connection)
-{
-    var stateHandlers =
-    {
-        onConnecting: function() {},
-        onConnected: function() {},
-        onDisconnected: function() {}
-    }
-    stateHandlers['on'+state]()
-}
-
-app.onMessage = function(c, parsed, pduSize)
-{
-    var channelHandlers =
-    {
-        onWsMessage: function(c, parsed)
-        {
-            sim.log('app', 'log', '⟵', parsed)
-
-            var messageHandlers =
-            {
-                onServerHallo: function(c, parsed)
-                {                    
-                    app.clientId = parsed.diff.clientId
-                    jf.workerId = 'W' + Number(app.clientId).toSubscript()
-
-                    var mynodeInfo = {
-                        type: 'Worker',
-                        id: jf.workerId,
-                        capabilitys: ['JS', 'POSIX64', 'Matlab'],
-                        simconfig: config.clientDefaultSimConfig,
-                    }
-
-                    //app.networkInfo.update(mynodeInfo)
-                    var msg = messages.networkInfoMsg('model.network.' + app.clientId, mynodeInfo)
-                    var channelMsg = messages.channelMsg('Ws', msg)
-                    network.connections[0].send(channelMsg)
-                },
-
-                onNetworkInfo: function(c, parsed)
-                {
-                    //app.networkInfo.update(parsed.nodes)
-                },
-
-                onReload: function(c, parsed)
-                {
-                    // ?? soll das server machen?
-                }
-
-            }['on'+parsed.type](c, parsed)
-        },
-
-        onJobMessage: function(c, parsed, pduSize)
-        {
-            jf.onReceive(c, parsed, code=> eval(code), app, pduSize)
-        }
-
-    }['on'+parsed.type+'Message'](c, parsed.payload, pduSize)
-}
+var messageHandlers = clientMessageHandlerFactory('W', 'Worker', ['JS', 'POSIX64', 'Matlab'], ()=>{})
 
 //-------------------------------------------------------------------------------------------
 
@@ -110,8 +29,8 @@ function formatBytes(bytes, decimals)
 }
 
 var workerInfo = {
-    hostname:os.hostname(),
-    osType:os.type(),
+    //hostname:os.hostname(),
+    //osType:os.type(),
     totalMem:formatBytes(os.totalmem(), 0),
     totalCpus:osUtils.cpuCount() + 'cores',
     freeMemPercent:'0%',

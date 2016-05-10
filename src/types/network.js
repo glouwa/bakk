@@ -1,11 +1,40 @@
 function networkType()
 {
+    function killOneConditional(j, nodeType)
+    {
+        jw.ret('ok', 'will exit now')
+        process.exit(0)
+    }
+
+    function multiCastJob(j, nodeType, action)
+    {
+        j.delegateToOne({ job:()=> jf.remoteProxyJob({
+            args: j.params,
+            node: network.connections[0],
+            realJob: js=> {
+
+                // sequence
+                    var nodes = app.filterNodes('POSIX64')
+                    js.delegateToFactory({
+                        desc: 'shutting down worker',
+                        end: idx=> idx < nodes.length,
+                        job: idx=> jf.remoteProxyJob({
+                            node: nodes[idx],
+                            realJob: jw=> action(jw, nodeType)
+                        })
+                    })
+
+                    // apply action
+            }
+        })})
+    }
+
     var obj = {
         type:'Network',
         '+1 client':function(j)
         {
             window.open('./view.html', '_blank')
-            j.ret('ok', "window.open('./view.html', '_blank') called")
+            j.ret('ok', "window.open(...) called")
         },
         '+4 worker':function(j)
         {
@@ -20,7 +49,7 @@ function networkType()
                     ()=> jf.job({ onCall:sj=> app.model.projects['🖥 Run some workers on server'].service.src(sj), params:j.params })
                 )
         },
-        '☠ worker':function(j)
+        '☠ worker':function(j) //multiCastJob(j, 'W', killOneConditional)
         {
             j.delegateToOne({ job:()=> jf.remoteProxyJob({
                 args: j.params,
@@ -41,7 +70,7 @@ function networkType()
                 }
             })})
         },
-        '☠ server':function(j)
+        '☠ server':function(j) //multiCastJob(j, 'M', killOneConditional)
         {
             j.delegateToOne({ job:()=> jf.remoteProxyJob({
                 args: j.params,

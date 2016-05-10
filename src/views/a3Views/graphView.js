@@ -22,9 +22,10 @@ var graphConfigMap =
     'Project':      { value:6,  mass:10, color:'#6E6EFD', fontSize:80 },
 
     'Network':      { value:9,  mass:50, color:'#97C2FC', fixed:true, x:-1100, y:-250 },
-    'Server':       { value:6,  mass:10, color:'#7BE141', fontSize:80 },
+    'Server':       { value:6,  mass:10, color:'#5ABB23', fontSize:80 },
     'Client':       { value:6,  mass:10, color:'#FFFF00', fontSize:80 },
     'Worker':       { value:6,  mass:10, color:'#AF8373', fontSize:80 },
+    'Overlord':     { value:6,  mass:10, color:'#7BE141', fontSize:80 },
 
     'SimConfig':    { value:3,  mass:1,  color:'#97C2FC', showOnly:[] },
 
