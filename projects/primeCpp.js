@@ -19,15 +19,14 @@ function findPrimes(j, diff)
                     job: idx=> jf.remoteProxyJob({
                         args: js.params.set.shrink(idx, nodes.length),
                         node: nodes[idx],                        
-                        realJob: jw=> tj.spawn(
-                            jw,
-                            binDir + '/prime.exe',
-                            [jw.params.begin.valueOf(), jw.params.end.valueOf()],
-                            (jw, data)=> {
+                        realJob: jw=> tj.spawn(jw, {
+                            path:binDir + '/prime.exe',
+                            args:[jw.params.begin.valueOf(), jw.params.end.valueOf()],
+                            onJsonStdOut:(jw, data)=> {
                                 arguments.callee.count = arguments.callee.count || 1
                                 jw.commitJob(data.state, { [jf.workerId]:arguments.callee.count++ })
                             }
-                        )
+                        })
                     })
                 })
             }

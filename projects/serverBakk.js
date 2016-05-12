@@ -47,13 +47,13 @@ function getCmdSet(j, diff)
                     job: (idx, node)=> jf.remoteProxyJob({
                         node:node,
                         args:{ command:output.commands[idx], idx:idx, timeout:js.params.workerTimeout },
-                        realJob: jw=> tj.exec(jw,
-                            'shuf -i 0-10 -n 1 | xargs sleep && echo echo', //jw.params.command.cmd.valueOf(),
-                            (jw, data)=> jw.commitJob(
+                        realJob: jw=> tj.spawn(jw, {
+                            cmd: 'shuf -i 0-10 -n 1 | xargs sleep && echo echo', //jw.params.command.cmd.valueOf(),
+                            onStdOut: (jw, data)=> jw.commitJob(
                                 { type:'running', progress:0.5, log:data },
                                 { commands:{ [jw.params.idx.valueOf()]:{ fileState:'ok'} }}
                             )
-                        )
+                        })
                     })
                 })
             }

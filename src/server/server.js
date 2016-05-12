@@ -48,12 +48,9 @@ app.getNodesByType = function(criteria, emptyResultIsOk)
 {
     var nodes = []
     app.model.network.forEach(function(nval, nkey, nidx)
-    {
-        console.log('###############------')
+    {        
         criteria.forEach(function(cval, ckey, cidx)
         {
-            console.log('###############')
-            console.log(nval.type.valueOf(), cval, nval.type.valueOf() == cval && cval != 'Server')
             if (nval.type.valueOf() == cval && cval != 'Server')
                 nodes.push(network.connections[nkey])
         })

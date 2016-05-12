@@ -80,45 +80,52 @@ function fragmentFolder()
 
                         js.updateJob(
                             { state:{ type:'running', log:'dir', progress:0.95 } },
-                            { cmd:cmd + ' output.off', '↻':'deadbeef' }
+                            {
+                                '↻':'deadbeef',
+                                 cmd:cmd + ' output.off',
+                                 '⚙':function(j) {          // todo: wir sind hier am server!
+                                     var job = rootJob({ // warum root job?
+                                         params: { dir:this.dir, cmd:this.cmd },
+                                         onCall: j=> {
+
+                                             job.update({
+                                                 state:{ progress:0.1, type:'running', log:'setting output reference' },
+                                                 output:{}
+                                             })
+
+                                             j.updateJob(
+                                                 { state:{ type:'running', log:'dir', progress:0.05 } },
+                                                 j.params
+                                             )
+
+                                             j.delegateToOne({ job:()=> jf.remoteProxyJob({
+                                                 node: network.connections[0],
+                                                 args: j.params,
+                                                 realJob: js=> {
+                                                     tj.spawn(js, {
+                                                         cmd: js.params.cmd, //'shuf -i 0-0 -n 1 | xargs sleep',
+                                                         onStdOut: (jw, data)=> jw.commitJob({
+                                                             type:'running',
+                                                             progress:0.5,
+                                                             log:data
+                                                         }),
+                                                         options: { cwd:js.params.dir.valueOf() }
+                                                     })
+                                                 }
+                                             })})
+                                         }
+                                     })
+
+                                     $('#jobTab')[0].add(job.id, { content:jobAllView(job) })
+                                     j.delegateToOne({ job:()=> job })
+                                 }
+                            }
                         )
                         js.ret('ok', 'cmd generated: ' + cmd)
                     }))
                 }
             })
-        })},
-        '⚙':function(j) {
-            var job = rootJob({ // warum root job?
-                params: { dir:this.dir, cmd:this.cmd },
-                onCall: j=> {
-
-                    job.update({
-                        state:{ progress:0.1, type:'running', log:'setting output reference' },
-                        output:{}
-                    })
-
-                    j.updateJob(
-                        { state:{ type:'running', log:'dir', progress:0.05 } },
-                        j.params
-                    )
-
-                    j.delegateToOne({ job:()=> jf.remoteProxyJob({
-                        node: network.connections[0],
-                        args: j.params,
-                        realJob: js=> {
-                            tj.exec(js,
-                                js.params.cmd.valueOf(), //'shuf -i 0-0 -n 1 | xargs sleep',
-                                (jw, data)=> jw.commitJob({ type:'running', progress:0.5, log:data }),
-                                { cwd:js.params.dir.valueOf() }
-                            )
-                        }
-                    })})
-                }
-            })
-
-            $('#jobTab')[0].add(job.id, { content:jobAllView(job) })
-            j.delegateToOne({ job:()=> job })
-        }
+        })}
     }
 }
 

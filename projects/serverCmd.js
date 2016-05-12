@@ -9,18 +9,15 @@ function spawnCmd(j)
         job: ()=> jf.remoteProxyJob({
             args: j.params,
             node: network.connections[0],
-            realJob: js=> tj.exec(
-                js,
-                js.params.cmd,
-                function onStdOut(jw, data)
+            realJob: js=> tj.spawn(js, {
+                cmd: js.params.cmd,
+                justStart:js.params.justStart,
+                onStdOut: function onStdOut(jw, data)
                 {
                     onStdOut.count = onStdOut.count || 1
-                    jw.commitJob(
-                        { type:'running', progress:0.95 },
-                        { stdout:data }
-                    )
+                    jw.commitJob({ type:'running', progress:0.95 }, { stdout:data })
                 }
-            )
+            })
         })
     })
 }
@@ -52,6 +49,7 @@ new Object({
         src: spawnCmd,
         args: {
             cmd: 'ls ../.. -l',
+            justStart:false,
             timeout:500
         },
     },

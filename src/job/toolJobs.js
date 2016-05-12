@@ -71,16 +71,16 @@
 
     //-----------------------------------------------------------------------------------------
 
-    exports.spawnJob = function(path, args, onPipeStdOut, startProgress)
+    exports.spawnJob = function(args)
     {
         return exports.jm.job({
-            onCall:j=> exports.spawn(j, path, args, onPipeStdOut, startProgress)
+            onCall:j=> exports.spawn(j, args)
         })
     }
 
     //-----------------------------------------------------------------------------------------
 
-    exports.spawn = function(j, path, args, onPipeStdOut, startProgress)
+    exports.spawn = function(j, args)
     {
         var cp = require('child_process')
         var js = require("JSONStream")
@@ -92,121 +92,78 @@
             process.kill()
         }
 
-        process = cp.spawn(path, args)
+        if (args.path)
+            process = cp.spawn(args.path.valueOf(), args.args)
+        else if (args.cmd)
+            process = cp.exec(args.cmd.valueOf(), args.options)
 
         j.updateJob({
             state: {
                 type:'running',
-                progress: startProgress ? startProgress : 0.05,
-                log:'process '+ process.pid +' started ' + args
+                progress: args.startProgress ? args.startProgress : 0.05,
+                log:'process '+ process.pid +' started ' + (args.args?args.args:args.cmd)
             }
         })
 
-        process.on('error', err=> j.exception2localError(()=> {
-            j.ret('fatal', 'spawn: ' + path + '(' + err.code + ') ' + err.errno)
-        }))
-
-        if (onPipeStdOut)
-            process.stdout
-                .pipe(js.parse())
-                .on('data', data=> j.exception2localError(()=> {
-                    if (!canceled)
-                        onPipeStdOut(j, data)
-                 }))
-                .on('error', err=> {})
-                .on('end',   ()=>  {}) // is called after exit :/
-
-        process.on('exit', (code, sig)=> j.exception2localError(()=> {
-            if (!canceled && j.flush)
-                j.flush('process exit')
-
-            if (code === 0)
-                j.ret('ok', 'process terminated with code 0')
-
-            else if (canceled && code === 143)
-                j.ret('canceled', process.pid + ' ec: 143 ok')
-
-            else if (canceled && sig === 'SIGTERM')
-                j.ret('canceled', process.pid + ' ec: ' + code + ' sig: ' + sig)
-
-            else
-                j.ret('fatal', 'ec: ' + code + ' sig: ' + sig)
-        }))
-    }
-
-    //-----------------------------------------------------------------------------------------
-
-    exports.execJob = function(cmd, onPipeStdOut)
-    {
-        return exports.jm.job({
-            onCall:j=> exports.exec(j, cmd, onPipeStdOut)
-        })
-    }
-
-    //-----------------------------------------------------------------------------------------
-
-    // in shell - spawn nicht in shell
-    exports.exec = function(j, cmd, onPipeStdOut, options)
-    {
-        var cp = require('child_process')
-        var js = require("JSONStream")
-        var process = undefined
-        var canceled = false
-
-        j.onCancel = function(j) {
-            canceled = true
-            process.kill()
-        }
-
-        process = cp.exec(cmd.valueOf(), options)
-
-        j.updateJob({
-            state: {
-                type:'running',
-                progress:0.05,
-                log:'process '+ process.pid +' started ' + cmd
-            }
-        })
-
-        process.on('error', err=> j.exception2localError(()=> {
-            j.ret('fatal', 'exec: ' + cmd.valueOf() + '(' + err.code + ') ' + err.errno)
-        }))
-
-        if (onPipeStdOut)
+        if (args.justStart && args.justStart.valueOf())
         {
-            process.stdout
-                .on('data', data=> j.exception2localError(()=> {
-                    if (!canceled)
-                        onPipeStdOut(j, data)
-                 }))
-                .on('error', err=> {})
-                .on('end',   ()=>  {}) // is called after exit :/
-
-            process.stderr
-                .on('data', data=> j.exception2localError(()=> {
-                    if (!canceled)
-                        onPipeStdOut(j, data)
-                 }))
-                .on('error', err=> {})
-                .on('end',   ()=>  {})
+            j.ret('ok', process.pid + ' no exception at spawn/exec, register on error makes no senes since we want to return asap')
         }
+        else
+        {
+            function dataHandler(data, eventEmitter) {
+                j.exception2localError(()=> {
+                    if (!canceled)
+                        eventEmitter(j, data)
+                })
+            }
 
-        process.on('exit', (code, sig)=> j.exception2localError(()=> {
-            if (!canceled && j.flush)
-                j.flush('process exit')
+            function exitHandler(code, sig, eventEmitter) {
+                j.exception2localError(()=> {
+                    if (!canceled) {
+                        if (j.flush)
+                            j.flush('process exit')
 
-            if (canceled && code === 143)
-                j.ret('canceled', process.pid + ' ec: 143 ok')
+                        if (code === 0)
+                            j.ret('ok', 'process terminated with code 0')
+                        else
+                            j.ret('fatal', process.pid + ' ec: ' + code + ' sig: ' + sig)
+                    }
+                    else {
+                        j.ret('canceled', process.pid + ' ec: ' + code + ' sig: ' + sig)
+                    }
+                })
+            }
 
-            else if (canceled && sig === 'SIGTERM')
-                j.ret('canceled', process.pid + ' ec: ' + code + ' sig: ' + sig)
+            if (args.onJsonStdOut) {
+                process.stdout
+                    .pipe(js.parse())
+                    .on('data',  data=> dataHandler(data, args.onJsonStdOut))
+                    .on('error', err=> {})
+                    .on('end',   ()=>  {})
+                process.stderr
+                    .pipe(js.parse())
+                    .on('data',  data=> dataHandler(data, args.onJsonStdOut))
+                    .on('error', err=> {})
+                    .on('end',   ()=>  {})
+            }
 
-            else if (code >= 0)
-                j.ret('ok', 'process terminated with code ' + code)
+            if (args.onStdOut) {
+                process.stdout
+                    .on('data',  data=> dataHandler(data, args.onStdOut))
+                    .on('error', err=> {})
+                    .on('end',   ()=>  {})
+                process.stderr
+                    .on('data',  data=> dataHandler(data, args.onStdOut))
+                    .on('error', err=> {})
+                    .on('end',   ()=>  {})
+            }
 
-            else
-                j.ret('fatal', 'ec: ' + code + ' sig: ' + sig)
-        }))
+            process.on('exit', (code, sig)=> exitHandler(code, sig))
+            process.on('error', err=> j.exception2localError(()=> {
+                j.ret('fatal', 'spawn: ' + args.path + '(' + err.code + ') ' + err.errno)
+            }))
+        }
     }
 })
 (typeof exports === 'undefined' ? this['tj']={} : exports, typeof exports === 'undefined')

@@ -16,14 +16,23 @@ function runWorkers(j, diff)
                         args: js.params,
                         realJob: jw=> jw.delegateToFactory({
                             end: idx=> idx < jw.params.amount,
-                            job: idx=> tj.spawnJob('node', ['worker.js'], undefined, 0.5)
+                            job: idx=> tj.spawnJob({
+                                path:'node',
+                                args:['worker.js'],
+                                justStart:jw.params.justStart
+                            })
                         })
                     })
 
                     else return jf.job({ desc:'apply on server', onCall:ssj=>
                         ssj.delegateToFactory({
                             end: idx=> idx < js.params.amount,
-                            job: idx=> tj.spawnJob('node', ['worker.js'], undefined, 0.5)
+                            job: idx=> tj.spawnJob({
+                                path:'node',
+                                args:['worker.js'],
+                                startProgress:0.5,
+                                justStart:js.params.justStart
+                            })
                         })
                     })
                 }
@@ -40,7 +49,7 @@ new Object({
     {
         type: 'Service',
         src: runWorkers,
-        args: { amount: 3 },
+        args: { amount: 3, justStart:true },
     },
     tests: []
 })
