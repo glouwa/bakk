@@ -90,8 +90,8 @@ var clientMessageHandlerFactory = (shortType, type, cap, onConnected)=>
         onConnected()
     },
 
-    onNetworkInfo: function(c, parsed) {},
-    onReload: function(c, parsed) {}
+    onNetworkInfo: (c, parsed)=> app.update(parsed.path, parsed.diff),
+    onReload: (c, parsed) => {}
 })
 
 var osDir = os.type() == 'Linux' ? 'posix64' : 'dotnet'

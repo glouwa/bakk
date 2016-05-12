@@ -71,37 +71,6 @@
         exports.factoryLogic(parent, args)
     }
 
-    function logic(parent, onReturn, starter)
-    {
-        var pAa = parent.state.progress.valueOf()
-
-        parent.onCancel = function(j)
-        {
-            // if not aleary done
-            parent.subjobs.forEach(sj=> sj.cancel())
-        }
-
-        function configureSubjob(sj, jidx)
-        {
-            sj.onUpdate = function(j, diff, outputDiff)
-            {
-                var pdiff = {
-                    state: { progress: avgProgress(parent, pAa) },
-                    subjobs: { [sj.id.valueOf()]:diff }
-                }
-
-                if (pdiff.state.progress == 1)
-                    delete pdiff.state.progress // wtf?
-
-                parent.updateJob(pdiff, outputDiff)
-            }
-            sj.onReturn = j=> onReturn(j, jidx)
-            return sj
-        }
-
-        starter(configureSubjob)
-    }
-
     exports.poolLogic = function(parent, args)
     {
         var lastCreatedIdx = 0
@@ -159,6 +128,33 @@
         newSubJobs.forEach(sj=> sj.call())
     }
 
+    function logic(parent, onReturn, starter)
+    {
+        var pAa = parent.state.progress.valueOf()
+
+        parent.onCancel = j=> parent.subjobs.forEach(sj=> sj.cancel())
+
+        function configureSubjob(sj, jidx)
+        {
+            sj.onUpdate = function(j, diff, outputDiff)
+            {
+                var pdiff = {
+                    state: { progress: avgProgress(parent, pAa) },
+                    subjobs: { [sj.id.valueOf()]:diff }
+                }
+
+                if (pdiff.state.progress == 1)
+                    delete pdiff.state.progress // wtf?
+
+                parent.updateJob(pdiff, outputDiff)
+            }
+            sj.onReturn = j=> onReturn(j, jidx)
+            return sj
+        }
+
+        starter(configureSubjob)
+    }
+
     exports.factoryLogic = function(parent, args)     // by abort callback
     {
         var newSubJobs = []
@@ -167,7 +163,7 @@
             (j, jidx)=> // onReturn
             {
                 if (allHaveState(parent.subjobs, 'type', 'returned')){
-                    console.log('#### closing parent ' + parent.id + ' because ' + j.id)
+                    //console.log('#### closing parent ' + parent.id + ' because ' + j.id)
                     parent.ret(resultState(parent), args.desc + ' ' + resultState(parent))}
             },
             sjf=> // onCall
@@ -197,8 +193,8 @@
                 if (jidx < subjobFactorys.length)
                     if (j.state.detail.valueOf() === 'ok')
                     {
-                        console.log('#### next ' + newSubJobs[jidx].id + ' because ' + j.id)
-                        newSubJobs[jidx].call()
+                        //console.log('#### next ' + newSubJobs[jidx].id + ' because ' + j.id)
+                        setTimeout(newSubJobs[jidx].call(), 0)
                     }
                     else if(j.state.detail.valueOf() !== 'canceled')
                         parent.ret('failed', 'failed', 'one subjob failed')
@@ -208,7 +204,7 @@
 
                 if (allHaveState(parent.subjobs, 'type', 'returned'))
                 {
-                    console.log('#### closing parent ' + parent.id + ' because ' + j.id)
+                    //console.log('#### closing parent ' + parent.id + ' because ' + j.id)
                     //console.trace('######### ret 2', parent.id, j.id)
                     parent.ret(resultState(parent), parent.state.log)
                 }

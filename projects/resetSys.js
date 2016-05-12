@@ -1,21 +1,22 @@
-function killServerAndoverlordsWorkers(j, diff)
-{    
+function killServerOverlordsAndWorkers(j, diff)
+{
     j.delegateToOne({ job:()=> jf.remoteProxyJob({
-        desc:'sending multicast to ' + network.connections[0].id,
+        desc:'kill on server ' + network.connections[0].id,
         args: j.params,
         node: network.connections[0],
         realJob: js=> js.delegateToSequence(
-            ()=> jf.job({ onCall: kwj=> {
+
+            ()=> jf.job({ desc:'kill all workers paralell', onCall: kwj=> {
                 try {
                     var nodes = app.getNodesByType(js.params.nodeType)
                     kwj.delegateToFactory({
                         end: idx=> idx < nodes.length,
                         job: idx=> jf.remoteProxyJob({
-                            desc:'sending multicast to ' + nodes[idx].id,
+                            desc:'kill on worker ' + nodes[idx].id,
                             node: nodes[idx],
                             args: js.params,
                             realJob: jw=> {
-                                jw.ret('ok', 'will exit in ½s')
+                                jw.ret('ok', 'worker will exit in ½s')
                                 setTimeout(()=>process.exit(0), 500)
                             }
                         })
@@ -25,11 +26,11 @@ function killServerAndoverlordsWorkers(j, diff)
                     kwj.ret('ok', 'no workers to kill')
                 }
             }}),
-            ()=> jf.job({ desc:'apply on server', onCall: ksj=>
+            ()=> jf.job({ desc:'kill server', onCall: ksj=>
             {
                 setTimeout(()=> { // todo: if last job in sequence is sync -> double return
                    var serverkill = js.params.nodeType.some(i=> i.valueOf() == 'Server')
-                   ksj.ret('ok', serverkill?'will exit in ½s':'do nothing')
+                   ksj.ret('ok', serverkill?'server will exit in ½s':'do nothing')
                    if (serverkill) setTimeout(()=>process.exit(0), 500)
                 }, 0)
             }})
@@ -44,7 +45,7 @@ new Object({
     service:
     {
         type: 'Service',
-        src: killServerAndoverlordsWorkers,
+        src: killServerOverlordsAndWorkers,
         args: { nodeType: ['Server', 'Overlord', 'Worker'] },
     },
     tests: []

@@ -14,6 +14,7 @@
         var canceled = false
 
         return exports.jm.job({
+            desc: 'ajax ' + args.url,
             params: args,
             onCancel: function()
             {
@@ -55,8 +56,8 @@
                     }
                 })
 
-                xmlhttp.open("GET", (inBrowser ? '':'http://' + exports.config.server.wshost + ':' + exports.config.server.httpport + '/---/---/') 
-                                    + args.url, true)
+                var rrul = (inBrowser ? '':'http://' + exports.config.server.wshost + ':' + exports.config.server.httpport + '/---/---/') + args.url
+                xmlhttp.open("GET", rrul, true)
                 xmlhttp.send()
             }
         })
@@ -74,6 +75,7 @@
     exports.spawnJob = function(args)
     {
         return exports.jm.job({
+            desc: args.path?args.path.valueOf() + args.args:args.cmd.valueOf(),
             onCall:j=> exports.spawn(j, args)
         })
     }
@@ -107,7 +109,7 @@
 
         if (args.justStart && args.justStart.valueOf())
         {
-            j.ret('ok', process.pid + ' no exception at spawn/exec, register on error makes no senes since we want to return asap')
+            j.ret('ok', process.pid + ' no exception') //  at spawn/exec, register on error makes no senes since we want to return asap')
         }
         else
         {

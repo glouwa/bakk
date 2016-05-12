@@ -2,7 +2,7 @@ function project(url, noView)
 {
     // PROJECT PART ----------------------------------------------------
 
-    function createRootJob(project)
+    function pepRootJob(project)
     {
         return rootJob({
             desc:project.desc, // create job inst
@@ -11,11 +11,12 @@ function project(url, noView)
         })
     }
 
-    function instantiateAndRun(j, project)
+    function visiblePepRootJob(project)
     {
-        var job = createRootJob(project)
+        var job = pepRootJob(project)
         if (!noView) $('#jobTab')[0].add(job.id, { content:jobAllView(job) }/*, 'inBg'*/) // show
-        j.delegateToOne({ job:()=> job })                        // start
+        //j.delegateToOne({ job:()=> job })                        // start
+        return job
     }
 
     // LAZYOBJECT PART -------------------------------------------------
@@ -36,8 +37,11 @@ function project(url, noView)
 
                 project.update(Object.assign(projectDiff, {
                     '↻':'deadbeef',
-                    '✕': function free(j) {},
-                    '▸': j=> instantiateAndRun(j, project),
+                    '✕': function(j) {},
+                    '▸': function(j)
+                    {
+                        j.delegateToOne({ job:()=> visiblePepRootJob(project) })  //instantiateAndRun(j, project),
+                    },
                     '⇱': function(j) //⥯…
                     {
                         j.ret('failed', 'not imlpemented')
@@ -49,12 +53,11 @@ function project(url, noView)
                     },
                     '⇨': function(j) //…
                     {
-                        var job = createRootJob(project)
+                        var job = pepRootJob(project)
                         job.update({ isRoot:true })
                         $('#jobTab')[0].add(job.id, { content:jobAllView(job) }) // show
                         j.ret('ok', '+1 idle job, +1 view')         // done
-                    },
-
+                    }
                 }))
             }
         })
@@ -66,7 +69,8 @@ function project(url, noView)
         {
             j.delegateToSequence(
                 ()=> ajaxLoadJob(this),
-                ()=> jf.job({ onCall: ij=> instantiateAndRun(ij, this) })
+                ()=> jf.job({ onCall:j=> j.delegateToOne({ job:()=> visiblePepRootJob(this) }) })
+                //()=> visiblePepRootJob(this) // todo: fix the sync bug to use this line
             )
         },
         '↻': function(j)

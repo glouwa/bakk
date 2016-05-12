@@ -14,7 +14,7 @@
             Object.defineProperty(jp, 'timer', { writable:true, value:null })
             //Object.defineProperty(jp, 'dasdaesc', { writable:true, enumerable:true, value:'unnamed job' })
 
-            Object.defineProperty(jp, 'call', { value:function()
+            Object.defineProperty(jp, 'call', { value:function call()
             {
                 var j = this
                 j.exception2localError(function call_()
@@ -127,10 +127,10 @@
                 })
             }})
 
-            Object.defineProperty(jp, 'delegateToOne', { value:function(a) { jm.jl.oneLogic(this, a) } } )
-            Object.defineProperty(jp, 'delegateToPool', { value:function(a) { jm.jl.poolLogic(this, a) } } )
-            Object.defineProperty(jp, 'delegateToFactory', { value:function(a) { jm.jl.factoryLogic(this, a) } } )
-            Object.defineProperty(jp, 'delegateToSequence', { value:function() { jm.jl.sequenceLogic(this, arguments) } } )
+            Object.defineProperty(jp, 'delegateToOne', { value:function delegateToOne(a) { jm.jl.oneLogic(this, a) } } )
+            Object.defineProperty(jp, 'delegateToPool', { value:function delegateToPool(a) { jm.jl.poolLogic(this, a) } } )
+            Object.defineProperty(jp, 'delegateToFactory', { value:function delegateToFactory(a) { jm.jl.factoryLogic(this, a) } } )
+            Object.defineProperty(jp, 'delegateToSequence', { value:function delegateToSequence() { jm.jl.sequenceLogic(this, arguments) } } )
 
             //-------------------------------------------------------------------------------------
 
@@ -164,7 +164,7 @@
                 }
             }})
 
-            Object.defineProperty(jp, 'exception2localError', { value:function(action)
+            Object.defineProperty(jp, 'exception2localError', { value:function e2le(action)
             {
                 try
                 {
