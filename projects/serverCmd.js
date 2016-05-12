@@ -45,7 +45,7 @@ function cmdResultView(model)
 
 new Object({
     type: 'Project',
-    icon: '⤑💻',
+    icon: '💻',
     desc: 'Spawn process on server',
     service: {
         type: 'Service',

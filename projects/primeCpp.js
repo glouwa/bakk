@@ -107,7 +107,7 @@ function primeStatsView(outputModel)
 
 new Object({
     type:'Project',
-    icon: '⤑ℙ',
+    icon: 'ℙ',
     desc: 'Find some ℙ with C++',
     service:
     {

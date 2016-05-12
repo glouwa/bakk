@@ -34,13 +34,13 @@ function runWorkers(j, diff)
 
 new Object({
     type:'Project',
-    icon: '⤑🖥',
+    icon: '🖥',
     desc: 'Run some workers on server',
     service:
     {
         type: 'Service',
         src: runWorkers,
-        args: { amount: 4 },
+        args: { amount: 3 },
     },
     tests: []
 })

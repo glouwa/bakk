@@ -63,7 +63,7 @@ function getCmdSet(j, diff)
 
 new Object({
     type: 'Project',
-    icon: '⤑🐼',
+    icon: '🐼',
     desc: 'Process fragment folder',
     service: {
         type: 'Service',

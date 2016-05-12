@@ -145,6 +145,7 @@
 
     //-----------------------------------------------------------------------------------------
 
+    // in shell - spawn nicht in shell
     exports.exec = function(j, cmd, onPipeStdOut, options)
     {
         var cp = require('child_process')

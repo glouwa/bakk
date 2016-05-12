@@ -80,6 +80,7 @@ app.init = function()
                     '❄ Find similar 3d models on worker':        project('../../projects/model3d.js'),
                     'ℙ Find prime numbers with C++ on workers':  project('../../projects/primeCpp.js'),
                     '🖥 Run some workers on server':              project('../../projects/serverWorkers.js'),
+                    '☠ Kill server':                    project('../../projects/serverReset.js'),
                     '💻 Spawn process on server':       project('../../projects/serverCmd.js'),
                     '📂 Show server folder':             project('../../projects/serverFolder.js'),
                     '🗩 Generate some output at server': project('../../projects/serverOuput.js'),

@@ -141,7 +141,7 @@ function insertFolder(j, diff)
 
 new Object({
     type: 'Project',
-    icon: '⤑💢',
+    icon: '💢',
     desc: 'Show fragment folder',
     service: {
         type: 'Service',
