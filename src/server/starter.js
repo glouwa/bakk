@@ -85,22 +85,20 @@ function aProjectJob()
     {     
         if (process.argv[3])
         {
-            var jobToMeasure = j.subjobs[0]
+            var jobToMeasure = j.subjobs['C₁₁₋₂'].subjobs['C₁₁₋₃'] // todo: des geht ned auf dauer
 
             var workTimeMs = j.state.lastModification.valueOf()
-                           - j.state.callTime.valueOf() + ' '
-            fs.appendFileSync(process.argv[3], workTimeMs + '\n')
+                           - j.state.callTime.valueOf()
 
             var nodeIds = Object.keys(app.model.network)
-            var nodeCount = nodeIds.length
+            var nodeCount = nodeIds.length - 1
 
-            console.log(nodeIds)
-            console.log(app.model.network)
-
+            fs.appendFileSync(process.argv[3], workTimeMs + ',' + nodeCount + '\n')
             console.log('   → ' + process.argv[3] + ' += '
-                        + workTimeMs + 'ms, '
-                        + nodeCount + 'nodes, ' +
-                        + nodeIds.toString() + '\n\n')
+                        + jobToMeasure.desc.valueOf() + ' in '
+                        + workTimeMs + 'ms, on '
+                        + nodeCount + 'nodes, '
+                        + '\n\n')
         }
         process.exit(0)
     }
