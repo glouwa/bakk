@@ -29,13 +29,6 @@
         return 'failed'
     }
 
-    function wrap(name, j)
-    {
-        var sjmdiff = {}
-        sjmdiff[name] = j
-        return sjmdiff
-    }
-
     function countStateNot(sjm, state)
     {
         var jids = Object.keys(sjm)
@@ -64,6 +57,21 @@
              //+ (callProgress
              + avgSjProgress * 0.9
     }
+
+    function onSubjobUpdate(sj, diff, outputDiff, parent, pAa, jobCount)
+    {
+        var pdiff = {
+            state: { progress: avgProgress(parent, pAa, jobCount) },
+            subjobs: { [sj.id.valueOf()]:diff }
+        }
+
+        if (pdiff.state.progress == 1)
+            delete pdiff.state.progress // wtf?
+
+        parent.updateJob(pdiff, outputDiff)
+    }
+
+    //-----------------------------------------------------------------------------------------
 
     exports.oneLogic = function(parent, args)
     {
@@ -100,18 +108,7 @@
             var sj = args.job(jidx, node)
             jobNodeMap[sj.id.valueOf()] = node
 
-            sj.onUpdate = function(j, diff, outputDiff)
-            {
-                var pdiff = {
-                    state: { progress: avgProgress(parent, pAa, args.count) },
-                    subjobs: { [sj.id.valueOf()]:diff }
-                }
-
-                if (pdiff.state.progress == 1)
-                    delete pdiff.state.progress
-
-                parent.updateJob(pdiff, outputDiff)
-            }
+            sj.onUpdate = (j, sd, od)=> onSubjobUpdate(j, sd, od, parent, pAa, args.count)
             sj.onReturn = j=> onReturn(j, jidx)
             parent.update('subjobs.'+sj.id, sj)
             return parent.subjobs[sj.id] || app.model.jobs[sj.id.valueOf()]
@@ -128,67 +125,63 @@
         newSubJobs.forEach(sj=> sj.call())
     }
 
-    function logic(parent, onReturn, starter)
-    {
-        var pAa = parent.state.progress.valueOf()
-
-        parent.onCancel = j=> parent.subjobs.forEach(sj=> sj.cancel())
-
-        function configureSubjob(sj, jidx)
-        {
-            sj.onUpdate = function(j, diff, outputDiff)
-            {
-                var pdiff = {
-                    state: { progress: avgProgress(parent, pAa) },
-                    subjobs: { [sj.id.valueOf()]:diff }
-                }
-
-                if (pdiff.state.progress == 1)
-                    delete pdiff.state.progress // wtf?
-
-                parent.updateJob(pdiff, outputDiff)
-            }
-            sj.onReturn = j=> onReturn(j, jidx)
-            return sj
-        }
-
-        starter(configureSubjob)
-    }
+    //-----------------------------------------------------------------------------------------
 
     exports.factoryLogic = function(parent, args)     // by abort callback
     {
         var newSubJobs = []
-        logic(
-            parent,
-            (j, jidx)=> // onReturn
+        var pAa = parent.state.progress.valueOf()
+
+        parent.onCancel = j=> parent.subjobs.forEach(sj=> sj.cancel())
+
+        function onReturn(j, jidx)
+        {
+        }
+
+        function configureSubjob(sj, jidx)
+        {
+            sj.onUpdate = (j, sd, od)=> onSubjobUpdate(j, sd, od, parent, pAa)
+            sj.onReturn = j=>
             {
                 if (allHaveState(parent.subjobs, 'type', 'returned')){
                     //console.log('#### closing parent ' + parent.id + ' because ' + j.id)
                     parent.ret(resultState(parent), args.desc + ' ' + resultState(parent))}
-            },
-            sjf=> // onCall
-            {
-                var lastCreatedIdx = 0
-                while(args.end(lastCreatedIdx)) // !!
-                {
-                    var newSj = sjf(args.job(lastCreatedIdx++), lastCreatedIdx)
-                    parent.update('subjobs.'+newSj.id, newSj)
-                    newSubJobs.push(parent.subjobs[newSj.id] || app.model.jobs[newSj.id.valueOf()])
-                }
-
-                console.assert(lastCreatedIdx > 0, 'subjoblogic with 0 subjobs?')
-
-                parent.updateJob({ state:{ type:'running', detail:'delegating', log:args.desc||'factoryLogic has no desc' }})
-                newSubJobs.forEach(sj=> sj.call())
             }
-        )
+            return sj
+        }
+
+        var lastCreatedIdx = 0
+        while(args.end(lastCreatedIdx)) // !!
+        {
+            var newSj = configureSubjob(args.job(lastCreatedIdx++), lastCreatedIdx)
+            parent.update('subjobs.'+newSj.id, newSj)
+            newSubJobs.push(parent.subjobs[newSj.id] || app.model.jobs[newSj.id.valueOf()])
+        }
+
+        console.assert(lastCreatedIdx > 0, 'subjoblogic with 0 subjobs?')
+
+        parent.updateJob({ state:{ type:'running', detail:'delegating', log:args.desc||'factoryLogic has no desc' }})
+        newSubJobs.forEach(sj=> sj.call())
     }
+
+    //-----------------------------------------------------------------------------------------
 
     exports.sequenceLogic = function(parent, subjobFactorys) // by arraylenght
     {
         var newSubJobs = []
-        logic(parent,
-            (j, jidx)=> // onReturn
+
+        var pAa = parent.state.progress.valueOf()
+
+        parent.onCancel = j=> parent.subjobs.forEach(sj=> sj.cancel())
+
+        function onReturn(j, jidx)
+        {
+        }
+
+        function configureSubjob(sj, jidx)
+        {
+            sj.onUpdate = (j, sd, od)=> onSubjobUpdate(j, sd, od, parent, pAa)
+            sj.onReturn = j=>
             {
                 if (jidx < subjobFactorys.length)
                     if (j.state.detail.valueOf() === 'ok')
@@ -208,21 +201,20 @@
                     //console.trace('######### ret 2', parent.id, j.id)
                     parent.ret(resultState(parent), parent.state.log)
                 }
-            },
-            sjf=> // onCall
-            {
-                var lastCreatedIdx = 0
-                while(lastCreatedIdx < subjobFactorys.length) // !!
-                {
-                    var newSj = sjf(subjobFactorys[lastCreatedIdx](lastCreatedIdx++), lastCreatedIdx)
-                    parent.update('subjobs.'+newSj.id, newSj)
-                    newSubJobs.push(parent.subjobs[newSj.id] || app.model.jobs[newSj.id.valueOf()])
-                }
-
-                parent.updateJob({ state:{ type:'running', detail:'delegating', log:'sequenceLogic has no desc' }})
-                newSubJobs[0].call()
             }
-        )
+            return sj
+        }
+
+        var lastCreatedIdx = 0
+        while(lastCreatedIdx < subjobFactorys.length) // !!
+        {
+            var newSj = configureSubjob(subjobFactorys[lastCreatedIdx](lastCreatedIdx++), lastCreatedIdx)
+            parent.update('subjobs.'+newSj.id, newSj)
+            newSubJobs.push(parent.subjobs[newSj.id] || app.model.jobs[newSj.id.valueOf()])
+        }
+
+        parent.updateJob({ state:{ type:'running', detail:'delegating', log:'sequenceLogic has no desc' }})
+        newSubJobs[0].call()
     }
 })
 (typeof exports === 'undefined' ? this['jl']={} : exports)

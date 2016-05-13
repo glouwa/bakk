@@ -49,7 +49,7 @@
                 })
             }})
 
-            Object.defineProperty(jp, 'cancel', { value:function()
+            Object.defineProperty(jp, 'cancel', { value:function cancel()
             {
                 var j = this
                 j.exception2localError(function cancel_()
@@ -74,7 +74,7 @@
                 })
             }})
 
-            Object.defineProperty(jp, 'updateJob', { value:function(diff/*stateDiff*/, outputDiff)
+            Object.defineProperty(jp, 'updateJob', { value:function updateJob(diff/*stateDiff*/, outputDiff)
             {
                 var j = this
                 j.exception2localError(function update_()
@@ -101,7 +101,7 @@
                 })
             }})
 
-            Object.defineProperty(jp, 'ret', { value:function(detail, log)
+            Object.defineProperty(jp, 'ret', { value:function ret(detail, log)
             {
                 var j = this
                 j.exception2localError(function ret_()

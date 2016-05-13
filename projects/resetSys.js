@@ -1,4 +1,4 @@
-function killServerOverlordsAndWorkers(j, diff)
+function killServerOverlordsAndWorkers(j)
 {
     j.delegateToOne({ job:()=> jf.remoteProxyJob({
         desc:'kill on server ' + network.connections[0].id,
