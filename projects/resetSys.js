@@ -28,7 +28,7 @@ function killServerOverlordsAndWorkers(j)
             }}),
             ()=> jf.job({ desc:'kill server', onCall: ksj=>
             {
-                setTimeout(()=> { // todo: if last job in sequence is sync -> double return
+                setTimeout(()=> { // todo: if last job in sequence is sync -> double return (swaped)
                    var serverkill = js.params.nodeType.some(i=> i.valueOf() == 'Server')
                    ksj.ret('ok', serverkill?'S₀ will exit in ½s':' S₀ does nothing')
                    if (serverkill) setTimeout(()=>process.exit(0), 500)

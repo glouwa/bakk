@@ -38,7 +38,7 @@ function project(url, noView)
                 project.update(Object.assign(projectDiff, {
                     '↻':'deadbeef',
                     '✕': function(j) {},
-                    '▸': function(j, args)
+                    '▸': function(j, diff, args)
                     {
                         j.delegateToOne({ job:()=> visiblePepRootJob(project, args) })  //instantiateAndRun(j, project),
                     },

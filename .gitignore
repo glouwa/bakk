@@ -6,6 +6,7 @@
 *.includes
 *.creator
 *.autosave
+*.csv
 
 data
 **/node_modules
