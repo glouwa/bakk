@@ -257,7 +257,10 @@
                 isProxy: true,                
                 params: args.args,
                 //state: { creator:jm.workerId },
-                onCall:   ()=> c.send(jobMsg('call', realJob.id, realJob.pack())),
+                onCall:   ()=> {
+                    realJob.state.callTime = Date.now()
+                    c.send(jobMsg('call', realJob.id, realJob.pack()))
+                },
                 onCancel: ()=> c.send(jobMsg('cancel', realJob.id, realJob.pack()))
                 //onUpdate: wird in ganz normal von logic oder anwender definiert
                 //onReturn: wird in ganz normal von logic oder anwender definiert
