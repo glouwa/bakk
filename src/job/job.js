@@ -17,7 +17,7 @@
             Object.defineProperty(jp, 'call', { value:function call()
             {
                 var j = this
-                j.exception2localError(function call_()
+                j.exception2localError(function call_(initDiff)
                 {
                     //console.trace('j-' + j.id + ' call')
 
@@ -31,16 +31,20 @@
                         }, j.params.timeout.valueOf())
                     }
 
+                    var callTime = Date.now()
+                    if (initDiff && initDiff.state && initDiff.state.callTime)
+                        callTime = initDiff.state.callTime
+
                     var diff = {
                         id: j.id,
                         state: {
-                            progress: 0.05,
+                            progress: 0.051,
                             type: 'calling',
                             detail: 'calling',
                             log: 'calling function',
                             worker: jm.workerId,
                             lastWorker: jm.workerId,
-                            callTime: Date.now(),
+                            callTime: callTime,
                             lastModification: Date.now()
                         }
                     }

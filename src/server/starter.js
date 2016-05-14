@@ -80,8 +80,8 @@ function aProjectJob() {
             process.stdout.moveCursor(0, -lastTreeSize)
             process.stdout.clearScreenDown()
         }
-        var archyRootNode = { label:projectName + ', devCount=' + devCount + ', i=' + iteration + ', ' +  startTime }
-        archyRootNode.nodes = [ 'ok Connected', jobToArchyNode(j) ]
+        var headLabel = projectName + ', devCount=' + devCount + ', i=' + iteration + ', ' +  startTime
+        var archyRootNode = { label:headLabel, nodes:[ 'ok Connected', jobToArchyNode(j) ] }
         var treeStr = archy(archyRootNode)
         lastTreeSize = treeStr.split(/\n/).length
         console.log(treeStr)
@@ -90,7 +90,7 @@ function aProjectJob() {
     function printjobResult(j) {
         if (outputFile) {
             var jobToMeasure = getLastSubjobs(getLastSubjobs(j))
-            var workTimeMs = j.state.lastModification.valueOf() - j.state.callTime.valueOf()
+            var workTimeMs = jobToMeasure.state.lastModification.valueOf() - jobToMeasure.state.callTime.valueOf()
             var nodeIds = Object.keys(app.model.network)
             var nodeCount = nodeIds.length - 1
             var logline = devCount + ', ' + nodeCount + ', ' + workTimeMs
@@ -100,7 +100,9 @@ function aProjectJob() {
         process.exit(0)
     }
 
-    var args = projectName=='serverWorkers'?{ devCount:devCount, workerCount:3, justStart:true}:undefined
+    var args = projectName=='serverWorkers'
+             ?{ devCount:devCount, workerCount:3, justStart:true}
+             :undefined
 
     return rootJob({
         desc:'cli',
