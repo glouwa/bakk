@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for devCount in 1 2
+for devCount in 2
 do
     for i in `seq 1 50`;
     do

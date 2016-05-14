@@ -158,7 +158,7 @@ function jobStateTreeView(jobModel)
 
         view.update = function(changes)
         {
-            if (l < 2)
+            if (l < 3)
                 if (changes.newMembers.subjobs)
                 {
                     console.assert(!subjobs)
@@ -265,7 +265,15 @@ function jobStateView(level)
     {
         progress.addBlock(jobModel, origin)
 
-        lastworker.innerText = (''+jobModel.state.lastWorker)!= 'undefined'?''+jobModel.state.lastWorker:'-'
+        //lastworker.innerText = (''+jobModel.state.lastWorker)!= 'undefined'?''+jobModel.state.lastWorker:'-'
+
+        var locationInfo = ''
+        if (jobModel.state.creator)
+            locationInfo += jobModel.state.creator.valueOf()
+        if (jobModel.state.worker)
+            locationInfo +=  ' ↷ ' + jobModel.state.worker.valueOf()
+
+        lastworker.innerText = locationInfo
         lastlog.innerText = jobModel.state.log//.valueOf()
         state.innerText = config.getIcon(jobModel.state)
     }

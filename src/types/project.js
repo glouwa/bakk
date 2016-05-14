@@ -69,7 +69,7 @@ function project(url, noView)
         {
             j.delegateToSequence(
                 ()=> ajaxLoadJob(this),
-                ()=> jf.job({ onCall:j=> j.delegateToOne({ job:()=> visiblePepRootJob(this, args) }) })
+                ()=> jf.job({ desc:'workaround ;)', onCall:j=> j.delegateToOne({ job:()=> visiblePepRootJob(this, args) }) })
                 //()=> visiblePepRootJob(this) // todo: fix the sync bug to use this line
             )
         },

@@ -7,7 +7,7 @@ function getCmdSet(j, diff)
             args: j.params,
             realJob: js=> {
                 var workers = app.getNodesByCapability('POSIX64')
-                var elements = 500
+                var elements = 5
                 js.delegateToPool({
                     pool: workers,
                     count: elements,

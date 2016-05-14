@@ -16,9 +16,12 @@ function jobToArchyNode(j) {
     var line = ''
     if (j.state) {
         if (j.state.type == 'returned')
-            line += j.state.detail + ' '
+            line += config.getIcon(j.state) + ' '
         else
             line += ~~(j.state.progress.valueOf()*100) + '% '
+
+        if (j.state.worker)
+            line += j.state.worker + ' '
 
         if (j.state.lastModification && j.state.callTime)
             line += formatTimespan(j.state.lastModification.valueOf() - j.state.callTime.valueOf()) + ' '

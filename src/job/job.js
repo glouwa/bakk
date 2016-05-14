@@ -38,6 +38,7 @@
                             type: 'calling',
                             detail: 'calling',
                             log: 'calling function',
+                            worker: jm.workerId,
                             lastWorker: jm.workerId,
                             callTime: Date.now(),
                             lastModification: Date.now()
@@ -221,7 +222,7 @@
                 type: 'idle',   // idle, running, canceling, returned
                 detail: 'idle', // (idle), (userdefined), (canceling), (recoverable, fatal, timeout)
                 log: 'created',
-                //creator: jm.workerId,
+                creator: jm.workerId,
                 lastWorker: jm.workerId,
                 lastModification: Date.now()
             }
@@ -267,19 +268,19 @@
 
         jobMsg = function(type, id, diff, odiff)
         {
-            var channelMsg = function(type, msg)
-            {
+            var channelMsg = function(type, msg) {
                 var net = {}
                 net.type = type
                 net.payload = msg
                 return net
             }
 
-            var msg = {}
-            msg.type = type
-            msg.id = id
-            msg.diff = diff
-            msg.odiff = odiff
+            var msg = {
+                type: type,
+                id: id,
+                diff: diff,
+                odiff: odiff
+            }
             return channelMsg('Job', msg)
         }
 
@@ -291,7 +292,7 @@
                 if (!job)
                 {
                     var jd = jm.job(parsed.diff.unpack(evalInAppContext))
-                    jd.onUpdate = function(j, diff, o) { c.send(jobMsg('updateJob', jd.id, diff, o)) }
+                    jd.onUpdate = (j, diff, o)=> c.send(jobMsg('updateJob', jd.id, diff, o))
                     jd.isRemote = true
                     jd.desc = 'remote order'
 
