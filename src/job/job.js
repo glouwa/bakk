@@ -221,6 +221,7 @@
                 type: 'idle',   // idle, running, canceling, returned
                 detail: 'idle', // (idle), (userdefined), (canceling), (recoverable, fatal, timeout)
                 log: 'created',
+                //creator: jm.workerId,
                 lastWorker: jm.workerId,
                 lastModification: Date.now()
             }
@@ -232,6 +233,37 @@
         }
 
         //-----------------------------------------------------------------------------------------
+
+        jm.remoteJobs = {}
+        jm.remoteProxyJob = function(args)
+        {
+            var c = args.node
+            // transfered, unpacket and called remotely
+            // j is a valid variable bcause this functions are evaluated remotly in
+            // a context where j exists. c is the connection on remoteside
+            var realJob = jm.job({
+                params: args.args,
+                onCall: args.realJob                
+            })            
+
+            // locally called
+            var proxyJob = jm.job({
+                id: realJob.id,
+                isProxy: true,                
+                params: args.args,
+                //state: { creator:jm.workerId },
+                onCall:   ()=> c.send(jobMsg('call', realJob.id, realJob.pack())),
+                onCancel: ()=> c.send(jobMsg('cancel', realJob.id, realJob.pack()))
+                //onUpdate: wird in ganz normal von logic oder anwender definiert
+                //onReturn: wird in ganz normal von logic oder anwender definiert
+
+            })
+
+            // is jetzt in mvj ... jm.remoteJobs[proxyJob.id] = proxyJob
+            // todo: unregister on return (on('return',...))
+
+            return proxyJob
+        }
 
         jobMsg = function(type, id, diff, odiff)
         {
@@ -249,33 +281,6 @@
             msg.diff = diff
             msg.odiff = odiff
             return channelMsg('Job', msg)
-        }
-
-        jm.remoteJobs = {}
-        jm.remoteProxyJob = function(args)
-        {
-            var c = args.node
-            // transfered, unpacket and called remotely
-            // j is a valid variable bcause this functions are evaluated remotly in
-            // a context where j exists. c is the connection on remoteside
-            var realJob = jm.job({
-                params: args.args,
-                onCall: args.realJob                
-            })
-
-            // locally called
-            var proxyJob = jm.job({
-                id: realJob.id,
-                isProxy: true,
-                params: args.args,
-                onCall:   ()=> c.send(jobMsg('call', realJob.id, realJob.pack())),
-                onCancel: ()=> c.send(jobMsg('cancel', realJob.id, realJob.pack()))
-            })
-
-            // is jetzt in mvj ... jm.remoteJobs[proxyJob.id] = proxyJob
-            // todo: unregister on return (on('return',...))
-
-            return proxyJob
         }
 
         jm.onReceive = function(c, parsed, evalInAppContext, app, pduSize)

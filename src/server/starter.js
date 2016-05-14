@@ -7,11 +7,14 @@ eval(fs.readFileSync('../types/project.js')+'')
 
 var messageHandlers = clientMessageHandlerFactory('C', 'Client', [], ()=> aProjectJob().call())
 
-function jobToArchyNode(j)
-{
+var projectName = process.argv[2]
+var iteration   = process.argv[3]
+var outputFile  = process.argv[4]
+var devCount    = process.argv[5]
+
+function jobToArchyNode(j) {
     var line = ''
-    if (j.state)
-    {
+    if (j.state) {
         if (j.state.type == 'returned')
             line += j.state.detail + ' '
         else
@@ -32,8 +35,7 @@ function jobToArchyNode(j)
     return archyNode
 }
 
-function formatTimespan(ms)
-{
+function formatTimespan(ms) {
     if (ms > 1000*60*60)
         return ~~(ms/(1000*60*60)) + 'h'
     else if (ms > 1000*60)
@@ -44,20 +46,23 @@ function formatTimespan(ms)
         return ms + 'ms'
 }
 
-function aProjectJob()
-{    
+function getLastSubjobs(j) {
+    var r
+    j.subjobs.forEach((v, k, i)=> { r = v; })
+    return r
+}
+
+function aProjectJob() {
     app.model.update({
         type: 'Model',
         jobs: { type:'Set<Job>' },
         store: { type:'Store' },
         network: { type:'Network' },
-        projects: // fileset(path, 'Set<Project>', (filename)=> project.ctor(filename))
-        {
+        projects: { // fileset(path, 'Set<Project>', (filename)=> project.ctor(filename))
             type:'Set<Project>',
-            'cliProject':project('../../projects/' + process.argv[2] + '.js', 'noWiew')
+            'cliProject':project('../../projects/' + projectName + '.js', 'noWiew')
         },
-        registry:
-        {
+        registry: {
             type:'Registry',
             config: config,
             types: { type:'Set<Type>' }
@@ -67,45 +72,36 @@ function aProjectJob()
     var lastTreeSize = undefined
     var startTime = new Date().toLocaleString()
 
-    function printjobUpdate(j)
-    {
+    function printjobUpdate(j) {
         if (lastTreeSize) {
             process.stdout.moveCursor(0, -lastTreeSize)
             process.stdout.clearScreenDown()
         }
-
-        var archyRootNode = { label:startTime }
+        var archyRootNode = { label:projectName + ', devCount=' + devCount + ', i=' + iteration + ', ' +  startTime }
         archyRootNode.nodes = [ 'ok Connected', jobToArchyNode(j) ]
         var treeStr = archy(archyRootNode)
-        lastTreeSize = treeStr.split(/\r\n|\r|\n/).length
+        lastTreeSize = treeStr.split(/\n/).length
         console.log(treeStr)
     }
 
-    function printjobResult(j)
-    {     
-        if (process.argv[3])
-        {
-            var jobToMeasure = j.subjobs['C₁₁₋₂'].subjobs['C₁₁₋₃'] // todo: des geht ned auf dauer
-
-            var workTimeMs = j.state.lastModification.valueOf()
-                           - j.state.callTime.valueOf()
-
+    function printjobResult(j) {
+        if (outputFile) {
+            var jobToMeasure = getLastSubjobs(getLastSubjobs(j))
+            var workTimeMs = j.state.lastModification.valueOf() - j.state.callTime.valueOf()
             var nodeIds = Object.keys(app.model.network)
             var nodeCount = nodeIds.length - 1
-
-            fs.appendFileSync(process.argv[3], workTimeMs + ',' + nodeCount + '\n')
-            console.log('   → ' + process.argv[3] + ' += '
-                        + jobToMeasure.desc.valueOf() + ' in '
-                        + workTimeMs + 'ms, on '
-                        + nodeCount + 'nodes, '
-                        + '\n\n')
+            var logline = devCount + ', ' + nodeCount + ', ' + workTimeMs
+            fs.appendFileSync(devCount + '-' + outputFile, logline + '\n')
+            console.log('   → ' + devCount + '-' + outputFile + ' += [' + logline + ']\n\n')
         }
         process.exit(0)
     }
 
+    var args = projectName=='serverWorkers'?{ devCount:devCount, workerCount:3, justStart:true}:undefined
+
     return rootJob({
         desc:'cli',
-        onCall:j=> app.model.projects['cliProject']['▸'](j),
+        onCall:   j=> app.model.projects['cliProject']['▸'](j, {}, args),
         onUpdate: j=> printjobUpdate(j),
         onReturn: j=> printjobResult(j)
     })

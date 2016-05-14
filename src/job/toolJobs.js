@@ -57,6 +57,8 @@
                 })
 
                 var rrul = (inBrowser ? '':'http://' + exports.config.server.wshost + ':' + exports.config.server.httpport + '/---/---/') + args.url
+
+                console.log(rrul)
                 xmlhttp.open("GET", rrul, true)
                 xmlhttp.send()
             }

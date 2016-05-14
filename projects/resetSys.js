@@ -8,7 +8,7 @@ function killServerOverlordsAndWorkers(j)
 
             ()=> jf.job({ desc:'kill all workers paralell', onCall: kwj=> {
                 try {
-                    var nodes = app.getNodesByType(js.params.nodeType)
+                    var nodes = app.getNodesByType(js.params.nodeType)                    
                     kwj.delegateToFactory({
                         end: idx=> idx < nodes.length,
                         job: idx=> jf.remoteProxyJob({
@@ -16,7 +16,7 @@ function killServerOverlordsAndWorkers(j)
                             node: nodes[idx],
                             args: js.params,
                             realJob: jw=> {
-                                jw.ret('ok', 'worker will exit in ½s')
+                                jw.ret('ok', jf.workerId.valueOf() + ' will exit in ½s')
                                 setTimeout(()=>process.exit(0), 500)
                             }
                         })
@@ -30,9 +30,9 @@ function killServerOverlordsAndWorkers(j)
             {
                 setTimeout(()=> { // todo: if last job in sequence is sync -> double return
                    var serverkill = js.params.nodeType.some(i=> i.valueOf() == 'Server')
-                   ksj.ret('ok', serverkill?'server will exit in ½s':'do nothing')
+                   ksj.ret('ok', serverkill?'S₀ will exit in ½s':' S₀ does nothing')
                    if (serverkill) setTimeout(()=>process.exit(0), 500)
-                }, 0)
+                }, 10)
             }})
         )
     })})

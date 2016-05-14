@@ -6,16 +6,18 @@ function runWorkers(j, diff)
         realJob: js=>
         {
             var nodes = app.getNodesByType(['Overlord'], 'emptyResultIsOk')
+            var devCount = js.params.devCount?Number(js.params.devCount.valueOf())-1:nodes.length
+
             js.delegateToFactory({
-                end: idx=> idx < nodes.length + 1,
+                end: idx=> idx < devCount + 1,
                 job: idx=>
                 {
-                    if (idx < nodes.length) return jf.remoteProxyJob({
+                    if (idx < devCount) return jf.remoteProxyJob({
                         desc:'sending multicast to ' + nodes[idx].id,
                         node: nodes[idx],
                         args: js.params,
                         realJob: jw=> jw.delegateToFactory({
-                            end: idx=> idx < jw.params.amount,
+                            end: idx=> idx < jw.params.workerCount,
                             job: idx=> tj.spawnJob({
                                 path:'node',
                                 args:['worker.js'],
@@ -26,7 +28,7 @@ function runWorkers(j, diff)
 
                     else return jf.job({ desc:'apply on server', onCall:ssj=>
                         ssj.delegateToFactory({
-                            end: idx=> idx < js.params.amount,
+                            end: idx=> idx < js.params.workerCount,
                             job: idx=> tj.spawnJob({
                                 path:'node',
                                 args:['worker.js'],
@@ -49,7 +51,7 @@ new Object({
     {
         type: 'Service',
         src: runWorkers,
-        args: { amount: 3, justStart:true },
+        args: { workerCount: 3, justStart:true },
     },
     tests: []
 })

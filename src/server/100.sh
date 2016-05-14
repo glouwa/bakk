@@ -1,9 +1,25 @@
 #!/bin/bash
-for i in `seq 1 100`;
+
+for devCount in 1 2
 do
-    node starter.js resetSys               &&
-    sleep 3                                &&
-    node starter.js serverWorkers          &&
-    sleep 3                                &&
-    node starter.js primeCpp primeCpp.csv
+    for i in `seq 1 50`;
+    do
+        node starter.js resetSys $i "" $devCount            &&
+        sleep 3                                             &&
+        node starter.js serverWorkers $i "" $devCount       &&
+        sleep 3                                             &&
+        node starter.js serverBakk1 $i serverBakk1.csv $devCount
+    done
+done
+
+for devCount in 1 2
+do
+    for i in `seq 1 50`;
+    do
+        node starter.js resetSys $i "" $devCount            &&
+        sleep 3                                             &&
+        node starter.js serverWorkers $i "" $devCount       &&
+        sleep 3                                             &&
+        node starter.js primeCpp $i primeCpp.csv $devCount
+    done
 done

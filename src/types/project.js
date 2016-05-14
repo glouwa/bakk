@@ -2,18 +2,18 @@ function project(url, noView)
 {
     // PROJECT PART ----------------------------------------------------
 
-    function pepRootJob(project)
+    function pepRootJob(project, args)
     {
         return rootJob({
             desc:project.desc, // create job inst
-            params: project.service.args,
+            params: args?args:project.service.args,
             onCall: (j, params)=> project.service.src(j, params),
         })
     }
 
-    function visiblePepRootJob(project)
+    function visiblePepRootJob(project, args)
     {
-        var job = pepRootJob(project)
+        var job = pepRootJob(project, args)
         if (!noView) $('#jobTab')[0].add(job.id, { content:jobAllView(job) }/*, 'inBg'*/) // show
         //j.delegateToOne({ job:()=> job })                        // start
         return job
@@ -38,9 +38,9 @@ function project(url, noView)
                 project.update(Object.assign(projectDiff, {
                     '↻':'deadbeef',
                     '✕': function(j) {},
-                    '▸': function(j)
+                    '▸': function(j, args)
                     {
-                        j.delegateToOne({ job:()=> visiblePepRootJob(project) })  //instantiateAndRun(j, project),
+                        j.delegateToOne({ job:()=> visiblePepRootJob(project, args) })  //instantiateAndRun(j, project),
                     },
                     '⇱': function(j) //⥯…
                     {
@@ -65,11 +65,11 @@ function project(url, noView)
 
     return {
         type: 'Project',
-        '▸': function(j)
+        '▸': function(j, diff, args)
         {
             j.delegateToSequence(
                 ()=> ajaxLoadJob(this),
-                ()=> jf.job({ onCall:j=> j.delegateToOne({ job:()=> visiblePepRootJob(this) }) })
+                ()=> jf.job({ onCall:j=> j.delegateToOne({ job:()=> visiblePepRootJob(this, args) }) })
                 //()=> visiblePepRootJob(this) // todo: fix the sync bug to use this line
             )
         },

@@ -147,13 +147,13 @@ html {
     border-radius: 3px 3px 0 0;
     text-align: center;
     padding: 0 11 0 11;
-    height: 22;
+    height: 25;
     overflow: hidden;    
 }
 
 .tab{
     float: left;
-    margin: 4 0 -2 0;
+    margin: 4 1 -2 1;
     padding: 1 20 0 20;
     cursor: hand;
     border-style:solid;
@@ -168,14 +168,14 @@ html {
 
 .tab-active{
     float: left;
-    margin: 4 0 -2 0;
+    margin: 4 1 -2 1;
     padding: 1 30 0 6;
     cursor: hand;
     font-weight: normal;
     background-color: #FDFDFD;
     border-radius: 2pt;
     color: #00CC66;
-    height: 20;
+    height: 23;
     position: relative;
 }
 

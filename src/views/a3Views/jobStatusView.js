@@ -311,7 +311,7 @@ function jobLogView(jobModel, originChain)
             var head = document.createElement('div')            
             head.innerText = hj.id.valueOf()
             head.className = 'head'
-            head.title = JSON.stringify(hj.state, null, 4)
+            head.title = hj.id.valueOf() + ':\n' + JSON.stringify(hj.state, null, 4)
             head.style.borderLeftColor = config.getColor(hj.state)
             li.appendChild(head)
         }
