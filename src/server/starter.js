@@ -24,7 +24,7 @@ function jobToArchyNode(j) {
             line += j.state.worker + ' '
 
         if (j.state.lastModification && j.state.callTime)
-            line += formatTimespan(j.state.lastModification.valueOf() - j.state.callTime.valueOf()) + ' '
+            line += formatTimespan(jf.jobTime(j)) + ' '
     }
 
     line += '  ' + j.desc + ': (…) → '
@@ -90,7 +90,7 @@ function aProjectJob() {
     function printjobResult(j) {
         if (outputFile) {
             var jobToMeasure = getLastSubjobs(getLastSubjobs(j))
-            var workTimeMs = jobToMeasure.state.lastModification.valueOf() - jobToMeasure.state.callTime.valueOf()
+            var workTimeMs = jf.jobTime(jobToMeasure)
             var nodeIds = Object.keys(app.model.network)
             var nodeCount = nodeIds.length - 1
             var logline = devCount + ', ' + nodeCount + ', ' + workTimeMs

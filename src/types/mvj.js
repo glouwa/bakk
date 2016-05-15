@@ -190,7 +190,7 @@
 
             if (model.isLeafType)
             {                
-                console.assert(isPrimitive(diff) || diff.isLeafType,                        'Model is primitive but diff is not', model, diff)
+                console.assert(isPrimitive(diff) || diff.isLeafType,           'Model is primitive but diff is not', model, diff)
 
                 if (isPrimitive(diff))
                     model.value = diff
@@ -199,8 +199,8 @@
             }
             else diff.forEach(function(v, id, idx) // [] or {}
             {                
-                console.assert(!isPrimitive(diff),                                          'Model is not primitive but diff is')
-                console.assert(!(v === 'deadbeef' && !model[id]),                           'Trying to delete non existing member ' + id)
+                console.assert(!isPrimitive(diff),                             'Model is not primitive but diff is')
+                console.assert(!(v === 'deadbeef' && !model[id]),              'Trying to delete non existing member ' + id)
 
                 if (v === 'deadbeef')
                 {

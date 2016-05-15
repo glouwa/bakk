@@ -14,10 +14,10 @@
             Object.defineProperty(jp, 'timer', { writable:true, value:null })
             //Object.defineProperty(jp, 'dasdaesc', { writable:true, enumerable:true, value:'unnamed job' })
 
-            Object.defineProperty(jp, 'call', { value:function call()
+            Object.defineProperty(jp, 'call', { value:function call(initDiff)
             {
                 var j = this
-                j.exception2localError(function call_(initDiff)
+                j.exception2localError(function call_()
                 {
                     //console.trace('j-' + j.id + ' call')
 
@@ -31,9 +31,16 @@
                         }, j.params.timeout.valueOf())
                     }
 
+                    console.log('job-call')
+
                     var callTime = Date.now()
+                    var callTimeloc = jm.workerId
                     if (initDiff && initDiff.state && initDiff.state.callTime)
+                    {
+                        console.log('job-call-using initdiff calltime')
                         callTime = initDiff.state.callTime
+                        callTimeloc = initDiff.state.callTimeloc
+                    }
 
                     var diff = {
                         id: j.id,
@@ -44,8 +51,10 @@
                             log: 'calling function',
                             worker: jm.workerId,
                             lastWorker: jm.workerId,
-                            callTime: callTime,
-                            lastModification: Date.now()
+                            callTime:callTime,
+                            callTimeloc:callTimeloc,
+                            lastModification: Date.now(),
+                            lastModificationloc:jm.workerId
                         }
                     }
                     j.merge(diff, !j.isRoot)
@@ -70,7 +79,8 @@
                             detail: 'canceling',
                             log: 'canceling',
                             lastWorker: jm.workerId,
-                            lastModification: Date.now()
+                            lastModification: Date.now(),
+                            lastModificationloc: jm.workerId
                         }
                     }
                     j.merge(diff, !j.isRoot)
@@ -86,6 +96,9 @@
                 {
                     //console.trace('j-' + j.id + ' updateJob')
                     console.assert(!diff.output)
+
+                    diff.state.lastModification = Date.now()
+                    diff.state.lastModificationloc = jm.workerId
 
                     if (diff.state.progress && diff.state.progress.valueOf() == 1)
                     {
@@ -123,7 +136,8 @@
                             detail:detail,
                             log:log,
                             lastWorker: jm.workerId,
-                            lastModification: Date.now()
+                            lastModification: Date.now(),
+                            lastModificationloc:jm.workerId
                         }
                     }
                     j.merge(diff, !j.isRoot)
@@ -228,7 +242,8 @@
                 log: 'created',
                 creator: jm.workerId,
                 lastWorker: jm.workerId,
-                lastModification: Date.now()
+                lastModification: Date.now(),
+                lastModificationloc:jm.workerId
             }
             if (!diff.onCancel) diff.onCancel = j=> j.ret('canceled', 'default cancel')
             if (!diff.onUpdate) diff.onUpdate = j=> { /*gui update | parent updaet */ }
@@ -257,11 +272,13 @@
                 isProxy: true,                
                 params: args.args,
                 //state: { creator:jm.workerId },
-                onCall:   ()=> {
+                onCall:   pj=> {
                     realJob.state.callTime = Date.now()
+                    realJob.state.callTimeloc = jm.workerId
+                    //sim.log('job', 'log', '⟶', '?', jobMsg('call', realJob.id, realJob.pack()))
                     c.send(jobMsg('call', realJob.id, realJob.pack()))
                 },
-                onCancel: ()=> c.send(jobMsg('cancel', realJob.id, realJob.pack()))
+                onCancel: pj=> c.send(jobMsg('cancel', realJob.id, realJob.pack()))
                 //onUpdate: wird in ganz normal von logic oder anwender definiert
                 //onReturn: wird in ganz normal von logic oder anwender definiert
 
@@ -316,6 +333,12 @@
             {
                 console.error(e.stack)
             }
+        }
+
+        jm.jobTime = function(j)
+        {
+            console.assert(j.state.lastModificationloc.valueOf() == j.state.callTimeloc.valueOf(), j.state)
+            return j.state.lastModification.valueOf() - j.state.callTime.valueOf()
         }
 
         return jm

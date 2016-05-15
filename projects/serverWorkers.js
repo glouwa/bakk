@@ -12,7 +12,7 @@ function runWorkers(j, diff)
                 end: idx=> idx < devCount + 1,
                 job: idx=>
                 {
-                    if (idx < devCount) return jf.remoteProxyJob({
+                    if (idx < nodes.length) return jf.remoteProxyJob({
                         desc:'sending multicast to ' + nodes[idx].id,
                         node: nodes[idx],
                         args: js.params,
