@@ -49,6 +49,7 @@ function getCmdSet(j, diff)
                         args:{ command:output.commands[idx], idx:idx, timeout:js.params.workerTimeout },
                         realJob: jw=> tj.spawn(jw, {
                             cmd: 'shuf -i 0-10 -n 1 | xargs sleep && echo echo', //jw.params.command.cmd.valueOf(),
+                            options:{ cwd:jw.params.command.dir.valueOf(), env:Object.assign({ OMP_NUM_THREADS:4 }, process.env) },
                             onStdOut: (jw, data)=> jw.commitJob(
                                 { type:'running', progress:0.5, log:data },
                                 { commands:{ [jw.params.idx.valueOf()]:{ fileState:'ok'} }}
@@ -70,8 +71,8 @@ new Object({
         src: getCmdSet,
         args: {
             directory: '../../data/fragmented/',
-            timeout:25000,
-            workerTimeout:12000
+            timeout:25*60*1000,
+            workerTimeout:5*60*1000
         },
     },    
     tests: []

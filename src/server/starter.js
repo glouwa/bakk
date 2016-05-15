@@ -12,6 +12,30 @@ var iteration   = process.argv[3]
 var outputFile  = process.argv[4]
 var devCount    = process.argv[5]
 
+function formatTimespan(ms) {
+    if (ms > 1000*60*60)
+        return ~~(ms/(1000*60*60)) + 'h'
+    else if (ms > 1000*60)
+        return ~~(ms/(1000*60)) + 'm'
+    else if (ms > 1000)
+        return (ms/1000).toFixed(1) + 's'
+    else
+        return ms + 'ms'
+}
+
+function getLastSubjobs(j) {
+    var r
+    j.subjobs.forEach((v, k, i)=> { r = v; })
+    return r
+}
+
+function visitJob(j, visitor)
+{
+    visitor(j)
+    if (j.subjobs)
+        j.subjobs.forEach((v, k)=> visitJob(v, visitor))
+}
+
 function jobToArchyNode(j) {
     var line = ''
     if (j.state) {
@@ -38,23 +62,6 @@ function jobToArchyNode(j) {
     return archyNode
 }
 
-function formatTimespan(ms) {
-    if (ms > 1000*60*60)
-        return ~~(ms/(1000*60*60)) + 'h'
-    else if (ms > 1000*60)
-        return ~~(ms/(1000*60)) + 'm'
-    else if (ms > 1000)
-        return (ms/1000).toFixed(1) + 's'
-    else
-        return ms + 'ms'
-}
-
-function getLastSubjobs(j) {
-    var r
-    j.subjobs.forEach((v, k, i)=> { r = v; })
-    return r
-}
-
 function aProjectJob() {
     app.model.update({
         type: 'Model',
@@ -72,37 +79,57 @@ function aProjectJob() {
         },
     })
 
+    var pathPrefix = '../../log/'
     var lastTreeSize = undefined
     var startTime = new Date().toLocaleString()
+    var workerPerDev = 3
 
     function printjobUpdate(j) {
-        if (lastTreeSize) {
+        if (lastTreeSize != undefined) {            
             process.stdout.moveCursor(0, -lastTreeSize)
+            process.stdout.cursorTo(0)
             process.stdout.clearScreenDown()
+            /*
+            process.stdout.cursorTo(0, 0)
+            process.stdout.clearScreenDown()
+            */
         }
         var headLabel = projectName + ', devCount=' + devCount + ', i=' + iteration + ', ' +  startTime
         var archyRootNode = { label:headLabel, nodes:[ 'ok Connected', jobToArchyNode(j) ] }
         var treeStr = archy(archyRootNode)
-        lastTreeSize = treeStr.split(/\n/).length
+        lastTreeSize = treeStr.split(/\r\n|\r|\n/).length
         console.log(treeStr)
     }
 
     function printjobResult(j) {
-        if (outputFile) {
+        if (outputFile) {            
             var jobToMeasure = getLastSubjobs(getLastSubjobs(j))
-            var workTimeMs = jf.jobTime(jobToMeasure)
-            var nodeIds = Object.keys(app.model.network)
-            var nodeCount = nodeIds.length - 1
-            var logline = devCount + ', ' + nodeCount + ', ' + workTimeMs
-            fs.appendFileSync(devCount + '-' + outputFile, logline + '\n')
-            console.log('   → ' + devCount + '-' + outputFile + ' += [' + logline + ']\n\n')
+
+            // write worker runtime
+            var workterTimes = ''
+            var workerCount = 0
+            visitJob(j, sj=> {
+                if (sj.state.worker.valueOf().startsWith('W')) {
+                    workterTimes += jf.jobTime(sj) + ',\n'
+                    workerCount++
+                }
+            })
+
+            if (workerCount == workerPerDev*devCount) {
+                fs.appendFileSync(pathPrefix + devCount + '-worker-' + outputFile, workterTimes)
+
+                // write overall runtime
+                var workTimeMs = jf.jobTime(jobToMeasure)
+                var logline = devCount + ', ' + workerCount + ', ' + workTimeMs
+                fs.appendFileSync(pathPrefix + devCount + '-all-' + outputFile, logline + '\n')
+            }
         }
         process.exit(0)
     }
 
     var args = projectName=='serverWorkers'
-             ?{ devCount:devCount, workerCount:3, justStart:true}
-             :undefined
+             ? { devCount:devCount, workerCount:workerPerDev, justStart:true}
+             : undefined
 
     return rootJob({
         desc:'cli',

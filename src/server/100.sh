@@ -1,5 +1,7 @@
 #!/bin/bash
 
+rm ../../log/*
+
 for devCount in 2
 do
     for i in `seq 1 50`;
@@ -12,7 +14,10 @@ do
     done
 done
 
-for devCount in 1 2
+gnuplot -persist -e "projectname='serverBakk1'" plotcurve.sh
+gnuplot -persist -e "projectname='serverBakk1'" plothist.sh
+
+for devCount in 2
 do
     for i in `seq 1 50`;
     do
@@ -23,3 +28,6 @@ do
         node starter.js primeCpp $i primeCpp.csv $devCount
     done
 done
+
+gnuplot -persist -e "projectname='primeCpp'" plotcurve.sh
+gnuplot -persist -e "projectname='primeCpp'" plothist.sh

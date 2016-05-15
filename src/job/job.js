@@ -31,13 +31,10 @@
                         }, j.params.timeout.valueOf())
                     }
 
-                    console.log('job-call')
-
                     var callTime = Date.now()
                     var callTimeloc = jm.workerId
                     if (initDiff && initDiff.state && initDiff.state.callTime)
-                    {
-                        console.log('job-call-using initdiff calltime')
+                    {                    
                         callTime = initDiff.state.callTime
                         callTimeloc = initDiff.state.callTimeloc
                     }
@@ -51,7 +48,7 @@
                             log: 'calling function',
                             worker: jm.workerId,
                             lastWorker: jm.workerId,
-                            callTime:callTime,
+                            callTime:callTime,  // sollte eigenlich schon da sein wenn initDiff verw.
                             callTimeloc:callTimeloc,
                             lastModification: Date.now(),
                             lastModificationloc:jm.workerId
