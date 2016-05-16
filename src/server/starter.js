@@ -1,5 +1,6 @@
 var fs = require('fs')
-var archy = require('archy');
+var archy = require('archy')
+var logUpdate = require('log-update')
 
 eval(fs.readFileSync('../app.js')+'')
 eval(fs.readFileSync('../types/project.js')+'')
@@ -80,44 +81,31 @@ function aProjectJob() {
     })
 
     var pathPrefix = '../../log/'
-    var lastTreeSize = undefined
     var startTime = new Date().toLocaleString()
     var workerPerDev = 3
 
     function printjobUpdate(j) {
-        if (lastTreeSize != undefined) {            
-            process.stdout.moveCursor(0, -lastTreeSize)
-            process.stdout.cursorTo(0)
-            process.stdout.clearScreenDown()
-            /*
-            process.stdout.cursorTo(0, 0)
-            process.stdout.clearScreenDown()
-            */
-        }
         var headLabel = projectName + ', devCount=' + devCount + ', i=' + iteration + ', ' +  startTime
         var archyRootNode = { label:headLabel, nodes:[ 'ok Connected', jobToArchyNode(j) ] }
         var treeStr = archy(archyRootNode)
-        lastTreeSize = treeStr.split(/\r\n|\r|\n/).length
-        console.log(treeStr)
+        logUpdate(treeStr)
     }
 
     function printjobResult(j) {
         if (outputFile) {            
             var jobToMeasure = getLastSubjobs(getLastSubjobs(j))
+            var workerCount = jobToMeasure.output.workerCount.valueOf()
 
-            // write worker runtime
-            var workterTimes = ''
-            var workerJobCount = 0
-            visitJob(j, sj=> {
-                if (sj.state.worker.valueOf().startsWith('W')) {
-                    workterTimes += jf.jobTime(sj) + ',\n'
-                    workerJobCount++
-                }
-            })
-
-            workerCount = jobToMeasure.output.workerCount.valueOf()
-
-            if (workerCount == workerPerDev*devCount) {
+            if (workerCount == workerPerDev*devCount) {                
+                // write worker runtime
+                var workterTimes = ''
+                var workerJobCount = 0
+                visitJob(j, sj=> {
+                    if (sj.state.worker.valueOf().startsWith('W')) {
+                        workterTimes += jf.jobTime(sj) + ',\n'
+                        workerJobCount++
+                    }
+                })
                 fs.appendFileSync(pathPrefix + devCount + '-worker-' + outputFile, workterTimes)
 
                 // write overall runtime
@@ -131,6 +119,7 @@ function aProjectJob() {
                 fs.appendFileSync(pathPrefix + 'error-log.txt', errMsg)
             }
         }
+        logUpdate.done()
         process.exit(0)
     }
 

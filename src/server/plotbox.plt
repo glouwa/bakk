@@ -16,6 +16,6 @@ set yrange [0:]
 set terminal png
 set output '../../log/all-'.projectname.'.png'
 
-plot '../../log/2-all-'.projectname.'.csv' using (1):3, '' using (2):3, \
+plot '../../log/1-all-'.projectname.'.csv' using (1):3, '' using (2):3, \
      '../../log/2-all-'.projectname.'.csv' using (4):3, '' using (6):3
 

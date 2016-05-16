@@ -4,7 +4,7 @@ rm ../../log/*
 
 for devCount in 1 2
 do
-    for i in `seq 1 5`;
+    for i in `seq 1 15`;
     do
         node starter.js workerKill      $i ""              $devCount &&
         sleep 3                                                      &&
@@ -18,7 +18,7 @@ done
 
 for devCount in 1 2
 do
-    for i in `seq 1 5`;
+    for i in `seq 1 15`;
     do
         node starter.js workerKill      $i ""              $devCount &&
         sleep 3                                                      &&
@@ -32,7 +32,7 @@ done
 
 for devCount in 1 2
 do
-    for i in `seq 1 5`;
+    for i in `seq 1 15`;
     do
         node starter.js workerKill      $i ""                 $devCount &&
         sleep 3                                                         &&

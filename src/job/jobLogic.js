@@ -187,7 +187,7 @@
                     if (j.state.detail.valueOf() === 'ok')
                     {
                         //console.log('#### next ' + newSubJobs[jidx].id + ' because ' + j.id)
-                        setTimeout(newSubJobs[jidx].call(), 0)
+                        setTimeout(newSubJobs[jidx].call(), 0) //setImmediate
                     }
                     else if(j.state.detail.valueOf() !== 'canceled')
                         parent.ret('failed', 'failed', 'one subjob failed')

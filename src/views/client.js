@@ -8,6 +8,8 @@ var app = mvj.model('', {
 
 function rootJob(args)
 {
+    // todo: use this in view.createRootJob
+    args.isRoot = true
     var jd = jf.job(args)
     app.update('model.jobs.'+jd.id, jd)
     return app.model.jobs[jd.id.valueOf()]

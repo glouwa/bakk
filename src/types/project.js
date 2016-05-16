@@ -53,9 +53,7 @@ function project(url, noView)
                     },
                     '⇨': function(j) //…
                     {
-                        var job = pepRootJob(project)
-                        job.update({ isRoot:true })
-                        $('#jobTab')[0].add(job.id, { content:jobAllView(job) }) // show
+                        visiblePepRootJob(project)
                         j.ret('ok', '+1 idle job, +1 view')         // done
                     }
                 }))
