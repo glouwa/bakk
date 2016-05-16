@@ -1,6 +1,7 @@
 function runWorkers(j, diff)
 {
     j.delegateToOne({ job:()=> jf.remoteProxyJob({
+        desc: 'delegating to server',
         args: j.params,
         node: network.connections[0],
         realJob: js=>
@@ -13,7 +14,7 @@ function runWorkers(j, diff)
                 job: idx=>
                 {
                     if (idx < nodes.length) return jf.remoteProxyJob({
-                        desc:'sending multicast to ' + nodes[idx].id,
+                        desc:'spawing workers',
                         node: nodes[idx],
                         args: js.params,
                         realJob: jw=> jw.delegateToFactory({
@@ -26,7 +27,7 @@ function runWorkers(j, diff)
                         })
                     })
 
-                    else return jf.job({ desc:'apply on server', onCall:ssj=>
+                    else return jf.job({ desc:'spawing workers', onCall:ssj=>
                         ssj.delegateToFactory({
                             end: idx=> idx < js.params.workerCount,
                             job: idx=> tj.spawnJob({

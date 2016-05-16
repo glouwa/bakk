@@ -1,18 +1,18 @@
 function killServerOverlordsAndWorkers(j)
 {
     j.delegateToOne({ job:()=> jf.remoteProxyJob({
-        desc:'kill on server ' + network.connections[0].id,
+        desc: 'delegating to server',
         args: j.params,
         node: network.connections[0],
         realJob: js=> js.delegateToSequence(
 
-            ()=> jf.job({ desc:'kill all workers paralell', onCall: kwj=> {
+            ()=> jf.job({ desc:'send kill signal to workers', onCall: kwj=> {
                 try {
                     var nodes = app.getNodesByType(js.params.nodeType)                    
                     kwj.delegateToFactory({
                         end: idx=> idx < nodes.length,
                         job: idx=> jf.remoteProxyJob({
-                            desc:'kill on worker ' + nodes[idx].id,
+                            desc:'suicide',
                             node: nodes[idx],
                             args: js.params,
                             realJob: jw=> {
@@ -26,7 +26,7 @@ function killServerOverlordsAndWorkers(j)
                     kwj.ret('ok', 'no workers to kill')
                 }
             }}),
-            ()=> jf.job({ desc:'kill server', onCall: ksj=>
+            ()=> jf.job({ desc:'suicide', onCall: ksj=>
             {
                 setTimeout(()=> { // todo: if last job in sequence is sync -> double return (swaped)
                    var serverkill = js.params.nodeType.some(i=> i.valueOf() == 'Server')

@@ -6,20 +6,21 @@ function findPrimes(j, diff)
         output: app.model.store[j.id.valueOf()]
     })
 
-    j.delegateToOne({
-        desc: 'delegating to server',
-        job: ()=> jf.remoteProxyJob({
+    j.delegateToOne({        
+        job: ()=> jf.remoteProxyJob({          
+            desc: 'delegating to server',
             args: j.params,
             node: network.connections[0],
             realJob: js=> {
                 var nodes = app.getNodesByCapability('POSIX64')
-                js.delegateToFactory({
-                    desc: 'delegating parts to worker',
+                js.updateJob({ state:{ type:'running' } }, { workerCount:nodes.length })
+                js.delegateToFactory({                    
                     end: idx=> idx < nodes.length,
                     job: idx=> jf.remoteProxyJob({
+                        desc: 'starting process',
                         args: js.params.set.shrink(idx, nodes.length),
                         node: nodes[idx],                        
-                        realJob: jw=> tj.spawn(jw, {
+                        realJob: jw=> tj.spawn(jw, {                            
                             path:binDir + '/prime.exe',
                             args:[jw.params.begin.valueOf(), jw.params.end.valueOf()],
                             onJsonStdOut:(jw, data)=> {

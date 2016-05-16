@@ -34,7 +34,7 @@
                     var callTime = Date.now()
                     var callTimeloc = jm.workerId
                     if (initDiff && initDiff.state && initDiff.state.callTime)
-                    {                    
+                    {
                         callTime = initDiff.state.callTime
                         callTimeloc = initDiff.state.callTimeloc
                     }
@@ -48,12 +48,18 @@
                             log: 'calling function',
                             worker: jm.workerId,
                             lastWorker: jm.workerId,
-                            callTime:callTime,  // sollte eigenlich schon da sein wenn initDiff verw.
-                            callTimeloc:callTimeloc,
+                            callTime: callTime,  // sollte eigenlich schon da sein wenn initDiff verw.
+                            callTimeloc: callTimeloc,
                             lastModification: Date.now(),
-                            lastModificationloc:jm.workerId
+                            lastModificationloc: jm.workerId
                         }
                     }
+
+                    if (initDiff)
+                        diff.desc = initDiff.desc
+                    else
+                        diff.desc = j.desc
+
                     j.merge(diff, !j.isRoot)
                     j.onUpdate(j, diff)
                     j.onCall(j, diff)
@@ -259,8 +265,10 @@
             // j is a valid variable bcause this functions are evaluated remotly in
             // a context where j exists. c is the connection on remoteside
             var realJob = jm.job({
+                desc: args.desc,
                 params: args.args,
                 onCall: args.realJob                
+                // todo: cancel?
             })            
 
             // locally called
@@ -268,7 +276,6 @@
                 id: realJob.id,
                 isProxy: true,                
                 params: args.args,
-                //state: { creator:jm.workerId },
                 onCall:   pj=> {
                     realJob.state.callTime = Date.now()
                     realJob.state.callTimeloc = jm.workerId
@@ -278,7 +285,6 @@
                 onCancel: pj=> c.send(jobMsg('cancel', realJob.id, realJob.pack()))
                 //onUpdate: wird in ganz normal von logic oder anwender definiert
                 //onReturn: wird in ganz normal von logic oder anwender definiert
-
             })
 
             // is jetzt in mvj ... jm.remoteJobs[proxyJob.id] = proxyJob
@@ -287,23 +293,15 @@
             return proxyJob
         }
 
-        jobMsg = function(type, id, diff, odiff)
-        {
-            var channelMsg = function(type, msg) {
-                var net = {}
-                net.type = type
-                net.payload = msg
-                return net
-            }
-
-            var msg = {
+        jobMsg = function(type, id, diff, odiff) { return {
+            type: 'Job',
+            payload: {
                 type: type,
                 id: id,
                 diff: diff,
                 odiff: odiff
             }
-            return channelMsg('Job', msg)
-        }
+        }}
 
         jm.onReceive = function(c, parsed, evalInAppContext, app, pduSize)
         {
@@ -315,7 +313,7 @@
                     var jd = jm.job(parsed.diff.unpack(evalInAppContext))
                     jd.onUpdate = (j, diff, o)=> c.send(jobMsg('updateJob', jd.id, diff, o))
                     jd.isRemote = true
-                    jd.desc = 'remote order'
+                    jd.desc = '↷ ' + jd.desc
 
                     app.update('model.jobs.'+jd.id, jd)
                     job = app.model.jobs[jd.id]
@@ -334,7 +332,7 @@
 
         jm.jobTime = function(j)
         {
-            console.assert(j.state.lastModificationloc.valueOf() == j.state.callTimeloc.valueOf(), j.state)
+            console.assert(j.isRemote || j.state.lastModificationloc.valueOf() == j.state.callTimeloc.valueOf(), j.state)
             return j.state.lastModification.valueOf() - j.state.callTime.valueOf()
         }
 

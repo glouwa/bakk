@@ -17,6 +17,7 @@ function find3dModel(j, diff)
             js.delegateToFactory({
                 end: idx=> idx < nodes.length,
                 job: idx=> jf.remoteProxyJob({
+                    desc: 'load and compare partition',
                     node: nodes[idx],
                     //args: Object.assign({ set:js.params.set.shrink(idx, nodes.length) }, js.params),
                     args: {
@@ -25,9 +26,9 @@ function find3dModel(j, diff)
                         threshold: js.params.threshold
                     },
                     realJob: (jw, diff)=> jw.delegateToSequence(
-                        ()=> jf.job({ onCall:cj=> jw.params.set.get(cj, jw.params.selected.valueOf(), 'load') }),
-                        ()=> jf.job({ onCall:cj=> jw.params.set.load(cj) }),
-                        ()=> jf.job({ onCall:cj=> jw.params.set.visit(cj, (vj, i, idx, p)=>
+                        ()=> jf.job({ desc: 'load compared', onCall:cj=> jw.params.set.get(cj, jw.params.selected.valueOf(), 'load') }),
+                        ()=> jf.job({ desc: 'load partition', onCall:cj=> jw.params.set.load(cj) }),
+                        ()=> jf.job({ desc: 'compared', onCall:cj=> jw.params.set.visit(cj, (vj, i, idx, p)=>
                         {
                             var l  = 'compared ' + jw.params.set.begin + '-' + idx
                             var v1 = i.features

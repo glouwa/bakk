@@ -35,8 +35,6 @@ function rootJob(args)
     return app.model.jobs[jd.id.valueOf()]
 }
 
-
-
 // called by Net --------------------------------------------------------------------------
 
 app.onMessage = function(c, parsed, pduSize)
@@ -51,6 +49,7 @@ app.onMessage = function(c, parsed, pduSize)
 
         onJobMessage: function(c, parsed, pduSize)
         {
+            sim.log('job', 'log', '⟵', pduSize, parsed)
             jf.onReceive(c, parsed, code=> eval(code), app, pduSize)
         }
 
@@ -68,8 +67,7 @@ app.onNetworkStateChange = function(state, connection)
     stateHandlers['on'+state]()
 }
 
-var clientMessageHandlerFactory = (shortType, type, cap, onConnected)=>
-({
+var clientMessageHandlerFactory = (shortType, type, cap, onConnected)=> { return {
     onServerHallo: function(c, parsed)
     {
         app.clientId = parsed.diff.clientId
@@ -94,7 +92,7 @@ var clientMessageHandlerFactory = (shortType, type, cap, onConnected)=>
 
     onNetworkInfo: (c, parsed)=> app.update(parsed.path, parsed.diff),
     onReload: (c, parsed) => {}
-})
+}}
 
 var osDir = os.type() == 'Linux' ? 'posix64' : 'dotnet'
 var binDir = '../../bin/' + osDir + '/'

@@ -6,9 +6,9 @@ function getCmdSet(j, diff)
         output: app.model.store[j.id.valueOf()]
     })
 
-    j.delegateToOne({
-        desc: 'delegating to server',
+    j.delegateToOne({       
         job: ()=> jf.remoteProxyJob({
+            desc: 'delegating to server',
             node: network.connections[0],
             args: j.params,
             realJob: js=> {
@@ -35,16 +35,16 @@ function getCmdSet(j, diff)
                     }
                     return accu
                 }                
-                var output = addCommandsOfFolder(js.params.directory.valueOf())
-                js.updateJob({ state:{ type:'running', log:'collected commands'} }, output)
-
                 var workers = app.getNodesByCapability('POSIX64')
-
+                var output = addCommandsOfFolder(js.params.directory.valueOf())
+                output.workerCount = workers.length
+                js.updateJob({ state:{ type:'running', log:'collected commands'} }, output)
                 js.delegateToPool({
                     pool: workers,
                     count: output.commands.length,
                     desc: workers.length + ' worker, ' + output.commands.length + ' elements',
                     job: (idx, node)=> jf.remoteProxyJob({
+                        desc:output.commands[idx].dir,
                         node:node,
                         args:{ command:output.commands[idx], idx:idx, timeout:js.params.workerTimeout },
                         realJob: jw=> tj.spawn(jw, {

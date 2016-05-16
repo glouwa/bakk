@@ -9,6 +9,7 @@ function serverOuput(j, diff)
         job: () => jf.remoteProxyJob({
             node: network.connections[0],
             args: j.params,
+            desc: 'Generate output',
             realJob: (js, diff)=>
             {
                 js.updateJob(

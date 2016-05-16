@@ -2,32 +2,42 @@
 
 rm ../../log/*
 
-for devCount in 2
+for devCount in 1 2
 do
-    for i in `seq 1 50`;
+    for i in `seq 1 5`;
     do
-        node starter.js resetSys $i "" $devCount            &&
-        sleep 3                                             &&
-        node starter.js serverWorkers $i "" $devCount       &&
-        sleep 3                                             &&
-        node starter.js serverBakk1 $i serverBakk1.csv $devCount
+        node starter.js workerKill      $i ""              $devCount &&
+        sleep 3                                                      &&
+        node starter.js overlordWorkers $i ""              $devCount &&
+        sleep 3                                                      &&
+        node starter.js workerBacc0     $i workerBacc0.csv $devCount
     done
 done
 
-gnuplot -persist -e "projectname='serverBakk1'" plotcurve.sh
-gnuplot -persist -e "projectname='serverBakk1'" plothist.sh
 
-for devCount in 2
+
+for devCount in 1 2
 do
-    for i in `seq 1 50`;
+    for i in `seq 1 5`;
     do
-        node starter.js resetSys $i "" $devCount            &&
-        sleep 3                                             &&
-        node starter.js serverWorkers $i "" $devCount       &&
-        sleep 3                                             &&
-        node starter.js primeCpp $i primeCpp.csv $devCount
+        node starter.js workerKill      $i ""              $devCount &&
+        sleep 3                                                      &&
+        node starter.js overlordWorkers $i ""              $devCount &&
+        sleep 3                                                      &&
+        node starter.js workerBacc1     $i workerBacc1.csv $devCount
     done
 done
 
-gnuplot -persist -e "projectname='primeCpp'" plotcurve.sh
-gnuplot -persist -e "projectname='primeCpp'" plothist.sh
+
+
+for devCount in 1 2
+do
+    for i in `seq 1 5`;
+    do
+        node starter.js workerKill      $i ""                 $devCount &&
+        sleep 3                                                         &&
+        node starter.js overlordWorkers $i ""                 $devCount &&
+        sleep 3                                                         &&
+        node starter.js workerPrimeCpp  $i workerPrimeCpp.csv $devCount
+    done
+done

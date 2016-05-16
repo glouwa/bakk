@@ -107,13 +107,15 @@ function aProjectJob() {
 
             // write worker runtime
             var workterTimes = ''
-            var workerCount = 0
+            var workerJobCount = 0
             visitJob(j, sj=> {
                 if (sj.state.worker.valueOf().startsWith('W')) {
                     workterTimes += jf.jobTime(sj) + ',\n'
-                    workerCount++
+                    workerJobCount++
                 }
             })
+
+            workerCount = jobToMeasure.output.workerCount.valueOf()
 
             if (workerCount == workerPerDev*devCount) {
                 fs.appendFileSync(pathPrefix + devCount + '-worker-' + outputFile, workterTimes)
@@ -123,11 +125,16 @@ function aProjectJob() {
                 var logline = devCount + ', ' + workerCount + ', ' + workTimeMs
                 fs.appendFileSync(pathPrefix + devCount + '-all-' + outputFile, logline + '\n')
             }
+            else
+            {
+                var errMsg = 'expected ' + workerPerDev*devCount + ' workers but got ' + workerCount + '\n'
+                fs.appendFileSync(pathPrefix + 'error-log.txt', errMsg)
+            }
         }
         process.exit(0)
     }
 
-    var args = projectName=='serverWorkers'
+    var args = projectName=='overlordWorkers'
              ? { devCount:devCount, workerCount:workerPerDev, justStart:true}
              : undefined
 
