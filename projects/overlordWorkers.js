@@ -4,15 +4,17 @@ function runWorkers(j, diff)
         desc: 'delegating to server',
         args: j.params,
         node: network.connections[0],
-        realJob: js=>
-        {
+        realJob: js=> {
+
             var nodes = app.getNodesByType(['Overlord'], 'emptyResultIsOk')
-            var devCount = js.params.devCount?Number(js.params.devCount.valueOf())-1:nodes.length
+            var devCount = js.params.devCount
+                         ? Number(js.params.devCount.valueOf())-1
+                         : nodes.length
 
             js.delegateToFactory({
                 end: idx=> idx < devCount + 1,
-                job: idx=>
-                {
+                job: idx=> {
+
                     if (idx < nodes.length) return jf.remoteProxyJob({
                         desc:'spawing workers',
                         node: nodes[idx],

@@ -313,7 +313,7 @@
                     var jd = jm.job(parsed.diff.unpack(evalInAppContext))
                     jd.onUpdate = (j, diff, o)=> c.send(jobMsg('updateJob', jd.id, diff, o))
                     jd.isRemote = true
-                    jd.isRoot = true
+                    //jd.isRoot = true // todo: causes double return
                     jd.desc = '↷ ' + jd.desc
 
                     app.update('model.jobs.'+jd.id, jd)

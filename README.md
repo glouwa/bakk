@@ -1,13 +1,18 @@
 # bacc
-- job api refactoring
-- logic refactoring
-    - recovery
-    - dag nondag
-    - logic and/or/whatever
-- syncbug
-- no termination bug
+- refactorings
+    - job api refactoring
+    - logic refactoring
+        - recovery
+        - dag nondag
+        - logic and/or/whatever
+- bugs
+    - syncbug
+    - no termination bug
+    - double return bug
 
-# folderstrucure (todo)
+//----------------------------------------------------------------
+
+## folderstrucure (todo)
 - bin
 - doc
 - log
@@ -18,13 +23,17 @@
     - prj
 - src
 
-# nach bacc
+//----------------------------------------------------------------
+
+## nach bacc
 - tests
 - command line
 - bigobject
+    - object member order/arrays
     - persitance
         - types, views, css editierbar
         - code edit
+        - view edit/wysiwyg
         - long list support
     - graph edit
         - filemanager /rm/mv
@@ -34,12 +43,20 @@
         - updateflush
     - lazy view
 - spark api
+- meta packet manager apt/npm/pip/cmake...
 - real hirachical net
 - webrtc network
     - 2p2
     - stream
 
-# module
+//----------------------------------------------------------------
+
+## module
 - network
+- job
+    - job
+    - job handlers (tools und logic)
 - dynamic ajaj
 - mvj/bigobject?
+
+
