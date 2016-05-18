@@ -18,7 +18,8 @@ function compositeUpdate(args)
         if (changes.newMembers)
             changes.newMembers.forEach((v, k, idx) => {
                 if (k != 'type' && (!args.filter || args.filter(v, k, idx)))
-                    args.view.appendChild(childViews[k] = args.itemDelegate(v, k, idx))
+                    args.view.insertBefore(childViews[k] = args.itemDelegate(v, k, idx),
+                                           args.view.appender)
             })
     }
 }

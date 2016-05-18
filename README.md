@@ -59,4 +59,55 @@
 - dynamic ajaj
 - mvj/bigobject?
 
+//----------------------------------------------------------------
+
+table layout fill last
+http://codepen.io/shanomurphy/pen/jbPMLX
+
+<div class="layout">
+  <div class="layout__row" >
+    <div class="layout__cell" id = 'a'>
+      Row 1 content
+    </div>
+  </div>
+  <div class="layout__row" >
+    <div class="layout__cell" id = 'a'>
+      Row 1 content
+    </div>
+  </div>
+  <div class="layout__row">
+    <div class="layout__cell" id ='b'>
+      Row 2 fills remaining vertical space without needing to know row 1 height.
+    </div>
+  </div>
+</div>
+
+//----------------------------------------------------------------
+
+html, body { height: 100%; // required to make .layout 100% height }
+
+.paper {         // aber auch der expander content ?
+  display: table;
+  width: 100%;
+  height: 100%;
+}
+
+.a3expander__row {
+  display: table-row;
+}
+
+.a3expander__row:last-child {
+  display: table-row;
+  height: 100%;
+}
+
+.a3expander__cell {
+  display: table-cell;
+}
+
+/* Non essential example styles */
+body { text-align: center; }
+#b { background: pink; }
+#a { background: yellow; }
+
 

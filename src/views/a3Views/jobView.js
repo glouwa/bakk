@@ -52,12 +52,12 @@ function jobAllView(jobModel)
     var tab = a3Frame(jobModel,  jobHeaderView)
         //tab.className = 'search'
         var starterArgs = a3View(jobModel.params)
-        var statusTab = a3expander({
+        var statusTab = a3View(jobModel)/*a3expander({
             model:jobModel,
             expanded:true,
             header:a3Frame(jobModel),
             contentFactory:()=> autoMultiView(jobModel, [jobStateGraphView])
-        })
+        })*/
 
     function update(changes)
     {

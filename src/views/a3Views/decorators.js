@@ -6,7 +6,7 @@ function a3Frame(model, headerFactory)
     var n = model.path.valueOf().charAt(0).toUpperCase() + model.path.valueOf().slice(1)
 
     var view = document.createElement('div')
-        view.className = 'lineFrame'
+        view.className = 'a3Frame'
         //view.draggable = true
         //view.ondragstart = ev=> onDragStart(ev, model)
         var name = document.createElement('div')
@@ -130,6 +130,7 @@ function tab(id)
             p.flap.className = 'tab'
             p.content.style.display = 'none'
             p.content.style.borderWidth = 0
+            p.content.style.height = 'calc(100% - 25px)'
 
             header.appendChild(p.flap)
             content.appendChild(p.content)

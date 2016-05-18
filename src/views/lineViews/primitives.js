@@ -7,7 +7,7 @@ viewCollection.nullView = function(name, value)
         var varvalue = document.createElement('input')
             varvalue.value = '␀'
             varvalue.className = 'primitiveValue'
-            varvalue.style.width = '60%'
+            varvalue.style.width = '45%'
     view.appendChild(varvalue)
 
     return view
@@ -19,9 +19,49 @@ viewCollection.undefinedView = function(name, value)
         var varvalue = document.createElement('input')
             varvalue.value = 'undefined'
             varvalue.className = 'primitiveValue'
-            varvalue.style.width = '60%'
+            varvalue.style.width = '45%'
     view.appendChild(varvalue)
 
+    return view
+}
+
+viewCollection.appendView = function(model)
+{
+    var view = lineFrameAppender('', undefined)
+        var varvalue = document.createElement('input')
+            varvalue.className = 'primitiveValue'
+            varvalue.style.width = 'calc(100% - 31px)'
+            varvalue.style.textAlign= 'left'
+            varvalue.draggable = true
+            varvalue.ondragstart = ev=> ev.preventDefault()
+        view.appendChild(varvalue)
+
+    function addEvalToModel()
+    {
+        try
+        {
+            var diff = eval('({' + varvalue.value + '})')
+            model.update(diff)
+            varvalue.value = ''
+        }
+        catch(e)
+        {
+           varvalue.value = e
+        }
+    }
+
+    varvalue.onchange = ()=> addEvalToModel()
+    varvalue.onkeypress = function(e) {
+        var charCode = e.which || e.keyCode;
+        if (charCode == '13') {
+          addEvalToModel()
+          return false;
+        }
+    }
+
+    //var update = ()=> varvalue.value = model.valueOf()
+    //update()
+    //model.on('change', update)
     return view
 }
 
@@ -30,7 +70,7 @@ viewCollection.stringView = function(name, model)
     var view = lineFramePrimitive(name, model)
         var varvalue = document.createElement('input')
             varvalue.className = 'primitiveValue'    
-            varvalue.style.width = '60%'
+            varvalue.style.width = '45%'
             varvalue.draggable = true
             varvalue.ondragstart = ev=> ev.preventDefault()
         view.appendChild(varvalue)
@@ -61,7 +101,7 @@ viewCollection.numberView = function(name, model)
     var view = lineFramePrimitive(name, model) //ℝ
         var varvalue = document.createElement('input')
             varvalue.className = 'primitiveValue'
-            varvalue.style.width = '60%'
+            varvalue.style.width = '45%'
             varvalue.draggable = true
             varvalue.ondragstart = ev=> ev.preventDefault()
         view.appendChild(varvalue)

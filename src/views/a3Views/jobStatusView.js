@@ -50,6 +50,7 @@ function jobStateGraphView(jobModel)
                 border:deviceColorMap[jobModel.state.lastWorker.valueOf().charAt(0)]
             }*/
         })
+        gView.network.fit()
     })
 
     function updateSubjobs(changes)
@@ -87,6 +88,7 @@ function jobStateGraphView(jobModel)
                             border:deviceColorMap[v.state.lastWorker.valueOf().charAt(0)]
                         }*/
                     })
+                    gView.network.fit()
                 })
 
                 if (!v.isLeafType)
@@ -108,18 +110,14 @@ function jobStateGraphView(jobModel)
             }
     }
 
-    var view = document.createElement('div')
-        //view.style.borderStyle = 'dashed none none none'
-        //view.style.borderWidth = 1;
-        //view.style.borderColor = '#B0B0B0'
+    var view = document.createElement('div')        
         view.classList.add('graphView')
-        var progressTree = jobStateTreeView(jobModel)
+        //var progressTree = jobStateTreeView(jobModel)
         var gView = onlyGraphView(jobModel, data, jobStateGraphConfig)
-            gView.style.marginTop = -15
-            gView.style.marginBottom = 5
+            gView.style.margin = '20 0'
         var aView = undefined
 
-    view.appendChild(progressTree)
+    //view.appendChild(progressTree)
     view.appendChild(gView)
 
     gView.network.on("select", function (params)
@@ -176,8 +174,98 @@ function jobStateTreeView(jobModel)
     var view = document.createElement('div')
         view.className = 'jobStateTreeView'
         var treeRoot = jobAndSubjobsView(jobModel, 0)
-            treeRoot.style.padding = '20 0'
+            treeRoot.style.margin = '20 0'
+            treeRoot.style.padding = '0 0 1 0'
+            treeRoot.style.maxHeight = '200'
+            treeRoot.style.overflowY = 'auto'
+            treeRoot.style.overflow = 'auto'
+
     view.appendChild(treeRoot)
+    return view
+}
+
+function jobStateGantView(jobModel)
+{   
+    var items = new vis.DataSet()
+    var groups = new vis.DataSet()
+    groups.add({ id:'?', content:'' })
+
+    function addJob(jm)
+    {
+        var subgroup = jm.state.worker ? jm.state.worker.valueOf() : '?'
+        var group = subgroup.charAt(0)
+        if (groups.get(group) == null)
+            groups.add({ id:group, content:group })
+
+        var bgColor = hexToRgb(config.getColor(jm.state), 0.8)
+
+        items.add({
+            id:jm.path.valueOf(),
+            model:jm,
+            group:group,
+            subgroup:subgroup,
+            start:jm.state.callTime?new Date(jm.state.callTime.valueOf()):new Date,
+            end:jm.state.lastModification?new Date(jm.state.lastModification.valueOf()):undefined,
+            style:'background-color: '+bgColor+';' + 'border-color: '+config.getColor(jm.state)+';',
+        })
+        jm.state.on('change', function(changes)
+        {
+            var subgroup = jm.state.worker ? jm.state.worker.valueOf() : '?'
+            var group = subgroup.charAt(0)
+            if (groups.get(group) == null)
+                groups.add({ id:group, content:group })
+
+            var bgColor = hexToRgb(config.getColor(jm.state), 0.8)
+
+            items.update({
+                id:jm.path.valueOf(),
+                group:group,
+                subgroup:subgroup,
+                start:jm.state.callTime?new Date(jm.state.callTime.valueOf()):new Date,
+                end:jm.state.lastModification?new Date(jm.state.lastModification.valueOf()):undefined,
+                style:'background-color: '+bgColor+';' + 'border-color: '+config.getColor(jm.state)+';',
+            })
+            view.timeline.fit()
+        })
+    }
+
+    addJob(jobModel)
+
+    function updateSubjobs(changes)
+    {
+        if (changes.newMembers)
+            changes.newMembers.forEach(function(v, k, idx)
+            {
+                var pp1 = v.path.substr(0, v.path.lastIndexOf('.'))
+                var parentPath = pp1.substr(0, pp1.lastIndexOf('.'))
+
+                addJob(v)
+
+                if (!v.isLeafType)
+                {
+                    updateJob({ newMembers:v }, v.path)
+                    v.on('change', updateJob)
+                }
+                view.timeline.fit()
+            })
+    }
+
+    function updateJob(changes, nodeId)
+    {
+        if (changes.newMembers)
+            if (changes.newMembers.subjobs)
+            {
+                updateSubjobs({ newMembers:changes.newMembers.subjobs })
+                changes.newMembers.subjobs.on('change', updateSubjobs)
+            }
+    }
+
+    var view = document.createElement('div')
+        view.className = 'jobStateGantView'
+        view.timeline = new vis.Timeline(view, items, groups, { groupOrder: 'content', stack:false});
+
+    updateJob({ newMembers:jobModel }, jobModel.path)
+    jobModel.on('change', updateJob)
     return view
 }
 

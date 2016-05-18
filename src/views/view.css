@@ -305,15 +305,26 @@ html {
     float: right;
     text-align: right;    
     border-width: 1;
+    //background-color: #FDFDFD;
     border-color: #ffffff;
     border-style: solid;
-    padding: 0;
+    border-radius: 2px;
+    padding: 0 2;
     outline: none;
     margin: 0 10 0 0;    
 }
 
 .primitiveValue:hover{
     border-color: #ECECEC;
+    //background-color: #FDFDFD;
+}
+
+.a3Frame{
+    width: 100%;
+    padding: 0 0 1 0;
+    position: relative;
+    /*isplay: inline;*/
+    display: block;
 }
 
 .lineFrame{
@@ -627,3 +638,4 @@ input[type=range]:focus::-webkit-slider-runnable-track {
 ::-webkit-scrollbar-thumb:vertical:hover {
     background: rgba(0,0,0,0.5);
 }
+

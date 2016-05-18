@@ -165,6 +165,9 @@ function autoViewLine(model)
 {
     var view = document.createElement('div')
     view.className = 'autoLine'
+    view.appender = viewCollection['appendView'](model)
+    view.appendChild(view.appender)
+
     view.update = compositeUpdate({
         view:view,
         filter:v=> typeof v !== 'function',
@@ -176,6 +179,8 @@ function autoViewLine(model)
     })
     view.update({ newMembers:model })
     model.on('change', view.update)
+
+
     return view
 }
 
@@ -216,7 +221,7 @@ function a3View(model)
         contentDelegate = ()=> autoMultiView(model, [autoView, projectEdit])
 
     if (model.type == 'Job')
-        contentDelegate = ()=> autoMultiView(model, [/*jobStateTreeView,*/ jobStateGraphView])
+        contentDelegate = ()=> autoMultiView(model, [jobStateGantView, jobStateGraphView, jobStateTreeView])
 
     if (model.type == 'Network')
         contentDelegate = ()=> autoMultiView(model, [autoView, systemView])
