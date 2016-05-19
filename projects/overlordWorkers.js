@@ -29,7 +29,7 @@ function runWorkers(j, diff)
                         })
                     })
 
-                    else return jf.job({ desc:'spawing workers', onCall:ssj=>
+                    else return jf.job({ desc:'spawing workers', onCall:ssj=> // server füllt auf
                         ssj.delegateToFactory({
                             end: idx=> idx < js.params.workerCount,
                             job: idx=> tj.spawnJob({
