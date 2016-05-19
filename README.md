@@ -28,6 +28,8 @@
 ## nach bacc
 - tests
 - command line
+
+### core
 - bigobject
     - object member order/arrays
     - persitance
@@ -45,9 +47,13 @@
 - spark api
 - meta packet manager apt/npm/pip/cmake...
 - real hirachical net
-- webrtc network
+
+### webrtc network
     - 2p2
     - stream
+
+### sec
+### compiler
 
 //----------------------------------------------------------------
 

@@ -41,7 +41,7 @@ function a3Frame(model, headerFactory)
     return view
 }
 
-function a3expander(args)
+function a3expander(args) // { header, conetentFactory, model, expanded } : onheaderClick -> conetentFactory()
 {
     var h = args.header
     var c = undefined
@@ -68,7 +68,7 @@ function a3expander(args)
             content.style.display = 'inline-block'
             content.style.width = '100%'
 
-    h.onclick = function()
+    h.onclick = function toggle() // open/close fehlt
     {
         view.expanded = !view.expanded
         view.update()

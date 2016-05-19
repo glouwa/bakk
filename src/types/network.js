@@ -6,20 +6,13 @@ function networkType()
             window.open('./view.html', '_blank')
             j.ret('ok', "window.open(...) called")
         },
-        '+4 worker': j=> {
-            j.params.update({ amount:4 })
-            app.model.projects['🖥 Run some workers on server']['▸'](j)
-        },
-        '☠ worker': j=> {
-            app.model.projects['☠ Kill sys']['▸'](j, {}, { nodeType:['Worker']})
-        },
-        '☠ all': j=> {
-            app.model.projects['☠ Kill sys']['▸'](j, {}, { nodeType:['Server', 'Overlord', 'Worker']})
-        },
+        '+4 worker': j=> app.model.projects.services['🖥 Start workers']['▸'](j),
+        '☠ worker': j=> app.model.projects.services['☠ Kill all']['▸'](j, {}, { nodeType:['Worker']}),
+        '☠ all': j=> app.model.projects.services['☠ Kill all']['▸'](j, {}, { nodeType:['Server', 'Overlord', 'Worker']}),
         '↻ clients': j=> {
-            var msg = messages.reloadMsg()
-            var channelMsg = messages.channelMsg('Ws', msg)
-            node: network.connections[0].send(channelMsg)
+            var reloadmsg = messages.reloadMsg()
+            var channelMsg = messages.channelMsg('Ws', reloadmsg)
+            network.connections[0].send(channelMsg)
             j.ret('ok', 'reload message sent')
         }
     }

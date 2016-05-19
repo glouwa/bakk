@@ -12,7 +12,7 @@ function find3dModel(j, diff)
         args: j.params,
         realJob: (js, diff)=>
         {
-            var nodes = app.getNodesByCapability('JS')
+            var nodes = app.getNodesByCapability('POSIX64') // eigentlich js, aber der client ist überfordert
 
             js.delegateToFactory({
                 end: idx=> idx < nodes.length,
@@ -28,8 +28,12 @@ function find3dModel(j, diff)
                     realJob: (jw, diff)=> jw.delegateToSequence(
                         ()=> jf.job({ desc: 'load compared', onCall:cj=> jw.params.set.get(cj, jw.params.selected.valueOf(), 'load') }),
                         ()=> jf.job({ desc: 'load partition', onCall:cj=> jw.params.set.load(cj) }),
-                        ()=> jf.job({ desc: 'compared', onCall:cj=> jw.params.set.visit(cj, (vj, i, idx, p)=>
+                        ()=> jf.job({ desc: 'comparing', onCall:cj=>
+
+                setTimeout(()=> { // todo: syncbug
+                        jw.params.set.visit(cj, (vj, i, idx, p)=>
                         {
+
                             var l  = 'compared ' + jw.params.set.begin + '-' + idx
                             var v1 = i.features
                             var v2 = jw.params.set.data[jw.params.selected.valueOf()].features
@@ -42,7 +46,9 @@ function find3dModel(j, diff)
 
                             if (jw.params.selected != idx) delete i.features
                             vj.updateJob({ state:{ progress:p, type:'running', log:l } }, m)
+
                         })})
+              }, 0)
                     )
                 })
             })

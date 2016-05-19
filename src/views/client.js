@@ -72,24 +72,31 @@ app.init = function()
         projects: // fileset(path, 'Set<Project>', (filename)=> project(filename))
         {
             type:'Set<Project>',
-            '↻': function(j)
-            {
+            '↻': function(j) {
                 this.update({
                     '↻': 'deadbeef',
                     '✕': function free(j) {},
-                    '🐼 Process fragment folder on workers':     project('../../projects/workerBacc0.js'),
-                    '🐁 Process empty job':                      project('../../projects/workerBacc1.js'),
-                    '💢 Show fragment folder':                   project('../../projects/serverFragmentFolder.js'),
+                    '🐼 Process fracturing folder on workers':     project('../../projects/workerBacc0.js'),
+                    '🐁 Process empty jobs on worker':            project('../../projects/workerBacc1.js'),
                     '❄ Find similar 3d models on worker':        project('../../projects/workerModel3d.js'),
                     'ℙ Find prime numbers with C++ on workers':  project('../../projects/workerPrimeCpp.js'),
-                    '🖥 Run some workers on server':              project('../../projects/overlordWorkers.js'),
-                    '☠ Kill sys':                       project('../../projects/workerKill.js'),
-                    '💻 Spawn process on server':       project('../../projects/serverCmd.js'),
-                    '📂 Show server folder':             project('../../projects/serverFolder.js'),
-                    '🗩 Generate some output at server': project('../../projects/serverOutput.js'),
-                    '❄ Find similar 3d models locally':  project('../../projects/localSetIteration.js'),
-                    '↷ Multiple AJAX calls loaclly':    project('../../projects/localAjax.js'),
-                    '🗩 Generate some output locally':  project('../../projects/localOutput.js'),
+                    'services': {
+                        type:'Set<Project>',
+                        '✕': function free(j) {},
+                        '🖥 Start workers':                  project('../../projects/overlordWorkers.js'),
+                        '☠ Kill all':                       project('../../projects/workerKill.js'),
+                    },
+                    'tests': {
+                        type:'Set<Project>',
+                        '✕': function free(j) {},
+                        '💢 server fragment folder':                   project('../../projects/serverFragmentFolder.js'),
+                        '💻 server cmd':                project('../../projects/serverCmd.js'),
+                        '📂 server folder':             project('../../projects/serverFolder.js'),
+                        '🗩 server output':             project('../../projects/serverOutput.js'),
+                        '❄ local find 3d models':      project('../../projects/localSetIteration.js'),
+                        '↷ local paralell AJAX':      project('../../projects/localAjax.js'),
+                        '🗩 local output':            project('../../projects/localOutput.js'),
+                    },
                 })
                 j.ret('ok', '+11 projects')
             }

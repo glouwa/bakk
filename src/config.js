@@ -16,7 +16,7 @@
 
         exception:  { active:false, icon:'⚡',  text:'throw an exception', value:'fatal', pof:'atWork' },
         stopWork:   { active:false, icon:'☠',  text:'stop working',       pof:'atWork'                },
-        delayed:    { active:true,  icon:'🐌', text:'work slowly',        value:150                    }, //🐌⌛
+        delayed:    { active:false,  icon:'🐌', text:'work slowly',        value:150                    }, //🐌⌛
         //disconnect: { active:false, icon:'↛',  text:'disconnect',       pof:'afterRequest' },
         delegate:   { active:false, icon:'☞',  text:'delegate to server'   },
         lognet:     { active:false, icon:'☍',  text:'log network messages' }, //ⶨ
