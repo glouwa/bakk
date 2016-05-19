@@ -165,7 +165,7 @@ new Object({
             selected: 3,
             set: pSet.lazySet(
                 0,
-                19,
+                63,
                 idx=> ({
                     id: idx,
                     url: '../../data/3dModel/vectorfiles/m' + idx + '.json',

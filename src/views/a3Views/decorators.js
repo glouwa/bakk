@@ -130,6 +130,7 @@ function tab(id)
             p.flap.className = 'tab'
             p.content.style.display = 'none'
             p.content.style.borderWidth = 0
+            p.content.style.width = '100%'
             p.content.style.height = 'calc(100% - 25px)'
 
             header.appendChild(p.flap)
@@ -143,7 +144,8 @@ function tab(id)
             if (view.active) view.active.content.style.display = 'none'
             view.active = p
             view.active.flap.className = 'tab-active'
-            view.active.content.style.display = 'block'
+            //view.active.content.style.display = 'block'
+            view.active.content.style.display = 'table'
         }
 
         view.appendChild(header)

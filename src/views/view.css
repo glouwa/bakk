@@ -169,14 +169,14 @@ html {
 
 .tab-active{
     float: left;
-    margin: 4 1 -2 1;
+    margin: 2 1 -2 1;
     padding: 1 30 0 6;
     cursor: hand;
     font-weight: normal;
     background-color: #FDFDFD;
     border-radius: 2pt;
     color: #00CC66;
-    height: 23;
+    height: 24;
     position: relative;
 }
 
@@ -220,18 +220,19 @@ html {
     border-color: #F0F0F0;
     border-radius: 0 0 3px 3px;
     text-align: center;
-    padding: 0 11 0 11;
-    height: 24;
+    padding: 0 11 0 2;
+    height: 25;
 }
 
 .btab{
     float: right;
-    padding: 0 20 0 20;
+    padding: 2 20 0 20;
     cursor: hand;
     border-style:solid;
     border-color: transparent;
     border-width:0 0 3 0;
     color: #CCCCCC;
+    height:21;
 }
 
 .btab:hover{
@@ -240,8 +241,8 @@ html {
 
 .btab-active{
     float: right;
-    margin: -1 0 -10 0;
-    padding: 1 20 0 20;
+    margin: -2 0 3 0;
+    padding: 4 20 0 20;
     cursor: hand;
     font-weight: normal;
     background-color: #fff;
@@ -251,7 +252,7 @@ html {
     border-style: none solid solid solid;
     border-width: 1;
     border-color: #FAFAFA #F5F5F5 #F5F5F5 #FAFAFA;
-    height: 17px;
+    height: 18px;
 }
 
 /*-query--------------------------------------------------------------------------------------*/

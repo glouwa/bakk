@@ -106,6 +106,7 @@ html, body { height: 100%; // required to make .layout 100% height }
 }
 
 /* Non essential example styles */
+
 body { text-align: center; }
 #b { background: pink; }
 #a { background: yellow; }

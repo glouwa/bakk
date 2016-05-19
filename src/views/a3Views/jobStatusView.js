@@ -156,7 +156,7 @@ function jobStateTreeView(jobModel)
 
         view.update = function(changes)
         {
-            if (l < 3)
+            if (l < 2)
                 if (changes.newMembers.subjobs)
                 {
                     console.assert(!subjobs)
@@ -262,7 +262,7 @@ function jobStateGantView(jobModel)
 
     var view = document.createElement('div')
         view.className = 'jobStateGantView'
-        view.timeline = new vis.Timeline(view, items, groups, { groupOrder: 'content', stack:false});
+        view.timeline = new vis.Timeline(view, items, groups, { groupOrder: 'content', stack:false/*, throttleRedraw:1000*/});
 
     updateJob({ newMembers:jobModel }, jobModel.path)
     jobModel.on('change', updateJob)
