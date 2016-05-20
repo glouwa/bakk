@@ -156,6 +156,7 @@ function lineObjectView(name, model)
     return lineExpander(
     {
         model: model,
+        expanded: name == 'state',
         header: lineFrame(name, model /*nix, gar nix*/),
         contentFactory: ()=> autoViewLine(model)
     })
@@ -179,8 +180,6 @@ function autoViewLine(model)
     })
     view.update({ newMembers:model })
     model.on('change', view.update)
-
-
     return view
 }
 

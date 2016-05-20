@@ -5,6 +5,7 @@
         var jm = {}
         jm.nextFreeId = 0
         jm.workerId = undefined
+        jm.host = undefined
         jm.jl = undefined
 
         function jobProto()
@@ -21,6 +22,7 @@
                 {
                     //console.trace('j-' + j.id + ' call')
 
+                    // timeout zuerst
                     if (j.params && j.params.timeout)
                     {
                         Object.defineProperty(j, 'timer', { writable:true, value:null })
@@ -31,6 +33,7 @@
                         }, j.params.timeout.valueOf())
                     }
 
+                    // diff refactoren ;)
                     var callTime = Date.now()
                     var callTimeloc = jm.workerId
                     if (initDiff && initDiff.state && initDiff.state.callTime)
@@ -39,6 +42,9 @@
                         callTimeloc = initDiff.state.callTimeloc
                     }
 
+                    var creator = { id:'S1', callTime:123, returnTime:233 }
+                    var worker = { id:'W1', callTime:123, returnTime:233 }
+
                     var diff = {
                         id: j.id,
                         state: {
@@ -46,7 +52,8 @@
                             type: 'calling',
                             detail: 'calling',
                             log: 'calling function',
-                            worker: jm.workerId,
+                            realWorker: jm.workerId,
+                            realWorkerHost: jm.host,
                             lastWorker: jm.workerId,
                             callTime: callTime,  // sollte eigenlich schon da sein wenn initDiff verw.
                             callTimeloc: callTimeloc,
@@ -60,6 +67,7 @@
                     else
                         diff.desc = j.desc
 
+                    // apply
                     j.merge(diff, !j.isRoot)
                     j.onUpdate(j, diff)
                     j.onCall(j, diff)

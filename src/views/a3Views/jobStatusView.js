@@ -192,8 +192,9 @@ function jobStateGantView(jobModel)
 
     function addJob(jm)
     {
-        var subgroup = jm.state.worker ? jm.state.worker.valueOf() : '?'
-        var group = subgroup.charAt(0)
+        var subgroup = jm.state.realWorker ? jm.state.realWorker.valueOf() : '?'
+        var group = jm.state.realWorkerHost ? jm.state.realWorkerHost.valueOf() : '??'
+        group+= ' - ' + subgroup
         if (groups.get(group) == null)
             groups.add({ id:group, content:group })
 
@@ -210,8 +211,9 @@ function jobStateGantView(jobModel)
         })
         jm.state.on('change', function(changes)
         {
-            var subgroup = jm.state.worker ? jm.state.worker.valueOf() : '?'
-            var group = subgroup.charAt(0)
+            var subgroup = jm.state.realWorker ? jm.state.realWorker.valueOf() : '?'
+            var group = jm.state.realWorkerHost ? jm.state.realWorkerHost.valueOf() : '??'
+            group+= ' - ' + subgroup
             if (groups.get(group) == null)
                 groups.add({ id:group, content:group })
 
@@ -358,8 +360,8 @@ function jobStateView(level)
         var locationInfo = ''
         if (jobModel.state.creator)
             locationInfo += jobModel.state.creator.valueOf()
-        if (jobModel.state.worker)
-            locationInfo +=  ' ↷ ' + jobModel.state.worker.valueOf()
+        if (jobModel.state.realWorker)
+            locationInfo +=  ' ↷ ' + jobModel.state.realWorker.valueOf()
 
         lastworker.innerText = locationInfo
         lastlog.innerText = jobModel.state.log//.valueOf()

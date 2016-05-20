@@ -155,7 +155,7 @@ function lineExpander(args)
 
     var view = hoverDiv(args.model)
         view.className = 'expander'
-        view.expanded = false
+        view.expanded = args.expanded
         var header = document.createElement('div')
             header.className = 'expander-header'
             header.onclick = function() {

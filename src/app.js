@@ -16,6 +16,7 @@ var jf = jff.jm()
 jf.jl = jl
 jf.workerId = undefined
 jf.nextFreeId = 0
+jf.host = os.hostname()
 tj.jm = jf
 tj.config = config
 mvj.jm = jf

@@ -2,7 +2,7 @@
 
 rm ../../log/*
 
-for i in `seq 1 1`;
+for i in `seq 1 15`;
 do
     for devCount in 1 2
     do

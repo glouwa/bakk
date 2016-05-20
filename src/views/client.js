@@ -24,7 +24,8 @@ app.init = function()
     // nicht hin schaun
     jf.jl = jl
     jf.workerId = undefined
-    jf.nextFreeId = 0
+    jf.host = undefined
+    jf.nextFreeId = 0    
     tj.jm = jf
     tj.config = config
     mvj.jm = jf
@@ -32,6 +33,7 @@ app.init = function()
     app.clientId.on('change', function(changes)
     {
         jf.workerId = 'C' + Number(app.clientId).toSubscript()
+        jf.host = 'Browser'
         document.title = jf.workerId
         $('#thisId').text(jf.workerId)
 

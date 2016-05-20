@@ -45,11 +45,15 @@ function jobToArchyNode(j) {
         else
             line += ~~(j.state.progress.valueOf()*100) + '% '
 
-        if (j.state.worker)
-            line += j.state.worker + ' '
+        if (j.state.realWorker)
+            line += j.state.realWorker + ' '
 
         if (j.state.lastModification && j.state.callTime)
-            line += formatTimespan(jf.jobTime(j)) + ' '
+            line += formatTimespan(jf.jobTime(j)) + '@' + j.state.callTimeloc
+
+        if (j.state.lastRemoteModification && j.state.remoteCallTime)
+            line += formatTimespan(jf.jobRemoteTime(j)) + '@' + j.state.remoteCallTimeloc + '@' + j.state.lastRemoteModificationloc
+        else line += '      '
     }
 
     line += '  ' + j.desc + ': (…) → '
@@ -101,7 +105,7 @@ function aProjectJob() {
                 var workterTimes = ''
                 var workerJobCount = 0
                 visitJob(j, sj=> {
-                    if (sj.state.worker.valueOf().startsWith('W')) {
+                    if (sj.state.realWorker.valueOf().startsWith('W')) {
                         workterTimes += jf.jobTime(sj) + ',\n'
                         workerJobCount++
                     }
