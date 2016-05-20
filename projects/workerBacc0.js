@@ -48,7 +48,8 @@ function getCmdSet(j, diff)
                         node:node,
                         args:{ command:output.commands[idx], idx:idx, timeout:js.params.workerTimeout },
                         realJob: jw=> tj.spawn(jw, {
-                            cmd: 'shuf -i 0-10 -n 1 | xargs sleep && echo echo', //jw.params.command.cmd.valueOf(),
+                            //cmd: 'shuf -i 0-10 -n 1 | xargs sleep && echo echo',
+			    cmd: jw.params.command.cmd.valueOf(),
                             options:{ cwd:jw.params.command.dir.valueOf(), env:Object.assign({ OMP_NUM_THREADS:4 }, process.env) },
                             onStdOut: (jw, data)=> jw.commitJob(
                                 { type:'running', progress:0.5, log:data },
@@ -64,7 +65,7 @@ function getCmdSet(j, diff)
 
 new Object({
     type: 'Project',
-    icon: '🐼',
+    icon: 'A',
     desc: 'Process fragment folder',
     service: {
         type: 'Service',

@@ -72,6 +72,8 @@ app.onNetworkStateChange = function(state, connection)
     {
         onConnected: function()
         {
+	    console.log('+ connection ' + connection.id)
+	  
             var msg = messages.serverHalloMsg(connection.id, app.model.network)
             var channelMsg = messages.channelMsg('Ws', msg)
             connection.send(channelMsg)
@@ -79,6 +81,7 @@ app.onNetworkStateChange = function(state, connection)
 
         onDisconnected: function()
         {
+	    console.log('- connection ' + connection.id)
             var path = 'model.network.'+connection.id
 
             try { app.update(path, 'deadbeef') } catch(e) {}

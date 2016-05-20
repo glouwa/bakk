@@ -3,7 +3,8 @@ var forever = require('forever-monitor');
 console.log(process.argv)
 
 var child = new (forever.Monitor)(process.argv[2], {
-    silent: true,
+    silent: false,
+    spinSleepTime: process.argv[2] == 'server.js' ? 1 : 1000,
     args: []
 });
 

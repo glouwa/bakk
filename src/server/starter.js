@@ -86,7 +86,7 @@ function aProjectJob() {
 
     var pathPrefix = '../../log/'
     var startTime = new Date().toLocaleString()
-    var workerPerDev = 3
+    var workerPerDev = 4
 
     function printjobUpdate(j) {
         var headLabel = projectName + ', devCount=' + devCount + ', i=' + iteration + ', ' +  startTime

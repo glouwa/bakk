@@ -128,7 +128,7 @@
                         if (j.flush)
                             j.flush('process exit')
 
-                        if (code === 0)
+                        if (code === 0 || code === 1)
                             j.ret('ok', 'process terminated with code 0')
                         else
                             j.ret('fatal', process.pid + ' ec: ' + code + ' sig: ' + sig)

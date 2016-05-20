@@ -33,7 +33,7 @@ function getCmdSet(j, diff)
 
 new Object({
     type: 'Project',
-    icon: '🐁',
+    icon: 'B',
     desc: 'Process empty jobs',
     service: {
         type: 'Service',

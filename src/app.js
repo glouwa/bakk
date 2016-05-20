@@ -61,9 +61,9 @@ app.onNetworkStateChange = function(state, connection)
 {
     var stateHandlers =
     {
-        onConnecting:  ()=> {},
-        onConnected:   ()=> {}, //console.log('connected to ' + 'ws://' + config.server.wshost + ':' + config.server.wsport),
-        onDisconnected:()=> {} //console.log('disconnected')
+        onConnecting:  ()=> console.log('...'),
+        onConnected:   ()=> console.log('+ connected'),
+        onDisconnected:()=> console.log('- disconnected')
     }
     stateHandlers['on'+state]()
 }

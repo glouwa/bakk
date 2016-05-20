@@ -89,7 +89,7 @@ function receiveMsg(connection, msg)
 function cleanUpConnection(connection, url)
 {
     delete network.connections[connection.id]
-    if (url) setTimeout(()=> network.connect(url), config.client.reconnectIntervall)
+    //if (url) setTimeout(()=> network.connect(url), config.client.reconnectIntervall)
     network.onConnectionChanged('Disconnected', connection)
 }
 
