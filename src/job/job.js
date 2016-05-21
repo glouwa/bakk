@@ -58,7 +58,11 @@
                             callTime: callTime,  // sollte eigenlich schon da sein wenn initDiff verw.
                             callTimeloc: callTimeloc,
                             lastModification: Date.now(),
-                            lastModificationloc: jm.workerId
+                            lastModificationloc: jm.workerId,
+                            //remoteCallTime: callTime,  // sollte eigenlich schon da sein wenn initDiff verw.
+                            //remoteCallTimeloc: callTimeloc,
+                            //remoteLastModification: Date.now(),
+                            //remoteLastModificationloc: jm.workerId
                         }
                     }
 

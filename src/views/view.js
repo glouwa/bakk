@@ -123,7 +123,7 @@ function autoJobButtonView(model)
         view.style.paddingRight = 10
         view.style.borderStyle = 'none none solid none'
         view.style.borderWidth = 1;
-        view.style.borderColor = '#fafafa'
+        view.style.borderColor = '#f2f2f2'
 
     view.update = compositeUpdate({
         view:view,
@@ -133,7 +133,7 @@ function autoJobButtonView(model)
         itemDelegate:(v, k)=>
         {
             view.style.paddingTop = 20
-            view.style.paddingBottom = 20
+            view.style.paddingBottom = 14
 
             return jobRootButon({
                 name:k,
@@ -220,7 +220,7 @@ function a3View(model)
         contentDelegate = ()=> autoMultiView(model, [autoView, projectEdit])
 
     if (model.type == 'Job')
-        contentDelegate = ()=> autoMultiView(model, [jobStateGantView, jobStateGraphView, jobStateTreeView])
+        contentDelegate = ()=> autoMultiView(model, [jobStateGraphView, jobStateTreeView, jobStateGantViewWithProgress])
 
     if (model.type == 'Network')
         contentDelegate = ()=> autoMultiView(model, [autoView, systemView])

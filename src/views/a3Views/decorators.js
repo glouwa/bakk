@@ -21,7 +21,7 @@ function a3Frame(model, headerFactory)
             type.innerText = modelType(model)
             type.style.float = 'right'
             type.style.color = '#ddd'
-            type.style.margin = '4 5 0 2'
+            type.style.margin = '4 12 0 2'
             type.style.fontSize = 9
         var desc = document.createElement('div')
             desc.innerText = model.desc ? model.desc.valueOf() : ''
@@ -29,8 +29,10 @@ function a3Frame(model, headerFactory)
             desc.style.clear = 'left'
             desc.style.marginTop = 4
             desc.style.marginLeft = 6
-            desc.style.fontSize = 15
+            desc.style.fontSize = '1em'
             desc.style.fontStyle = 'italic'
+            desc.style.fontWeight = '800'
+            desc.style.color = '#1FBF6F'
         var header = headerFactory(model)
             //buttonHeader.style.marginBottom = 20
         view.appendChild(name)

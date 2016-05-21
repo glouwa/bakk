@@ -39,7 +39,7 @@ function jobHeaderView(jobModel)
         view.style.borderColor = '#fafafa'
 
     view.style.paddingTop = 20
-    view.style.paddingBottom = 20
+    view.style.paddingBottom = 14 // ändert nichts ?!?!
 
     var defaultAction = jobControlingButton(jobModel)
     view.appendChild(defaultAction)

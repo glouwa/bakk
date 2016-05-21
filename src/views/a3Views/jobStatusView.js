@@ -151,7 +151,7 @@ function jobStateTreeView(jobModel)
     {
         var view = document.createElement('div')
             view.className = 'jobAndSubjobs'
-            var header = jobStateWithLogView(jobModel, l)
+            var header = jobStateWithLogView(jobModel, jpViewFactory({ caption:true,  log:true, width:'130' /*, level:l*/ }))
             var subjobs = undefined
 
         view.update = function(changes)
@@ -184,6 +184,24 @@ function jobStateTreeView(jobModel)
     return view
 }
 
+function jobStateGantViewWithProgress(jobModel)
+{
+    var view = document.createElement('div')
+        view.className = 'progress+gant'
+        var pv = jobStateWithLogView(jobModel, jpViewFactory({ caption:false, log:true, width:'100%' }))
+            pv.style.display = 'inline-block'
+            pv.style.width = '100%'
+            pv.style.margin = '32 0 -21 0'
+        view.appendChild(pv)
+        var gv = jobStateGantView(jobModel)
+            gv.style.display = 'inline-block'
+            gv.style.width = '100%'
+            view.appendChild(gv)
+
+
+    return view
+}
+
 function jobStateGantView(jobModel)
 {   
     var items = new vis.DataSet()
@@ -199,16 +217,19 @@ function jobStateGantView(jobModel)
             groups.add({ id:group, content:group })
 
         var bgColor = hexToRgb(config.getColor(jm.state), 0.8)
+        var startTime = jm.state.callTime?new Date(jm.state.callTime.valueOf()):new Date()
+        var endTime = jm.state.lastModification?new Date(jm.state.lastModification.valueOf()):undefined
 
         items.add({
             id:jm.path.valueOf(),
             model:jm,
             group:group,
             subgroup:subgroup,
-            start:jm.state.callTime?new Date(jm.state.callTime.valueOf()):new Date,
-            end:jm.state.lastModification?new Date(jm.state.lastModification.valueOf()):undefined,
+            start:startTime,
+            end:endTime,
             style:'background-color: '+bgColor+';' + 'border-color: '+config.getColor(jm.state)+';',
         })
+
         jm.state.on('change', function(changes)
         {
             var subgroup = jm.state.realWorker ? jm.state.realWorker.valueOf() : '?'
@@ -218,15 +239,31 @@ function jobStateGantView(jobModel)
                 groups.add({ id:group, content:group })
 
             var bgColor = hexToRgb(config.getColor(jm.state), 0.8)
+            var startTime = jm.state.callTime?new Date(jm.state.callTime.valueOf()):new Date()
+            var endTime = jm.state.lastModification?new Date(jm.state.lastModification.valueOf()):undefined
+            var stateColor = config.getColor(jm.state)
 
             items.update({
                 id:jm.path.valueOf(),
                 group:group,
                 subgroup:subgroup,
-                start:jm.state.callTime?new Date(jm.state.callTime.valueOf()):new Date,
-                end:jm.state.lastModification?new Date(jm.state.lastModification.valueOf()):undefined,
-                style:'background-color: '+bgColor+';' + 'border-color: '+config.getColor(jm.state)+';',
+                //start:startTime,
+                end:endTime,
+                style:'background-color: '+bgColor+';' + 'border-color: '+stateColor+';',
             })
+
+            /*
+            items.update({ // todo: wenn keine update doublettn dann kan man hier add verwenden
+                id:jm.path.valueOf()+endTime.valueOf(),
+                type:'point',
+                model:jm,
+                group:group,
+                subgroup:subgroup,
+                start:endTime,
+                style:'border-color: '+stateColor+';',
+                title:JSON.stringify(jm.state, null, 4)
+            })*/
+
             view.timeline.fit()
         })
     }
@@ -271,11 +308,15 @@ function jobStateGantView(jobModel)
     return view
 }
 
-function jobStateWithLogView(jobModel, level)
+// das ding transformiert ein model
+// in dem fall wird der origin aus den subjobs abgeleitet
+//
+// der content erhält dann change event mit model und den neuen daten ~
+function jobStateWithLogView(jobModel, contentFactory)
 {
     var view = document.createElement('div')        
         view.className = 'jobStateWithLog'
-        var jobState = jobStateView(level)
+        var jobState = contentFactory()
         var jobLog = jobLogView()
             jobLog.id = 'j' + jobModel.id + 'jobLog'
 
@@ -334,65 +375,92 @@ function jobStateWithLogView(jobModel, level)
     return view
 }
 
-function jobStateView(level)
+//jpViewFactory({ caption:false, log:true, width:'100%', level:level })
+//jpViewFactory({ caption:true,  log:true, width:'130',  level:level })
+
+function jpViewFactory(args)
 {
-    var view = document.createElement('div')
-        view.className = 'jobState'
-        var caption = document.createElement('div')
-            caption.style.float = 'left'
-            caption.innerText = Number(level).toSubscript()
-        var progress = document.createElement('div')
-            progress.className = 'progress'
-        var lastworker = document.createElement('div')
-            lastworker.className = 'lastWorker'
-        var lastlog = document.createElement('div')
-            lastlog.className = 'lastLog'
-        var state = document.createElement('div')
-            state.className = 'state'
-            state.innerText = 'no events observed'
-
-    view.addEvent = function(jobModel, origin)
+    args.progress = args.progress === undefined || true
+    return function jobStateView()
     {
-        progress.addBlock(jobModel, origin)
+        var view = document.createElement('div')
+            view.className = 'jobState'
+            if (args.level) {
+                var caption = document.createElement('div')
+                    caption.style.float = 'left'
+                    caption.innerText = Number(args.level).toSubscript()
+                view.appendChild(caption)
+            }
+            if (args.progress) {
+                var progress = document.createElement('div')
+                    progress.className = 'progress'
+                    progress.style.width = args.width
+                    progress.style.height = args.height = 12
+                    view.appendChild(progress)
+            }
+            if (args.caption) {
+                var lastworker = document.createElement('div')
+                    lastworker.className = 'lastWorker'
+                var lastlog = document.createElement('div')
+                    lastlog.className = 'lastLog'
+                var state = document.createElement('div')
+                    state.className = 'state'
+                    state.innerText = 'no events observed'
+                view.appendChild(lastworker)
+                view.appendChild(lastlog)
+                view.appendChild(state)
+            }
 
-        //lastworker.innerText = (''+jobModel.state.lastWorker)!= 'undefined'?''+jobModel.state.lastWorker:'-'
+        view.addEvent = function(jobModel, origin)
+        {
+            progress.addBlock(jobModel, origin)
+            //lastworker.innerText = (''+jobModel.state.lastWorker)!= 'undefined'?''+jobModel.state.lastWorker:'-'
 
-        var locationInfo = ''
-        if (jobModel.state.creator)
-            locationInfo += jobModel.state.creator.valueOf()
-        if (jobModel.state.realWorker)
-            locationInfo +=  ' ↷ ' + jobModel.state.realWorker.valueOf()
+            if (args.caption) {
+                var locationInfo = ''
+                if (jobModel.state.creator)
+                    locationInfo += jobModel.state.creator.valueOf()
+                if (jobModel.state.realWorker)
+                    locationInfo +=  ' ↷ ' + jobModel.state.realWorker.valueOf()
 
-        lastworker.innerText = locationInfo
-        lastlog.innerText = jobModel.state.log//.valueOf()
-        state.innerText = config.getIcon(jobModel.state)
+                lastworker.innerText = locationInfo
+                lastlog.innerText = jobModel.state.log//.valueOf()
+                state.innerText = config.getIcon(jobModel.state)
+            }
+        }
+
+        progress.addBlock = function(jobModel, origin)
+        {
+            var color = config.getColor(origin.model.state)
+            var prevProgress = progress.prevP
+            progress.prevP  = jobModel.state.progress.valueOf()
+
+            //console.debug(prevProgress, ' - ', progress.prevP, color)
+/*
+            var width = 130 //args.width
+            var left = prevProgress ? prevProgress * width : 0
+            var width = Math.ceil(jobModel.state.progress.valueOf() * width) - left
+
+            var logBlock = document.createElement('div')
+            logBlock.className = 'search-progress-block'
+            logBlock.style.backgroundColor = color
+            logBlock.style.left = Math.floor(left)
+            logBlock.style.width = Math.ceil(width)
+*/
+            var p = jobModel.state.progress.valueOf()
+            var pP = prevProgress ? prevProgress : 0
+
+            var logBlock = document.createElement('div')
+            logBlock.className = 'search-progress-block'
+            logBlock.style.backgroundColor = color
+            logBlock.style.left = pP*100 + '%'//Math.floor(left)
+            logBlock.style.width = (p - pP)*100 + '%' //Math.ceil(width)
+
+            progress.appendChild(logBlock)
+        }
+
+        return view
     }
-
-    progress.addBlock = function(jobModel, origin)
-    {
-        var color = config.getColor(origin.model.state)
-        var prevProgress = progress.prevP
-        progress.prevP  = jobModel.state.progress.valueOf()
-
-        //console.debug(prevProgress, ' - ', progress.prevP, color)
-
-        var left = prevProgress ? prevProgress * 130 : 0
-        var width = Math.ceil(jobModel.state.progress.valueOf() * 130) - left
-
-        var logBlock = document.createElement('div')
-        logBlock.className = 'search-progress-block'
-        logBlock.style.backgroundColor = color
-        logBlock.style.left = Math.floor(left)
-        logBlock.style.width = Math.ceil(width)
-        progress.appendChild(logBlock)
-    }
-
-    //view.appendChild(caption)
-    view.appendChild(progress)
-    view.appendChild(lastworker)
-    view.appendChild(lastlog)
-    view.appendChild(state)
-    return view
 }
 
 function jobLogView(jobModel, originChain)

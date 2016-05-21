@@ -2,7 +2,7 @@
 {
     exports.type = 'Set<Config>'
     exports.server = {}
-    exports.server.wshost          = 'simcity'
+    exports.server.wshost          = 'desktop'
     exports.server.wsport          = 1336
     exports.server.httpport        = 1337
     exports.client = {}

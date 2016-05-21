@@ -76,8 +76,7 @@ app.init = function()
             type:'Set<Project>',
             '↻': function(j) {
                 this.update({
-                    '↻': 'deadbeef',
-                    '✕': function free(j) {},
+                    '↻': 'deadbeef',                   
                     '🐼 Process fracturing folder on workers':     project('../../projects/workerBacc0.js'),
                     '🐁 Process empty jobs on worker':            project('../../projects/workerBacc1.js'),
                     '❄ Find similar 3d models on worker':        project('../../projects/workerModel3d.js'),

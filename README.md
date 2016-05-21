@@ -33,6 +33,7 @@
 - bigobject
     - object member order/arrays
     - persitance
+        - LOG !!!
         - types, views, css editierbar
         - code edit
         - view edit/wysiwyg
