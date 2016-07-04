@@ -1,0 +1,40 @@
+\documentclass[german,11pt,a4paper]{article}
+
+\textwidth     15cm
+\textheight    23cm
+\topmargin     -5mm
+\oddsidemargin  5mm
+\evensidemargin 5mm
+
+\usepackage{calc}
+\usepackage{babel}
+\usepackage{cfpseudocode}
+
+\begin{document}
+
+Benutzung der pseudocode Umgebung im laufenden Text
+\begin{pseudocode}[0.9\linewidth]
+1 \=f"uge Quadtreewurzel $r(Q)$ mit Priorit"at $e(T_{1,r(Q)})$ in eine
+Priorit"atsliste $P$ ein\\
+2 \>\WHILE \=($|P| <$ MinQuadtreeknoten) \DO\\
+3 \>\>entferne das Element $q$ mit maximaler Priorit"at aus $P$\\
+4 \>\>\IF $q$ auf Ebene $l$ mit $l<\log_2\min(m,n)$\\
+5 \>\>\THEN f"uge die Kinder $q_i=ch(q, i), i=0,1,2,3$ mit Priorit"at $e(T_{1,q_i})$ in die Priorit"atsliste $P$ ein
+\end{pseudocode}
+
+\ldots oder in einer gleitenden Abbildung
+\begin{figure}[h]
+\begin{fpseudocode}[0.9\linewidth]
+1 \=f"uge Quadtreewurzel $r(Q)$ mit Priorit"at $e(T_{1,r(Q)})$ in eine
+Priorit"atsliste $P$ ein\\
+2 \>\WHILE \=($|P| <$ MinQuadtreeknoten) \DO\\
+3 \>\>entferne das Element $q$ mit maximaler Priorit"at aus $P$\\
+4 \>\>\IF $q$ auf Ebene $l$ mit $l<\log_2\min(m,n)$\\
+5 \>\>\THEN f"uge die Kinder $q_i=ch(q, i), i=0,1,2,3$ mit Priorit"at $e(T_{1,q_i})$ in die Priorit"atsliste $P$ ein
+\end{fpseudocode}
+\caption{Mein Algorithmus f"ur \ldots}
+\label{alg:MyAlgorithm}
+\end{figure}
+
+
+\end{document}

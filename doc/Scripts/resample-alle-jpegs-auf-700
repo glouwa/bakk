@@ -1,0 +1,6 @@
+#!/bin/tcsh -f
+
+foreach i ( *jpg )
+echo $i ...
+jpegtopnm $i | pnmscale -xysize 700 700 | pnmtojpeg -optimize > ../$i
+end

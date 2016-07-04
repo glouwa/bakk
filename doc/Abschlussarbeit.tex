@@ -1,0 +1,132 @@
+\documentclass[10pt,a4paper,onecolumn]{book}
+
+% ============================================================
+% Packages
+
+\usepackage[utf8]{inputenc}
+\usepackage{ngerman}
+\usepackage{longtable}
+\usepackage{vmargin}
+\usepackage{makeidx}
+\usepackage{amsfonts}
+\usepackage{listings}
+\usepackage{clrscode}
+\usepackage{ifpdf}
+\usepackage{float}
+\usepackage{wrapfig}
+
+\ifpdf
+  \pdfoutput=1
+  \pdfcompresslevel=9
+  \usepackage[pdftex,colorlinks=true,linkcolor=blue,
+    citecolor=blue,urlcolor=blue,pagebackref=true]{hyperref}
+  \usepackage[pdftex]{graphicx}
+  \DeclareGraphicsExtensions{.jpg,.pdf,.png}
+\else
+  \usepackage[pdfmark,pdfmark=true,pagebackref=true,
+   colorlinks,linkcolor=blue,citecolor=blue,
+   urlcolor=blue,bookmarks=false,pdfpagemode=UseNone]{hyperref}
+  \usepackage[dvips]{graphicx}
+  \DeclareGraphicsExtensions{.eps}
+\fi
+
+% ============================================================
+% Options
+
+\setlength{\oddsidemargin}{0cm}
+\setlength{\evensidemargin}{0cm}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+\setpapersize{A4}
+% randlinks  randoben     randrechts  randunten
+% hoehekopf  abstandkopf  hoehefuss
+\setmarginsrb{20mm}{16mm}{20mm}{16mm}{3mm}{10mm}{0mm}{10mm}
+
+\pagestyle{headings}
+\graphicspath{{Figures/}}
+\lstloadlanguages{C++}
+\lstset{language=C++,basicstyle=\small\sffamily\fontseries{c}%
+        \fontshape{n}\selectfont,morekeywords={Vec2f,Vec3f,Box3f,Index,float},%
+        literate={->}{$\rightarrow$}2 }
+
+% ============================================================
+% Customization
+
+\newcommand{\sys}[1]{“#1”}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\NEWline}{\rule{0mm}{0.8em}\newline}
+\newcommand{\BI}{\begin{list}{$\bullet$}{\itemsep0.4mm\parsep0.4mm\leftmargin1em\topsep1mm}}
+\newcommand{\EI}{\end{list}}
+\newcommand{\BLI}{\begin{list}{$\bullet$}{\itemsep1pt\parsep2pt\topsep3pt\labelwidth2em}}
+\newcommand{\ELI}{\end{list}}
+\newcommand{\BL}{\begin{list}{$\bullet$}{\itemsep0mm\parsep0mm\topsep1mm\labelwidth2em}}
+\newcommand{\EL}{\end{list}}
+\newcommand{\BCL}{\begin{list}{$\bullet$}{\itemsep0mm\parsep0mm\topsep0mm\labelwidth2em}}
+\newcommand{\ECL}{\end{list}}
+\newcommand{\BE}{\begin{enumerate}}
+\newcommand{\EE}{\end{enumerate}}
+\newcommand{\ptr}{$\rightarrow\,$}
+\newcommand{\fett}[1]{\textsf{\textbf{#1}}}
+\newcommand{\code}[1]{\textsf{#1}}
+\newcommand{\wwwLink}[1]{\href{http://#1}{\textsf{#1}}}
+\newcommand{\widecaption}[2]{\parbox{16cm}{\caption[#1]{#2}}}
+\newcommand{\emphi}[1]{\index{#1}\emph{#1}}
+\newcommand{\indi}[1]{\index{#1}#1}
+\newcommand{\X}{$\Longrightarrow$}
+\newcommand{\I}{{\mid}}
+
+% ============================================================
+
+\makeindex
+
+\begin{document}
+
+\frontmatter
+
+\begin{titlepage}
+\begin{center}
+\vspace*{30mm}\Large
+
+\textbf{\textit{Diplomarbeit}}\\[12mm]
+
+\textbf{\textsf{\huge Writing an Important Thesis}}\\[12mm]
+
+Sven Havemann \\[6pt]
+Institute of ComputerGraphics and KnowledgeVisualisation, TU Graz\\[6pt]
+\wwwLink{www.cgv.tugraz.at}
+
+\vspace*{\fill}
+
+\includegraphics[height=16mm]{cgv-logo} \quad
+\includegraphics[height=16mm]{tug-logo}
+\end{center}
+\end{titlepage}
+\include{Preface}
+\tableofcontents
+
+\mainmatter
+
+% ------------------------------------------------------------
+\include{Chapter-1}
+\include{Chapter-2}
+\include{Chapter-3}
+\include{Chapter-4}
+\include{Chapter-5}
+\include{Chapter-6}
+\include{Chapter-7}
+% ------------------------------------------------------------
+
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliographystyle{Scripts/eg-alpha}
+\bibliography{Bibliography}
+\addcontentsline{toc}{chapter}{List of Tables}
+\listoftables
+\addcontentsline{toc}{chapter}{List of Figures}
+\listoffigures
+\addcontentsline{toc}{chapter}{Index}
+\twocolumn
+\printindex
+
+\end{document}

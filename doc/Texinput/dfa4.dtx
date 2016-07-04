@@ -1,0 +1,31 @@
+\def\fileversion{1.1}
+\def\filedate{1997/06/14}
+\def\docdate {1997/02/22}
+% \NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{dfa4}[\filedate \space
+                       DF's A4 page size and layout]
+
+\setlength{\paperwidth}{210 mm} 
+\setlength{\paperheight}{297 mm} 
+
+% \topmargin -16mm
+%
+\setlength{\topmargin}{-8 mm} % 0 pt %
+
+% \textheight 24cm
+%
+\ifcase \@ptsize
+\setlength{\textheight}{56\baselineskip} % 53\baselineskip
+\or %
+\setlength{\textheight}{49\baselineskip} % 47\baselineskip
+\or %
+\setlength{\textheight}{44\baselineskip} % 43\baselineskip
+\fi
+\advance\textheight by \topskip
+
+\setlength{\textwidth}{16cm}
+\setlength{\oddsidemargin}{6pt} %
+\setlength{\evensidemargin}{6pt} %
+
+\endinput
+

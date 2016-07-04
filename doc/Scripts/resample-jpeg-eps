@@ -1,0 +1,23 @@
+#!/bin/tcsh -f
+set texname=$1
+set imgname=$2
+set dpi=$3
+
+if ( $dpi == "0" ) then
+  jpegtopnm Figures-png/"$imgname".png | pnmtops -noturn -rle -nosetpage > Figures/"$imgname".eps
+  exit
+endif
+
+set h=`grep -h includegraphics *.tex | grep "{$imgname}" | grep height | sed -e 's/.*height=\([0-9]*\)mm\]{\(.*\)}.*/\1/g' | awk '{ print int(($1/25.4)*'$dpi') }'`
+set w=`grep -h includegraphics *.tex | grep "{$imgname}" | grep width | sed -e 's/.*width=\([0-9]*\)mm\]{\(.*\)}.*/\1/g' | awk '{ print int(($1/25.4)*'$dpi') }'`
+
+echo === texname=$texname imgname=$imgname dpi=$dpi h=$h w=$w
+
+if ( $h != "" ) then
+  echo =   HEIGHT resampling to $h pixels: Figures-jpeg/$imgname.png 
+  jpegtopnm Figures-jpeg/"$imgname".jpg | pnmscale -ysize=$h | pnmtops -noturn -rle -nosetpage > Figures/"$imgname".eps
+else
+  echo =   WIDTH resampling to $w pixels: Figures-jpeg/$imgname.png 
+  jpegtopnm Figures-jpeg/"$imgname".jpg | pnmscale -xsize=$w | pnmtops -noturn -rle -nosetpage > Figures/"$imgname".eps
+endif
+

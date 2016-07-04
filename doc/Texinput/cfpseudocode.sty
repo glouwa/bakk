@@ -1,0 +1,79 @@
+\def\fileversion{1.0}
+\def\filedate{1999/11/05}
+\def\docdate {1999/11/05}
+\NeedsTeXFormat{LaTeX2e}
+
+\ProvidesPackage{cfpseudocode}[\filedate{} CFs pseudocode]
+\RequirePackage{calc}
+
+% environment 
+%  pseudocode
+%  \begin{pseudocode} with one optional parameter: minipage-width
+%  ...like in tabbing environment...
+%  \end{pseudocode}
+%
+%  pseudocode in a framed box
+%  \begin{fpseudocode} with one optional parameter: minipage-width
+%  ...like in tabbing environment...
+%  \end{fpseudocode}
+%
+%
+% commands (to be used in pseudocode environment) 
+%  \IF
+%  \THEN
+%  \ELSE
+%  \FOR
+%  \TO
+%  \WHILE
+%  \DO
+% -----------------------------------------------------------------------
+
+\newsavebox{\fminibox}
+\newlength{\fminilength}
+\newenvironment{fminipage}[1][\linewidth]%
+{\setlength{\fminilength}{#1-2\fboxsep-2\fboxrule}%
+ \begin{lrbox}{\fminibox}\begin{minipage}{\fminilength}}
+{\end{minipage}\end{lrbox}\noindent\fbox{\usebox{\fminibox}}}
+
+\newenvironment{pseudocode}[1][\linewidth]%
+{\begin{minipage}{#1}\vspace{2mm}\sf\begin{tabbing}\hspace*{4mm}\=%
+\hspace{4mm}\=\hspace{4mm}\=\hspace{4mm}\=\hspace{4mm}\=%
+\hspace{4mm}\=\hspace{4mm}\=\hspace{4mm}\=\hspace{4mm}\=%
+\hspace{4mm}\=\hspace{4mm}\=\hspace{4mm}\=\hspace{4mm}\=\kill}
+{\end{tabbing}\end{minipage}\vspace{2mm}}
+
+\newenvironment{cpseudocode}[1][\linewidth]%
+{\begin{center}\begin{minipage}{#1}\sf\begin{tabbing}\hspace*{4mm}\=%
+\hspace{4mm}\=\hspace{4mm}\=\hspace{4mm}\=\hspace{4mm}\=%
+\hspace{4mm}\=\hspace{4mm}\=\hspace{4mm}\=\hspace{4mm}\=%
+\hspace{4mm}\=\hspace{4mm}\=\hspace{4mm}\=\hspace{4mm}\=\kill}
+{\end{tabbing}\end{minipage}\end{center}}
+
+\newenvironment{fpseudocode}[1][\linewidth]%
+{\begin{center}\begin{fminipage}[#1]\vspace{1ex}\sf\begin{tabbing}}
+{\end{tabbing}\vspace{1ex}\end{fminipage}\end{center}}
+
+\newcommand{\IF}   {{\bf if }}
+\newcommand{\THEN} {{\bf then }}
+\newcommand{\ELSE} {{\bf else }}
+\newcommand{\FOR}  {{\bf for }}
+\newcommand{\TO}   {{\bf to }}
+\newcommand{\WHILE}{{\bf while }}
+\newcommand{\DO}   {{\bf do }}
+\newcommand{\PROC} {{\bf procedure }}
+\newcommand{\REM}[1]{{\sc #1}}
+\newcommand{\AREM}[1]{\>// {\sc #1}}
+\newcommand{\BREM}[1]{\>\>// {\sc #1}}
+\newcommand{\CREM}[1]{\>\>\>// {\sc #1}}
+\newcommand{\DREM}[1]{\>\>\>\>// {\sc #1}}
+\newcommand{\EREM}[1]{\>\>\>\>\>// {\sc #1}}
+\newcommand{\FREM}[1]{\>\>\>\>\>\>// {\sc #1}}
+\newcommand{\GREM}[1]{\>\>\>\>\>\>\>// {\sc #1}}
+\newcommand{\HREM}[1]{\>\>\>\>\>\>\>\>// {\sc #1}}
+\newcommand{\IREM}[1]{\>\>\>\>\>\>\>\>\>// {\sc #1}}
+\newcommand{\JREM}[1]{\>\>\>\>\>\>\>\>\>\>// {\sc #1}}
+\newcommand{\KREM}[1]{\>\>\>\>\>\>\>\>\>\>\>// {\sc #1}}
+\newcommand{\LREM}[1]{\>\>\>\>\>\>\>\>\>\>\>\>// {\sc #1}}
+\newcommand{\MREM}[1]{\>\>\>\>\>\>\>\>\>\>\>\>\>// {\sc #1}}
+\newcommand{\RETURN}{{\bf return }}
+\endinput

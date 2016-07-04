@@ -1,0 +1,101 @@
+% =========================================================================
+% CHAPTER 2
+% =========================================================================
+
+\chapter{Ähnliche Arbeiten und Technologien}
+
+\section{Konzepte}
+
+\subsection{Message Oriented Middleware und RPC}
+Middleware Systeme können nach mehreren Gesichtspunkten klassifiziert werden.
+Im Folgenden wird die Klassifizierung nach (bishop2003survey) verwendet und auf die Klassen \sys{Procedure Oriented}, \sys{Object Oriented}, und \sys{Message Oriented Middleware} eingegangen, da sie unter Berücksichtigung der Requirements mögliche Lösungsansätze sind.
+
+\sys{Procedure Oriented} und \sys{Object Oriented} Systeme sind häufig als Request-Response  Protokolle implementiert, wie zum Beispiel Java RPC oder CORBA.
+Einen Remote Call abzubrechen ist in diesem Kontext nur möglich, indem man die Ausführung an die TCP Connection bindet, das hieße die Ausführung abbzubrechen, falls die TCP Connection geschlossen wird.
+Eine weitere Message für den Abbruch zu spezifizieren würde es ermöglichen, TCP Connections aufrecht zu erhalten wenn ein RPC abgebrochen wird.
+Dies widerspricht aber dem Request-Response Konzept.
+RPC Implementierungen wie qooxdoo setzen dieses Konzept um.
+Bei der Evaluierung von RPC Technologien konnte keine gefunden werden, die den Fortschritt der Ausführung am Client zur Verfügung stellt.
+Um dies mit RPC zu realisieren, muss es im Application Layer implementiert werden.
+
+\sys{Message Oriented Middleware} Systeme bieten mehr Freiheit in der Hinsicht, dass Message-Sequenzen beliebig modelliert werden können.
+Ein Remote Call mit Progress und Cancel Funktionalität kann relativ simpel mit vier Messages  modelliert werden:
+Request, Progress, Cancel und Response.
+Bei dieser Vorgehensweise muss jede der erwähnten Messages eine ID enthalten, welche auf den Aufruf verweist.
+
+Beide Middleware Konzepte benötigen für die Progress und Cancel Funkionalität Implementierungen im Application Layer - eine Aufgabe, die dem Anwender abgenommen werden könnte.
+
+
+
+
+\subsection{Ayncronous API}
+Message Oriented Middleware Systeme verwenden meist asynchrone APIs, während Procedure Oriented und Object Oriented Systeme meist synchrone APIs verwenden.
+Es ist aber auch möglich, asynchrone APIs für RPC zu verwenden wie Falkner (falkner1999implementing) gezeigt hat.
+
+Asynchrone APIs, die mit Callbacks arbeiten, führen zu schwer lesbaren Code (pyramid of doom).
+Um dies zu vermeiden können Futures und/oder Promises verwendet werden (baker1977incremental).
+Promises sind Objekte, die das Ergebnis eines Funktionsaufrufs repräsentieren.
+Bei den meisten Programmiersprachen kann dies neben dem Returnwert auch eine Exception sein.
+Verwendet man Promises, wird das Ergebnis nicht durch Schlüsselwörter wie return oder throw definiert, sondern an das Promise Objekt übergeben.
+So ist es möglich, auch innerhalb von Callbacks oder nach dem Verlassen der Funktion ein Ergebnis zu definieren.
+
+Futures ergänzen dieses Konzept an der aufrufenden Stelle.
+Asynchrone Funktionen geben beim Aufruf ein Future Objekt zurück.
+Dieses kann verwendet werden um auf die Terminierung zu warten, beziehungsweise einen Eventhandler zu registrieren.
+Wenn die asynchrone Funktion das Ergebnis an die Promise übergibt, gibt es diese an die Future weiter, welche in den Zustand Terminated übergeht.
+Ist die Future in diesem Zustand, kann der Returnwert von ihr abgelesen werden (baker1977incremental).
+
+
+
+
+\subsection{Active Object Pattern}
+Bei der Konzeptionierung von Serversystemen muss ein Threading Model gewählt werden.
+Der Einsatz von multithreaded Modellen für ein Scripting API ist zu vermeiden, da es hohe Anforderungen an den Anwender im Bereich der Synchronisierung stellt.
+
+Eine Möglichkeit Semaphoren zu vermeiden ist der Active Object Pattern (schmitt2013pattern).
+Dieser verbindet eine Queue, in der Actions liegen, mit einem Thread welcher die Actions abarbeitet.
+Es muss lediglich das Einfügen und Entfernen aus der Queue als atomare Operation ausgeführt werden.
+
+
+
+
+\section{Technologien}
+
+\subsection{Cluster- Grid- und Cloudcomputing}
+Cluster, Grid und Cloud Computing haben eine Gemeinsamkeit:
+Sie dienen der Nutzung von verteilten Ressourcen.
+Ihre Unterschiede und die Abgrenzung zueinander sind nicht einheitlich definiert.
+Im Folgenden wird die Klassifizierung nach (sadashiv2011cluster) verwendet und ein kurzer Überblick in Bezug auf örtliche Ausdehnung, Ressourcen Allocation, Taskgröße, Heterogenität, Skalierbarkeit und Task Deployment gegeben.
+
+Cluster Computing Systeme sind homogene, für lokale Netzwerke mit hohem Durchsatz optimierte Systeme.
+Die Ressourcenverteilung wird von zentraler Stelle aus organisiert und limitiert damit die Skalierbarkeit.
+Die Taskgröße ist nicht limitiert, dadurch eignen sie sich für verteilte Batch Verarbeitung.
+Häufig wird MPI, eine Message Passing Middleware, verwendet.
+Das Deployment der damit implementierten Programme ist nicht standardisiert und verlangt vom User detailliertes Wissen über den Cluster.
+
+Grid Computing Systeme sind heterogene, für Netzwerke mit globaler Ausdehnung und geringem Durchsatz optimierte Systeme (foster2003grid).
+Typischerweise werden dabei mehrere lokale Netzwerke zu einem Grid verbunden, wodurch eine hierarchische Struktur entsteht.
+Die Ressourcen Verteilung folgt ebenfalls dieser hierarchische Struktur, wodurch eine hohe Skalierbarkeit gegeben ist.
+Die Taskgrößen sind nicht limitiert, dadurch eignen sie sich für verteilte Batch Verarbeitung.
+Es existieren Erweiterungen wie MPICH-G2, die automatisches Job Deployment unterstützen.
+
+Cloud Computing Systeme sind heterogene Systeme mit globaler Ausdehnung.
+Sie sind für kleine Taskgröße designed und skalieren in Bezug auf die Anzahl dieser Tasks, aber nicht in Bezug auf die Große eines Tasks.
+Diese Eigenschaft wird durch die Platform as a Service Eigenschaft erreicht, die das Task Deployment soweit vereinfacht, dass es on demand und automatisch geschehen kann.
+
+
+
+
+
+\subsection{Apache spark}
+Apache Spark ist ein Cluster Computing System, das auf einer MOM aufbaut.
+Ein zu verteilender Algorithmus kann innerhalb eines Scripts implementiert werden.
+Apache Spark API basiert auf Resilient Distributed Datasets (RDD).
+RDDs bieten Methoden wie map, reduce, groupBy, filter und viele mehr.
+
+Bei dem Aufruf dieser Funktionen unterteilt Apache Spark das RDD in Partitionen, wobei jeweils eine Partition von einem Worker verarbeitet wird.
+Die hier als Beispiele genannten Methoden sind Funktionen höherer Ordnung, machen also klar, das auch ausführbarer Code an die Worker übergeben werden muss, damit dieser seine Partition abarbeiten kann.
+Dies kann als versteckter Deployment Schritt gesehen werden und ist auch mit ein Grund für die einfache Handhabung von Apache Spark.
+
+Darüber hinaus wird der User von technischen Details wie Fehlerkorrekturen und dem Versenden von Netzwerk Messages entbunden.
+Apache  Spark unterstützt mehrere Persistenz Technologien, darunter HDFS, Hadoop und Cassandra.

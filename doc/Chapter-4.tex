@@ -1,0 +1,126 @@
+% =========================================================================
+% CHAPTER 4
+% =========================================================================
+
+\chapter{Protokoll Design}
+Das hier beschriebene Protokoll ist für die Verwendung in einem hierarchischen Client-Server Overlay Network (HCSON) optimiert.
+Da in einem solchen Netzwerk Jobs vom Client an den Server und von diesem an Worker gegeben werden, wird im Folgenden zwischen Auftraggeber und Auftragnehmer unterschieden, wobei der Server beide Rollen einnimmt.
+
+Jeder teilnehmende Prozess besitzt eine global eindeutige ID, im Folgenden NodeID genannt, und jeder Job egal ob remote oder nicht, erhält ebenfalls eine ID, im Folgenden JobID genannt.
+Alle Messages enthalten eine JobID und beziehen sich jeweils auf genau einen Job.
+Zudem enthält jeder Job die JobID des ParentJobs, also jene des Jobs, von dem er erstellt wurde.
+Alle Messages sind idempotent.
+
+
+
+
+\section{Network Messages}
+
+\subsection{Call}
+Call Messages werden vom Auftraggeber an den Auftragnehmer gesendet.
+Call Messages enthalten JavaScript Code, der vom Empfänger ausgeführt wird und ersetzen so das Deployment.
+
+
+\subsection{Cancel}
+Cancel Messages werden vom Auftraggeber an den Auftragnehmer gesendet.
+Cancel Messages führen nicht unbedingt zum Endzustand Canceled.
+Falls der Auftraggeber bereits im Zustand Failed oder Ok ist, wird die Cancel Message ignoriert.
+
+
+
+\subsection{Update}
+Update Messages werden vom Auftragnehmer an den Auftraggeber gesendet.
+Aktualisiert den Progress am Auftraggeber, und optional eine für Menschen lesbare Statusinfo.
+
+\subsection{ReturnOk, ReturnFailed, ReturnCanceld}
+Diese Messages werden vom Auftragnehmer an den Auftraggeber gesendet, wenn der Job ausgeführt wurde, eine nicht behandelte Exception aufgetreten oder ein Timeout eingetreten ist.
+
+
+\section{Job state machine}
+Ein grundlegendes Problem von Distributed Computing ist es, am Client den Zustand von Remote Calls zu verfolgen.
+Acknowledges können auf mehreren Layern zum Einsatz kommen, zum Beispiel nur am Tansport Layer.
+In diesem Fall wird meist davon ausgegangen, dass eine erfolgreiche Übertragung auch zu einer erfolgreichen Ausführung führt.
+Algorithmen, bei denen diese Annahme nicht getroffen werden kann, benötigen auch Acknowledges auf dem Application Layer.
+Das Ausführen einer Remote Funktion kann im einfachsten Fall als folgende State Machine dargestellt werden.
+
+An dieser Stelle sollte beachted werden, dass auch diese State Machine verteilt ist.
+Sie stellt den Zustand des Remote Calls dar, dieser existiert real am Client und am Server.
+Oder mit anderen Worten: Dieser Zustand wird im Stub und im Skeleton gehalten.
+Entsprechende Netzwerk Messages synchronisieren den Zustand zwischen Client und Server.
+
+Auch für den Fall, dass kein Abbruch des RPC unterstützt wird und der Server nur am Ende der Ausführung eine Message mit dem Erfolgszustand an den Client sendet, ist es nicht immer möglich, diese State Machines zu synchronisieren (Zwei-Armeen-Problem).
+Denn der Client könnte durch ein Timeoutevent, das genau dann eintritt, wenn die Return Message vom Server auf dem Weg zum Client ist, in den Failed Zustand übergehen, während der Server bereits im Ok Zustand ist.
+
+Wird das System so erweitert, dass Remote Calls abgebrochen werden können, trifft man auf dasselbe Problem wenn vom Client eine Abbruch Meldung an den Server gesendet wird und der Server bereits eine Erfolgsmeldung gesendet hat, diese aber noch nicht am Client angekommen ist.
+
+Eine Strategie um dieses Problem zu minimieren ist es, den Client nicht in den Canceled State übergehen zu lassen ohne vom Server eine Bestätigung erhalten zu haben.
+Im Detail bedeutet das, dass der Client in den Canceling State übergeht, eine Nachricht an den Server sendet mit dem Auftrag die Ausführung abzubrechen und dann vom Server den Endzustand erhält.
+Soweit scheint es, dass beide am Ende im selben Zustand sind, jedoch muss auch der Canceling State mit einem Timeout überwacht werden, was wiederum zum Zwei-Armeen-Problem führt.
+
+Will man nicht nur am Ende der Ausführung vom Server über dessen Zustand informiert werden, sondern auch während der Ausführung, zum Beispiel über den Progress oder Warnings, so können ebenfalls Race Conditions beim Abbruch auftreten, wenn nicht diese Art der Terminierung verwendet wird.
+Der Client könnte durch ein Timeout bereits im Failed State sein, während der Server noch Running States publiziert.
+
+Dabei wird auch offensichtlich, dass Ressourcen verschwendet werden,  während am Client bereits davon ausgegangen wird, dass die Ausführug fehlgeschlagen ist, der Server aber noch daran arbeitet.
+In diesem Fall können Ergebnisse nicht vom Client angenommen werden, weil am Client die Ausführung bereits als Fehlerhaft deklariert wurde.
+
+Die Verschwendung dieser Ressourcen kann minimiert werden, in dem der Client im Fall eines Timeouts den Remote Call am Server durch eine Cancel Message beendet
+- minimiert deshalb, weil immer noch Netzwerkfehler einen solchen Abbruch verhindern können.
+Im Folgenden werden Remote Calls, welche diese State Machine implementieren, Jobs genannt.
+
+
+
+
+\section{Job Trees}
+Distributed Systems, die dazu dienen die Laufzeit zu minimieren, verwenden in der Regel möglichst viele Rechner.
+Daraus ergibt sich, dass der vom Client angesprochene Server Aufträge an andere Rechner - in der Regel mehrere - weitergibt.
+Bei hoch skalierbaren Systemen muss die Anzahl der vom Server angesprochenen Geräte begrenzt werden, um den Server nicht zu überlasten.
+Die Struktur, in der die Verarbeitung delegiert wird, kann als Baum dargestellt werden.
+
+Der Zustand des ServerJobs ist von den Zuständen der WorkerJobs abhängig.
+Die angestrebte Vereinfachung des Middleware APIs  beruht im Wesentlichen darauf, dass diese Abhängigkeit nicht durch Implementierung im Application Layer definiert wird, sondern eine aus einer Menge von vordefinierten Strategien ausgewählt wird.
+Typische Strategien sind:
+
+\begin{itemize}
+  \item Worker werden parallel gestartet und müssen alle erfolgreich terminieren
+  \item Worker werden parallel gestartet, einer muss erfolgreich sein (Redundanz)
+  \item Worker werden konsekutiv gestartet, alle müssen erfolgreich sein
+  \item Pooling. N Worker arbeiten parallel, jedoch gibt es mehr Aufträge als Worker. Schließt ein Worker einen Job ab, beginnt er mit einem der übrigen Jobs, bis alle abgearbeitet wurden
+\end{itemize}
+
+Die Vollständigkeit dieser Liste ist nicht gegeben.
+Der Anwender muss also die Möglichkeit haben, diese Liste zu erweitern.
+Die Javascript Bibliothek ‘async’ verwendet ein ähnliches Konzept für asynchrone Funktionsaufrufe.
+
+
+
+
+\section{Hirarchical Job State Machine}
+Der im Zuge dieser Arbeit entwickelte Prototyp basiert auf einem HCSNO.
+Das bedeutet, dass der Client mit einem Server verbunden ist und diesem Aufträge erteilen kann.
+Der Server ist wiederum mit Workern verbunden und vergibt an diese Teilaufträge.
+Der erste am Client erstellte Job wird von nun an als RootJob bezeichnet.
+Der folgende Abschnitt erklärt, wie der Endzustand des RootJobs anhand der SubJob States ermittelt wird.
+Dieses Konzept sollte auch für andere Network Overlays (wie zum Beispiel Peer2Peer) möglich sein.
+Eine Evaluierung dieser Aussage könnte in einer zukünftigen Arbeit erfolgen.
+
+Die grundsätzliche Frage, welche hier gestellt wird, ist, ob es möglich wäre, den Zustand eines Jobs, der in Subjobs zerlegt wird, auf einem Layer unterhalb des Application Layers zu bestimmen.
+Dies hätte den Vorteil, dass der Application Layer, in diesem Fall das JobScript, wesentlich vereinfacht wird.
+Auch die in 4.2 beschriebene Cancel Strategie könnte vom Application Layer in einen generische Layer darunter verlegt werden.
+
+Der Zustand des auftraggebenden Jobs kann nicht ohne weitere Informationen abgeleitet werden.
+Es muss bekannt sein, ob alle SubJobs erfolgreich sein müssen oder nur eine Teilmenge davon.
+Beispielsweise bei redundanten Systemen wäre es denkbar, dass nur ein einziger Job erfolgreich sein muss, um den auftraggebenden Job als erfolgreich anzusehen.
+Auf Application Layer Ebene ist es ausreichend, eine Funktion anzugeben, die von den Subjob States auf den State des übergeordneten Jobs abbildet.
+
+JavaScript Promises unterstützen ein ähnliches Konzept.
+Promise.race() wird für den Fall, dass eine erfolgreiche sub Promise ausreichend ist verwendet und Promise.all() für den Fall, dass die erfolgreiche Ausführung aller sub Promises obligat ist.
+
+
+
+
+
+\section{Zeitlich paralleles Ausführen von Jobs}
+Neben der Ableitung des Zustands des auftraggebenden Jobs muss es auch möglich sein, die Ausführungssequenz der Subjobs zu definieren.
+Wie bei Promises kann auch hier in parallel und konsekutiv unterschieden werden.
+Dies auswählbar zu machen ist trivial, allerdings nicht ausreichend.
+Um die Worker nicht zu überlasten, ist es notwendig, die Anzahl der parallel laufenden Jobs zu begrenzen.

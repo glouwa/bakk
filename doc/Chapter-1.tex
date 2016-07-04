@@ -1,0 +1,40 @@
+% =========================================================================
+% CHAPTER 1
+% =========================================================================
+
+\chapter{Einleitung}
+
+%==============================================================================
+
+Die verteilte Ausführung von Algorithmen ist ein häufiger Lösungsansatz zur Minimierung ihrer Laufzeit.
+Systeme wie MapReduce und Apache Spark haben in den letzten Jahren erheblich an Verwendung zugenommen.
+Diese Systeme reduzieren den Deployment-Aufwand auf die Installation eines Interpreters auf den ausführenen Geräten und bieten dem Anwender dadurch eine stark vereinfachte Handhabung.
+Denoch sind es Systeme die zur Verwendung sehr viel Wissen über die Technologie voraussetzen.
+
+Muss ein Algorithmus auf viele Input-Dateien angewendet werden, ist es nicht notwendig den Algorithmus selbst zu parallelisieren.
+Eine Ausführung auf mehreren Rechnern mit unterschiedlichen Input-Dateien ist ausreichend.
+Für diesen Fall könnte ein System, das weniger Einarbeitungszeit als Apache Spark benötigt, gefunden werden.
+Shell Scripts können diese Aufgabe übernehmen, allerdings nicht in heterogenen Netzwerken.
+Remote Procedure Calls bieten ein einfaches API, sind aber nicht für Tasks mit langen Ausführungszeiten optimiert und von komplexen Deployment Schritten begleitet.
+Bei Tasks mit langen Ausführungszeiten ist eine Progress-Anzeige und die Möglichkeit die Ausführung zu stoppen im praktischen Gebrauch notwendig, da es ansonsten zur Verschwendung von Rechner-Ressourcen und Wartezeiten kommt.
+Auch aus Usability Gründen sind diese Features wünschenswert.
+
+Ziel dieser Arbeit ist es, eine für oben genannte Aufgaben optimierte leichtgewichtige Middleware zu schaffen, die eine möglichst große Bandbreite an Geräten und Betriebssystemen abdeckt und ein einfaches Scripting API bietet.
+Kapitel 2 zeigt die Ergebnisse einer Analyse verwandter Technologien und Themenbereiche.
+Die für den Prototyp ausgewählten Technologien und Konzepte werden in Kapitel 3 aufgelistet und begründet.
+
+Kapitel 4 und 5 dokumentieren das Design des Protokolls und Prototypen.
+Dabei werden grundlegende Probleme und Lösungen der verteilten Programmierung, welche für diese Implementierung relevant sind, näher betrachtet.
+Mit der Absicht auch andere Algorithmen mit diesem Tool verteilt auszuführen wurde ein Scripting API eingeführt, sodass der Prototyp in zwei Komponenten unterteilt werden kann:
+in eine Middleware und dem Script das den gegebenen Algorithmus ausführt.
+Im Zuge der Evaluierung wurden auch weitere Scripts geschrieben, wie zum Beispiel eine verteilte 3D Model Suche sowie eine verteilte Primzahlen-Suche.
+Der entwickelte Prototyp verwendet JavaScript, Node.js, Websockets, und den Active Object Pattern um auf Basis einer Message Oriented Middleware remote Prozesse zu dirigieren.
+Progress-Informationen werden über Betriebssystem-Pipes and die Middleware übergeben und von dieser an das auftraggebende Gerät weiter gereicht.
+Die Input-Dateien und der Algorithmus müssen auf allen Rechnern zur Verfügung stehen.
+Derzeit wird dafür ein verteiltes Dateisystem verwendet.
+
+Eine Diskussion der Vor- und Nachteile des Designs erfolgt in Kapitel 6.
+Da eine Bewertung der Simplizität des Scripting APIs formal nicht möglich ist, liegt der Schwerpunkt der Diskussion auf Skalierbarkeit.
+Das Konzept ist auf einer niedrigeren Abstraktionsebene angesiedelt und lässt die Implementierung des Schedulers offen.
+Desshalb werden in diesem Kapitel auch Eigenschaften des Systems und daraus resultierende Anforderungen an erweiterte Scheduler-Implementierungen gezeigt.
+Anhand des 3D Processing Algorithmus wird in Kapitel 7 gezeigt, dass nur ein minimaler Overhead benötigt wird, sofern die Anzahl der mit einem Server verbundenen Worker klein bleibt.

@@ -1,0 +1,62 @@
+% =========================================================================
+% CHAPTER 3
+% =========================================================================
+
+\chapter{Anforderungen und verwendete Technologien}
+In diesem Kapitel werden zunächst die Anforderungen an die Middleware zusammengefasst und danach die verwendeten Technologien und Konzepte aufgelistet und begründet, warum die Entscheidung auf sie gefallen ist.
+
+
+\section{Anforderungen}
+Es soll eine Middleware geschaffen werden, die auf einem möglichst großen Spektrum von Betriebssystemen und Geräten lauffähig ist.
+Der Deployment Aufwand soll minimiert werden.
+Ist die Middleware einmal auf den Geräten installiert, soll sie in der Lage sein Benutzer definierte Skripts verteilt auszuführen.
+Wie bei Apache Spark sollte der User nur ein Script schreiben müssen, welches das Ausführungsverhalten des gesamten Systems definiert, also auch den auf anderen Geräten ausgeführten Code enthält.
+Diese Scripts werden im folgenden JobScripts genannt.
+JobsScripts sollen es ermöglichen bei Funktionsaufrufen ein Gerät zu spezifizieren, auf dem die Funktion ausgeführt werden soll.
+Argumente und Returnwert oder Exceptions sollen von der Middleware transportiert werden.
+Auch das Starten von Remote Prozessen sollte auf dieses Art möglich sein.
+Solche Remote Calls werden im folgenden RemoteJobs genannt.
+Es wird angenommen, dass RemoteJobs mit einer sehr langen Ausführungszeit zum Einsatz kommen, deshalb müssen diese abbrechbar sein.
+Außerdem muss es möglich sein, den Progress von RemoteJobs an der auftraggebenden Stelle abzulesen.
+
+Da bei RemoteJobs das Gerät explizit angegeben werden muss, muss innerhalb der Scripting Sandbox zumindest Zugriff auf die verbundenen, oder alle im Netzwerk zur Verfügung stehenden Geräte gegeben sein.
+Somit kann der Anwender eigene Scheduling Strategien implementieren.
+Pro Rechner muss CPU Auslastung, verfügbarer Speicher und verfügbare Interpreter abgelesen werden können.
+Im Folgenden wird diese Datenstruktur NetInfo genannt.
+
+Die Übertragung von sehr großen Datenmengen als Argument oder Returnwert ist nicht vorgesehen.
+JobScripts sollten frei von Synchronisierungsmechanismen wie Semaphoren sein.
+
+
+
+
+\section{Verwendete Technologien}
+
+\subsection{ECMA Script aka JavaScript}
+Ein JobScript enthält den Code aller beteiligten Geräte.
+Will man die Implementierung eines eigenen Compilers oder Präprozessors umgehen, muss eine Scriptsprache verwendet werden.
+
+Javascript Interpreter sind auf nahezu allen Betriebssystemen vorhanden.
+Auch mobile Endgeräte sind meist mit Browsern ausgestattet, die Javascript unterstützen.
+Dadurch ist JavaScript eine der am häufigsten zur Verfügung stehenden Laufzeitumgebungen.
+JavaScript unterstützt kein Multithreading - auf Servern ist es üblich Prozesse anstatt Threads zu verwenden (siehe 2.3).
+
+
+
+\subsection{Websockets}
+Für die Synchronisierung der NetInfo Datenstruktur muss bei Änderungen der Geräteeigenschaften eine Message an den Server und von diesem weiter an die Clients gesendet werden.
+Vor allem das Weiterleiten an die Clients kann mit Websockets effizienter, das heißt ohne Polling, realisiert werden.
+RemoteJobs müssen dem auftraggebenden Gerät Progress Updates zukommen lassen.
+Auch hier kann Polling durch die Verwendung von Websockets vermieden werden.
+
+
+
+
+\subsection{Asynchrones Message Passing und Job State Machine}
+JavaScript in Browsern und Node.js verwenden ein Threading Model, das einem Active Object Pattern entspricht, wobei ein ganzer Node.js Prozess sowie ein Web Worker als Active Object Pattern gesehen werden kann.
+Darauf aufbauend kann eine MOM sehr einfach implementiert werden.
+Um die Terminierung, das Abbrechen und Timeouts von RemoteJobs zu realisieren, muss eine State Machine auf Client- sowie Serverseite implementiert werden (siehe 4).
+Die Transitions dieser State Machine werden durch Netzwerk Messages, User Inputs und Timer Events ausgelöst.
+
+Da Webbrowser und Node.js kein Multithreading mit Shared Memory unterstützen, ist ein Asynchronous API unumgänglich.
+Ein synchrones API würde entweder eine hohe Anzahl von Prozessen oder Web Worker benötigen, beziehungsweise starke Latenz Einbußen mit sich bringen.

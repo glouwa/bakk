@@ -1,0 +1,20 @@
+\def\fileversion{1.1}
+\def\filedate{1997/06/14}
+\def\docdate {1997/02/22}
+\ProvidesPackage{dfa4}[\filedate \space
+DF's A4 page size and layout]
+\setlength{\paperwidth}{210 mm} 
+\setlength{\paperheight}{297 mm} 
+\setlength{\topmargin}{-8 mm} %
+\ifcase \@ptsize
+\setlength{\textheight}{56\baselineskip} %
+\or %
+\setlength{\textheight}{49\baselineskip} %
+\or %
+\setlength{\textheight}{44\baselineskip} %
+\fi
+\advance\textheight by \topskip
+\setlength{\textwidth}{16cm}
+\setlength{\oddsidemargin}{6pt} %
+\setlength{\evensidemargin}{6pt} %
+\endinput

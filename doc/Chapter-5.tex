@@ -1,0 +1,87 @@
+% =========================================================================
+% CHAPTER 5
+% =========================================================================
+
+\chapter{Implementierung}
+
+\section{Deployment und Modulstruktur}
+Die Implementierung besteht aus mehreren ausführbaren Komponenten: ein CLI-Client, Webclient, dem Server und den Workern.
+Im Folgenden werden Instanzen dieser als Node bezeichnet.
+Bis auf den Webclient sind sie alle als Node.js Script ausgeführt.
+
+Die Unterschiede dieser Komponenten sind gering.
+CLI-Client und Webclient unterscheiden sich von den anderen Komponenten nur durch das zusätzlich enthaltene UI.
+Die Worker unterscheiden sich vom Server nur dadurch, dass sie ClientWebSockets anstatt ServerWebsockts verwenden.
+Dieses Design wurde gewählt, um zukünfigte arbeiten mit P2P und HCSNO mit mehreren Worker Ebenen zu erleichtern.
+
+Ansonsten hat jede dieser ausführbaren Komponenten intern den gleichen Aufbau, welcher in den folgenden Abschnitten beschrieben wird.
+
+
+
+
+\section{NetInfo}
+Als ein globales Objekt ausgeführt, steht diese Komponente in allen Modulen zur Verfügung, auch in JobScripts.
+Verwendung findet sie vor allem in JobScripts, um geeignete Worker auszuwählen.
+Das NetInfo Objekt besteht aus einer Liste der im System vorhandenen Nodes.
+Jede Node darin bietet folgende Eigenschaften:
+
+\begin{itemize}
+  \item Funktionen zum Empfangen und Senden von Daten
+  \item Momentane CPU- und Speicherauslastung
+  \item Informationen über das Betriebssystem
+  \item Liste der auf dem Gerät installierten Interpreter
+\end{itemize}
+
+Um CPU- und Speicherauslastung aktuell zu halten, senden alle Teilnehmer zyklisch Updates an den Server.
+Dieser leitet sie an die Clients weiter.
+Derzeit ist noch keine Publish-Subsribe Implementierung vorhanden, sollte aber verwendet werden, um die Netzwerkauslastung zu minimieren.
+Die Struktur des Network Overlays ist durch Konfiguration definiert, Clients und Worker verbinden sich mit dem Server, wodurch ein HCSNO entsteht.
+
+
+
+
+\section{App}
+Eingehende Nachrichten werden an das App Modul weiter gegeben.
+Zunächst ist es dessen Aufgabe, den zur Nachricht gehörenden Job zu finden, beziehungsweise einen neuen zu erstellen falls es eine Call Nachricht ist.
+Wie in (4) beschrieben enthalten die Nachrichten JavaScript Code, welcher vom App Modul in einer Sandbox ausgeführt wird.
+Innerhalb dieser Sandbox stehen der Job, das Network, die Job und Tooljobs Implementierungen zur Verfügung.
+
+
+
+
+\section{Job Interface}
+Die abstrakte Job Klasse implementiert die in (4.2) beschriebene State Machine.
+State Transitions werden mit den Funktionen call, cancel, update und return ausgelöst.
+Die Implementierung der Job Klasse ist verantwortlich für das Abfangen von nicht erlaubten Transitions und für Timeouts.
+Sie führt die abstrakten Funktionen onCall, onCancel, onUpdate, onReturn zur jeweiligen Transition aus.
+Die Implementierungen  dieser Funktionen werden im Konstruktor übergeben.
+
+onCall muss definiert werden, onCancel, onUpdate und onReturn sind optional.
+Im Vergleich zu JavaScript Promises entspricht onCall der dem Konstruktor übergebenen Funktion.
+onReturn übernimmt die Aufgaben der reject und resolve Funktionen.
+onCancel und onUpdate existieren bei JavaScript Promises nicht, da diese nicht abbrechbar sind und zu onUpdate gibt es kein Äquivalent, da Promises keine Zwischenergebnisse liefern können.
+
+Ein weiteres bei JavaScript Promises nicht vorhandenes Feature sind JobTrees.
+Job.delegate wird verwendet um SubJobs an einen Job zu binden.
+Diese Funktion nimmt eine Factory Funktion, die Subjobs erstellt, und beginnt diese abzuarbeiten.
+Daneben werden Parameter übergeben, welche definieren, ob diese Subjobs parallel, konsekutiv oder in einem Pool abgearbeitet werden.
+Diese Parameter definieren also Teile des Workflows.
+Ein Aufruf von return ist dann nicht mehr notwendig, dies kann automatisch geschehen, da aus der gewälten Workflow Logik und den States der SubJobs automatisch abgeleitet werden kann, wann der übergeordnete Job geschlossen werden muss.
+Realisiert wird dies, indem abhängig von der gewählten Workflow Logik ein vordefinierter onReturn Handler eingesetzt wird.
+
+
+
+
+\section{Remote Job and Tool Jobs}
+Remote Jobs führen die onCall Funktion auf einem Remote Gerät aus.
+Es muss eine Node aus dem NetInfo Object ausgewählt und an den Konstruktor des Remote Jobs übergeben werden.
+call, cancel, update und return führen ihre zugehörigen ‘on*’ Funktionen nicht direkt aus, sondern übertragen eine String-Representation der Funktion an das Remote Gerät, wo sie vom App Modul interpretiert werden.
+Weitere Tooljobs wie AjaxJob und SpawnJob adaptieren die bestehende Technologien XMLHttpRequest und das Node.js Process Interface, damit sie in JobTrees eingesetzt werden können.
+
+
+
+
+\section{Jobscripts Interface}
+JobScripts enthalten eine Einstiegsfunktion, die beim Aufruf einen Job im State Running als Parameter erhält.
+Die Implementierung der Funktion enthält Code von Client, Server und Worker.
+Das folgende Beispiel zeigt ein Script, dass 20 ‘leere’ Jobs auf Worker Nodes ausführt.

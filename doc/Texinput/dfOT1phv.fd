@@ -1,0 +1,87 @@
+% DF: this file scales the Adobe Type 1 Helvetica fonts by 90% to match size
+% DF: of other fonts
+
+%Filename: dfOT1phv.fd
+%Created by: tex Fam_11994
+%Created using fontinst v1.6
+
+%THIS FILE SHOULD BE PUT IN A TEX INPUTS DIRECTORY
+
+\ProvidesFile{dfOT1phv.fd}
+   [1997/12/02 Fontinst v1.6 font definitions for OT1/phv scaled to 90\%.]
+
+\DeclareFontFamily{OT1}{phv}{}
+
+\DeclareFontShape{OT1}{phv}{b}{n}{
+   <-> s * [.9] phvb7t
+}{}
+
+\DeclareFontShape{OT1}{phv}{b}{sc}{
+   <-> s * [.9] phvbc7t
+}{}
+
+\DeclareFontShape{OT1}{phv}{b}{sl}{
+   <-> s * [.9] phvbo7t
+}{}
+
+\DeclareFontShape{OT1}{phv}{bc}{n}{
+   <-> s * [.9] phvb7tn
+}{}
+
+\DeclareFontShape{OT1}{phv}{bc}{sc}{
+   <-> s * [.9] phvbc7tn
+}{}
+
+\DeclareFontShape{OT1}{phv}{bc}{sl}{
+   <-> s * [.9] phvbo7tn
+}{}
+
+\DeclareFontShape{OT1}{phv}{l}{n}{
+   <-> s * [.9] phvl7t
+}{}
+
+\DeclareFontShape{OT1}{phv}{l}{sc}{
+   <-> s * [.9] phvlc7t
+}{}
+
+\DeclareFontShape{OT1}{phv}{l}{sl}{
+   <-> s * [.9] phvlo7t
+}{}
+
+\DeclareFontShape{OT1}{phv}{m}{n}{
+   <-> s * [.9] phvr7t
+}{}
+
+\DeclareFontShape{OT1}{phv}{m}{sc}{
+   <-> s * [.9] phvrc7t
+}{}
+
+\DeclareFontShape{OT1}{phv}{m}{sl}{
+   <-> s * [.9] phvro7t
+}{}
+
+\DeclareFontShape{OT1}{phv}{mc}{n}{
+   <-> s * [.9] phvr7tn
+}{}
+
+\DeclareFontShape{OT1}{phv}{mc}{sc}{
+   <-> s * [.9] phvrc7tn
+}{}
+
+\DeclareFontShape{OT1}{phv}{mc}{sl}{
+   <-> s * [.9] phvro7tn
+}{}
+
+\DeclareFontShape{OT1}{phv}{bx}{n}{<->ssub * phv/b/n}{}
+\DeclareFontShape{OT1}{phv}{bx}{sc}{<->ssub * phv/b/sc}{}
+\DeclareFontShape{OT1}{phv}{bx}{sl}{<->ssub * phv/b/sl}{}
+\DeclareFontShape{OT1}{phv}{b}{it}{<->ssub * phv/b/sl}{}
+\DeclareFontShape{OT1}{phv}{bx}{it}{<->ssub * phv/b/it}{}
+\DeclareFontShape{OT1}{phv}{bc}{it}{<->ssub * phv/bc/sl}{}
+\DeclareFontShape{OT1}{phv}{l}{it}{<->ssub * phv/l/sl}{}
+\DeclareFontShape{OT1}{phv}{m}{it}{<->ssub * phv/m/sl}{}
+\DeclareFontShape{OT1}{phv}{mc}{it}{<->ssub * phv/mc/sl}{}
+
+\DeclareFontShape{OT1}{phv}{m}{ui}{<->ssub * phv/m/it}{}
+\DeclareFontShape{OT1}{phv}{b}{ui}{<->ssub * phv/b/it}{}
+\endinput
