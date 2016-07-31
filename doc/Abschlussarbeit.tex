@@ -15,6 +15,9 @@
 \usepackage{float}
 \usepackage{wrapfig}
 
+\usepackage{fancyvrb}
+\usepackage[usenames,dvipsnames]{xcolor}
+
 \ifpdf
   \pdfoutput=1
   \pdfcompresslevel=9
@@ -53,6 +56,55 @@
 % ============================================================
 % Customization
 
+\newcommand{\MapReduce}{\emphi{MapReduce}}
+\newcommand{\ApacheSpark}{\emphi{Apache Spark}}
+
+\newcommand{\JavaScript}{\emphi{JavaScript}}
+\newcommand{\node}{\emphi{Node.js}}
+\newcommand{\Websockets}{\emphi{Websockets}}
+\newcommand{\ActiveObjectPattern}{\emphi{Active Object Pattern}}
+\newcommand{\MOM}{\emphi{Message-Oriented Middleware}}
+\newcommand{\RemoteProcedureCalls}{\emphi{Remote Procedure Calls}}
+
+\newcommand{\DeploymentAufwand}{\emphi{Deployment-Aufwand}}
+\newcommand{\InputDateien}{\emphi{Input-Dateien}}
+\newcommand{\ShellScripts}{\emphi{Shell Scripts}}
+\newcommand{\ProgressAnzeige}{\emphi{Progress-Anzeige}}
+\newcommand{\processingAlgorithmus}{\emphi{3D Processing Algorithmus}}
+\newcommand{\PrimzahlenSuche}{\emphi{Primzahlen-Suche}}
+\newcommand{\remoteProzesse}{\emphi{remote Prozesse}}
+
+\newcommand{\jobScript}{\emphi{JobScript}}
+\newcommand{\remoteJobs}{\emphi{RemoteJobs}}
+\newcommand{\netInfo}{\emphi{NetInfo}}
+
+\newcommand{\ApplicationLayer}{\emphi{Application Layer}}
+
+\newcommand{\NodeID}{\emphi{NodeID}}
+\newcommand{\JobID}{\emphi{JobID}}
+\newcommand{\StateMachine}{\emphi{State Machine}}
+\newcommand{\ParentJob}{\emphi{ParentJob}}
+\newcommand{\SubJob}{\emphi{SubJob}}
+\newcommand{\RootJob}{\emphi{RootJob}}
+
+\newcommand{\CallMessage}{\emphi{Call Message}}
+\newcommand{\CancelMessage}{\emphi{Cancel Message}}
+\newcommand{\UpdateMessage}{\emphi{Update Message}}
+\newcommand{\ReturnMessage}{\emphi{Return Message}}
+
+\newcommand{\JobCall}{\emphi{Job.Call}}
+\newcommand{\JobCancel}{\emphi{Job.Cancel}}
+\newcommand{\JobUpdate}{\emphi{Job.Update}}
+\newcommand{\JobReturn}{\emphi{Job.Return}}
+\newcommand{\JobDelegate}{\emphi{Job.Delegate}}
+
+\newcommand{\TransCall}{\emphi{Call Transition}}
+\newcommand{\TransCancel}{\emphi{Cancel Transition}}
+\newcommand{\TransUpdate}{\emphi{Update Transition}}
+\newcommand{\TransReturnOk}{\emphi{ReturnOk Transition}}
+\newcommand{\TransReturnFail}{\emphi{ReturnFail Transition}}
+\newcommand{\TransReturnCanceled}{\emphi{ReturnCanceled Transition}}
+
 \newcommand{\sys}[1]{“#1”}
 
 \newcommand{\Real}{\mathbb{R}}
@@ -64,7 +116,7 @@
 \newcommand{\BL}{\begin{list}{$\bullet$}{\itemsep0mm\parsep0mm\topsep1mm\labelwidth2em}}
 \newcommand{\EL}{\end{list}}
 \newcommand{\BCL}{\begin{list}{$\bullet$}{\itemsep0mm\parsep0mm\topsep0mm\labelwidth2em}}
-\newcommand{\ECL}{\end{list}}
+\newcommand{\ECL}{\vspace{0.5em}\end{list}}
 \newcommand{\BE}{\begin{enumerate}}
 \newcommand{\EE}{\end{enumerate}}
 \newcommand{\ptr}{$\rightarrow\,$}
@@ -72,7 +124,8 @@
 \newcommand{\code}[1]{\textsf{#1}}
 \newcommand{\wwwLink}[1]{\href{http://#1}{\textsf{#1}}}
 \newcommand{\widecaption}[2]{\parbox{16cm}{\caption[#1]{#2}}}
-\newcommand{\emphi}[1]{\index{#1}\emph{#1}}
+%\newcommand{\emphi}[1]{\index{#1}\emph{#1}}
+\newcommand{\emphi}[1]{\index{#1}#1}
 \newcommand{\indi}[1]{\index{#1}#1}
 \newcommand{\X}{$\Longrightarrow$}
 \newcommand{\I}{{\mid}}
@@ -89,13 +142,20 @@
 \begin{center}
 \vspace*{30mm}\Large
 
-\textbf{\textit{Diplomarbeit}}\\[12mm]
+\textbf{\textit{Bachelorarbeit}}\\[12mm]
 
-\textbf{\textsf{\huge Writing an Important Thesis}}\\[12mm]
+\textbf{\textsf{\huge Leichtgewichtige Javascript Message-Oriented Middleware für verteilte Prozessausführung}}\\[5mm]
+%\textsf{An RPC Implementation in Javascript with cancelable, and executionstate supplying RMI calls}\\[22mm]
 
-Sven Havemann \\[6pt]
+
+Michael Glatzhofer \\[6pt]
 Institute of ComputerGraphics and KnowledgeVisualisation, TU Graz\\[6pt]
-\wwwLink{www.cgv.tugraz.at}
+\wwwLink{www.cgv.tugraz.at}\\[3em]
+
+
+Univ.-Prof. Dr.rer.nat. M.Sc. Tobias Schreck, Dipl.-Inf. Robert Gregor \\
+\today
+
 
 \vspace*{\fill}
 
@@ -121,8 +181,8 @@ Institute of ComputerGraphics and KnowledgeVisualisation, TU Graz\\[6pt]
 \addcontentsline{toc}{chapter}{Bibliography}
 \bibliographystyle{Scripts/eg-alpha}
 \bibliography{Bibliography}
-\addcontentsline{toc}{chapter}{List of Tables}
-\listoftables
+%\addcontentsline{toc}{chapter}{List of Tables}
+%\listoftables
 \addcontentsline{toc}{chapter}{List of Figures}
 \listoffigures
 \addcontentsline{toc}{chapter}{Index}

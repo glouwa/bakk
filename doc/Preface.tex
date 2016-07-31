@@ -1,14 +1,14 @@
 \chapter{Abstract}
 
-Im wissenschaftlichen Betrieb ist es häufig notwendig, Algorithmen auf eine große Anzahl von Input-Dateien anzuwenden.
+Im wissenschaftlichen Betrieb ist es häufig notwendig, Algorithmen auf eine große Anzahl von \InputDateien{} anzuwenden.
 Dabei ist es bei einer verteilten Ausführung nicht notwendig den Algorithmus zu parallelisieren.
 Es ist ausreichend, den gegebenen Algorithmus auf mehreren Geräten mit unterschiedlichen Inputs zu starten.
-Existierende Tools wie MapReduce oder Apache Spark sind komplexer als notwendig und somit in diesem Kontext nicht die einfachste Lösung.
+Existierende Tools wie \MapReduce{} oder \ApacheSpark{} sind komplexer als notwendig und somit in diesem Kontext nicht die einfachste Lösung.
 Diese Arbeit beschäftigt sich mit dem Design, der Implementierung und Evaluierung einer leichtgewichtigen JavaScript Middleware.
 Die Eigenschaft “leichtgewichtig” bezieht sich auf den Sourcecode- und API-Umfang.
-Tasks mit langen Ausführungszeiten erfordern aus Sicht der Usability die Möglichkeit abgebrochen zu werden, eine Progress-Anzeige und Informationen über den Endzustand des ausgeführten Algorithmus.
+Tasks mit langen Ausführungszeiten erfordern aus Sicht der Usability die Möglichkeit abgebrochen zu werden, eine \ProgressAnzeige{} und Informationen über den Endzustand des ausgeführten Algorithmus.
 
-Diese Arbeit analysiert zunächst bestehende und geeignete Konzepte und Technologien für eine solche Middleware und stellt danach eine Implementierung einer Message Oriented Middleware mit JavaScript, Node.js, Websockets und asynchronem API vor.
+Diese Arbeit analysiert zunächst bestehende und geeignete Konzepte und Technologien für eine solche Middleware und stellt danach eine Implementierung einer \MOM{} mit \JavaScript{}, \node{}, \Websockets{} und asynchronem API vor.
 Da durchgehend ein asynchrones API verwendet wird, benötigen die auf der Middleware aufgebauten Anwendungen keine Synchronisierungsmechanismen wie zum Beispiel Semaphoren.
 
-Die Skalierbarkeit dieses Prototypen wird in Kapitel 7 anhand eines 3D Processing Algorithmus und einer verteilten Primizahlen-Suche analysiert und zeigt mit wenigen Einschränkungen nur minimalen Overhead.
+Die Skalierbarkeit dieses Prototypen wird in Kapitel \ref{K7} anhand eines \processingAlgorithmus{} und einer verteilten \PrimzahlenSuche{} analysiert und zeigt mit wenigen Einschränkungen nur minimalen Overhead.
