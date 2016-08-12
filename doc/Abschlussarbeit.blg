@@ -1,0 +1,57 @@
+This is BibTeX, Version 0.99d (TeX Live 2015/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: Abschlussarbeit.aux
+A level-1 auxiliary file: Preface.aux
+A level-1 auxiliary file: Chapter-1.aux
+A level-1 auxiliary file: Chapter-2.aux
+A level-1 auxiliary file: Chapter-3.aux
+A level-1 auxiliary file: Chapter-4.aux
+A level-1 auxiliary file: Chapter-5.aux
+A level-1 auxiliary file: Chapter-7.aux
+A level-1 auxiliary file: Chapter-6.aux
+The style file: Scripts/eg-alpha.bst
+Database file #1: Bibliography.bib
+Warning--can't use both volume and number fields in baker1977incremental
+Warning--empty year in tanenbaum4andrew
+You've used 15 entries,
+            2866 wiz_defined-function locations,
+            714 strings with 6893 characters,
+and the built_in function-call counts, 5845 in all, are:
+= -- 562
+> -- 276
+< -- 6
++ -- 100
+- -- 96
+* -- 435
+:= -- 933
+add.period$ -- 30
+call.type$ -- 15
+change.case$ -- 93
+chr.to.int$ -- 15
+cite$ -- 17
+duplicate$ -- 257
+empty$ -- 442
+format.name$ -- 116
+if$ -- 1198
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 18
+newline$ -- 79
+num.names$ -- 45
+pop$ -- 109
+preamble$ -- 1
+purify$ -- 111
+quote$ -- 0
+skip$ -- 210
+stack$ -- 0
+substring$ -- 238
+swap$ -- 57
+text.length$ -- 6
+text.prefix$ -- 6
+top$ -- 0
+type$ -- 120
+warning$ -- 2
+while$ -- 53
+width$ -- 17
+write$ -- 181
+(There were 2 warnings)

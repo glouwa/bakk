@@ -13,15 +13,35 @@
 //----------------------------------------------------------------
 
 ## folderstrucure (todo)
-- bin
-- doc
-- log
-- res
-    - bin
-    - dat
-    - img
-    - prj
-- src
+* bin
+    - server.js
+    - overlord.js
+    - worker.js
+    - cli.js
+* doc
+* log
+* res
+    * bin
+    * dat
+    * img
+    * scripts
+    * types
+* src
+    * tools
+    * observable
+    * job
+    - messages.js
+    - app.js
+    - network.js
+    - abstractui.js
+    - config.js
+* html
+    * a3
+    * line
+    * basic
+    - ui.html
+    - ui.css
+    - config.js
 
 //----------------------------------------------------------------
 
@@ -73,17 +93,17 @@ http://codepen.io/shanomurphy/pen/jbPMLX
 
 <div class="layout">
   <div class="layout__row" >
-    <div class="layout__cell" id = 'a'>
+    <div class="layout__cell">
       Row 1 content
     </div>
   </div>
   <div class="layout__row" >
-    <div class="layout__cell" id = 'a'>
+    <div class="layout__cell">
       Row 1 content
     </div>
   </div>
   <div class="layout__row">
-    <div class="layout__cell" id ='b'>
+    <div class="layout__cell">
       Row 2 fills remaining vertical space without needing to know row 1 height.
     </div>
   </div>
@@ -112,10 +132,5 @@ html, body { height: 100%; // required to make .layout 100% height }
   display: table-cell;
 }
 
-/* Non essential example styles */
-
-body { text-align: center; }
-#b { background: pink; }
-#a { background: yellow; }
 
 

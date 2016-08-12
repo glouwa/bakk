@@ -7,6 +7,7 @@
 
 %==============================================================================
 
+
 Die verteilte Ausführung von Algorithmen ist ein häufiger Lösungsansatz zur Minimierung ihrer Laufzeit.
 Systeme wie \MapReduce{} und \ApacheSpark{} haben in den letzten Jahren erheblich an Verwendung zugenommen.
 Diese Systeme reduzieren den \DeploymentAufwand{} auf die Installation eines Interpreters auf den ausführenen Geräten und bieten dem Anwender dadurch eine stark vereinfachte Handhabung.
@@ -16,7 +17,7 @@ Muss ein Algorithmus auf viele \InputDateien{} angewendet werden, ist es nicht n
 Eine Ausführung auf mehreren Rechnern mit unterschiedlichen \InputDateien{} ist ausreichend.
 Für diesen Fall könnte ein System, das weniger Einarbeitungszeit als \ApacheSpark{} benötigt, gefunden werden.
 \ShellScripts{} können diese Aufgabe übernehmen, allerdings nicht in heterogenen Netzwerken.
-\RemoteProcedureCalls{} bieten ein einfaches API, sind aber nicht für Tasks mit langen Ausführungszeiten optimiert und von komplexen Deployment Schritten begleitet.
+Remote Procedure Calls bieten ein einfaches API, sind aber nicht für Tasks mit langen Ausführungszeiten optimiert und von komplexen Deployment Schritten begleitet.
 Bei Tasks mit langen Ausführungszeiten ist eine \ProgressAnzeige{} und die Möglichkeit die Ausführung zu stoppen im praktischen Gebrauch notwendig, da es ansonsten zur Verschwendung von Rechner-Ressourcen und Wartezeiten kommt.
 Auch aus Usability Gründen sind diese Features wünschenswert.
 
@@ -28,14 +29,17 @@ Kapitel \ref{K4} und \ref{K5} dokumentieren das Design des Protokolls und des Pr
 Dabei werden grundlegende Probleme und Lösungen der verteilten Programmierung, welche für diese Implementierung relevant sind, näher betrachtet.
 Mit der Absicht auch andere Algorithmen mit diesem Tool verteilt auszuführen wurde ein Scripting API eingeführt, sodass der Prototyp in zwei Komponenten unterteilt werden kann:
 in eine Middleware und dem Script das den gegebenen Algorithmus ausführt.
-Im Zuge der Evaluierung wurden auch weitere Scripts geschrieben, wie zum Beispiel eine \processingAlgorithmus sowie eine verteilte \PrimzahlenSuche{}.
-Der entwickelte Prototyp verwendet \JavaScript{}, \node{}, \Websockets{}, und den \ActiveObjectPattern{} um auf Basis einer \MOM{} \remoteProzesse{} zu dirigieren.
-Progress-Informationen werden über Betriebssystem-Pipes and die Middleware übergeben und von dieser an das auftraggebende Gerät weiter gereicht.
-Die \InputDateien{} und der Algorithmus müssen auf allen Rechnern zur Verfügung stehen.
+Im Zuge der Evaluierung wurden mehrere Scripts geschrieben, wie zum Beispiel eine verteilte \PrimzahlenSuche{} und ein Script welches einen \rgAlgorithmus{} auf mehrere \InputDateien{} anwendet. Die auf den Workern ausgeführten Algorithmen sind in C++ implementiert.
+Der entwickelte Prototyp verwendet \JavaScript{}, \node{}, \Websockets{}, und den \ActiveObjectPattern{} remote Prozesse zu dirigieren.
+Progress-Informationen werden von den C++ Prozessen an die Middleware über Betriebssystem-Pipes übergeben und von dieser an das auftraggebende Gerät weitergereicht.
+Die \InputDateien{} und C++ Binarys werden nicht von der Middleware verwaltet, und müssen deshalb auf allen Rechnern zur Verfügung stehen.
 Derzeit wird dafür ein verteiltes Dateisystem verwendet.
 
 Eine Diskussion der Vor- und Nachteile des Designs erfolgt in Kapitel \ref{K6}.
-Da eine Bewertung der Simplizität des Scripting APIs formal nicht möglich ist, liegt der Schwerpunkt der Diskussion auf Skalierbarkeit.
-Das Konzept ist auf einer niedrigeren Abstraktionsebene angesiedelt und lässt die Implementierung des Schedulers offen.
-Desshalb werden in diesem Kapitel auch Eigenschaften des Systems und daraus resultierende Anforderungen an erweiterte Scheduler-Implementierungen gezeigt.
-Anhand des \processingAlgorithmus{} wird in Kapitel \ref{K7} gezeigt, dass nur ein minimaler Overhead benötigt wird, sofern die Anzahl der mit einem Server verbundenen Workern klein bleibt.
+Da eine Bewertung der Simplizität des Scripting APIs formal nicht trivial ist, liegt der Schwerpunkt der Diskussion auf Skalierbarkeit.
+Das Konzept ist auf einer niedrigeren Abstraktionsebene angesiedelt und lässt die Implementierung des \scheduler s offen.
+Desshalb werden in diesem Kapitel auch Eigenschaften des Systems und daraus resultierende Anforderungen an erweiterte \scheduler -Implementierungen gezeigt.
+Anhand des \rgAlgorithmus{} wird in Kapitel \ref{K7} gezeigt, dass nur ein minimaler Overhead benötigt wird, sofern die Anzahl der mit einem Server verbundenen Workern korrekt dimensioniert wird.
+Bei den genannten Beispielen wird lineare Skalierbarkeit mit bis zu 16 Worker gezeigt.
+Die JavaScript Implementierung kann im worst Case, wenn die Worker Laufzeit minimal ist, bis zu 4 Worker verwenden.
+Um mehr Worker zu unterstützen, ist eine Verbesserung des Network Overlays notwendig.

@@ -1,0 +1,14 @@
+This is makeindex, version 2.15 [TeX Live 2015] (kpathsea + Thai support).
+Scanning style file ./Scripts/myindex.ist........
+** Input style error (file = ./Scripts/myindex.ist, line = 19):
+   -- Unknown specifier lethead_prefix.
+** Input style error (file = ./Scripts/myindex.ist, line = 20):
+   -- Unknown specifier lethead_suffix.
+** Input style error (file = ./Scripts/myindex.ist, line = 21):
+   -- Unknown specifier lethead_flag.
+...done (11 attributes redefined, 3 ignored).
+Scanning input file Abschlussarbeit.idx....done (240 entries accepted, 0 rejected).
+Sorting entries.....done (2062 comparisons).
+Generating output file Abschlussarbeit.ind....done (145 lines written, 0 warnings).
+Output written in Abschlussarbeit.ind.
+Transcript written in Abschlussarbeit.ilg.

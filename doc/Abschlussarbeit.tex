@@ -8,15 +8,24 @@
 \usepackage{longtable}
 \usepackage{vmargin}
 \usepackage{makeidx}
+\usepackage{multicol}
+\usepackage{multirow}
 \usepackage{amsfonts}
 \usepackage{listings}
 \usepackage{clrscode}
 \usepackage{ifpdf}
 \usepackage{float}
 \usepackage{wrapfig}
+%\usepackage{enumitem}
+%\usepackage[table,xcdraw]{xcolor}
+\usepackage{fontawesome}
 
 \usepackage{fancyvrb}
 \usepackage[usenames,dvipsnames]{xcolor}
+
+
+
+
 
 \ifpdf
   \pdfoutput=1
@@ -56,6 +65,16 @@
 % ============================================================
 % Customization
 
+
+\newcommand{\DeploymentAufwand}{\emphi{Deployment-Aufwand}}
+\newcommand{\InputDateien}{\emphi{Input-Dateien}}
+\newcommand{\ShellScripts}{\emphi{Shell Scripts}}
+\newcommand{\ProgressAnzeige}{\emphi{Progress-Anzeige}}
+\newcommand{\cppAlgorithmus}{\emphi{C++ Algorithmus}}
+\newcommand{\PrimzahlenSuche}{\emphi{Primzahlen-Suche}}
+\newcommand{\rgAlgorithmus}{Algorithmus zum \emphi{Vorverarbeiten von 3D Meshes}}
+
+
 \newcommand{\MapReduce}{\emphi{MapReduce}}
 \newcommand{\ApacheSpark}{\emphi{Apache Spark}}
 
@@ -63,40 +82,54 @@
 \newcommand{\node}{\emphi{Node.js}}
 \newcommand{\Websockets}{\emphi{Websockets}}
 \newcommand{\ActiveObjectPattern}{\emphi{Active Object Pattern}}
-\newcommand{\MOM}{\emphi{Message-Oriented Middleware}}
-\newcommand{\RemoteProcedureCalls}{\emphi{Remote Procedure Calls}}
-
-\newcommand{\DeploymentAufwand}{\emphi{Deployment-Aufwand}}
-\newcommand{\InputDateien}{\emphi{Input-Dateien}}
-\newcommand{\ShellScripts}{\emphi{Shell Scripts}}
-\newcommand{\ProgressAnzeige}{\emphi{Progress-Anzeige}}
-\newcommand{\processingAlgorithmus}{\emphi{3D Processing Algorithmus}}
-\newcommand{\PrimzahlenSuche}{\emphi{Primzahlen-Suche}}
-\newcommand{\remoteProzesse}{\emphi{remote Prozesse}}
-
-\newcommand{\jobScript}{\emphi{JobScript}}
-\newcommand{\remoteJobs}{\emphi{RemoteJobs}}
-\newcommand{\netInfo}{\emphi{NetInfo}}
+\newcommand{\mom}{\emphi{MOM}}
+\newcommand{\rpc}{\emphi{RPC}}
+%\newcommand{\csw1}{\emphi{$C^{1} S^{n} W^{n}$}}
+%\newcommand{\csw2}{\emphi{$C^{1} S^{n} W^{n}$}}
+\newcommand{\hcsno}{\emphi{HCSNO}}
+\newcommand{\csno}{\emphi{CSNO}}
+\newcommand{\ptp}{\emphi{P2P}}
 
 \newcommand{\ApplicationLayer}{\emphi{Application Layer}}
+\newcommand{\UI}{\emphi{UI}}
+\newcommand{\GUI}{\emphi{GUI}}
+\newcommand{\netInfo}{\emphi{NetInfo}}
+\newcommand{\nodeP}{\emphi{Node}}
+\newcommand{\jobScript}{\emphi{JobScript}}
+\newcommand{\StateMachine}{\emphi{State Machine}}
+\newcommand{\scheduler}{\emphi{Scheduler}}
+
+
+\newcommand{\file}[1]{\textbf{\emphi{#1}}}
+\newcommand{\cmd}[1]{\textit{\emphi{#1}}}
+\newcommand{\class}[1]{\textit{\emphi{#1}}}
+\newcommand{\object}[1]{\textit{#1}}
+\newcommand{\method}[1]{\textit{#1}}
+\newcommand{\event}[1]{\textit{\emphi{#1}}}
+
+
 
 \newcommand{\NodeID}{\emphi{NodeID}}
 \newcommand{\JobID}{\emphi{JobID}}
-\newcommand{\StateMachine}{\emphi{State Machine}}
+\newcommand{\remoteJob}{\emphi{RemoteJob}}
+\newcommand{\AjaxJob}{\emphi{AjaxJob}}
+\newcommand{\OsProcessJob}{\emphi{OsProcessJob}}
 \newcommand{\ParentJob}{\emphi{ParentJob}}
 \newcommand{\SubJob}{\emphi{SubJob}}
 \newcommand{\RootJob}{\emphi{RootJob}}
+\newcommand{\JobTree}{\emphi{Job Tree}}
+
+
+\newcommand{\JobCall}{\emphi{Job.call}}
+\newcommand{\JobCancel}{\emphi{Job.cancel}}
+\newcommand{\JobUpdate}{\emphi{Job.update}}
+\newcommand{\JobReturn}{\emphi{Job.return}}
+\newcommand{\JobDelegate}{\emphi{Job.delegate}}
 
 \newcommand{\CallMessage}{\emphi{Call Message}}
 \newcommand{\CancelMessage}{\emphi{Cancel Message}}
 \newcommand{\UpdateMessage}{\emphi{Update Message}}
 \newcommand{\ReturnMessage}{\emphi{Return Message}}
-
-\newcommand{\JobCall}{\emphi{Job.Call}}
-\newcommand{\JobCancel}{\emphi{Job.Cancel}}
-\newcommand{\JobUpdate}{\emphi{Job.Update}}
-\newcommand{\JobReturn}{\emphi{Job.Return}}
-\newcommand{\JobDelegate}{\emphi{Job.Delegate}}
 
 \newcommand{\TransCall}{\emphi{Call Transition}}
 \newcommand{\TransCancel}{\emphi{Cancel Transition}}
@@ -104,6 +137,14 @@
 \newcommand{\TransReturnOk}{\emphi{ReturnOk Transition}}
 \newcommand{\TransReturnFail}{\emphi{ReturnFail Transition}}
 \newcommand{\TransReturnCanceled}{\emphi{ReturnCanceled Transition}}
+\newcommand{\TransReturn}{\emphi{Return Transition}}
+
+
+
+\usepackage{scalerel}
+\def\thumbsup{\scalerel*{\includegraphics{tup}}{O}}
+\def\thumbsdown{\scalerel*{\includegraphics{tud}}{g}}
+
 
 \newcommand{\sys}[1]{“#1”}
 
@@ -116,9 +157,9 @@
 \newcommand{\BL}{\begin{list}{$\bullet$}{\itemsep0mm\parsep0mm\topsep1mm\labelwidth2em}}
 \newcommand{\EL}{\end{list}}
 \newcommand{\BCL}{\begin{list}{$\bullet$}{\itemsep0mm\parsep0mm\topsep0mm\labelwidth2em}}
-\newcommand{\ECL}{\vspace{0.5em}\end{list}}
-\newcommand{\BE}{\begin{enumerate}}
-\newcommand{\EE}{\end{enumerate}}
+\newcommand{\ECL}{\vspace{0.5em}\end{list}\noindent}
+\newcommand{\BE}{\begin{enumerate}{\itemsep0mm\parsep0mm\topsep0mm}}
+\newcommand{\EE}{\end{enumerate}{\itemsep0mm\parsep0mm\topsep0mm}}
 \newcommand{\ptr}{$\rightarrow\,$}
 \newcommand{\fett}[1]{\textsf{\textbf{#1}}}
 \newcommand{\code}[1]{\textsf{#1}}
@@ -144,7 +185,7 @@
 
 \textbf{\textit{Bachelorarbeit}}\\[12mm]
 
-\textbf{\textsf{\huge Leichtgewichtige Javascript Message-Oriented Middleware für verteilte Prozessausführung}}\\[5mm]
+\textbf{\textsf{\huge Leichtgewichtige Javascript Middleware für verteilte Prozessausführung}}\\[5mm]
 %\textsf{An RPC Implementation in Javascript with cancelable, and executionstate supplying RMI calls}\\[22mm]
 
 
@@ -174,15 +215,15 @@ Univ.-Prof. Dr.rer.nat. M.Sc. Tobias Schreck, Dipl.-Inf. Robert Gregor \\
 \include{Chapter-3}
 \include{Chapter-4}
 \include{Chapter-5}
-\include{Chapter-6}
 \include{Chapter-7}
+\include{Chapter-6}
 % ------------------------------------------------------------
 
 \addcontentsline{toc}{chapter}{Bibliography}
 \bibliographystyle{Scripts/eg-alpha}
 \bibliography{Bibliography}
-%\addcontentsline{toc}{chapter}{List of Tables}
-%\listoftables
+\addcontentsline{toc}{chapter}{List of Tables}
+\listoftables
 \addcontentsline{toc}{chapter}{List of Figures}
 \listoffigures
 \addcontentsline{toc}{chapter}{Index}

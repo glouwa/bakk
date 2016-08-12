@@ -90,7 +90,7 @@ app.init = function()
                     'tests': {
                         type:'Set<Project>',
                         '✕': function free(j) {},
-                        '💢 server fragment folder':                   project('../../projects/serverFragmentFolder.js'),
+                        '💢 server fragment folder':    project('../../projects/serverFragmentFolder.js'),
                         '💻 server cmd':                project('../../projects/serverCmd.js'),
                         '📂 server folder':             project('../../projects/serverFolder.js'),
                         '🗩 server output':             project('../../projects/serverOutput.js'),
@@ -115,20 +115,20 @@ app.init = function()
     $('#projectTabPaper').append(tab('projectTab'))
     $('#jobTabPaper').append(tab('jobTab'))
 
-    $('#modelTab')[0].add('☍', { content:a3View(app.model) })
+    //$('#modelTab')[0].add('☍', { content:a3View(app.model) })
 
-    var div = document.createElement('div')
-    div.appendChild(a3View(app.model.projects))
+    var projectsDiv = document.createElement('div')
+    projectsDiv.appendChild(a3View(app.model.projects))
     app.model.on('change', changes=>
     {
         if (changes.newMembers && changes.newMembers.network)
-            div.appendChild(a3View(app.model.network))
+            projectsDiv.appendChild(a3View(app.model.network))
 
         if (changes.deletedMembers && changes.deletedMembers.network)
-            div.removeChild(div.childNodes[1])
+            projectsDiv.removeChild(projectsDiv.childNodes[1])
     })
 
-    $('#modelTab')[0].add('🌐', { content:div })
+    $('#modelTab')[0].add('🌐', { content:projectsDiv })
     $('#jobTab')[0].add('⥂', { content:a3View(app.model.jobs) })
 }
 

@@ -115,17 +115,19 @@
                     diff.state.lastModification = Date.now()
                     diff.state.lastModificationloc = jm.workerId
 
+
                     if (diff.state.progress && diff.state.progress.valueOf() == 1)
-                    {
+                    {///job finished
                         console.assert(!outputDiff)
                         j.ret(diff.state.detail, diff.state.log + ' (auto)')
                     }
                     else
-                    {                        
+                    {///intermiediate update
                         if (j.output && outputDiff)
                         {
                             j.output.update(outputDiff)
                             outputDiff = undefined
+                            console.log('got output', outputDiff)
                         }
 
                         j.merge(diff, !j.isRoot)

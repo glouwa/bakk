@@ -1,0 +1,85 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{\uppercase{{W3C}14}}
+
+\bibitem[1\&16]{qooxdoo}
+\textsc{1\&1}:
+\newblock {Qooxdoo Libary}.
+\newblock \emph{http://qooxdoo.org} (2016).
+
+\bibitem[{Asy}16]{async}
+\textsc{{Async Project}}:
+\newblock Async javascript libary.
+\newblock \emph{http://caolan.github.io/async} (2016).
+
+\bibitem[BJH77]{baker1977incremental}
+\textsc{Baker~Jr H.~C., Hewitt C.}:
+\newblock The incremental garbage collection of processes.
+\newblock In \emph{ACM Sigplan Notices} (1977), vol.~12, ACM, pp.~55--59.
+
+\bibitem[BK03]{bishop2003survey}
+\textsc{Bishop T.~A., Karne R.~K.}:
+\newblock A survey of middleware.
+\newblock In \emph{Computers and Their Applications} (2003), pp.~254--258.
+
+\bibitem[FCO99]{falkner1999implementing}
+\textsc{Falkner K.~K., Coddington P.~D., Oudshoorn M.~J.}:
+\newblock Implementing asynchronous remote method invocation in java.
+\newblock In \emph{Proc. the Parallel and Real-Time Systems Conference} (1999).
+
+\bibitem[FK03]{foster2003grid}
+\textsc{Foster I., Kesselman C.}:
+\newblock \emph{The Grid 2: Blueprint for a new computing infrastructure}.
+\newblock Elsevier, 2003.
+
+\bibitem[Fos06]{foster2006grid}
+\textsc{Foster I.}:
+\newblock What is the grid? a three point checklist, july 2002.
+\newblock \emph{ThreePoint-Check. pdf} (2006).
+
+\bibitem[GHJV05]{Gamma05a}
+\textsc{Gamma E., Helm R., Johnson R., Vlissides J.}:
+\newblock \emph{Design Patterns: Elements of Reusable Object-Oriented
+  Software}.
+\newblock Addison-Wesley, 2005.
+
+\bibitem[{Nod}16]{nodecite}
+\textsc{{Node.js Foundation}}:
+\newblock Nodejs about.
+\newblock \emph{https://nodejs.org/en/about/} (2016).
+
+\bibitem[SK11]{sadashiv2011cluster}
+\textsc{Sadashiv N., Kumar S.~D.}:
+\newblock Cluster, grid and cloud computing: A detailed comparison.
+\newblock In \emph{Computer Science \& Education (ICCSE), 2011 6th
+  International Conference on} (2011), IEEE, pp.~477--482.
+
+\bibitem[SSRB13]{schmidt2013pattern}
+\textsc{Schmidt D.~C., Stal M., Rohnert H., Buschmann F.}:
+\newblock \emph{Pattern-Oriented Software Architecture, Patterns for Concurrent
+  and Networked Objects}, vol.~2.
+\newblock John Wiley \& Sons, 2013.
+
+\bibitem[Tan]{tanenbaum4andrew}
+\textsc{Tanenbaum S.}:
+\newblock Computernetzwerke.
+\newblock \emph{Pearson Verlag GmbH, M{\"u}nchen}.
+
+\bibitem[{W3C}14]{w3cX}
+\textsc{{W3C}}:
+\newblock Xmlhttprequest level 1.
+\newblock \emph{https://www.w3.org/TR/XMLHttpRequest/} (2014).
+
+\bibitem[YB05]{yu2005taxonomy}
+\textsc{Yu J., Buyya R.}:
+\newblock A taxonomy of workflow management systems for grid computing.
+\newblock \emph{Journal of Grid Computing 3}, 3-4 (2005), 171--200.
+
+\bibitem[ZCD{\etalchar{*}}12]{zaharia2012resilient}
+\textsc{Zaharia M., Chowdhury M., Das T., Dave A., Ma J., McCauley M., Franklin
+  M.~J., Shenker S., Stoica I.}:
+\newblock Resilient distributed datasets: A fault-tolerant abstraction for
+  in-memory cluster computing.
+\newblock In \emph{Proceedings of the 9th USENIX conference on Networked
+  Systems Design and Implementation} (2012), USENIX Association, pp.~2--2.
+
+\end{thebibliography}

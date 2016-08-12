@@ -4,7 +4,8 @@
 
 \chapter{Anforderungen und verwendete Technologien}
 \label{K3}
-In diesem Kapitel werden zunächst die Anforderungen an die Middleware zusammengefasst. Danach die verwendeten Technologien und Konzepte aufgelistet und begründet, warum die Entscheidung auf sie gefallen ist.
+In diesem Kapitel werden zunächst die Anforderungen an die Middleware zusammengefasst und analysiert.
+Danach die verwendeten Technologien und Konzepte aufgelistet und begründet, warum die Entscheidung auf sie gefallen ist.
 
 
 
@@ -13,49 +14,39 @@ In diesem Kapitel werden zunächst die Anforderungen an die Middleware zusammeng
 \BCL
   \item Es soll eine Middleware geschaffen werden, die auf einem möglichst großen Spektrum von Betriebssystemen und Geräten lauffähig ist.
 
-  \item Der Deployment Aufwand soll minimiert werden.
-  Ist die Middleware einmal auf den Geräten installiert, soll sie in der Lage sein Benutzer definierte Skripts verteilt auszuführen.
-
-  \item Wie bei Apache Spark sollte der User nur ein Script schreiben müssen, welches das Ausführungsverhalten des gesamten Systems definiert, also auch den auf anderen Geräten ausgeführten Code enthält.
+  \item \ApplicationLayer{} sollten als Scripts realisiert werden, die von der Middleware ausgeführt werden.
   Diese Scripts werden im folgenden \jobScript{} genannt.
 
-  \item JobsScripts sollen es ermöglichen bei Funktionsaufrufen ein Gerät zu spezifizieren, auf dem die Funktion ausgeführt werden soll.
+  \item Der Deployment Aufwand soll minimiert werden.
+  Wie bei Apache Spark sollte der User nur ein Script schreiben müssen, welches das Ausführungsverhalten des gesamten Systems definiert, also auch den auf anderen Geräten ausgeführten Code enthält.
+  Die Teile des Scripts welche auf anderen Geräten ausgeführt werden, sollten on demand auf diese verteilt werden.
+
+  \item  \jobScript s sollten frei von Synchronisierungsmechanismen wie Semaphoren sein, da ansonsten zu viel technisches Know-how für die Implementierung von \jobScript s notwendig ist.
+
+  \item JobsScripts sollen es ermöglichen bei Funktionsaufrufen ein Gerät zu spezifizieren, auf dem die Funktion ausgeführt wird.
+  Da bei \remoteJob s das Gerät explizit angegeben werden muss, muss innerhalb der Scripting Sandbox zumindest Zugriff auf die verbundenen,
+  oder alle im Netzwerk zur Verfügung stehenden Geräte gegeben sein.
+  Somit kann der Anwender eigene Scheduling Strategien implementieren.
+  Pro Rechner muss CPU Auslastung, verfügbarer Speicher und verfügbare Interpreter abgelesen werden können.
+  Im Folgenden wird diese Datenstruktur \netInfo{} genannt, siehe \ref{netInfo}.
 
   \item Argumente und Returnwert oder Exceptions sollen von der Middleware transportiert werden.
 
   \item Auch das Starten von Remote Prozessen sollte auf dieses Art möglich sein.
   Solche Remote Calls werden im folgenden RemoteJobs genannt.
-  Es wird angenommen, dass \remoteJobs{} mit einer sehr langen Ausführungszeit zum Einsatz kommen, deshalb müssen diese abbrechbar sein.
-  Außerdem muss es möglich sein, den Progress von RemoteJobs an der auftraggebenden Stelle abzulesen.
+  Es wird angenommen, dass \remoteJob s mit einer sehr langen Ausführungszeit zum Einsatz kommen, deshalb müssen diese abbrechbar sein.
+  Außerdem muss es möglich sein, den Progress von \remoteJob s an der auftraggebenden Stelle abzulesen.
 \ECL
 
-Es soll eine Middleware geschaffen werden, die auf einem möglichst großen Spektrum von Betriebssystemen und Geräten lauffähig ist.
-Der Deployment Aufwand soll minimiert werden.
-Ist die Middleware einmal auf den Geräten installiert, soll sie in der Lage sein Benutzer definierte Skripts verteilt auszuführen.
-Wie bei Apache Spark sollte der User nur ein Script schreiben müssen, welches das Ausführungsverhalten des gesamten Systems definiert, also auch den auf anderen Geräten ausgeführten Code enthält.
-Diese Scripts werden im folgenden \jobScript{} genannt.
-JobsScripts sollen es ermöglichen bei Funktionsaufrufen ein Gerät zu spezifizieren, auf dem die Funktion ausgeführt werden soll.
-Argumente und Returnwert oder Exceptions sollen von der Middleware transportiert werden.
-Auch das Starten von Remote Prozessen sollte auf dieses Art möglich sein.
-Solche Remote Calls werden im folgenden RemoteJobs genannt.
-Es wird angenommen, dass \remoteJobs{} mit einer sehr langen Ausführungszeit zum Einsatz kommen, deshalb müssen diese abbrechbar sein.
-Außerdem muss es möglich sein, den Progress von RemoteJobs an der auftraggebenden Stelle abzulesen.
-
-Da bei RemoteJobs das Gerät explizit angegeben werden muss, muss innerhalb der Scripting Sandbox zumindest Zugriff auf die verbundenen, oder alle im Netzwerk zur Verfügung stehenden Geräte gegeben sein.
-Somit kann der Anwender eigene Scheduling Strategien implementieren.
-Pro Rechner muss CPU Auslastung, verfügbarer Speicher und verfügbare Interpreter abgelesen werden können.
-Im Folgenden wird diese Datenstruktur \netInfo{} genannt.
-
-Die Übertragung von sehr großen Datenmengen als Argument oder Returnwert ist nicht vorgesehen.
-JobScripts sollten frei von Synchronisierungsmechanismen wie Semaphoren sein.
 
 
 
 
+\clearpage
 \section{Verwendete Technologien}
 
 \subsection{ECMA Script aka JavaScript}
-Ein JobScript enthält den Code aller beteiligten Geräte.
+Ein \jobScript{} enthält den Code aller beteiligten Geräte.
 Funktion hohrere Ordnung enthalten Funktionen in der Argumentliste.
 Bei Remote Aufrufen müssen die Argumente an die Gegenstelle gesendet werden, bei Porgrammiersprachen wie C++ ist es schwierig eine Serialisierbare Repräsentation einer Funktion zu erhalten.
 Die Implementierung eines eigenen Compilers oder Präprozessors soll umgangen werden.
@@ -65,7 +56,8 @@ Programmiersprachen mit Reflection würden dies ermöglichen, allerdings mit erh
 Javascript Interpreter sind auf nahezu allen Betriebssystemen vorhanden.
 Auch mobile Endgeräte sind meist mit Browsern ausgestattet, die Javascript unterstützen.
 Dadurch ist JavaScript eine der am häufigsten zur Verfügung stehenden Laufzeitumgebungen.
-JavaScript unterstützt kein Multithreading - auf Servern ist es üblich Prozesse anstatt Threads zu verwenden.
+JavaScript unterstützt kein Multithreading - auf Servern werden Prozesse anstatt Threads verwendet \cite{nodecite}.
+Webworker unterstützen kein Shared Memory, und werden im folgenden nicht als Threads betrachtet.
 
 
 
@@ -73,7 +65,7 @@ JavaScript unterstützt kein Multithreading - auf Servern ist es üblich Prozess
 \subsection{Websockets}
 Für die Synchronisierung der \netInfo{} Datenstruktur muss bei Änderungen der Geräteeigenschaften eine Message an den Server und von diesem weiter an die Clients gesendet werden.
 Vor allem das Weiterleiten an die Clients kann mit Websockets effizienter, das heißt ohne Polling, realisiert werden.
-RemoteJobs müssen dem auftraggebenden Gerät Progress Updates zukommen lassen.
+\remoteJob s müssen dem auftraggebenden Gerät Progress Updates zukommen lassen.
 Auch hier kann Polling durch die Verwendung von Websockets vermieden werden.
 
 
@@ -82,7 +74,7 @@ Auch hier kann Polling durch die Verwendung von Websockets vermieden werden.
 \subsection{\node{} und \ActiveObjectPattern{}}
 \JavaScript{} in Browsern und \node{} verwenden ein Threading Model, das einem \ActiveObjectPattern{} entspricht, wobei ein ganzer \node{} Prozess sowie ein Web Worker als \ActiveObjectPattern{} gesehen werden kann.
 Darauf aufbauend kann eine MOM sehr einfach implementiert werden.
-Um die Terminierung, das Abbrechen und Timeouts von RemoteJobs zu realisieren, muss eine \StateMachine{} auf Client- sowie Serverseite implementiert werden (siehe Kapitel \ref{K4}).
+Um die Terminierung, das Abbrechen und Timeouts von \remoteJob s zu realisieren, muss eine \StateMachine{} auf Client- sowie Serverseite implementiert werden (siehe Kapitel \ref{K4}).
 Die Transitions dieser State Machine werden durch Netzwerk Messages, User Inputs und Timer Events ausgelöst.
 
 Da Webbrowser und \node{} kein Multithreading mit Shared Memory unterstützen, ist ein Asynchronous API unumgänglich.

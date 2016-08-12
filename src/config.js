@@ -20,7 +20,7 @@
         //disconnect: { active:false, icon:'↛',  text:'disconnect',       pof:'afterRequest' },
         delegate:   { active:false, icon:'☞',  text:'delegate to server'   },
         lognet:     { active:false, icon:'☍',  text:'log network messages' }, //ⶨ
-        logjob:     { active:false,  icon:'⥂',  text:'log job messages'     }, //⇌
+        logjob:     { active:false,  icon:'⥂', text:'log job messages'     }, //⇌
         logapp:     { active:false, icon:'⚘',  text:'log app messages'     }, //⚘
     }
     exports.serverDefaultSimConfig = {
@@ -30,7 +30,7 @@
         stopWork:   { active:false, icon:'☠',  text:'stop working',                            pof:'beforeWork' },
         //disconnect = { active:false, icon:'↛',  text:'disconnect',                           pof:'afterRequest' },
         lognet:     { active:false, icon:'☍',  text:'log network messages' },
-        logjob:     { active:false,  icon:'⥂',  text:'log job messages'     },
+        logjob:     { active:false,  icon:'⥂', text:'log job messages'     },
         logapp:     { active:false, icon:'⚘',  text:'log app messages'     }, // ⎎
     }
 

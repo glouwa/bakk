@@ -12,7 +12,8 @@ function find3dModel(j, diff)
         args: j.params,
         realJob: (js, diff)=>
         {
-            var nodes = app.getNodesByCapability('POSIX64') // eigentlich js, aber der client ist überfordert
+            //var nodes = app.getNodesByCapability('POSIX64') // eigentlich js, aber der client ist überfordert
+            var nodes = app.getNodesByCapability('JS') // eigentlich js, aber der client ist überfordert
 
             js.delegateToFactory({
                 end: idx=> idx < nodes.length,
@@ -30,25 +31,26 @@ function find3dModel(j, diff)
                         ()=> jf.job({ desc: 'load partition', onCall:cj=> jw.params.set.load(cj) }),
                         ()=> jf.job({ desc: 'comparing', onCall:cj=>
 
-                setTimeout(()=> { // todo: syncbug
-                        jw.params.set.visit(cj, (vj, i, idx, p)=>
-                        {
+                        setTimeout(()=> { // todo: syncbug
+                            jw.params.set.visit(cj, (vj, i, idx, p)=>
+                            {
+                                var l  = 'compared ' + jw.params.set.begin + '-' + idx
+                                var v1 = i.features
+                                var v2 = jw.params.set.data[jw.params.selected.valueOf()].features
+                                var d  = v1.map((i, idx)=> v2[idx] - i)
+                                var r  = d.reduce((acc, c)=> acc + c*c)
+                                var l2 = Math.sqrt(r)
+                                var m  = l2 < jw.params.threshold.valueOf()
+                                       ? { [idx]:{ dbEntity:i, diff:l2 } }
+                                       : undefined
 
-                            var l  = 'compared ' + jw.params.set.begin + '-' + idx
-                            var v1 = i.features
-                            var v2 = jw.params.set.data[jw.params.selected.valueOf()].features
-                            var d  = v1.map((i, idx)=> v2[idx] - i)
-                            var r  = d.reduce((acc, c)=> acc + c*c)
-                            var l2 = Math.sqrt(r)
-                            var m  = l2 < jw.params.threshold
-                                   ? { [idx]:{ dbEntity:i, diff:l2 } }
-                                   : undefined
+                                if (jw.params.selected.valueOf() != idx)
+                                    delete i.features
 
-                            if (jw.params.selected != idx) delete i.features
-                            vj.updateJob({ state:{ progress:p, type:'running', log:l } }, m)
+                                vj.updateJob({ state:{ progress:p, type:'running', log:l } }, m)
 
-                        })})
-              }, 0)
+                            })})
+                        },10)
                     )
                 })
             })
@@ -167,11 +169,11 @@ new Object({
         src: find3dModel,
         args: {
             type: 'Model3dArgs',
-            threshold: 17,
-            selected: 3,
+            threshold: 16,
+            selected: 26,
             set: pSet.lazySet(
                 0,
-                63,
+                47,
                 idx=> ({
                     id: idx,
                     url: '../../data/3dModel/vectorfiles/m' + idx + '.json',

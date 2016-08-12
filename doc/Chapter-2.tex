@@ -6,20 +6,23 @@
 \label{K2}
 \section{Konzepte}
 
-\subsection{Message-Oriented Middleware vs RPC}
+%\begin{multicols}{2}
+
+\subsection{Message-Oriented Middleware vs Remote Procedure Calls}
 Middleware Systeme können nach mehreren Gesichtspunkten klassifiziert werden.
 Im Folgenden wird die Klassifizierung nach \cite{bishop2003survey} verwendet und auf die Klassen \sys{Procedure Oriented}, \sys{Object Oriented}, und \sys{Message-Oriented Middleware} eingegangen, da sie unter Berücksichtigung der Requirements mögliche Lösungsansätze sind.
 
-\sys{Procedure Oriented} und \sys{Object Oriented} Systeme sind häufig als Request-Response  Protokolle implementiert, wie zum Beispiel Java RPC oder CORBA.
-Einen Remote Call abzubrechen ist in diesem Kontext nur möglich, indem man die Ausführung an die TCP Connection bindet, das hieße die Ausführung abbzubrechen, falls die TCP Connection geschlossen wird.
-Eine weitere Message für den Abbruch zu spezifizieren würde es ermöglichen, TCP Connections aufrecht zu erhalten wenn ein RPC abgebrochen wird.
+\sys{Procedure Oriented} und \sys{Object Oriented} Systeme werden meißt unter dem Begriff Remote Procedure Call (\rpc{}) zusammengefasst,
+und sind häufig als Request-Response Protokolle implementiert, wie zum Beispiel Java RPC oder CORBA.
+Einen \rpc{} abzubrechen ist in diesem Kontext nur möglich, indem man die Ausführung an die TCP Connection bindet, das hieße die Ausführung abbzubrechen, falls die TCP Connection geschlossen wird.
+Eine weitere Message für den Abbruch zu spezifizieren würde es ermöglichen, TCP Connections aufrecht zu erhalten wenn ein \rpc{} abgebrochen wird.
 Dies widerspricht aber dem Request-Response Konzept.
-RPC Implementierungen wie \cite{qooxdoo} setzen dieses Konzept um.
-Bei der Evaluierung von RPC Technologien konnte keine gefunden werden, die den Fortschritt der Ausführung am Client zur Verfügung stellt.
-Um dies mit RPC zu realisieren, muss es im Application Layer implementiert werden.
+\rpc{} Implementierungen wie \cite{qooxdoo} setzen dieses Konzept um.
+Bei der Evaluierung von \rpc{} Technologien konnte keine gefunden werden, die den Fortschritt der Ausführung am Client zur Verfügung stellt.
+Um dies mit \rpc{} zu realisieren, muss es im Application Layer implementiert werden.
 
-\sys{Message-Oriented Middleware} Systeme bieten mehr Freiheit in der Hinsicht, dass Message-Sequenzen beliebig modelliert werden können.
-Ein Remote Call mit Progress und Cancel Funktionalität kann relativ simpel mit vier Messages  modelliert werden:
+\sys{Message-Oriented Middleware} Systeme (\mom{}) bieten mehr Freiheit in der Hinsicht, dass Message-Sequenzen beliebig modelliert werden können.
+Ein Remote Call mit Progress und Cancel Funktionalität kann relativ simpel mit vier Messages modelliert werden:
 Request, Progress, Cancel und Response.
 Bei dieser Vorgehensweise muss jede der erwähnten Messages eine ID enthalten, welche auf den Aufruf verweist.
 
@@ -29,8 +32,8 @@ Beide Middleware Konzepte benötigen für die Progress und Cancel Funkionalität
 
 
 \subsection{Asynchrone API}
-Message-Oriented Middleware Systeme verwenden meist asynchrone APIs, während Procedure Oriented und Object Oriented Systeme meist synchrone APIs verwenden.
-Es ist aber auch möglich, asynchrone APIs für RPC zu verwenden wie Falkner \cite{falkner1999implementing} gezeigt hat.
+\mom{} Systeme verwenden meist asynchrone APIs, während \rpc{} Systeme meist synchrone APIs verwenden.
+Es ist aber auch möglich, asynchrone APIs für \rpc{} zu verwenden wie Falkner \cite{falkner1999implementing} gezeigt hat.
 
 \label{future}
 Asynchrone APIs, die mit Callbacks arbeiten, führen zu schwer lesbaren Code (pyramid of doom).
@@ -47,7 +50,7 @@ Wenn die asynchrone Funktion das Ergebnis an die Promise übergibt, gibt es dies
 Ist die Future in diesem Zustand, kann der Returnwert von ihr abgelesen werden \cite{baker1977incremental}.
 
 
-
+%\end{multicols}
 
 \subsection{Active Object Pattern aka Actor Pattern}
 Bei der Konzeptionierung von Serversystemen muss ein Threading Model gewählt werden.
@@ -62,8 +65,10 @@ Es muss lediglich das Einfügen und Entfernen aus der Queue als atomare Operatio
 
 \section{Technologien}
 
+%\begin{multicols}{2}
+
 \subsection{Cluster- Grid- und Cloudcomputing}
-Cluster, Grid und Cloud Computing haben eine Gemeinsamkeit:
+Cluster- Grid- und Cloudcomputing haben eine Gemeinsamkeit:
 Sie dienen der Nutzung von verteilten Ressourcen.
 Ihre Unterschiede und die Abgrenzung zueinander sind nicht einheitlich definiert.
 Im Folgenden wird die Klassifizierung nach \cite{sadashiv2011cluster} verwendet und ein kurzer Überblick in Bezug auf örtliche Ausdehnung, Ressourcen Allocation, Taskgröße, Heterogenität, Skalierbarkeit und Task Deployment gegeben.
@@ -88,7 +93,7 @@ Diese Eigenschaft wird durch die Platform as a Service Eigenschaft erreicht, die
 
 
 
-\subsection{Apache spark}
+\subsection{\ApacheSpark{}}
 Apache Spark ist ein Cluster Computing System, das auf einer MOM aufbaut.
 Ein zu verteilender Algorithmus kann innerhalb eines Scripts implementiert werden.
 Apache Spark API basiert auf Resilient Distributed Datasets (RDD).
@@ -100,3 +105,5 @@ Dies kann als versteckter Deployment Schritt gesehen werden und ist auch mit ein
 
 Darüber hinaus wird der User von technischen Details wie Fehlerkorrekturen und dem Versenden von Netzwerk Messages entbunden.
 Apache  Spark unterstützt mehrere Persistenz Technologien, darunter HDFS, Hadoop und Cassandra \cite{zaharia2012resilient}.
+
+%\end{multicols}

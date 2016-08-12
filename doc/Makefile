@@ -54,7 +54,7 @@ gml:
 xpdf:
 	gv $(PAPER).pdf &
 
-thepdf: $(FIG_PDF)
+thepdf: #$(FIG_PDF)
 	pdflatex $(PAPER).tex
 	- bibtex $(PAPER)
 	- makeindex -s Scripts/myindex.ist $(PAPER)

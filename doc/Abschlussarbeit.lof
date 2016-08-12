@@ -1,0 +1,28 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces State Machine eines nicht abbrechbaren RPC{}}}{8}{figure.4.1}
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Erweiterte State Machine eines abbrechbaren RPC{}}}{8}{figure.4.2}
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Immer wenn eine der untergeordneten State Machines terminiert, wird der Workflow Logic Terminate Strategie aufgerufen. Dieser entscheidet ob die \IeC {\"U}bergeordnete State Machine ihren State \IeC {\"a}ndern muss.}}{9}{figure.4.3}
+\contentsline {figure}{\numberline {4.4}{\ignorespaces UML Sequenz Diagramm eines Parallel Workflows. Einfachster Fall ohne Fail oder Cancel Messages. PartentJob terminiert wenn alle SubJobs terminiert haben. $J_1$ ist RootJob{}, und zugleich ParentJob von $J_2$, $J_3$ und $J_4$. Orange sind Call Messages, Blau Update Messages und Gr\IeC {\"u}n ReturnOk Messages.}}{10}{figure.4.4}
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces UML Deployment Struktur mit Netzwerk Verbindungen.}}{11}{figure.5.1}
+\contentsline {figure}{\numberline {5.2}{\ignorespaces UML Object Diagramm des Client. Server and Worker enthalten keine View. }}{13}{figure.5.2}
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Erstellen und starten eines \leavevmode {\color {White}- - -} \linebreak einfachen lokalen Jobs.}}{14}{figure.5.3}
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Ein Pseudo JobScript{} das 20 leere Jobs auf Workern ausf\IeC {\"u}hrt. \leavevmode {\color {White}- - -} \linebreak Blau: Client, Gr\IeC {\"u}n: Server, Rot: Worker.}}{15}{figure.5.4}
+\contentsline {figure}{\numberline {5.5}{\ignorespaces Screenshot der Job Tree{} Visualisierung des Webclients. Jeder Knoten ist ein Job. Gr\IeC {\"u}n zeigt den Endzustand Ok an. Der gezeigte Job Tree{} wurde mit dem Script aus Abbildung \ref {code} erzeugt. \textbf {Oben}: Der am Client vom UI{} erzeugte RootJob{} (blau in Abbildung \ref {code}). \textbf {Mitte}: Der am Client erzeugte, und am Server ausgef\IeC {\"u}hrte RemoteJob{} (gr\IeC {\"u}n in Abbildung \ref {code}). \textbf {Unten}: Die am Server erzeugten, und auf den Workern ausgef\IeC {\"u}hrten RemoteJobs (rot in Abbildung \ref {code}.)}}{15}{figure.5.5}
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {6.1}{\ignorespaces Experiment \ref {M1} WorkerJob Laufzeiten aller 25 Iterationen in 50bins.}}{18}{figure.6.1}
+\contentsline {figure}{\numberline {6.2}{\ignorespaces Experiment \ref {M1}. Boxplots f\IeC {\"u}r Gesamtlaufzeit mit 1, 2, und 4 Worker, und je 25 Iterationen}}{18}{figure.6.2}
+\contentsline {figure}{\numberline {6.3}{\ignorespaces Experiment \ref {M1} Gesamtlaufzeiten mit 1, 2, und 4 Workern, und je 25 Iterationen. X und Y Achse logaritmiert.}}{18}{figure.6.3}
+\contentsline {figure}{\numberline {6.4}{\ignorespaces Experiment \ref {M2} WorkerJob Laufzeiten aller 25 Iterationen in 50bins. Bei Pool Workflow sollte sich das Histogram nicht \IeC {\"a}ndern.}}{19}{figure.6.4}
+\contentsline {figure}{\numberline {6.5}{\ignorespaces Experiment \ref {M2}. Boxplots f\IeC {\"u}r Gesamtlaufzeit mit 1, 2, und 4 Worker, und je 25 Iterationen}}{19}{figure.6.5}
+\contentsline {figure}{\numberline {6.6}{\ignorespaces Experiment \ref {M2} Gesamtlaufzeiten mit 1, 2, und 4 Workern, und je 25 Iterationen. X und Y Achse logaritmiert.}}{19}{figure.6.6}
+\contentsline {figure}{\numberline {6.7}{\ignorespaces Experiment \ref {M3} WorkerJob Laufzeiten aller 25 Iterationen in 50bins. Bei Pool Workflow sollte sich das Histogram nicht \IeC {\"a}ndern.}}{20}{figure.6.7}
+\contentsline {figure}{\numberline {6.8}{\ignorespaces Experiment \ref {M3}. Boxplots f\IeC {\"u}r Gesamtlaufzeit mit 1, 2, und 4 Worker, und je 25 Iterationen}}{20}{figure.6.8}
+\contentsline {figure}{\numberline {6.9}{\ignorespaces Experiment \ref {M3} Gesamtlaufzeiten mit 1, 2, und 4 Workern, und je 25 Iterationen. X und Y Achse logaritmiert.}}{20}{figure.6.9}
+\contentsline {figure}{\numberline {6.10}{\ignorespaces Gant Chart von 12 Workerjobs mit zuf\IeC {\"a}lliger Laufzeit. $W_4$ verz\IeC {\"o}gert den Abschluss von $S_0$ und $C_7$ und verursacht dadurch eine und schlechte Systemauslastung. Diese Abbildung ist ein Screenshot des Webclients.}}{21}{figure.6.10}
+\contentsline {figure}{\numberline {6.11}{\ignorespaces Gant Chart von 20 Workerjobs mit minimaler Laufzeit. Das Scheduling der WorkerJobs ist akzeptabel. $C_7$ terminiert sp\IeC {\"a}t aufgrund einer \IeC {\"U}berlastung des Webclients. Diese Abbildung ist ein Screenshot des Webclients.}}{21}{figure.6.11}
+\addvspace {10\p@ }

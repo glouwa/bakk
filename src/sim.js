@@ -57,7 +57,7 @@
         }
         else
         {
-            for (; act <= max && !j.state.detail == 'canceled'; act++)
+            for (; act <= max && j.state.detail != 'canceled'; act++)
                 simActionWrapper()
 
             if (j.state.detail.valueOf() == 'canceled')

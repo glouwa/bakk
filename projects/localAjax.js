@@ -32,3 +32,16 @@ new Object({
     tests: []
 })
 
+
+/*
+new Job({
+    icon: '↷',
+    desc: 'Multiple AJAX calls',
+    params: {
+        amount: 5,
+        timeout: 3000
+    },
+    onCall: multipleAjaxCalls,
+    tests: []
+})
+*/

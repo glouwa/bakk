@@ -1,0 +1,61 @@
+\BOOKMARK [0][-]{chapter*.1}{Abstract}{}% 1
+\BOOKMARK [0][-]{chapter.1}{Einleitung}{}% 2
+\BOOKMARK [0][-]{chapter.2}{\304hnliche Arbeiten und Technologien}{}% 3
+\BOOKMARK [1][-]{section.2.1}{Konzepte}{chapter.2}% 4
+\BOOKMARK [2][-]{subsection.2.1.1}{Message-Oriented Middleware vs Remote Procedure Calls}{section.2.1}% 5
+\BOOKMARK [2][-]{subsection.2.1.2}{Asynchrone API}{section.2.1}% 6
+\BOOKMARK [2][-]{subsection.2.1.3}{Active Object Pattern aka Actor Pattern}{section.2.1}% 7
+\BOOKMARK [1][-]{section.2.2}{Technologien}{chapter.2}% 8
+\BOOKMARK [2][-]{subsection.2.2.1}{Cluster- Grid- und Cloudcomputing}{section.2.2}% 9
+\BOOKMARK [2][-]{subsection.2.2.2}{Apache Spark}{section.2.2}% 10
+\BOOKMARK [0][-]{chapter.3}{Anforderungen und verwendete Technologien}{}% 11
+\BOOKMARK [1][-]{section.3.1}{Anforderungen}{chapter.3}% 12
+\BOOKMARK [1][-]{section.3.2}{Verwendete Technologien}{chapter.3}% 13
+\BOOKMARK [2][-]{subsection.3.2.1}{ECMA Script aka JavaScript}{section.3.2}% 14
+\BOOKMARK [2][-]{subsection.3.2.2}{Websockets}{section.3.2}% 15
+\BOOKMARK [2][-]{subsection.3.2.3}{Node.js und Active Object Pattern}{section.3.2}% 16
+\BOOKMARK [0][-]{chapter.4}{Protokoll Design}{}% 17
+\BOOKMARK [1][-]{section.4.1}{Network Messages}{chapter.4}% 18
+\BOOKMARK [2][-]{subsection.4.1.1}{Call Message}{section.4.1}% 19
+\BOOKMARK [2][-]{subsection.4.1.2}{Cancel Message}{section.4.1}% 20
+\BOOKMARK [2][-]{subsection.4.1.3}{Update Message}{section.4.1}% 21
+\BOOKMARK [2][-]{subsection.4.1.4}{Return Message}{section.4.1}% 22
+\BOOKMARK [1][-]{section.4.2}{Job State Machine}{chapter.4}% 23
+\BOOKMARK [1][-]{section.4.3}{Job Trees und Call Graphen}{chapter.4}% 24
+\BOOKMARK [1][-]{section.4.4}{Hierarchische Job State Machine}{chapter.4}% 25
+\BOOKMARK [0][-]{chapter.5}{Implementierung}{}% 26
+\BOOKMARK [1][-]{section.5.1}{Deployment}{chapter.5}% 27
+\BOOKMARK [1][-]{section.5.2}{Globale Objekte und deren Initialisierung}{chapter.5}% 28
+\BOOKMARK [2][-]{subsection.5.2.1}{View}{section.5.2}% 29
+\BOOKMARK [2][-]{subsection.5.2.2}{Network}{section.5.2}% 30
+\BOOKMARK [2][-]{subsection.5.2.3}{App}{section.5.2}% 31
+\BOOKMARK [3][-]{subsubsection.5.2.3.1}{Config}{subsection.5.2.3}% 32
+\BOOKMARK [3][-]{subsubsection.5.2.3.2}{JobScripts}{subsection.5.2.3}% 33
+\BOOKMARK [3][-]{subsubsection.5.2.3.3}{RunningJobs Lookup Table}{subsection.5.2.3}% 34
+\BOOKMARK [3][-]{subsubsection.5.2.3.4}{NetInfo}{subsection.5.2.3}% 35
+\BOOKMARK [1][-]{section.5.3}{Job API}{chapter.5}% 36
+\BOOKMARK [1][-]{section.5.4}{Vorgefertigte Jobs}{chapter.5}% 37
+\BOOKMARK [2][-]{subsection.5.4.1}{RemoteJob}{section.5.4}% 38
+\BOOKMARK [2][-]{subsection.5.4.2}{AjaxJob}{section.5.4}% 39
+\BOOKMARK [2][-]{subsection.5.4.3}{OsProcessJob}{section.5.4}% 40
+\BOOKMARK [1][-]{section.5.5}{Implementierung von JobScripts mit Job Trees}{chapter.5}% 41
+\BOOKMARK [0][-]{chapter.6}{Evaluierung}{}% 42
+\BOOKMARK [1][-]{section.6.1}{CLI Tests}{chapter.6}% 43
+\BOOKMARK [2][-]{subsection.6.1.1}{Primzahlen Suche - Parallel Workflow}{section.6.1}% 44
+\BOOKMARK [2][-]{subsection.6.1.2}{Algorithmus zum Vorverarbeiten von 3D Meshes - Pool Workflow}{section.6.1}% 45
+\BOOKMARK [2][-]{subsection.6.1.3}{Empty Jobs - Pool Workflow}{section.6.1}% 46
+\BOOKMARK [1][-]{section.6.2}{Webclient Tests}{chapter.6}% 47
+\BOOKMARK [2][-]{subsection.6.2.1}{Scheduler Fail}{section.6.2}% 48
+\BOOKMARK [2][-]{subsection.6.2.2}{Client \334berlastung}{section.6.2}% 49
+\BOOKMARK [0][-]{chapter.7}{Diskussion}{}% 50
+\BOOKMARK [1][-]{section.7.1}{Fazit}{chapter.7}% 51
+\BOOKMARK [2][-]{subsection.7.1.1}{Code on demand}{section.7.1}% 52
+\BOOKMARK [2][-]{subsection.7.1.2}{Jobs und Promises}{section.7.1}% 53
+\BOOKMARK [2][-]{subsection.7.1.3}{Low-level}{section.7.1}% 54
+\BOOKMARK [2][-]{subsection.7.1.4}{Job Trees}{section.7.1}% 55
+\BOOKMARK [2][-]{subsection.7.1.5}{UI Anbindung}{section.7.1}% 56
+\BOOKMARK [1][-]{section.7.2}{Zuk\374nftige Arbeiten}{chapter.7}% 57
+\BOOKMARK [0][-]{section.7.2}{Bibliography}{}% 58
+\BOOKMARK [0][-]{chapter*.3}{List of Tables}{}% 59
+\BOOKMARK [0][-]{chapter*.4}{List of Figures}{}% 60
+\BOOKMARK [0][-]{chapter*.5}{Index}{}% 61

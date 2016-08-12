@@ -471,7 +471,7 @@ function jobLogView(jobModel, originChain)
 
     jobLog.addEvent = function(jobModel, originChain)
     {
-        var li = document.createElement('li')
+       var li = document.createElement('li')
         function insertHop(hj)
         {
             var head = document.createElement('div')            
