@@ -73,12 +73,28 @@
 
     //-----------------------------------------------------------------------------------------
 
+    /*
+    * j.delegate(new Job())
+    *
+    * j.delegate({
+    *    type:'toOne',
+    *    job:new Job()
+    * })
+    */
     exports.oneLogic = function(parent, args)
     {
         args.end = jidx=> jidx < 1        
         exports.factoryLogic(parent, args)
     }
 
+    /*
+    * j.delegate({
+    *    type:'pool',
+    *    pool: app.network.server.workers,
+    *    count: 90,
+    *    job: (idx, poolNode)=> new Job()
+    * })
+    */
     exports.poolLogic = function(parent, args)
     {
         var lastCreatedIdx = 0
@@ -88,6 +104,8 @@
             if(sj.state.type.valueOf() != 'returned')
                 sj.cancel()
         })
+
+        // terminate strategy
 
         function onSubjobReturn(j, jidx)
         {
@@ -101,6 +119,8 @@
             if (allHaveState(parent.subjobs, 'type', 'returned'))
                 parent.ret(resultState(parent), args.desc + ' ' + resultState(parent))
         }
+
+        // startstrategy
 
         function createSubJob(jidx, node)
         {
@@ -127,11 +147,20 @@
 
     //-----------------------------------------------------------------------------------------
 
+    /*
+    * j.delegate({
+    *    type:'factory',
+    *    end: idx=> idx < 6,
+    *    job: idx=> new Job()
+    * })
+    */
     exports.factoryLogic = function(parent, args)     // by abort callback
     {
         var newSubJobs = []
         var pAa = parent.state.progress.valueOf()
         parent.onCancel = j=> parent.subjobs.forEach(sj=> sj.cancel())
+
+        // terminate strategy
 
         function onSubjobReturn()
         {
@@ -140,10 +169,13 @@
                 parent.ret(resultState(parent), args.desc + ' ' + resultState(parent))}
         }
 
+        // startstrategy
+
         function configureSubjob(sj, jidx)
         {
             sj.onUpdate = (j, sd, od)=> onSubjobUpdate(j, sd, od, parent, pAa)
             sj.onReturn = j=> onSubjobReturn()
+            parent.update('subjobs.'+sj.id, sj)
             return sj
         }
 
@@ -152,7 +184,6 @@
         {
             // kommt sofort in die parent.subjob liste
             var newSj = configureSubjob(args.job(lastCreatedIdx++), lastCreatedIdx)
-            parent.update('subjobs.'+newSj.id, newSj)
             newSubJobs.push(parent.subjobs[newSj.id] || app.model.jobs[newSj.id.valueOf()])
         }
 
@@ -163,11 +194,23 @@
 
     //-----------------------------------------------------------------------------------------
 
+    /*
+    * j.delegate({
+    *    type:'sequence',
+    *    logic: 'and',
+    *    jobs: [
+    *       ()=> new Job(),
+    *       ()=> new Job(),
+    *    ]
+    * })
+    */
     exports.sequenceLogic = function(parent, subjobFactorys) // by arraylenght
     {
         var newSubJobs = []
         var pAa = parent.state.progress.valueOf()
         parent.onCancel = j=> parent.subjobs.forEach(sj=> sj.cancel())
+
+        // terminate strategy
 
         function onSubjobReturn(j, jidx)
         {
@@ -190,6 +233,8 @@
                 parent.ret(resultState(parent), parent.state.log)
             }
         }
+
+        // startstrategy
 
         function configureSubjob(sj, jidx)
         {

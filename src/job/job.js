@@ -47,10 +47,10 @@
 
                     var diff = {
                         id: j.id,
-                        state: {
-                            progress: 0.051,
+                        state: {                            
                             type: 'calling',
-                            detail: 'calling',
+                            progress: 0.051,
+                            detail: 'calling',                        
                             log: 'calling function',
                             realWorker: jm.workerId,
                             realWorkerHost: jm.host,
@@ -63,13 +63,28 @@
                             //remoteCallTimeloc: callTimeloc,
                             //remoteLastModification: Date.now(),
                             //remoteLastModificationloc: jm.workerId
-                        }
+                        },
+                        debug: {
+                            log: 'calling function',
+                            node:creator,
+                            callTime:Date.now(),
+                            returnTime:undefined,
+                            lastModification: Date.now(),
+                            remote:{
+                                node:creator,
+                                callTime:Date.now(),
+                                returnTime:undefined,
+                                lastModification: Date.now(),
+                            }
+                        },
+                        transitions:[ 3, 4, 6]
+
                     }
 
                     if (initDiff)
                         diff.desc = initDiff.desc
                     else
-                        diff.desc = j.desc
+                        diff.desc = j.desc ? j.desc:'???'
 
                     // apply
                     j.merge(diff, !j.isRoot)
@@ -142,7 +157,9 @@
                 j.exception2localError(function ret_()
                 {
                     //console.trace('j-' + j.id + ' ret')
-                    console.assert(j.state.type != 'returned', 'double return')
+                    console.assert(j.state.type != 'returned', 'double return '
+                                                                + j.state.detail + '/' + + j.state.log + ' --> ' +
+                                                                detail + '/' + log)
 
                     clearTimeout(j.timer)
 
@@ -162,6 +179,21 @@
                     j.onReturn(j, diff)
                 })
             }})
+
+
+            Object.defineProperty(jp, 'delegate', { value:function delegate(args)
+            {
+                //jm.jl[args.type + 'Logic'](this, args)
+
+                /*
+                jm.jl.oneLogic(this, args)
+                jm.jl.oneLogic(this, a)
+                jm.jl.poolLogic(this, a)
+                jm.jl.factoryLogic(this, a)*/
+
+                jm.jl.sequenceLogic(this, args.jobs)
+            }})
+
 
             Object.defineProperty(jp, 'delegateToOne', { value:function delegateToOne(a) { jm.jl.oneLogic(this, a) } } )
             Object.defineProperty(jp, 'delegateToPool', { value:function delegateToPool(a) { jm.jl.poolLogic(this, a) } } )

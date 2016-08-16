@@ -1,15 +1,22 @@
 var os       = require('os')
-var config   = require('../config.js')
-var sim      = require('../sim.js')
-var messages = require('../messages.js')
-var jff      = require('../job/job.js')
-var jl       = require('../job/jobLogic.js')
-var tj       = require('../job/toolJobs.js')
-var tools    = require('../tools.js')
-var mvj      = require('../types/mvj.js')
-var pSet     = require('../types/pSet.js')
+
+var config   = require('./src/config.js')
+var sim      = require('./src/sim.js')
+var messages = require('./src/messages.js')
+var tools    = require('./src/tools.js')
+
+var jff      = require('./src/job/job.js')
+var jl       = require('./src/job/jobLogic.js')
+var tj       = require('./src/job/toolJobs.js')
+
+var mvj      = require('./src/types/mvj.js')
+var pSet     = require('./src/types/pSet.js')
 
 sim.config = config.clientDefaultSimConfig
+
+var osDir = os.type() == 'Linux' ? 'posix64' : 'dotnet'
+
+var binDir = 'bin/' + osDir + '/'
 
 // nicht hin schaun
 var jf = jff.jm()
@@ -31,6 +38,7 @@ var app = mvj.model('', {
 
 function rootJob(args)
 {
+    args.desc = 'GUI RootJob'
     var jd = jf.job(args)
     app.update('model.jobs.'+jd.id, jd)
     return app.model.jobs[jd.id.valueOf()]
@@ -95,5 +103,4 @@ var clientMessageHandlerFactory = (shortType, type, cap, onConnected)=> { return
     onReload: (c, parsed) => {}
 }}
 
-var osDir = os.type() == 'Linux' ? 'posix64' : 'dotnet'
-var binDir = '../../bin/' + osDir + '/'
+

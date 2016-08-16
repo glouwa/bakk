@@ -42,19 +42,18 @@ function jobRootButon(args)// name, args, src, noIcons, obj)
 
         function createRootJob()
         {
-            jd = jf.job(
-            {
+            jd = jf.job({
                 desc: 'button ' + args.name,
                 isRoot: true,
                 params: args.args,
-                onCall: (j, params)=>
-                {
+                onCall: (j, params)=> {
                     if (args.obj) args.obj[args.name](j, params)   // model obj method?
                     else          args.src(j, params)              // project service?
                 }
             })
             app.update('model.jobs.'+jd.id, jd)
             job = app.model.jobs[jd.id.valueOf()]
+            $('#jobTab')[0].add(job.id, { content:jobAllView(job) }, 'inBg')
         }
 
         //if (jobModel)
@@ -220,7 +219,7 @@ function a3View(model)
         contentDelegate = ()=> autoMultiView(model, [autoView, projectEdit])
 
     if (model.type == 'Job')
-        contentDelegate = ()=> autoMultiView(model, [jobStateGraphView, jobStateTreeView/*, jobStateGantViewWithProgress*/])
+        contentDelegate = ()=> autoMultiView(model, [jobStateGraphView, jobStateTreeView, jobStateGantViewWithProgress])
 
     if (model.type == 'Network')
         contentDelegate = ()=> autoMultiView(model, [autoView, systemView])

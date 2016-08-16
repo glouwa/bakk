@@ -1,9 +1,13 @@
 var fs = require('fs')
 
-eval(fs.readFileSync('../app.js')+'')
-eval(fs.readFileSync('../types/project.js')+'')
+eval(fs.readFileSync('src/app.js')+'')
+eval(fs.readFileSync('src/types/project.js')+'')
 
 jf.workerId = 'S₀'
+
+//-------------------------------------------------------------------------------------------
+
+
 
 app.update({
     clientId: 0,
@@ -72,7 +76,7 @@ app.onNetworkStateChange = function(state, connection)
     {
         onConnected: function()
         {
-	    console.log('+ connection ' + connection.id)
+            console.log('+ connection ' + connection.id)
 	  
             var msg = messages.serverHalloMsg(connection.id, app.model.network)
             var channelMsg = messages.channelMsg('Ws', msg)
@@ -81,7 +85,8 @@ app.onNetworkStateChange = function(state, connection)
 
         onDisconnected: function()
         {
-	    console.log('- connection ' + connection.id)
+            console.log('- connection ' + connection.id)
+
             var path = 'model.network.'+connection.id
 
             try { app.update(path, 'deadbeef') } catch(e) {}
@@ -114,14 +119,18 @@ var messageHandlers =
 
 //-------------------------------------------------------------------------------------------
 
-var network = require('./network').network
+var network = require('./src/network/nodeWs').network
 network.onConnectionChanged = app.onNetworkStateChange
 network.onMessage = app.onMessage
 network.sim = sim
-network.listen();
+network.listen()
 
 //-------------------------------------------------------------------------------------------
 
 var connect = require('connect')
 var serveStatic = require('serve-static')
-connect().use(serveStatic('../../')).listen(config.server.httpport)
+connect().use(serveStatic('./')).listen(config.server.httpport)
+
+//-------------------------------------------------------------------------------------------
+
+

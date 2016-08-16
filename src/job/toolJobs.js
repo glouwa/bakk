@@ -25,7 +25,7 @@
             {
                 xmlhttp.onreadystatechange = ()=> j.exception2localError(()=>
                 {
-                    if (canceled)
+                    if (canceled) // TODO: or not running
                     {
                         j.ret('canceled', 'xhr borted')
                     }
@@ -56,7 +56,12 @@
                     }
                 })
 
-                var rrul = (inBrowser ? '':'http://' + exports.config.server.wshost + ':' + exports.config.server.httpport + '/---/---/') + args.url                
+                var rrul = (inBrowser
+                            ? ''
+                            : 'http://' + exports.config.server.wshost + ':'
+                                        + exports.config.server.httpport + '/---/---/---/')
+                         + args.url
+
                 xmlhttp.open("GET", rrul, true)
                 xmlhttp.send()
             }

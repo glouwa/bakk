@@ -264,7 +264,7 @@ function jobStateGantView(jobModel)
                 title:JSON.stringify(jm.state, null, 4)
             })*/
 
-            view.timeline.fit()
+            gView.timeline.fit()
         })
     }
 
@@ -285,7 +285,7 @@ function jobStateGantView(jobModel)
                     updateJob({ newMembers:v }, v.path)
                     v.on('change', updateJob)
                 }
-                view.timeline.fit()
+                gView.timeline.fit()
             })
     }
 
@@ -301,11 +301,37 @@ function jobStateGantView(jobModel)
 
     var view = document.createElement('div')
         view.className = 'jobStateGantView'
-        view.timeline = new vis.Timeline(view, items, groups, { groupOrder: 'content', stack:false/*, throttleRedraw:1000*/});
+        var gView = document.createElement('div')
+            gView.timeline = new vis.Timeline(view, items, groups, {
+            groupOrder: 'content',
+            stack:false/*, throttleRedraw:1000*/
+        })
+        var aView = undefined
+
+    view.appendChild(gView)
+    gView.timeline.on("select", function (params)
+    {
+        if (aView)
+        {
+            view.removeChild(aView)
+            aView = undefined
+        }
+
+        if (params.items[0])
+        {
+            aView = autoView(items.get(params.items[0]).model)
+            aView.style.borderStyle = 'dashed none none none'
+            aView.style.borderWidth = 1;
+            aView.style.borderColor = '#B0B0B0'
+            view.appendChild(aView)
+        }
+    })
 
     updateJob({ newMembers:jobModel }, jobModel.path)
     jobModel.on('change', updateJob)
     return view
+
+
 }
 
 // das ding transformiert ein model

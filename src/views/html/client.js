@@ -11,8 +11,12 @@ function rootJob(args)
     // todo: use this in view.createRootJob
     args.isRoot = true
     var jd = jf.job(args)
+
     app.update('model.jobs.'+jd.id, jd)
-    return app.model.jobs[jd.id.valueOf()]
+    var observableJob = app.model.jobs[jd.id.valueOf()]
+
+    //$('#jobTab')[0].add(observableJob.id, { content:jobAllView(observableJob) }/*, 'inBg'*/)
+    return observableJob
 }
 
 // called by GUI --------------------------------------------------------------------------
@@ -76,27 +80,63 @@ app.init = function()
             type:'Set<Project>',
             '↻': function(j) {
                 this.update({
-                    '↻': 'deadbeef',                   
-                    '🐼 Process fracturing folder on workers':     project('../../projects/workerBacc0.js'),
-                    '🐁 Process empty jobs on worker':            project('../../projects/workerBacc1.js'),
-                    '❄ Find similar 3d models on worker':        project('../../projects/workerModel3d.js'),
-                    'ℙ Find prime numbers with C++ on workers':  project('../../projects/workerPrimeCpp.js'),
+                    '↻': 'deadbeef',
                     'services': {
                         type:'Set<Project>',
                         '✕': function free(j) {},
-                        '🖥 Start workers':                  project('../../projects/overlordWorkers.js'),
-                        '☠ Kill all':                       project('../../projects/workerKill.js'),
+                        '🖥 Start workers':                       project('../../../modules/jobs/overlordWorkers.js'),
+                        '☠ Kill all':                            project('../../../modules/jobs/workerKill.js'),
                     },
                     'tests': {
                         type:'Set<Project>',
                         '✕': function free(j) {},
-                        '💢 server fragment folder':    project('../../projects/serverFragmentFolder.js'),
-                        '💻 server cmd':                project('../../projects/serverCmd.js'),
-                        '📂 server folder':             project('../../projects/serverFolder.js'),
-                        '🗩 server output':             project('../../projects/serverOutput.js'),
-                        '❄ local find 3d models':      project('../../projects/localSetIteration.js'),
-                        '↷ local paralell AJAX':      project('../../projects/localAjax.js'),
-                        '🗩 local output':            project('../../projects/localOutput.js'),
+                        '▸': function run(j) {
+                            // this =  tests
+                            //var projectMembers = this.filter(i=> i.type == 'project')
+
+                            //$('#jobTab')[0].add(j.id, { content:jobAllView(j) } )
+
+                            var projectMembers = [
+                                this['💻 server cmd'],
+                                this['📂 server folder'],
+                                this['🗩 server output'],
+                                this['↷ local paralell AJAX'],
+                                this['🗩 local output'],
+                                this['🐼 Process fracturing folder on workers'],
+                                this['🐁 Process empty jobs on worker'],
+                                this['❄ Find similar 3d models on worker'],
+                                this['ℙ Find prime numbers with C++ on workers'],
+                            ]
+
+                            j.updateJob({ state:{}}, projectMembers)
+
+                            var pjobs = projectMembers.map(i=> {
+                                //return ()=> jf.job({ params:i.service.args, onCall:i.service.src })
+
+                                return ()=> jf.job({
+                                    //desc:
+                                    //args:
+                                    onCall: j=> i['▸'](j),
+
+                                })
+                            })
+                            j.updateJob({ state:{}}, pjobs)
+
+                            j.delegate({ type:'konsekutiv', jobs:pjobs })
+
+                            //j.delegateToSequence(projectMembers.map(i=> new Job(i))
+                        },
+                        '🐼 Process fracturing folder on workers':    project('../../../modules/jobs/workerBacc0.js'),
+                        '🐁 Process empty jobs on worker':            project('../../../modules/jobs/workerBacc1.js'),
+                        '❄ Find similar 3d models on worker':        project('../../../modules/jobs/workerModel3d.js'),
+                        'ℙ Find prime numbers with C++ on workers':  project('../../../modules/jobs/workerPrimeCpp.js'),
+                        '💢 server fragment folder':                  project('../../../modules/jobs/serverFragmentFolder.js'),
+                        '💻 server cmd':                              project('../../../modules/jobs/serverCmd.js'),
+                        '📂 server folder':                           project('../../../modules/jobs/serverFolder.js'),
+                        '🗩 server output':                           project('../../../modules/jobs/serverOutput.js'),
+                        '❄ local find 3d models':                    project('../../../modules/jobs/localSetIteration.js'),
+                        '↷ local paralell AJAX':                     project('../../../modules/jobs/localAjax.js'),
+                        '🗩 local output':                            project('../../../modules/jobs/localOutput.js'),
                     },
                 })
                 j.ret('ok', '+11 projects')
@@ -115,7 +155,7 @@ app.init = function()
     $('#projectTabPaper').append(tab('projectTab'))
     $('#jobTabPaper').append(tab('jobTab'))
 
-    //$('#modelTab')[0].add('☍', { content:a3View(app.model) })
+    $('#modelTab')[0].add('☍', { content:a3View(app.model) })
 
     var projectsDiv = document.createElement('div')
     projectsDiv.appendChild(a3View(app.model.projects))

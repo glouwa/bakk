@@ -4,7 +4,13 @@ function project(url, noView)
 
     function pepRootJob(project, args)
     {
+        /*
         return rootJob({
+            desc:project.desc, // create job inst
+            params: args?args:project.service.args,
+            onCall: (j, params)=> project.service.src(j, params),
+        })*/
+        return jf.job({
             desc:project.desc, // create job inst
             params: args?args:project.service.args,
             onCall: (j, params)=> project.service.src(j, params),
@@ -14,7 +20,8 @@ function project(url, noView)
     function visiblePepRootJob(project, args)
     {
         var job = pepRootJob(project, args)
-        if (!noView) $('#jobTab')[0].add(job.id, { content:jobAllView(job) }/*, 'inBg'*/) // show
+        //if (!noView)
+        //    $('#jobTab')[0].add(job.id, { content:jobAllView(job) }/*, 'inBg'*/) // show
         //j.delegateToOne({ job:()=> job })                        // start
         return job
     }
@@ -27,6 +34,9 @@ function project(url, noView)
             url: url,
             onData: (j, s, d)=>
             {
+                if (!project['↻'])
+                    return
+
                 var projectDiff = eval(d)
 
                 if (projectDiff.types)
