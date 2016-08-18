@@ -41,8 +41,8 @@ new Object({
                 9,
                 function(idx) { return {
                     id: idx,
-                    url: '../../../data/3dModel/vectorfiles/m' + idx + '.json',
-                    tUrl: '../../../data/3dModel/thumbnails/m' + idx + '_thumb.png',
+                    url: 'data/3dModel/vectorfiles/m' + idx + '.json',
+                    tUrl: 'data/3dModel/thumbnails/m' + idx + '_thumb.png',
                     '↻': function(j) {
                         var element = this
                         return tj.ajaxJob({

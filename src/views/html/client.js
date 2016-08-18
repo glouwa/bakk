@@ -6,6 +6,13 @@ var app = mvj.model('', {
     model: {}
 })
 
+
+function callUiJob(args)
+{
+    console.group('%cMessage From UI ' + args.desc, 'text-decoration:underline; background-color:black; color:white;')
+    rootJob(args).call()
+    console.groupEnd()
+}
 function rootJob(args)
 {
     // todo: use this in view.createRootJob
@@ -23,6 +30,7 @@ function rootJob(args)
 
 app.init = function()
 {
+    console.group('%cApp Init', 'text-decoration:underline; background-color:black; color:white;')
     sim.config = config.clientDefaultSimConfig
 
     // nicht hin schaun
@@ -43,7 +51,7 @@ app.init = function()
 
         if (app.model.projects['↻'])
         {
-            rootJob({ desc:'cidChange.↻:', onCall:j=> app.model.projects['↻'](j) }).call()
+            callUiJob({ desc:'cidChange.↻:', onCall:j=> app.model.projects['↻'](j) })
             console.assert();
         }
     })
@@ -84,8 +92,8 @@ app.init = function()
                     'services': {
                         type:'Set<Project>',
                         '✕': function free(j) {},
-                        '🖥 Start workers':                       project('../../../modules/jobs/overlordWorkers.js'),
-                        '☠ Kill all':                            project('../../../modules/jobs/workerKill.js'),
+                        '🖥 Start workers':                       project('modules/jobs/overlordWorkers.js'),
+                        '☠ Kill all':                            project('modules/jobs/workerKill.js'),
                     },
                     'tests': {
                         type:'Set<Project>',
@@ -114,7 +122,7 @@ app.init = function()
                                 //return ()=> jf.job({ params:i.service.args, onCall:i.service.src })
 
                                 return ()=> jf.job({
-                                    //desc:
+                                    desc:i.desc,
                                     //args:
                                     onCall: j=> i['▸'](j),
 
@@ -122,21 +130,21 @@ app.init = function()
                             })
                             j.updateJob({ state:{}}, pjobs)
 
-                            j.delegate({ type:'konsekutiv', jobs:pjobs })
+                            j.delegate({ type:'sequence', jobs:pjobs })
 
                             //j.delegateToSequence(projectMembers.map(i=> new Job(i))
                         },
-                        '🐼 Process fracturing folder on workers':    project('../../../modules/jobs/workerBacc0.js'),
-                        '🐁 Process empty jobs on worker':            project('../../../modules/jobs/workerBacc1.js'),
-                        '❄ Find similar 3d models on worker':        project('../../../modules/jobs/workerModel3d.js'),
-                        'ℙ Find prime numbers with C++ on workers':  project('../../../modules/jobs/workerPrimeCpp.js'),
-                        '💢 server fragment folder':                  project('../../../modules/jobs/serverFragmentFolder.js'),
-                        '💻 server cmd':                              project('../../../modules/jobs/serverCmd.js'),
-                        '📂 server folder':                           project('../../../modules/jobs/serverFolder.js'),
-                        '🗩 server output':                           project('../../../modules/jobs/serverOutput.js'),
-                        '❄ local find 3d models':                    project('../../../modules/jobs/localSetIteration.js'),
-                        '↷ local paralell AJAX':                     project('../../../modules/jobs/localAjax.js'),
-                        '🗩 local output':                            project('../../../modules/jobs/localOutput.js'),
+                        '🐼 Process fracturing folder on workers':    project('modules/jobs/workerBacc0.js'),
+                        '🐁 Process empty jobs on worker':            project('modules/jobs/workerBacc1.js'),
+                        '❄ Find similar 3d models on worker':        project('modules/jobs/workerModel3d.js'),
+                        'ℙ Find prime numbers with C++ on workers':  project('modules/jobs/workerPrimeCpp.js'),
+                        '💢 server fragment folder':                  project('modules/jobs/serverFragmentFolder.js'),
+                        '💻 server cmd':                              project('modules/jobs/serverCmd.js'),
+                        '📂 server folder':                           project('modules/jobs/serverFolder.js'),
+                        '🗩 server output':                           project('modules/jobs/serverOutput.js'),
+                        '❄ local find 3d models':                    project('modules/jobs/localSetIteration.js'),
+                        '↷ local paralell AJAX':                     project('modules/jobs/localAjax.js'),
+                        '🗩 local output':                            project('modules/jobs/localOutput.js'),
                     },
                 })
                 j.ret('ok', '+11 projects')
@@ -151,11 +159,11 @@ app.init = function()
         },
     })
 
-    $('#modelTabPaper').append(tab('modelTab'))    
-    $('#projectTabPaper').append(tab('projectTab'))
-    $('#jobTabPaper').append(tab('jobTab'))
+    console.groupEnd()
 
-    $('#modelTab')[0].add('☍', { content:a3View(app.model) })
+    $('#modelTabPaper').append(tab('modelTab'))    
+//    $('#projectTabPaper').append(tab('projectTab'))
+    $('#jobTabPaper').append(tab('jobTab'))
 
     var projectsDiv = document.createElement('div')
     projectsDiv.appendChild(a3View(app.model.projects))
@@ -168,6 +176,7 @@ app.init = function()
             projectsDiv.removeChild(projectsDiv.childNodes[1])
     })
 
+    $('#modelTab')[0].add('☍', { content:a3View(app.model) })
     $('#modelTab')[0].add('🌐', { content:projectsDiv })
     $('#jobTab')[0].add('⥂', { content:a3View(app.model.jobs) })
 }
@@ -207,8 +216,18 @@ app.onMessage = function(c, parsed, pduSize)
 
         onJobMessage: (c, parsed, pduSize)=>
         {
-            sim.log('job', 'log', '⟵', pduSize, parsed)
-            jf.onReceive(c, parsed, code=> eval(code), app, pduSize)
+            console.group('%cMessage from ' + c.id, 'text-decoration:underline; background-color:black; color:white;')
+            try
+            {
+                //sim.log('job', 'log', '⟵', pduSize, parsed)
+                console.info('%cjob', 'text-decoration:underline;', '⟵', pduSize, parsed)
+                jf.onReceive(c, parsed, code=> eval(code), app, pduSize)
+            }
+            catch(e)
+            {
+                console.error(e.stack)
+            }
+            console.groupEnd()
         }
 
     }['on'+parsed.type+'Message'](c, parsed.payload, pduSize)

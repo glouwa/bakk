@@ -164,7 +164,7 @@ viewCollection.JobView = function(name, model)
 
     function updateView()
     {
-        var workTimeMs = model.state.callTime ? jf.jobTime(model) : 0
+        var workTimeMs = jf.jobTime(model)
 
         if (workTimeMs > 1000*60*60)
             time.innerText = ~~(workTimeMs/(1000*60*60)) + 'h'

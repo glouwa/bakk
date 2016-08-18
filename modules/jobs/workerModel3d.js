@@ -120,7 +120,7 @@ function resultView(outputModel)
 
 function parameterView(argsModel)
 {
-    rootJob({ desc:'combobox.↻', onCall:j=> argsModel.set.load(j) }).call()
+    callUiJob({ desc:'combobox.↻', onCall:j=> argsModel.set.load(j) })
 
     var view = document.createElement("div")
         view.style.display = 'inline-flex'
@@ -173,7 +173,7 @@ new Object({
             selected: 26,
             set: pSet.lazySet(
                 0,
-                47,
+                9,
                 idx=> ({
                     id: idx,
                     url: '../../../data/3dModel/vectorfiles/m' + idx + '.json',

@@ -210,15 +210,17 @@ function jobStateGantView(jobModel)
 
     function addJob(jm)
     {
-        var subgroup = jm.state.realWorker ? jm.state.realWorker.valueOf() : '?'
-        var group = jm.state.realWorkerHost ? jm.state.realWorkerHost.valueOf() : '??'
-        group+= ' - ' + subgroup
+        var debug = jm.debugRemote ? jm.debugRemote : jm.debug
+        var subgroup = debug.node ? debug.node.valueOf() : '?'
+        var group = debug.host ? debug.host.valueOf() : '??'
+
+        group += ' - ' + subgroup
         if (groups.get(group) == null)
             groups.add({ id:group, content:group })
 
         var bgColor = hexToRgb(config.getColor(jm.state), 0.8)
-        var startTime = jm.state.callTime?new Date(jm.state.callTime.valueOf()):new Date()
-        var endTime = jm.state.lastModification?new Date(jm.state.lastModification.valueOf()):undefined
+        var startTime = debug.callTime?new Date(debug.callTime.valueOf()):new Date()
+        var endTime = debug.lastModification?new Date(debug.lastModification.valueOf()):undefined
 
         items.add({
             id:jm.path.valueOf(),
@@ -232,15 +234,17 @@ function jobStateGantView(jobModel)
 
         jm.state.on('change', function(changes)
         {
-            var subgroup = jm.state.realWorker ? jm.state.realWorker.valueOf() : '?'
-            var group = jm.state.realWorkerHost ? jm.state.realWorkerHost.valueOf() : '??'
-            group+= ' - ' + subgroup
+            var debug = jm.debugRemote ? jm.debugRemote : jm.debug
+            var subgroup = debug.node ? debug.node.valueOf() : '?'
+            var group = debug.host ? debug.host.valueOf() : '??'
+
+            group += ' - ' + subgroup
             if (groups.get(group) == null)
                 groups.add({ id:group, content:group })
 
             var bgColor = hexToRgb(config.getColor(jm.state), 0.8)
-            var startTime = jm.state.callTime?new Date(jm.state.callTime.valueOf()):new Date()
-            var endTime = jm.state.lastModification?new Date(jm.state.lastModification.valueOf()):undefined
+            var startTime = debug.callTime?new Date(debug.callTime.valueOf()):new Date()
+            var endTime = debug.lastModification?new Date(debug.lastModification.valueOf()):undefined
             var stateColor = config.getColor(jm.state)
 
             items.update({
@@ -252,6 +256,18 @@ function jobStateGantView(jobModel)
                 style:'background-color: '+bgColor+';' + 'border-color: '+stateColor+';',
             })
 
+            items.update({
+                //id:jm.path.valueOf(),
+                group:group,
+                subgroup:subgroup,
+                //start:startTime,
+                start:new Date(),
+                //style:'background-color: '+bgColor+';' + 'border-color: '+stateColor+';',
+                type:'point',
+                style:'border-color: '+stateColor+';',
+            })
+
+            gView.timeline.fit()
             /*
             items.update({ // todo: wenn keine update doublettn dann kan man hier add verwenden
                 id:jm.path.valueOf()+endTime.valueOf(),
@@ -263,9 +279,10 @@ function jobStateGantView(jobModel)
                 style:'border-color: '+stateColor+';',
                 title:JSON.stringify(jm.state, null, 4)
             })*/
-
-            gView.timeline.fit()
         })
+
+        if (gView)
+            gView.timeline.fit()
     }
 
     addJob(jobModel)
@@ -304,7 +321,8 @@ function jobStateGantView(jobModel)
         var gView = document.createElement('div')
             gView.timeline = new vis.Timeline(view, items, groups, {
             groupOrder: 'content',
-            stack:false/*, throttleRedraw:1000*/
+            stack:false/*, throttleRedraw:1000*/,
+
         })
         var aView = undefined
 
@@ -444,10 +462,8 @@ function jpViewFactory(args)
 
             if (args.caption) {
                 var locationInfo = ''
-                if (jobModel.state.creator)
-                    locationInfo += jobModel.state.creator.valueOf()
-                if (jobModel.state.realWorker)
-                    locationInfo +=  ' ↷ ' + jobModel.state.realWorker.valueOf()
+                if (jobModel.debug)        locationInfo += jobModel.debug.node.valueOf()
+                if (jobModel.debugRemote)  locationInfo +=  ' ↷ ' + jobModel.debugRemote.node.valueOf()
 
                 lastworker.innerText = locationInfo
                 lastlog.innerText = jobModel.state.log//.valueOf()

@@ -20,7 +20,7 @@ function folderPrototype()
 
                     fs.readdir(
                         dir,
-                        (err, files)=> js.exception2localError(()=>
+                        (err, files)=> js.exception2localError('Message from FS', ()=>
                         {
                             if (err) throw new Error(err)
 

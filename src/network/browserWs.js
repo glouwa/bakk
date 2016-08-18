@@ -45,17 +45,17 @@ function sendMsg(connection, msg)
 }
 
 function receiveMsg(connection, msg)
-{
+{    
     try
     {
         var parsed = messages.parse(msg)
-        sim.log('net', 'log', '⟵', connection.id, msg.length, parsed)
+        sim.log('net', 'log', '⟵', connection.id, msg.length, parsed)        
         network.onMessage(connection, parsed, msg.length)
     }
     catch(e)
     {
-        console.error(e.stack)
-    }
+        console.error(e.stack)        
+    }    
 }
 
 function cleanUpConnection(connection, url)

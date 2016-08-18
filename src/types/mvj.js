@@ -50,8 +50,13 @@
 
         if (callbacks) {
             callbacks = callbacks.slice(0);
-            for (var i = 0, len = callbacks.length; i < len; ++i)
+            for (var i = 0, len = callbacks.length; i < len; ++i) {
+                if (this.path.startsWith('model.network') || this.path == 'model')
+                {}
+                else
+                    console.debug('Emit: ' + this.path, arguments[1])
                 callbacks[i].apply(this, args)
+            }
         }
 
         return this;
@@ -165,31 +170,39 @@
 
         Object.defineProperty(model, 'path', { writable:true, value:path })
         Object.defineProperty(model, 'shadowed', { writable:true, value:false })
+        Object.defineProperty(model, '_callbacks', { value:{} })
+
         Object.defineProperty(model, 'on', { value:Emitter.on }) //mixin(model)
         Object.defineProperty(model, 'off', { value:Emitter.off })
-        Object.defineProperty(model, 'emit', { value:Emitter.emit })
-        Object.defineProperty(model, '_callbacks', { value:{} })
+        Object.defineProperty(model, 'emit', { value:Emitter.emit })        
         Object.defineProperty(model, 'update', { writable:true, value: function(a1, a2)
         {
             var pathUsed = arguments.length === 2 ? true:false
             var wdiff = pathUsed ? exports.path2wrapper(a1, a2) : a1
-            var node = model.merge(wdiff)
+            var path = pathUsed ? a1 : this.path
+
+            if (!path.startsWith('model.network'))
+                console.log('%cMerging u ' + path, '', wdiff)
+            var node = model.merge(wdiff)            
         }})
         Object.defineProperty(model, 'commit', { writable:true, value: function(a1, a2)
-        {
+        {            
             var pathUsed = arguments.length === 2 ? true:false
             var wdiff = pathUsed ? exports.path2wrapper(a1, a2) : a1
+            var path = pathUsed ? a1 : this.path
+            console.log('%cMerging c '+ path, '', wdiff)
             var node = model.merge(wdiff)
             var path = pathUsed ? a1 : node.path
             var diff = pathUsed ? a2 : a1
             exports.onCommit(path, diff)
+
         }})
         Object.defineProperty(model, 'merge', { writable:true, value: function(diff, noEvents, inShadow)
         {
             var changes = { diff:diff, sender:model, newMembers:{}, deletedMembers:{} }
 
             if (model.isLeafType)
-            {                
+            {
                 console.assert(isPrimitive(diff) || diff.isLeafType,           'Model is primitive but diff is not', model, diff)
 
                 if (isPrimitive(diff))

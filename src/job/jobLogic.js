@@ -60,6 +60,9 @@
 
     function onSubjobUpdate(sj, diff, outputDiff, parent, pAa, jobCount)
     {
+        if (console.groupCollapsed)
+            console.groupCollapsed('%c<unknown>.onSjUpdate', 'background:violet')
+
         var pdiff = {
             state: { progress: avgProgress(parent, pAa, jobCount) },
             subjobs: { [sj.id.valueOf()]:diff }
@@ -69,6 +72,9 @@
             delete pdiff.state.progress // wtf?
 
         parent.updateJob(pdiff, outputDiff)
+
+        if (console.groupCollapsed)
+            console.groupEnd()
     }
 
     //-----------------------------------------------------------------------------------------
@@ -109,6 +115,8 @@
 
         function onSubjobReturn(j, jidx)
         {
+            console.group('%c' + args.type + ' onSjReturn', 'background:violet')
+
             if (lastCreatedIdx < args.count)
                 if (j.state.detail.valueOf() === 'ok')
                     createSubJob(lastCreatedIdx++, jobNodeMap[j.id.valueOf()]).call()
@@ -118,6 +126,8 @@
 
             if (allHaveState(parent.subjobs, 'type', 'returned'))
                 parent.ret(resultState(parent), args.desc + ' ' + resultState(parent))
+
+            console.groupEnd()
         }
 
         // startstrategy
@@ -164,9 +174,12 @@
 
         function onSubjobReturn()
         {
+            console.group('%c' + args.type + ' onSjReturn', 'background:violet')
+
             if (allHaveState(parent.subjobs, 'type', 'returned')){
                 //console.log('#### closing parent ' + parent.id + ' because ' + j.id)
                 parent.ret(resultState(parent), args.desc + ' ' + resultState(parent))}
+            console.groupEnd()
         }
 
         // startstrategy
@@ -214,6 +227,8 @@
 
         function onSubjobReturn(j, jidx)
         {
+            console.group('%csequence.onSjReturn', 'background:violet')
+
             if (jidx < subjobFactorys.length)
                 if (j.state.detail.valueOf() === 'ok')
                 {
@@ -232,6 +247,7 @@
                 //console.trace('######### ret 2', parent.id, j.id)
                 parent.ret(resultState(parent), parent.state.log)
             }
+            console.groupEnd()
         }
 
         // startstrategy

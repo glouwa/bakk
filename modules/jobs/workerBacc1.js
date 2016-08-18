@@ -13,7 +13,7 @@ function getCmdSet(j, diff)
             args: j.params,
             realJob: js=> {
                 var workers = app.getNodesByCapability('POSIX64')
-                var elements = 20
+                var elements = 10
                 js.updateJob({ state:{ type:'running' } }, { workerCount:workers.length })
                 js.delegateToPool({
                     pool: workers,

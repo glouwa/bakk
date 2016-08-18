@@ -78,12 +78,28 @@
         if (shellMode)
             desc = '\n------------------------------------------------------------\n' + category
 
-        if (!this.config || (this.config['log' + category] && this.config['log' + category].active.valueOf()))
+        if (!this.config ||
+            (this.config['log' + category]
+          && this.config['log' + category].active.valueOf()))
         {
             var remainingsArgs = JSON.parse(JSON.stringify(argArray.slice(2)))
             var logArgs = [desc].concat(remainingsArgs)
             console[level].apply(console, logArgs)
         }
     }     
+
+    var currentMsg = null
+    var currentTransition = null
+    exports.beginMsg= function()
+    {
+        if (!this.config ||
+            (this.config['log' + category]
+          && this.config['log' + category].active.valueOf()))
+        {
+            var remainingsArgs = JSON.parse(JSON.stringify(argArray.slice(2)))
+            var logArgs = [desc].concat(remainingsArgs)
+            console[level].apply(console, logArgs)
+        }
+    }
 })
 (typeof exports === 'undefined' ? this['sim']={} : exports, typeof exports !== 'undefined')

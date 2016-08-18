@@ -23,7 +23,7 @@
             },
             onCall: function(j)
             {
-                xmlhttp.onreadystatechange = ()=> j.exception2localError(()=>
+                xmlhttp.onreadystatechange = ()=> j.exception2localError('Message From Ajax ' + xmlhttp.readyState, ()=>
                 {
                     if (canceled) // TODO: or not running
                     {
@@ -56,12 +56,7 @@
                     }
                 })
 
-                var rrul = (inBrowser
-                            ? ''
-                            : 'http://' + exports.config.server.wshost + ':'
-                                        + exports.config.server.httpport + '/---/---/---/')
-                         + args.url
-
+                var rrul = (inBrowser ? '/../../../' : '') + args.url
                 xmlhttp.open("GET", rrul, true)
                 xmlhttp.send()
             }
@@ -119,14 +114,14 @@
         else
         {
             function dataHandler(data, eventEmitter) {
-                j.exception2localError(()=> {
+                j.exception2localError('Message from Process', ()=> {
                     if (!canceled)
                         eventEmitter(j, data)
                 })
             }
 
             function exitHandler(code, sig, eventEmitter) {
-                j.exception2localError(()=> {
+                j.exception2localError('Message from Process', ()=> {
                     if (!canceled) {
                         if (j.flush)
                             j.flush('process exit')
@@ -167,7 +162,7 @@
             }
 
             process.on('exit', (code, sig)=> exitHandler(code, sig))
-            process.on('error', err=> j.exception2localError(()=> {
+            process.on('error', err=> j.exception2localError('Message from Process', ()=> {
                 j.ret('fatal', 'spawn: ' + args.path + '(' + err.code + ') ' + err.errno)
             }))
         }

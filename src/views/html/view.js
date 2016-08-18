@@ -59,6 +59,7 @@ function jobRootButon(args)// name, args, src, noIcons, obj)
         //if (jobModel)
         //    jobModel.state.off('change', unpdateButton) TODO
 
+        console.group('%cMessage From UI ' + args.name, 'text-decoration:underline; background-color:black; color:white;')
         createRootJob()
         updateView()
         job.state.on('change', updateView)
@@ -68,6 +69,7 @@ function jobRootButon(args)// name, args, src, noIcons, obj)
             view.state.onClick() // ; unpdateButton() aber ohne gibts double cancels? nein.
         }
         job.call()
+        console.groupEnd()
     }
 
     var stateMap = {

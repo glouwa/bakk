@@ -11,8 +11,6 @@ function runWorkers(j, diff)
                          ? Number(js.params.devCount.valueOf())
                          : nodes.length
 
-                      console.log('###########dc' + devCount)
-                         
             js.delegateToFactory({
                 end: idx=> idx < devCount /*+ 1*/,
                 job: idx=> {

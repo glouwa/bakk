@@ -6,6 +6,8 @@ function multipleAjaxCalls(j, diff)
     })
 
     j.delegateToFactory({
+        type: 'parallel',
+        desc: 'parallel ajax * ' + j.params.amount,
         //mode: subjobs.async_obligate_replace,
         end: (idx)=> idx < j.params.amount,
         job: (idx)=> tj.ajaxJob({

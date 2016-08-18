@@ -142,10 +142,9 @@ function lineExpander(args)
         c.style.marginLeft = 15
         c.style.marginBottom = 12
         content.appendChild(c)
-        console.info('creating expander Content')
 
         if (args.model && args.model['↻'])
-            rootJob({ desc:'lexpander', onCall:j=> args.model['↻'](j), params:{}}).call()
+            callUiJob({ desc:'lexpander', onCall:j=> args.model['↻'](j), params:{}})
 
         return c
     }

@@ -116,8 +116,8 @@ new Object({
         args: {
             type: 'PrimeArgs',
             set: pSet.lazySet(
-                1*10e6,
-                2*10e6,
+                1*10e5,
+                2*10e5,
                 (j, idx)=> { mid: idx }
             ),            
             timeout: 3*60000

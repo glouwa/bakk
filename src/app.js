@@ -1,3 +1,6 @@
+require( 'console-group' ).install()
+console.debug = ()=> {}
+
 var os       = require('os')
 
 var config   = require('./src/config.js')
@@ -36,8 +39,18 @@ var app = mvj.model('', {
     model: {}
 })
 
+/*
+function callUiJob(args)
+{
+    console.group('%cMessage From UI','text-decoration:underline; background-color:black; color:white;')
+    rootJob(args).call()
+    console.groupEnd()
+}*/
+
 function rootJob(args)
 {
+    // hmmmm das wird vermutlich nur auf ui losen verwendet
+    // unddie starten keine jobs (cli?)
     args.desc = 'GUI RootJob'
     var jd = jf.job(args)
     app.update('model.jobs.'+jd.id, jd)
@@ -58,8 +71,18 @@ app.onMessage = function(c, parsed, pduSize)
 
         onJobMessage: function(c, parsed, pduSize)
         {
-            sim.log('job', 'log', '⟵', pduSize, parsed)
-            jf.onReceive(c, parsed, code=> eval(code), app, pduSize)
+            console.group('%cMessage from ' + c.id,'text-decoration:underline; background-color:black; color:white;')
+
+            try
+            {
+                sim.log('job', 'log', '⟵', pduSize, parsed)
+                jf.onReceive(c, parsed, code=> eval(code), app, pduSize)
+            }
+            catch(e)
+            {
+                console.error(e.stack)
+            }
+            console.groupEnd()
         }
 
     }['on'+parsed.type+'Message'](c, parsed.payload, pduSize)
@@ -69,9 +92,9 @@ app.onNetworkStateChange = function(state, connection)
 {
     var stateHandlers =
     {
-        onConnecting:  ()=> console.log('...'),
-        onConnected:   ()=> console.log('+ connected'),
-        onDisconnected:()=> console.log('- disconnected')
+        onConnecting:  ()=> console.info('...'),
+        onConnected:   ()=> console.info('+ connected'),
+        onDisconnected:()=> console.info('- disconnected')
     }
     stateHandlers['on'+state]()
 }

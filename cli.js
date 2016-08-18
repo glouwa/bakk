@@ -45,14 +45,17 @@ function jobToArchyNode(j) {
         else
             line += ~~(j.state.progress.valueOf()*100) + '% '
 
-        if (j.state.realWorker)
-            line += j.state.realWorker + ' '
+        // todo: add local debug.node + --> debug.remote.node
+        var debug = j.debugRemote ? j.debugRemote : j.debug
 
-        if (j.state.lastModification && j.state.callTime)
-            line += formatTimespan(jf.jobTime(j)) + '@' + j.state.callTimeloc
+        if (debug.node)
+            line += debug.node + ' '
 
-        if (j.state.lastRemoteModification && j.state.remoteCallTime)
-            line += formatTimespan(jf.jobRemoteTime(j)) + '@' + j.state.remoteCallTimeloc + '@' + j.state.lastRemoteModificationloc
+        if (debug.lastModification && debug.callTime)
+            line += formatTimespan(jf.jobTime(j)) + '@' + debug.callTimeloc
+
+        //if (debugRemote.lastModification && j.state.remoteCallTime)
+            //line += formatTimespan(jf.jobRemoteTime(j)) + '@' + j.state.remoteCallTimeloc + '@' + j.state.lastRemoteModificationloc
         else line += '      '
     }
 
@@ -105,7 +108,8 @@ function aProjectJob() {
                 var workterTimes = ''
                 var workerJobCount = 0
                 visitJob(j, sj=> {
-                    if (sj.state.realWorker.valueOf().startsWith('W')) {
+                    var debug = sj.debugRemote ? sj.debugRemote : j.debug
+                    if (debug.node.valueOf().startsWith('W')) {
                         workterTimes += jf.jobTime(sj) + ',\n'
                         workerJobCount++
                     }

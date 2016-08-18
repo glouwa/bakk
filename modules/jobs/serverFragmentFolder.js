@@ -18,7 +18,7 @@ function fragmentFolderSet()
                     var path = require('path')
                     var dir = js.params.dir.valueOf()
 
-                    fs.readdir(dir, (err, files)=> js.exception2localError(()=> {
+                    fs.readdir(dir, (err, files)=> js.exception2localError('Message from FS', ()=> {
 
                         if (err) throw new Error(err)
 
@@ -66,7 +66,7 @@ function fragmentFolder()
                     var path = require('path')
                     var dir = js.params.dir.valueOf()
 
-                    fs.readdir(dir, (err, files)=> js.exception2localError(()=> {
+                    fs.readdir(dir, (err, files)=> js.exception2localError('Message from FS', ()=> {
                         if (err) throw new Error(err)
                         var cmd = 'Preprocessing'
 
@@ -120,7 +120,7 @@ new Object({
         type: 'Service',
         src: insertFolder,
         args: {
-            dir: '../../../data/fragmented/',
+            dir: 'data/fragmented/',
             timeout:500
         },
     },
