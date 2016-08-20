@@ -14,7 +14,7 @@
         var canceled = false
 
         return exports.jm.job({
-            desc: 'ajax ' + args.url,
+            desc: args.url,
             params: args,
             onCancel: function()
             {

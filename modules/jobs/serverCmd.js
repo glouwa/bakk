@@ -5,23 +5,21 @@ function spawnCmd(j)
         output:{ type:'CmdResult', stdout:'' }
     })
 
-    j.delegateToOne({
-        job: ()=> jf.remoteProxyJob({
-            desc: 'delegate to server',
-            args: j.params,
-            node: network.connections[0],
-            realJob: js=> tj.spawn(js, {
-                desc: js.params.cmd,
-                cmd: js.params.cmd,
-                justStart:js.params.justStart,
-                onStdOut: function onStdOut(jw, data)
-                {
-                    onStdOut.count = onStdOut.count || 1
-                    jw.commitJob({ type:'running', progress:0.95 }, { stdout:data })
-                }
-            })
+    j.delegate(()=> jf.remoteProxyJob({
+        desc: 'delegate to server',
+        args: j.params,
+        node: network.connections[0],
+        realJob: js=> tj.spawn(js, {
+            desc: js.params.cmd,
+            cmd: js.params.cmd,
+            justStart:js.params.justStart,
+            onStdOut: function onStdOut(jw, data)
+            {
+                onStdOut.count = onStdOut.count || 1
+                jw.commitJob({ type:'running', progress:0.95 }, { stdout:data })
+            }
         })
-    })
+    }))
 }
 
 function cmdResultView(model)

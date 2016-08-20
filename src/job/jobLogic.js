@@ -58,10 +58,20 @@
              + avgSjProgress * 0.9
     }
 
+    //-----------------------------------------------------------------------------------------
+
+    function configureSubjob(sj, parent, jidx, onSubjobReturn)
+    {
+        sj.onUpdate = (j, sd, od)=> onSubjobUpdate(j, sd, od, parent, parent.workflow.pAa.valueOf(), parent.workflow.count.valueOf())
+        sj.onReturn = j=> onSubjobReturn(j, jidx)
+        parent.update('subjobs.'+sj.id, sj)
+        return parent.subjobs[sj.id] || app.model.jobs[sj.id.valueOf()]
+    }
+
     function onSubjobUpdate(sj, diff, outputDiff, parent, pAa, jobCount)
     {
         if (console.groupCollapsed)
-            console.groupCollapsed('%c<unknown>.onSjUpdate', 'background:violet')
+            console.groupCollapsed('%c' + parent.workflow.type + '.onSjUpdate ' + parent.id, 'background:violet')
 
         var pdiff = {
             state: { progress: avgProgress(parent, pAa, jobCount) },
@@ -79,197 +89,112 @@
 
     //-----------------------------------------------------------------------------------------
 
-    /*
-    * j.delegate(new Job())
-    *
-    * j.delegate({
-    *    type:'toOne',
-    *    job:new Job()
-    * })
-    */
     exports.oneLogic = function(parent, args)
     {
-        args.end = jidx=> jidx < 1        
-        exports.factoryLogic(parent, args)
+        console.assert(args.count == 1)
+        exports.sequenceLogic(parent, args)
     }
 
-    /*
-    * j.delegate({
-    *    type:'pool',
-    *    pool: app.network.server.workers,
-    *    count: 90,
-    *    job: (idx, poolNode)=> new Job()
-    * })
-    */
     exports.poolLogic = function(parent, args)
     {
-        var lastCreatedIdx = 0
-        var pAa = parent.state.progress.valueOf()
-        var jobNodeMap = {}
-        parent.onCancel = j=> parent.subjobs.forEach(sj=> {
-            if(sj.state.type.valueOf() != 'returned')
-                sj.cancel()
-        })
-
         // terminate strategy
-
-        function onSubjobReturn(j, jidx)
-        {
-            console.group('%c' + args.type + ' onSjReturn', 'background:violet')
+        var lastCreatedIdx = 0
+        var jobNodeMap = {} // terminiert ein sj muss man wiessen welche node job braucht
+        function onSubjobReturn(j, jidx) {
+            console.group('%c' + args.type + ' onSjReturn ' + parent.id, 'background:violet')
 
             if (lastCreatedIdx < args.count)
-                if (j.state.detail.valueOf() === 'ok')
-                    createSubJob(lastCreatedIdx++, jobNodeMap[j.id.valueOf()]).call()
-
+                if (j.state.detail.valueOf() === 'ok') {
+                    var node =  jobNodeMap[j.id.valueOf()]
+                    var newSjInitDiff = args.job(lastCreatedIdx, node)
+                    var newSj = configureSubjob(newSjInitDiff, parent, lastCreatedIdx, onSubjobReturn)
+                    jobNodeMap[newSj.id.valueOf()] = node
+                    newSj.call()
+                    lastCreatedIdx++
+                }
                 else if(j.state.detail.valueOf() !== 'canceled')
+                    // hmmm. könnte sein das sync jobs den parent hier schon geschlossen haben
                     parent.ret('failed', 'failed', 'one subjob failed')
 
-            if (allHaveState(parent.subjobs, 'type', 'returned'))
-                parent.ret(resultState(parent), args.desc + ' ' + resultState(parent))
+            if (parent.state.type != 'returned') // wenn newSj.call() sync dann ist parent schon zu, weil onr return die parents raus geht
+                if (allHaveState(parent.subjobs, 'type', 'returned'))
+                    parent.ret(resultState(parent), args.desc + ' ' + resultState(parent))
 
             console.groupEnd()
         }
 
         // startstrategy
+        while(lastCreatedIdx < args.pool.length) {
+            // nur |pool| viele kommen sofort in die parent.subjob liste
+            var node = args.pool[lastCreatedIdx]
+            var newSjInitDiff = args.job(lastCreatedIdx, node)
+            var newSj = configureSubjob(newSjInitDiff, parent, lastCreatedIdx, onSubjobReturn)
+            console.log(newSj)
+            jobNodeMap[newSj.id.valueOf()] = node
+            newSj.call()
+            lastCreatedIdx++
+        }
+    }
 
-        function createSubJob(jidx, node)
-        {
-            var sj = args.job(jidx, node)
-            jobNodeMap[sj.id.valueOf()] = node
+    //-----------------------------------------------------------------------------------------
 
-            sj.onUpdate = (j, sd, od)=> onSubjobUpdate(j, sd, od, parent, pAa, args.count)
-            sj.onReturn = j=> onSubjobReturn(j, jidx)
-            parent.update('subjobs.'+sj.id, sj)
-            return parent.subjobs[sj.id] || app.model.jobs[sj.id.valueOf()]
+    exports.parallelLogic = function(parent, args)     // by abort callback
+    {
+        // terminate strategy
+        function onSubjobReturn() {
+            console.group('%c' + args.type + ' onSjReturn ' + parent.id, 'background:violet')
+
+            if (parent.state.type != 'returned') // wenn newSj.call() sync dann ist parent schon zu, weil onr return die parents raus geht
+                if (allHaveState(parent.subjobs, 'type', 'returned'))
+                    parent.ret(resultState(parent), args.desc + ' ' + resultState(parent))
+
+            console.groupEnd()
         }
 
-        var newSubJobs = []
-        while(lastCreatedIdx < args.pool.length)
-        {
-            // nur |pool| viele kommen sofort in die parent.subjob liste
-            newSubJobs.push(createSubJob(lastCreatedIdx, args.pool[lastCreatedIdx]))
+        // startstrategy
+        var lastCreatedIdx = 0
+        while(args.end(lastCreatedIdx)) {
+            // kommt sofort in die parent.subjob liste
+            var newSjInitDiff = args.job(lastCreatedIdx)
+            var newSj = configureSubjob(newSjInitDiff, parent, lastCreatedIdx, onSubjobReturn)
+            newSj.call()
             lastCreatedIdx++
         }
 
-        parent.updateJob({ state:{ type:'running', detail:'delegating', log:args.desc||'poolLogic has no desc' }})
-        newSubJobs.forEach(sj=> sj.call())
-    }
-
-    //-----------------------------------------------------------------------------------------
-
-    /*
-    * j.delegate({
-    *    type:'factory',
-    *    end: idx=> idx < 6,
-    *    job: idx=> new Job()
-    * })
-    */
-    exports.factoryLogic = function(parent, args)     // by abort callback
-    {
-        var newSubJobs = []
-        var pAa = parent.state.progress.valueOf()
-        parent.onCancel = j=> parent.subjobs.forEach(sj=> sj.cancel())
-
-        // terminate strategy
-
-        function onSubjobReturn()
-        {
-            console.group('%c' + args.type + ' onSjReturn', 'background:violet')
-
-            if (allHaveState(parent.subjobs, 'type', 'returned')){
-                //console.log('#### closing parent ' + parent.id + ' because ' + j.id)
-                parent.ret(resultState(parent), args.desc + ' ' + resultState(parent))}
-            console.groupEnd()
-        }
-
-        // startstrategy
-
-        function configureSubjob(sj, jidx)
-        {
-            sj.onUpdate = (j, sd, od)=> onSubjobUpdate(j, sd, od, parent, pAa)
-            sj.onReturn = j=> onSubjobReturn()
-            parent.update('subjobs.'+sj.id, sj)
-            return sj
-        }
-
-        var lastCreatedIdx = 0
-        while(args.end(lastCreatedIdx)) // !!
-        {
-            // kommt sofort in die parent.subjob liste
-            var newSj = configureSubjob(args.job(lastCreatedIdx++), lastCreatedIdx)
-            newSubJobs.push(parent.subjobs[newSj.id] || app.model.jobs[newSj.id.valueOf()])
-        }
-
         console.assert(lastCreatedIdx > 0, 'subjoblogic with 0 subjobs?')
-        parent.updateJob({ state:{ type:'running', detail:'delegating', log:args.desc||'factoryLogic has no desc' }})
-        newSubJobs.forEach(sj=> sj.call())
     }
 
     //-----------------------------------------------------------------------------------------
 
-    /*
-    * j.delegate({
-    *    type:'sequence',
-    *    logic: 'and',
-    *    jobs: [
-    *       ()=> new Job(),
-    *       ()=> new Job(),
-    *    ]
-    * })
-    */
-    exports.sequenceLogic = function(parent, subjobFactorys) // by arraylenght
+    exports.sequenceLogic = function(parent, args) // by arraylenght
     {
-        var newSubJobs = []
-        var pAa = parent.state.progress.valueOf()
-        parent.onCancel = j=> parent.subjobs.forEach(sj=> sj.cancel())
-
         // terminate strategy
+        function onSubjobReturn(j, jidx) {
+            console.group('%c'+args.type+'.onSjReturn {' + parent.id +','+ j.id +','+ jidx, 'background:violet')
 
-        function onSubjobReturn(j, jidx)
-        {
-            console.group('%csequence.onSjReturn', 'background:violet')
-
-            if (jidx < subjobFactorys.length)
-                if (j.state.detail.valueOf() === 'ok')
-                {
-                    //console.log('#### next ' + newSubJobs[jidx].id + ' because ' + j.id)
-                    setTimeout(newSubJobs[jidx].call(), 1) //setImmediate
+            if (jidx < args.job.length-1)
+                if (j.state.detail.valueOf() === 'ok') {
+                    var nextIdx = jidx+1
+                    var newSjInitDiff = args.job[nextIdx](nextIdx)
+                    var newSj = configureSubjob(newSjInitDiff, parent, nextIdx, onSubjobReturn)
+                    newSj.call()
                 }
                 else if(j.state.detail.valueOf() !== 'canceled')
                     parent.ret('failed', 'failed', 'one subjob failed')
-
             else
                 console.assert(allHaveState(parent.subjobs, 'type', 'returned'))
 
-            if (allHaveState(parent.subjobs, 'type', 'returned'))
-            {
-                //console.log('#### closing parent ' + parent.id + ' because ' + j.id)
-                //console.trace('######### ret 2', parent.id, j.id)
-                parent.ret(resultState(parent), parent.state.log)
-            }
+            if (parent.state.type != 'returned') // wenn newSj.call() sync dann ist parent schon zu, weil onr return die parents raus geht
+                if (allHaveState(parent.subjobs, 'type', 'returned'))
+                    parent.ret(resultState(parent), parent.state.log)
+
             console.groupEnd()
         }
 
         // startstrategy
-
-        function configureSubjob(sj, jidx)
-        {
-            sj.onUpdate = (j, sd, od)=> onSubjobUpdate(j, sd, od, parent, pAa)
-            sj.onReturn = j=> onSubjobReturn(j, jidx)
-            return sj
-        }
-
-        var lastCreatedIdx = 0
-        while(lastCreatedIdx < subjobFactorys.length) // !!
-        {
-            // kommt sofort in die parent.subjob liste
-            var newSj = configureSubjob(subjobFactorys[lastCreatedIdx](lastCreatedIdx++), lastCreatedIdx)
-            parent.update('subjobs.'+newSj.id, newSj)
-            newSubJobs.push(parent.subjobs[newSj.id] || app.model.jobs[newSj.id.valueOf()])
-        }
-
-        parent.updateJob({ state:{ type:'running', detail:'delegating', log:'sequenceLogic has no desc' }})
-        newSubJobs[0].call()
+        var newSjInitDiff = args.job[0](0)
+        var newSj = configureSubjob(newSjInitDiff, parent, 0, onSubjobReturn)
+        newSj.call()
     }
 })
 (typeof exports === 'undefined' ? this['jl']={} : exports)

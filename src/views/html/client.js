@@ -130,7 +130,7 @@ app.init = function()
                             })
                             j.updateJob({ state:{}}, pjobs)
 
-                            j.delegate({ type:'sequence', jobs:pjobs })
+                            j.delegate({ type:'sequence', job:pjobs })
 
                             //j.delegateToSequence(projectMembers.map(i=> new Job(i))
                         },

@@ -6,6 +6,35 @@ function modelType(m)
     return result // fuction und view sollte hier unterschieden werden
 }
 
+function jobControlingButton(jobModel)
+{
+    var view = button('▸')
+
+    var stateMap = {
+        'idle':      { caption:'▸', disabled:false, onClick:() => jobModel.call() },
+        'calling':   { caption:'■', disabled:false, onClick:() => jobModel.cancel() },
+        'running':   { caption:'■', disabled:false, onClick:() => jobModel.cancel() },
+        'canceling': { caption:'■', disabled:true,  onClick:undefined },
+        'returned':  { caption:null,disabled:true,  onClick:undefined }
+    }
+
+    function unpdateButton()
+    {
+        view.state = stateMap[jobModel.state.type.valueOf()]
+
+        view.caption.innerText = view.state.caption || config.getIcon(jobModel.state)
+        view.onclick = view.state.onClick
+        view.disable(view.state.disabled)
+        view.setProgress(jobModel.state.progress, config.getColor(jobModel.state))
+    }
+
+    unpdateButton()
+    jobModel.state.on('change', unpdateButton)
+    view.onclick = function() { view.state.onClick()/*; unpdateButton() aber ohne gibts double cancels? nein. */}
+    view.style.fontSize = 12
+    return view
+}
+
 function jobRootButon(args)// name, args, src, noIcons, obj)
 {
     var job = 'will be set after job creation, but before job call'
@@ -14,34 +43,34 @@ function jobRootButon(args)// name, args, src, noIcons, obj)
         (args.noName?'':(args.name+' '))
 
     var view = button(cap('▸'), true, args.className)
+    var stateMap = {
+        'idle':      { caption:cap('▸'), disabled:true,  onClick:undefined         },
+        'calling':   { caption:cap('■'), disabled:false, onClick:()=> job.cancel() },
+        'running':   { caption:cap('■'), disabled:false, onClick:()=> job.cancel() },
+        'canceling': { caption:cap('■'), disabled:true,  onClick:undefined         },
+        'returned':  { caption:cap('▸'), disabled:false, onClick:()=> attachJob()  }
+    }
 
-    function attachJob()
-    {
-        function updateView()
-        {
-            //console.info('incoming event ' + jobModel.state.type + ' ' + jobModel.state.progress)
+    function attachJob() {
 
+        function updateView() {
             var state = stateMap[job.state.type.valueOf()]
-            if (state)
-            {
+            if (state) {
                 view.state = state
                 view.caption.innerText = view.state.caption
-                view.onclick = e=>
-                {
+                view.onclick = e=> {
                     e.stopPropagation()
                     view.state.onClick()
                 }
                 view.disable(view.state.disabled)
             }
             else
-            {
                 console.error(false)
-            }
+
             view.setProgress(job.state.progress.valueOf(), config.getColor(job.state))
         }
 
-        function createRootJob()
-        {
+        function createRootJob() {
             jd = jf.job({
                 desc: 'button ' + args.name,
                 isRoot: true,
@@ -60,24 +89,15 @@ function jobRootButon(args)// name, args, src, noIcons, obj)
         //    jobModel.state.off('change', unpdateButton) TODO
 
         console.group('%cMessage From UI ' + args.name, 'text-decoration:underline; background-color:black; color:white;')
-        createRootJob()
+        createRootJob()        
         updateView()
         job.state.on('change', updateView)
-        view.onclick = e=>
-        {
+        view.onclick = e=> {
             e.stopPropagation()
             view.state.onClick() // ; unpdateButton() aber ohne gibts double cancels? nein.
         }
         job.call()
         console.groupEnd()
-    }
-
-    var stateMap = {
-        'idle':      { caption:cap('▸'), disabled:true,  onClick:undefined         },
-        'calling':   { caption:cap('■'), disabled:false, onClick:()=> job.cancel() },
-        'running':   { caption:cap('■'), disabled:false, onClick:()=> job.cancel() },
-        'canceling': { caption:cap('■'), disabled:true,  onClick:undefined         },
-        'returned':  { caption:cap('▸'), disabled:false, onClick:()=> attachJob()  }
     }
 
     view.onclick = (e)=> { e.stopPropagation(); attachJob() }
@@ -157,7 +177,7 @@ function lineObjectView(name, model)
     return lineExpander(
     {
         model: model,
-        expanded: name == 'state',
+        expanded: name == 'subjobs',
         header: lineFrame(name, model /*nix, gar nix*/),
         contentFactory: ()=> autoViewLine(model)
     })
@@ -221,7 +241,7 @@ function a3View(model)
         contentDelegate = ()=> autoMultiView(model, [autoView, projectEdit])
 
     if (model.type == 'Job')
-        contentDelegate = ()=> autoMultiView(model, [jobStateGraphView, jobStateTreeView, jobStateGantViewWithProgress])
+        contentDelegate = ()=> autoMultiView(model, [jobStateTreeView, jobStateGantViewWithProgress, jobStateGraphView])
 
     if (model.type == 'Network')
         contentDelegate = ()=> autoMultiView(model, [autoView, systemView])

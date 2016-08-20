@@ -10,7 +10,7 @@ function folderPrototype()
 
             j.params.directory = this.directory
 
-            j.delegateToOne({ job: ()=> jf.remoteProxyJob({
+            j.delegate(()=> jf.remoteProxyJob({
                 node: network.connections[0],
                 args: j.params,
                 realJob: (js, diff)=> {
@@ -46,7 +46,7 @@ function folderPrototype()
                     )
                 }
             })
-        })}
+        )}
     }
 }
 
@@ -59,9 +59,7 @@ function insertFolder(j, diff)
         output: app.model.store[j.id.valueOf()]
     })
 
-    j.delegateToOne({
-        job:()=> jf.job({ onCall:lj=> app.model.store[j.id.valueOf()]['↻'](lj), params:{} })
-    })
+    j.delegate(()=> jf.job({ onCall:lj=> app.model.store[j.id.valueOf()]['↻'](lj), params:{} }))
 }
 
 new Object({

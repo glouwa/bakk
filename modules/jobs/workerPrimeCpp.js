@@ -6,33 +6,32 @@ function findPrimes(j, diff)
         output: app.model.store[j.id.valueOf()]
     })
 
-    j.delegateToOne({        
-        job: ()=> jf.remoteProxyJob({          
-            desc: 'delegating to server',
-            args: j.params,
-            node: network.connections[0],
-            realJob: js=> {
-                var nodes = app.getNodesByCapability('POSIX64')
-                js.updateJob({ state:{ type:'running' } }, { workerCount:nodes.length })
-                js.delegateToFactory({                    
-                    end: idx=> idx < nodes.length,
-                    job: idx=> jf.remoteProxyJob({
-                        desc: 'starting process',
-                        args: js.params.set.shrink(idx, nodes.length),
-                        node: nodes[idx],                        
-                        realJob: jw=> tj.spawn(jw, {                            
-                            path:binDir + '/prime.exe',
-                            args:[jw.params.begin.valueOf(), jw.params.end.valueOf()],
-                            onJsonStdOut:(jw, data)=> {
-                                arguments.callee.count = arguments.callee.count || 1
-                                jw.commitJob(data.state, { [jf.workerId]:arguments.callee.count++ })
-                            }
-                        })
+    j.delegate(()=> jf.remoteProxyJob({
+        desc: 'delegating to server',
+        args: j.params,
+        node: network.connections[0],
+        realJob: js=> {
+            var nodes = app.getNodesByCapability('POSIX64')
+            js.updateJob({ state:{ type:'running' } }, { workerCount:nodes.length })
+            js.delegate({
+                type: 'parallel',
+                end: idx=> idx < nodes.length,
+                job: idx=> jf.remoteProxyJob({
+                    desc: 'starting process',
+                    args: js.params.set.shrink(idx, nodes.length),
+                    node: nodes[idx],
+                    realJob: jw=> tj.spawn(jw, {
+                        path:binDir + '/prime.exe',
+                        args:[jw.params.begin.valueOf(), jw.params.end.valueOf()],
+                        onJsonStdOut:(jw, data)=> {
+                            arguments.callee.count = arguments.callee.count || 1
+                            jw.commitJob(data.state, { [jf.workerId]:arguments.callee.count++ })
+                        }
                     })
                 })
-            }
-        })
-    })
+            })
+        }
+    }))
 }
 
 function primeNummberView(itemModel)

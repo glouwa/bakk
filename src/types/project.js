@@ -2,28 +2,13 @@ function project(url, noView)
 {
     // PROJECT PART ----------------------------------------------------
 
-    function pepRootJob(project, args)
-    {
-        /*
-        return rootJob({
-            desc:project.desc, // create job inst
-            params: args?args:project.service.args,
-            onCall: (j, params)=> project.service.src(j, params),
-        })*/
+    function projectJob(p, args)
+    {     
         return jf.job({
-            desc:project.desc, // create job inst
-            params: args?args:project.service.args,
-            onCall: (j, params)=> project.service.src(j, params),
+            desc:   p.desc,
+            params: args?args:p.service.args,
+            onCall: (j, params)=> p.service.src(j, params),
         })
-    }
-
-    function visiblePepRootJob(project, args)
-    {
-        var job = pepRootJob(project, args)
-        //if (!noView)
-        //    $('#jobTab')[0].add(job.id, { content:jobAllView(job) }/*, 'inBg'*/) // show
-        //j.delegateToOne({ job:()=> job })                        // start
-        return job
     }
 
     // LAZYOBJECT PART -------------------------------------------------
@@ -50,7 +35,7 @@ function project(url, noView)
                     '✕': function(j) {},
                     '▸': function(j, diff, args)
                     {
-                        j.delegateToOne({ job:()=> visiblePepRootJob(project, args) })  //instantiateAndRun(j, project),
+                        j.delegate(()=> projectJob(project, args))  //instantiateAndRun(j, project),
                     },
                     '⇱': function(j) //⥯…
                     {
@@ -63,7 +48,7 @@ function project(url, noView)
                     },
                     '⇨': function(j) //…
                     {
-                        visiblePepRootJob(project)
+                        //projectJob(project)
                         j.ret('ok', '+1 idle job, +1 view')         // done
                     }
                 }))
@@ -75,17 +60,15 @@ function project(url, noView)
         type: 'Project',
         '▸': function(j, diff, args)
         {
-            j.delegateToSequence(
+            j.delegate(
                 ()=> ajaxLoadJob(this),
-                ()=> jf.job({ desc:'workaround ;)', onCall:j=> j.delegateToOne({ job:()=> visiblePepRootJob(this, args) }) })
+                ()=> projectJob(this, args)
                 //()=> visiblePepRootJob(this) // todo: fix the sync bug to use this line
             )
         },
         '↻': function(j)
         {
-            j.delegateToOne({
-                job: ()=> ajaxLoadJob(this)
-            })
+            j.delegate(()=> ajaxLoadJob(this))
         }
     }
 }

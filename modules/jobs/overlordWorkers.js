@@ -1,6 +1,6 @@
 function runWorkers(j, diff)
 {
-    j.delegateToOne({ job:()=> jf.remoteProxyJob({
+    j.delegate(()=> jf.remoteProxyJob({
         desc: 'delegating to server',
         args: j.params,
         node: network.connections[0],
@@ -11,7 +11,9 @@ function runWorkers(j, diff)
                          ? Number(js.params.devCount.valueOf())
                          : nodes.length
 
-            js.delegateToFactory({
+            js.delegate({
+                type: 'parallel',
+                desc: 'do stuff parallel on workers',
                 end: idx=> idx < devCount /*+ 1*/,
                 job: idx=> {
 
@@ -19,7 +21,8 @@ function runWorkers(j, diff)
                         desc:'spawing workers',
                         node: nodes[idx],
                         args: js.params,
-                        realJob: jw=> jw.delegateToFactory({
+                        realJob: jw=> jw.delegate({
+                            type: 'parallel',
                             end: idx=> idx < jw.params.workerCount,
                             job: idx=> tj.spawnJob({
                                 path:'node',
@@ -43,7 +46,7 @@ function runWorkers(j, diff)
                 }
             })
         }
-    })})
+    }))
 }
 
 new Object({

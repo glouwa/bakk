@@ -1,17 +1,18 @@
 function killServerOverlordsAndWorkers(j)
 {
-    j.delegateToOne({ job:()=> jf.remoteProxyJob({
+    j.delegate(()=> jf.remoteProxyJob({
         desc: 'delegating to server',
         args: j.params,
         node: network.connections[0],
-        realJob: js=> js.delegateToSequence(
+        realJob: js=> js.delegate(
 
             ()=> jf.job({ desc:'send kill signal to workers', onCall: kwj=> {
                 var nodes = app.getNodesByType(js.params.nodeType, 'emptyResultIsOk')
                 if (nodes.length == 0)
                     kwj.ret('ok', 'no workers to kill')
                 else
-                    kwj.delegateToFactory({
+                    kwj.delegate({
+                        type: 'parallel',
                         end: idx=> idx < nodes.length,
                         job: idx=> jf.remoteProxyJob({
                             desc:'suicide',
@@ -33,7 +34,7 @@ function killServerOverlordsAndWorkers(j)
                 }, 10)
             }})
         )
-    })})
+    }))
 }
 
 new Object({

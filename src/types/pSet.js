@@ -73,7 +73,8 @@
                 set.data.update(idx.toString(), set.ictor(idx))
 
             // load items
-            j.delegateToFactory({            
+            j.delegate({
+                type: 'parallel',
                 end: idx=> idx < set.size(),
                 job: idx=> set.data[set.begin + idx]['↻'](j)
             })
@@ -89,7 +90,7 @@
 
             console.assert(set.data[idxStr])
 
-            j.delegateToOne({ job:()=> set.data[idxStr]['↻'](j) })
+            j.delegate(()=> set.data[idxStr]['↻'](j))
         }
 
         set.visit = function(vj/*j*/, visitor)

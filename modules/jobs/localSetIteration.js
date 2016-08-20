@@ -5,7 +5,7 @@ function localFind3dModel(j, diff)
         output: { type:'model3dResultSet' }
     })
 
-    j.delegateToSequence(
+    j.delegate(
         ()=> jf.job({ onCall:cj=> j.params.set.load(cj) }),
         ()=> jf.job({ onCall:cj=> j.params.set.visit(cj, (vj, i, idx, p)=>
         {
@@ -38,7 +38,7 @@ new Object({
             selected: 3,
             set: pSet.lazySet(
                 0,
-                9,
+                5,
                 function(idx) { return {
                     id: idx,
                     url: 'data/3dModel/vectorfiles/m' + idx + '.json',

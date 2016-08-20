@@ -35,7 +35,6 @@
                     }
 
                     // anderungen an job, muss leider zwischen remote und nicht unterscheiden
-
                     var diff = {
                         id: j.id,
                         state: {                            
@@ -52,11 +51,9 @@
                             callTimeloc: jm.workerId,
                             lastModification: Date.now(),
                             lastModificationloc: jm.workerId
-                        }
+                        },
+                        log:[3, 4, 6]
                     }
-
-                    diff.transitions = [ 3, 4, 6]
-
 
                     // apply
                     console.log('Merging j ', j.path.valueOf(), diff)
@@ -113,21 +110,16 @@
                         lastModificationloc: jm.workerId
                     }
 
-
-                    if (diff.state.progress && diff.state.progress.valueOf() == 1)
-                    {///job finished
+                    if (diff.state.progress && diff.state.progress.valueOf() == 1) {
                         console.assert(!outputDiff)
                         j.ret(diff.state.detail, diff.state.log + ' (update to return)')
                     }
-                    else
-                    {///intermiediate update
-                        if (j.output && outputDiff)
-                        {
+                    else {
+                        if (j.output && outputDiff) {
                             j.output.update(outputDiff)
                             outputDiff = undefined
                             console.warn('got output', outputDiff)
                         }
-
                         console.log('Merging j ', j.path.valueOf(), diff)
                         j.merge(diff, !j.isRoot)
                         j.onUpdate(j, diff, outputDiff)
@@ -141,72 +133,85 @@
                 j.exception2localError('ret', function ret_()
                 {
                     //console.trace('j-' + j.id + ' ret')
-                    console.assert(j.state.type != 'returned', 'double return '
-                                                                + j.state.detail + '/' + + j.state.log + ' --> ' +
-                                                                detail + '/' + log)
 
-                    clearTimeout(j.timer)
+                    if (j.state.type != 'returned') {
+                        clearTimeout(j.timer)
 
-                    var diff = {
-                        state: {
-                            progress: 1,
-                            type:'returned',
-                            detail:detail,
-                            log:log,
-                            lastWorker: jm.workerId
+                        var diff = {
+                            state: {
+                                progress: 1,
+                                type:'returned',
+                                detail:detail,
+                                log:log,
+                                lastWorker: jm.workerId
+                            },
+                            [j.isRemote?'debugRemote':'debug']:{
+                                returnTime:Date.now(),
+                                returnTimeloc: jm.workerId,
+                                lastModification: Date.now(),
+                                lastModificationloc: jm.workerId
+                            }
                         }
-                    }
-                    var debugInfo =  {
-                        returnTime:Date.now(),
-                        returnTimeloc: jm.workerId,
-                        lastModification: Date.now(),
-                        lastModificationloc: jm.workerId
-                    }
-                    diff.debug = j.isRemote ? { remote:debugInfo } :debugInfo
 
-
-                    console.log('Merging j ', j.path.valueOf(), diff)
-                    j.merge(diff, !j.isRoot)
-                    j.onUpdate(j, diff)
-                    j.onReturn(j, diff)
+                        console.log('Merging j ', j.path.valueOf(), diff)
+                        j.merge(diff, !j.isRoot)
+                        j.onUpdate(j, diff)
+                        j.onReturn(j, diff)
+                    }
+                    else
+                    {
+                        console.assert(false, 'double return '
+                                            + j.state.detail + '/' + + j.state.log
+                                            + ' --> ' + detail + '/' + log)
+                    }
                 })
             }})
 
 
-            Object.defineProperty(jp, 'delegate', { value:function delegate(args)
-            {
-                //jm.jl[args.type + 'Logic'](this, args)
+            Object.defineProperty(jp, 'delegate', { value:function delegate(a1)
+            {                
+                var args = a1
+                if (arguments.length > 1) {
+                    args = {
+                        type: 'sequence',
+                        desc: arguments.length + 'step(s)',
+                        count: arguments.length,
+                        job: arguments
+                    }
+                }
 
-                /*
-                jm.jl.oneLogic(this, args)
-                jm.jl.oneLogic(this, a)
-                jm.jl.poolLogic(this, a)
-                jm.jl.factoryLogic(this, a)*/
+                if (arguments.length == 1 && typeof args == 'function') {
+                    args = {
+                        type: 'one',
+                        desc: 'to one',
+                        count: 1,
+                        job: arguments,
+                    }
+                }
 
-                jm.jl.sequenceLogic(this, args.jobs)
+                console.group('%c ' + this.id + ' delegates to ' + args.type, 'background:violet')
+
+                this.merge({ workflow:{
+                        type: args.type,
+                        pAa: this.state.progress.valueOf(),
+                        count: args.count
+                    }},
+                    !this.isRoot
+                )
+                this.updateJob({ state:{
+                    type:'running',
+                    detail:'delegating',
+                    log:args.desc
+                }})
+
+                this.onCancel = j=> this.subjobs.forEach(sj=> {
+                    if(sj.state.type.valueOf() != 'returned')
+                        sj.cancel()
+                })
+
+                jm.jl[args.type + 'Logic'](this, args)
+                console.groupEnd()
             }})
-
-
-            Object.defineProperty(jp, 'delegateToOne', { value:function delegateToOne(a) {
-                console.group('%cdelegate 1', 'background:violet')
-                jm.jl.oneLogic(this, a)
-                console.groupEnd()
-            } } )
-            Object.defineProperty(jp, 'delegateToPool', { value:function delegateToPool(a) {
-                console.group('%cdelegate p', 'background:violet')
-                jm.jl.poolLogic(this, a)
-                console.groupEnd()
-            } } )
-            Object.defineProperty(jp, 'delegateToFactory', { value:function delegateToFactory(a) {
-                console.group('%cdelegate f', 'background:violet')
-                jm.jl.factoryLogic(this, a)
-                console.groupEnd()
-            } } )
-            Object.defineProperty(jp, 'delegateToSequence', { value:function delegateToSequence() {
-                console.group('%cdelegate s', 'background:violet')
-                jm.jl.sequenceLogic(this, arguments)
-                console.groupEnd()
-            } } )
 
             //-------------------------------------------------------------------------------------
 
@@ -216,7 +221,10 @@
                 {
                     // same as ret, but without exception2localError
                     // to avoid endless recursionif theres a error at return
-                    console.error(this.state.type != 'returned', 'double return')
+                    console.assert(j.state.type != 'returned',
+                                          'double return '
+                                        + this.state.detail + '/' + + this.state.log
+                                        + ' --> ' + detail + '/' + log)
 
                     clearTimeout(this.timer)
 
@@ -302,24 +310,22 @@
             var ljnr = jm.nextFreeId++
 
             diff.type = 'Job'
-
-            if (!diff.id)       diff.id = jm.workerId + '\u208B' + ljnr.toSubscript()
-            if (!diff.state)    diff.state = {
-                                    progress: 0,
-                                    type: 'idle',   // idle, running, canceling, returned
-                                    detail: 'idle', // (idle), (userdefined), (canceling), (recoverable, fatal, timeout)
-                                    log: 'created'
-                                }
-            if (!diff.debug)    diff.debug = {
-                                    node:jm.workerId,
-                                    host:jm.host,
-                                    lastModification: Date.now(),
-                                    lastModificationloc: jm.workerId
-                                }
+            if (!diff.id) diff.id = jm.workerId + '\u208B' + ljnr.toSubscript()
+            if (!diff.state) diff.state = {
+                progress: 0,
+                type: 'idle',   // idle, running, canceling, returned
+                detail: 'idle', // (idle), (userdefined), (canceling), (recoverable, fatal, timeout)
+                log: 'created'
+            }
+            if (!diff.debug) diff.debug = {
+                node:jm.workerId,
+                host:jm.host,
+                lastModification: Date.now(),
+                lastModificationloc: jm.workerId
+            }
             if (!diff.onCancel) diff.onCancel = j=> j.ret('canceled', 'default cancel')
             if (!diff.onUpdate) diff.onUpdate = j=> { /*gui update | parent updaet */ }
             if (!diff.onReturn) diff.onReturn = j=> { /*subjoblogic */ }
-
             return diff
         }
 

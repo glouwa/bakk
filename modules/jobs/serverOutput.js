@@ -5,21 +5,19 @@ function serverOuput(j, diff)
         output: {}
     })
 
-    j.delegateToOne({
-        job: () => jf.remoteProxyJob({
-            node: network.connections[0],
-            args: j.params,
-            desc: 'Generate output',
-            realJob: (js, diff)=>
-            {
-                js.updateJob(
-                    { state: { type: 'running', log: 'output at server', progress: 0.95 } },
-                    { msg: js.params.text }
-                )
-                js.ret('ok', 'no exceptions')
-            }
-        })
-    })
+    j.delegate(() => jf.remoteProxyJob({
+        node: network.connections[0],
+        args: j.params,
+        desc: 'Generate output',
+        realJob: (js, diff)=>
+        {
+            js.updateJob(
+                { state: { type: 'running', log: 'output at server', progress: 0.95 } },
+                { msg: js.params.text }
+            )
+            js.ret('ok', 'no exceptions')
+        }
+    }))
 }
 
 new Object({

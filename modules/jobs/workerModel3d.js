@@ -6,16 +6,16 @@ function find3dModel(j, diff)
         output: app.model.store[j.id.valueOf()]
     })
 
-    j.delegateToOne({job: ()=> jf.remoteProxyJob({
+    j.delegate(()=> jf.remoteProxyJob({
         node: network.connections[0],
-        desc:'hallo welt!',
+        desc:'delegate to server',
         args: j.params,
-        realJob: (js, diff)=>
-        {
+        realJob: (js, diff)=> {
             //var nodes = app.getNodesByCapability('POSIX64') // eigentlich js, aber der client ist überfordert
             var nodes = app.getNodesByCapability('JS') // eigentlich js, aber der client ist überfordert
-
-            js.delegateToFactory({
+            js.delegate({
+                type: 'parallel',
+                desc: 'process partition on worker',
                 end: idx=> idx < nodes.length,
                 job: idx=> jf.remoteProxyJob({
                     desc: 'load and compare partition',
@@ -26,36 +26,34 @@ function find3dModel(j, diff)
                         selected: js.params.selected,
                         threshold: js.params.threshold
                     },
-                    realJob: (jw, diff)=> jw.delegateToSequence(
+                    realJob: (jw, diff)=> jw.delegate(
                         ()=> jf.job({ desc: 'load compared', onCall:cj=> jw.params.set.get(cj, jw.params.selected.valueOf(), 'load') }),
                         ()=> jf.job({ desc: 'load partition', onCall:cj=> jw.params.set.load(cj) }),
                         ()=> jf.job({ desc: 'comparing', onCall:cj=>
+                            setTimeout(()=> { // todo: syncbug
+                                jw.params.set.visit(cj, (vj, i, idx, p)=> {
+                                    var l  = 'compared ' + jw.params.set.begin + '-' + idx
+                                    var v1 = i.features
+                                    var v2 = jw.params.set.data[jw.params.selected.valueOf()].features
+                                    var d  = v1.map((i, idx)=> v2[idx] - i)
+                                    var r  = d.reduce((acc, c)=> acc + c*c)
+                                    var l2 = Math.sqrt(r)
+                                    var m  = l2 < jw.params.threshold.valueOf()
+                                           ? { [idx]:{ dbEntity:i, diff:l2 } }
+                                           : undefined
 
-                        setTimeout(()=> { // todo: syncbug
-                            jw.params.set.visit(cj, (vj, i, idx, p)=>
-                            {
-                                var l  = 'compared ' + jw.params.set.begin + '-' + idx
-                                var v1 = i.features
-                                var v2 = jw.params.set.data[jw.params.selected.valueOf()].features
-                                var d  = v1.map((i, idx)=> v2[idx] - i)
-                                var r  = d.reduce((acc, c)=> acc + c*c)
-                                var l2 = Math.sqrt(r)
-                                var m  = l2 < jw.params.threshold.valueOf()
-                                       ? { [idx]:{ dbEntity:i, diff:l2 } }
-                                       : undefined
+                                    if (jw.params.selected.valueOf() != idx)
+                                        delete i.features
 
-                                if (jw.params.selected.valueOf() != idx)
-                                    delete i.features
+                                    vj.updateJob({ state:{ progress:p, type:'running', log:l } }, m)
 
-                                vj.updateJob({ state:{ progress:p, type:'running', log:l } }, m)
-
-                            })})
-                        },10)
+                                })})
+                                },10)
                     )
                 })
             })
         }
-    })})
+    }))
 }
 
 function entityViewPanel(model, contentDelegate)
@@ -173,11 +171,11 @@ new Object({
             selected: 26,
             set: pSet.lazySet(
                 0,
-                9,
+                5,
                 idx=> ({
                     id: idx,
-                    url: '../../../data/3dModel/vectorfiles/m' + idx + '.json',
-                    tUrl: '../../../data/3dModel/thumbnails/m' + idx + '_thumb.png',
+                    url: 'data/3dModel/vectorfiles/m' + idx + '.json',
+                    tUrl: 'data/3dModel/thumbnails/m' + idx + '_thumb.png',
                     '↻': function(j)
                     {
                         var element = this
