@@ -46,8 +46,7 @@ error.exceptionsSelect = function(model)
 
     fatal.onclick = ()=> model.value.commit('fatal')
     recoverable.onclick = ()=> model.value.commit('recoverable')
-    var update = ()=>
-    {
+    var update = ()=> {
         recoverable.style.color = model.value.valueOf() === 'fatal' ? config.colors.disabledIcon : config.colors.enabledIcon
         fatal.style.color = model.value.valueOf() === 'fatal' ? config.colors.enabledIcon : config.colors.disabledIcon
     }
@@ -111,8 +110,7 @@ function networkNodeHeader(nodeModel)
 
 function networkNodeSimConfig(nodeModel)
 {
-    var viewFactory =
-    {
+    var viewFactory = {
         delayed:    model=> error.delaySlider(model),
         stopWork:   model=> error.pOfSelect(model),
         disconnect: model=> error.pOfSelect(model),

@@ -6,8 +6,8 @@ function localFind3dModel(j, diff)
     })
 
     j.delegate(
-        ()=> jf.job({ onCall:cj=> j.params.set.load(cj) }),
-        ()=> jf.job({ onCall:cj=> j.params.set.visit(cj, (vj, i, idx, p)=>
+        ()=> jf.job({ desc:'load compared', onCall:cj=> j.params.set.load(cj) }),
+        ()=> jf.job({ desc:'compare', onCall:cj=> j.params.set.visit(cj, (vj, i, idx, p)=>
         {
             var l = 'compared ' + j.params.set.begin + '-' + idx
             var v1 = i.features
