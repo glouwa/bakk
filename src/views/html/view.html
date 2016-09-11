@@ -1,53 +1,60 @@
 <html>
     <head>
         <meta charset="UTF-8">
+
         <link href="view.css" rel="stylesheet" type="text/css" charset="UTF-8">        
+        <link href="a3Views/d3.css" rel="stylesheet" type="text/css" charset="UTF-8">
         <link href="../../../modules/jobs/workerModel3d.css" rel="stylesheet" type="text/css" charset="UTF-8">
-
         <link href="lib/vis/dist/vis.css" rel="stylesheet" type="text/css" charset="UTF-8">
-        <script src="lib/HackTimer.js" charset="UTF-8"></script>
-        <script src="lib/jquery-1.11.3.js" charset="UTF-8"></script>
-        <script src="lib/jquery.color-2.1.0.js" charset="UTF-8"></script>
-        <script src="lib/ace/ace.js" charset="utf-8"></script>
-        <script src="lib/vis/dist/vis.js" charset="utf-8"></script>
 
 
-        <script src="lineViews/decorators.js" charset="UTF-8"></script>
-        <script src="lineViews/primitives.js" charset="UTF-8"></script>
-        <script src="lineViews/comboBox.js" charset="UTF-8"></script>
+        <!--<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>-->
+        <script src="https://d3js.org/d3.v4.js"></script>
+
+        <script src="lib/HackTimer.js"           charset="UTF-8"></script>
+        <script src="lib/jquery-1.11.3.js"       charset="UTF-8"></script>
+        <script src="lib/jquery.color-2.1.0.js"  charset="UTF-8"></script>
+        <script src="lib/ace/ace.js"             charset="utf-8"></script>
+        <script src="lib/vis/dist/vis.js"        charset="utf-8"></script>
+
+        <script src="lineViews/decorators.js"    charset="UTF-8"></script>
+        <script src="lineViews/primitives.js"    charset="UTF-8"></script>
+        <script src="lineViews/comboBox.js"      charset="UTF-8"></script>
         <script src="lineViews/labeledSlider.js" charset="UTF-8"></script>
 
-        <script src="a3Views/decorators.js" charset="UTF-8"></script>
-        <script src="a3Views/graphView.js" charset="UTF-8"></script>
+        <script src="a3Views/decorators.js"      charset="UTF-8"></script>
+        <script src="a3Views/graphView.js"       charset="UTF-8"></script>
         <script src="a3Views/networkNodeView.js" charset="UTF-8"></script>
-        <script src="a3Views/networkView.js" charset="UTF-8"></script>
-        <script src="a3Views/jobStatusView.js" charset="UTF-8"></script>
-        <script src="a3Views/jobView.js" charset="UTF-8"></script>
-        <script src="a3Views/projectView.js" charset="UTF-8"></script>
+        <script src="a3Views/networkView.js"     charset="UTF-8"></script>
+        <script src="a3Views/jobStatusView.js"   charset="UTF-8"></script>
+        <script src="a3Views/d3gant.js"          charset="UTF-8"></script>
+        <script src="a3Views/jobView.js"         charset="UTF-8"></script>
+        <script src="a3Views/projectView.js"     charset="UTF-8"></script>
 
-        <script src="../../config.js" charset="UTF-8"></script>
-        <script src="../../sim.js" charset="UTF-8"></script>
-        <script src="../../messages.js" charset="UTF-8"></script>
-        <script src="../../tools.js" charset="UTF-8"></script>
+        <script src="../../config.js"            charset="UTF-8"></script>
+        <script src="../../sim.js"               charset="UTF-8"></script>
+        <script src="../../messages.js"          charset="UTF-8"></script>
+        <script src="../../tools.js"             charset="UTF-8"></script>
+        <script src="../../q.js"                 charset="UTF-8"></script>
 
         <script src="../../network/browserWs.js" charset="UTF-8"></script>
 
-        <script src="../../job/job.js" charset="UTF-8"></script>
-        <script src="../../job/jobLogic.js" charset="UTF-8"></script>
-        <script src="../../job/toolJobs.js" charset="UTF-8"></script>
+        <script src="../../job/job.js"           charset="UTF-8"></script>
+        <script src="../../job/jobLogic.js"      charset="UTF-8"></script>
+        <script src="../../job/toolJobs.js"      charset="UTF-8"></script>
 
-        <script src="../../types/mvj.js" charset="UTF-8"></script>
-        <script src="../../types/network.js" charset="UTF-8"></script>
-        <script src="../../types/project.js" charset="UTF-8"></script>
-        <script src="../../types/pSet.js" charset="UTF-8"></script>
+        <script src="../../types/mvj.js"         charset="UTF-8"></script>
+        <script src="../../types/network.js"     charset="UTF-8"></script>
+        <script src="../../types/project.js"     charset="UTF-8"></script>
+        <script src="../../types/pSet.js"        charset="UTF-8"></script>
 
-        <script src="client.js" charset="UTF-8"></script>        
-        <script src="view.js" charset="UTF-8"></script>
-        <script src="htmlBasics.js" charset="UTF-8"></script>
-        <script src="setView.js" charset="UTF-8"></script>
+        <script src="client.js"                  charset="UTF-8"></script>
+        <script src="view.js"                    charset="UTF-8"></script>
+        <script src="htmlBasics.js"              charset="UTF-8"></script>
+        <script src="setView.js"                 charset="UTF-8"></script>
 
     </head>
-    <body id="body" onload="app.init()">
+    <body id="body" onload="appInit()">
         <div id="workspace">
 
             <div id="footer">

@@ -3,8 +3,7 @@ function labeledSlider(model, min, max, pre, post, precision, captionWidth)
     var slider = document.createElement("div")
         slider.style.height = 23
         slider.draggable = true
-        slider.ondragstart = ev=>
-        {
+        slider.ondragstart = ev=> {
             ev.stopPropagation()
             ev.preventDefault()
         }
@@ -24,9 +23,8 @@ function labeledSlider(model, min, max, pre, post, precision, captionWidth)
             threshholdSlider.setAttribute('min', min*100)
             threshholdSlider.setAttribute('max', max*100)
 
-    threshholdSlider.oninput = ()=> model.commit(threshholdSlider.value/100)
-    slider.update = function()
-    {
+    threshholdSlider.oninput = ()=> model.mergeAndCommit(threshholdSlider.value/100)
+    slider.update = function() {
         var newValue = model.valueOf()
         threshholdSlider.value = newValue * 100
         threshholdValue.innerText = Number(newValue).toExponential(precision+1)

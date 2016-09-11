@@ -1,7 +1,8 @@
 (function(exports, inNode)
 {
     exports.jm = undefined
-    exports.onCommit = function() {}
+    exports.app = undefined
+    exports.onCommit = function() {}    
 
     var Emitter = {
         on: function(event, fn)
@@ -43,18 +44,26 @@
         },
         emit: function(event)
         {
-            this._callbacks = this._callbacks || {};
-            var args = [].slice.call(arguments, 1), callbacks = this._callbacks['$' + event];
+            this._callbacks = this._callbacks || {}
+            var args = [].slice.call(arguments, 1)
+            var callbacks = this._callbacks['$' + event]
+
+            if (this.path.startsWith('model.network') || this.path == 'model') {}
+            else {
+                if (callbacks && callbacks.length > 0) {
+                    q.logGroup('Emit '+event+' ⨉' + callbacks.length +': ' + this.path.valueOf(), 'white', ()=> {
+                        console.debug('diff: '+JSON.stringify(arguments[1].diff, 0, 4))
+                        console.debug('new: '+JSON.stringify(arguments[1].newMembers, 0, 4))
+                        console.debug('deleted: '+JSON.stringify(arguments[1].deletedMembers, 0, 4))
+                        console.debug('changes: '+JSON.stringify(Object.keys(arguments[1].changedMembers), 0, 4))
+                    })
+                }
+            }
 
             if (callbacks) {
-                callbacks = callbacks.slice(0);
-                for (var i = 0, len = callbacks.length; i < len; ++i) {
-                    if (this.path.startsWith('model.network') || this.path == 'model')
-                    {}
-                    else
-                        console.debug('Emit: ' + this.path, arguments[1])
-                    callbacks[i].apply(this, args)
-                }
+                callbacks = callbacks.slice(0)
+                for (var i = 0, len = callbacks.length; i < len; ++i)
+                    callbacks[i].apply(this, args)                
             }
 
             return this
@@ -130,6 +139,9 @@
 
     function path2wrapper(path, obj)
     {
+        if (path === '')
+            return obj
+
         var result = {}
         var current = result
         var nodes = path.split('.')
@@ -158,6 +170,14 @@
 
     //-----------------------------------------------------------------------------------------
 
+    function mergeAndCommit(diff)
+    {
+        //this.add()
+        this.merge(diff)
+        //this.commit()
+        exports.onCommit(this.path, diff)
+    }
+
     function update(a1, a2)
     {
         var pathUsed = arguments.length === 2 ? true:false
@@ -165,76 +185,107 @@
         var path = pathUsed ? a1 : this.path
 
         if (!path.startsWith('model.network'))
-            console.log('%cMerging u ' + path, '', wdiff)
+            console.log('Merging u ' + path, JSON.stringify(wdiff, 0, 4))
 
-        var node = this.merge(wdiff)
+        return this.merge_(wdiff)
     }
 
-
-    function commit(a1, a2)
-    {
-        var pathUsed = arguments.length === 2 ? true:false
-        var wdiff = pathUsed ? path2wrapper(a1, a2) : a1
-        var path = pathUsed ? a1 : this.path
-
-        console.log('%cMerging c '+ path, '', wdiff)
-
-        var node = this.merge(wdiff)
-
-        var path = pathUsed ? a1 : node.path
-        var diff = pathUsed ? a2 : a1
-
-        exports.onCommit(path, diff)
+    function attachChanges(m, diff) {
+        console.assert(typeof diff !== 'undefined')
+        m.changes = m.changes || {
+            diff:diff,
+            sender:m,
+            newMembers:{},
+            deletedMembers:{},
+            changedMembers:{}
+        }
     }
 
-
-    function merge(diff, noEvents, inShadow)
+    function merge(diff)
     {
+        console.log('Merging x', this.path.valueOf(), JSON.stringify(diff, 0, 4))
+        var fullDiff = path2wrapper(this.path.valueOf(), diff)
+        exports.app.merge_(fullDiff)
+    }
+
+    function merge_(diff)
+    {        
         console.assert(this.path != '' || !this.path)
-        var changes = { diff:diff, sender:this, newMembers:{}, deletedMembers:{} }
 
         if (this.isLeafType) {
-            console.assert(isPrimitive(diff) || diff.isLeafType,           'Model is primitive but diff is not', this, diff)
+            console.assert(isPrimitive(diff) || diff.isLeafType, 'Model is primitive but diff is not', this, diff)
 
-            this.value = isPrimitive(diff)
-                       ? diff
-                       : diff.value
-            /*if (isPrimitive(diff)) this.value = diff else this.value = diff.value*/
+            attachChanges(this, diff)
+            this.changes.diff = this.value = isPrimitive(diff) ? diff : diff.value            
         }
 
         else diff.forEach((v, id, idx)=> { // [] or {}
-            console.assert(!isPrimitive(diff),                             'Model is not primitive but diff is')
-            console.assert(!(v === 'deadbeef' && !this[id]),               'Trying to delete non existing member ' + id)
+            if (typeof v !== 'undefined') {
+                console.assert(!isPrimitive(diff), 'Model is not primitive but diff is')
+                console.assert(!(v === 'deadbeef' && !this[id]), 'Trying to delete non existing member ' + id)
 
-            if (v === 'deadbeef') {
-                changes.deletedMembers[id] = this[id]
-                this[id].destroyRecursive(this)
-                delete this[id]
-            }
+                attachChanges(this, diff)
+                if (v === 'deadbeef') {                                      // removing
+                    this.changes.deletedMembers[id] = this[id]
+                    this.changes.diff[id] = 'deadbeef'
 
-            else if (!this[id]) {
-                var p = this.path == '' ? id : (this.path + '.' + id)
+                    this[id].destroyRecursive(this)
+                    delete this[id]                                      
+                }
 
-                this[id] = exports.model(p, v, noEvents, inShadow)
-                changes.newMembers[id] = this[id]
-            }
+                else if (!this[id]) {                                        // adding
+                    var p = this.path == '' ? id : (this.path + '.' + id)
+                    this[id] = exports.model(p, v)
 
-            else {
-                this[id].merge(v, noEvents, inShadow) // RECURSION
+                    this.changes.newMembers[id] = this[id]
+                    if (!this.changes.diff[id]) //?
+                        this.changes.diff[id] = this[id] // ja, das ganze?                      
+                }
 
-                if (this[id].shadowed && !noEvents) {
-                    changes.newMembers[id] = this[id]
-                    this[id].shadowed = false
+                else {                                                       // child changes (rekursion)
+                    console.assert(this[id].merge_)
+                    this[id].merge_(v)                                       // RECURSION
+
+                    this.changes.changedMembers = this[id]
+                    if (this[id].changes)
+                        this.changes.diff[id] = this[id].changes.diff        // ää nein, nicht das ganze v
+
                 }
             }
         })
-
-        if (!noEvents)
-            this.emit('change', changes)
-
         return this
     }
 
+    function commit(msg)
+    {        
+        q.logGroup('commit ' + this.path + ': ' + msg, 'white', ()=> {
+            exports.app.commit_()
+            exports.onCommit(this.path, /*v.diff*/0)
+        })
+    }
+
+    function commit_()
+    {
+        if (this.changes) {
+            this.emit('commit', this.changes)
+            this.changes.diff.forEach((v, id, idx)=> {
+                if(this[id])
+                    if (this[id].commit_)
+                        this[id].commit_()
+                    else
+                       console.warn(this.path + '.' + id + ': has no commit')
+                else
+                    if (v != 'deadbeef')
+                        console.warn(this.path + '.' + id + ': diff but no member')
+            })
+            this.emit('change', this.changes)
+            this.emit('endCommit', this.changes)
+            this.log__.push(this.changes)
+            this.changes = undefined
+        }
+        //else
+        //    console.warn(this.path + ' should not be in chaged list (has no changes but is in diff of parent)')
+    }
 
     function destroyRecursive(parent, noEvents, inShadow)
     {
@@ -253,9 +304,6 @@
 
     exports.model = function(path, initDiff)
     {
-        //console.assert(!noEvents)
-        //console.assert(!inShadow)
-
         if (initDiff === undefined)
             console.warn('initDiff is undefined', path)
 
@@ -265,25 +313,29 @@
         var model = box(initDiff)        
 
         Object.defineProperty(model, 'path',             { writable:true, value:path })
-        Object.defineProperty(model, 'diff',             { writable:true, value:{} })
-        Object.defineProperty(model, 'changes',          { writable:true, value:{} })
-
-        Object.defineProperty(model, 'shadowed',         { writable:true, value:false })
 
         Object.defineProperty(model, '_callbacks',       { value:{} })
         Object.defineProperty(model, 'on',               { value:Emitter.on }) //mixin(model)
         Object.defineProperty(model, 'off',              { value:Emitter.off })
         Object.defineProperty(model, 'emit',             { value:Emitter.emit })
 
-        Object.defineProperty(model, 'add',              { writable:true, value:null })
+        //Object.defineProperty(model, 'begin',            { writable:true, value:begin })
         Object.defineProperty(model, 'update',           { writable:true, value:update })
-        Object.defineProperty(model, 'commit',           { writable:true, value:commit })
-        Object.defineProperty(model, 'merge',            { writable:true, value:merge })
+        Object.defineProperty(model, 'merge',            { writable:true, value:merge })        
+        Object.defineProperty(model, 'mergeAndCommit',   { writable:true, value:mergeAndCommit })
+        Object.defineProperty(model, 'commit',           { writable:false, value:commit })
         Object.defineProperty(model, 'destroyRecursive', { writable:true, value:destroyRecursive })
 
-        model.merge(initDiff)
+        Object.defineProperty(model, 'log__',            { writable:true, value:[] })
 
+        Object.defineProperty(model, 'changes',          { writable:true })
+        Object.defineProperty(model, 'lastcommit',       { writable:true })
+
+        Object.defineProperty(model, 'merge_',           { writable:true, value:merge_ })
+        Object.defineProperty(model, 'commit_',          { writable:false, value:commit_ })
+
+        model.merge_(initDiff)
         return model
-    }    
+    }
 })
 (typeof exports === 'undefined' ? this['mvj']={} : exports, typeof exports !== 'undefined')

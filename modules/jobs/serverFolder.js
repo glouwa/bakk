@@ -59,7 +59,10 @@ function insertFolder(j, diff)
         output: app.model.store[j.id.valueOf()]
     })
 
-    j.delegate(()=> jf.job({ onCall:lj=> app.model.store[j.id.valueOf()]['↻'](lj), params:{} }))
+    j.delegate(()=> jf.job({
+        params:{},
+        onCall:lj=> app.model.store[j.id.valueOf()]['↻'](lj)
+    }))
 }
 
 new Object({
@@ -70,7 +73,7 @@ new Object({
         type: 'Service',
         src: insertFolder,
         args: {
-            directory: '../../..',
+            directory: './',
             timeout:500
         },
     },

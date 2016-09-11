@@ -198,6 +198,77 @@ function jobStateGantViewWithProgress(jobModel)
             gv.style.width = '100%'
             view.appendChild(gv)
 
+    return view
+}
+
+function jobPlot(jobModel)
+{
+    var view = document.createElement('div')
+        view.className = 'plot'
+        var pv = jobStateWithLogView(jobModel, jpViewFactory({ caption:false, log:true, width:'100%' }))
+            pv.style.width = '100%'
+            pv.style.margin = '-1 0 0 0'        
+        var gv = jobStateGantD3View(jobModel)            
+        var aView = undefined
+        view.appendChild(pv)
+        view.appendChild(gv)
+
+    gv.d3handler.onFocus= function(e) {
+        if (aView) {
+            view.removeChild(aView)
+            aView = undefined
+        }
+        if (e) {
+            aView = autoView(e.__data__)
+            aView.style.borderStyle = 'dashed none none none'
+            aView.style.borderWidth = 1;
+            aView.style.borderColor = '#B0B0B0'
+            view.appendChild(aView)
+        }
+    }
+    return view
+}
+
+function jobStateGantD3View(jobModel)
+{
+    var view = document.createElement('div')
+        view.style.margin = '10'
+        view.d3handler = jobPlotGant(view, jobModel)
+
+    function addJob(jm) {
+        view.d3handler.addJob(jm)
+        jm.state.on('change', changes=> view.d3handler.addUiUpdate(jm, changes))
+
+        updateJob({ newMembers:jm }, jm.path)
+        jm.on('change', updateJob)
+
+        if (jm.subjobs)
+        {
+            //jm.subjobs.forEach((v, k, idx)=> addJob(v))
+            console.warn('+++++++++++++++++++++', jm.id.valueOf(), Object.keys(jm.subjobs))
+        }
+    }
+
+    function updateJob(changes, nodeId) {
+
+        function updateSubjobs(changes) {
+            if (changes.newMembers)
+                changes.newMembers.forEach((v, k, idx)=> addJob(v))
+        }
+
+        if (changes.newMembers)
+            if (changes.newMembers.subjobs) {
+                console.warn('+++++++++++++++++++++', Object.keys(changes.newMembers.subjobs))
+                updateSubjobs({ newMembers:changes.newMembers.subjobs })
+                changes.newMembers.subjobs.on('change', updateSubjobs)
+            }
+    }
+
+    var beginLastCommit = new Date()
+    addJob(jobModel)    
+    view.d3handler.addCommit(jobModel, beginLastCommit, new Date())
+    jobModel.on('commit', ()=> beginLastCommit = new Date())
+    jobModel.on('endCommit', ()=> view.d3handler.addCommit(jobModel, beginLastCommit, new Date()))
 
     return view
 }
@@ -256,7 +327,7 @@ function jobStateGantView(jobModel)
                 style:'background-color: '+bgColor+';' + 'border-color: '+stateColor+';',
             })
 
-            items.update({
+            items.add({
                 //id:jm.path.valueOf(),
                 group:group,
                 subgroup:subgroup,
@@ -264,28 +335,20 @@ function jobStateGantView(jobModel)
                 start:new Date(),
                 //style:'background-color: '+bgColor+';' + 'border-color: '+stateColor+';',
                 type:'point',
-                style:'border-color: '+stateColor+';',
+                //style:'border-color: '+stateColor+';',
+                style:'border-color:red;',
             })
 
-            gView.timeline.fit()
-            /*
-            items.update({ // todo: wenn keine update doublettn dann kan man hier add verwenden
-                id:jm.path.valueOf()+endTime.valueOf(),
-                type:'point',
-                model:jm,
-                group:group,
-                subgroup:subgroup,
-                start:endTime,
-                style:'border-color: '+stateColor+';',
-                title:JSON.stringify(jm.state, null, 4)
-            })*/
+            gView.timeline.fit()           
+            console.debug('############## gant update jobstate ' + jm.path)
         })
+
+
+        console.debug('############## gant adding job ' + jm.path)
 
         if (gView)
             gView.timeline.fit()
     }
-
-    addJob(jobModel)
 
     function updateSubjobs(changes)
     {
@@ -321,7 +384,7 @@ function jobStateGantView(jobModel)
         var gView = document.createElement('div')
             gView.timeline = new vis.Timeline(view, items, groups, {
             groupOrder: 'content',
-            stack:false/*, throttleRedraw:1000*/,
+            stack:true/*, throttleRedraw:1000*/,
 
         })
         var aView = undefined
@@ -345,11 +408,11 @@ function jobStateGantView(jobModel)
         }
     })
 
+    addJob(jobModel)
+
     updateJob({ newMembers:jobModel }, jobModel.path)
     jobModel.on('change', updateJob)
     return view
-
-
 }
 
 // das ding transformiert ein model
@@ -380,7 +443,7 @@ function jobStateWithLogView(jobModel, contentFactory)
         if (keys.length == 0)
             return
 
-        console.assert(keys.length <= 1, 'jdiff.subjobs.keys.lenght > 1 (multi orgin) ' + keys)
+        console.warn(keys.length <= 1, 'jdiff.subjobs.keys.lenght > 1 (multi orgin) ' + keys)
 
         return { model:current.model.subjobs[keys[0]], diff:current.diff.subjobs[keys[0]] }
     }

@@ -6,7 +6,7 @@ function modelType(m)
     return result // fuction und view sollte hier unterschieden werden
 }
 
-function jobControlingButton(jobModel)
+function jobControlingButton(jobModel) // der bekommt ein model
 {
     var view = button('▸')
 
@@ -35,7 +35,7 @@ function jobControlingButton(jobModel)
     return view
 }
 
-function jobRootButon(args)// name, args, src, noIcons, obj)
+function jobRootButon(args)// name, args, src, noIcons, obj)   // der erstellt ein model
 {
     var job = 'will be set after job creation, but before job call'
     var cap = icon=>
@@ -52,7 +52,6 @@ function jobRootButon(args)// name, args, src, noIcons, obj)
     }
 
     function attachJob() {
-
         function updateView() {
             var state = stateMap[job.state.type.valueOf()]
             if (state) {
@@ -70,8 +69,9 @@ function jobRootButon(args)// name, args, src, noIcons, obj)
             view.setProgress(job.state.progress.valueOf(), config.getColor(job.state))
         }
 
+
         function createRootJob() {
-            jd = jf.job({
+            var jd = jf.job({
                 desc: 'button ' + args.name,
                 isRoot: true,
                 params: args.args,
@@ -82,25 +82,28 @@ function jobRootButon(args)// name, args, src, noIcons, obj)
             })
             app.update('model.jobs.'+jd.id, jd)
             job = app.model.jobs[jd.id.valueOf()]
-            $('#jobTab')[0].add(job.id, { content:jobAllView(job) }, 'inBg')
+            $('#jobTab')[0].add(job.id, { content:jobAllView(job) }/*, 'inBg'*/)
         }
 
         //if (jobModel)
         //    jobModel.state.off('change', unpdateButton) TODO
 
-        console.group('%cMessage From UI ' + args.name, 'text-decoration:underline; background-color:black; color:white;')
-        createRootJob()        
-        updateView()
-        job.state.on('change', updateView)
-        view.onclick = e=> {
-            e.stopPropagation()
-            view.state.onClick() // ; unpdateButton() aber ohne gibts double cancels? nein.
-        }
-        job.call()
-        console.groupEnd()
+        q.addRoot('Message From UI ' + args.name, ()=>{
+            createRootJob()
+            updateView()
+            job.state.on('change', updateView)
+            view.onclick = e=> {
+                e.stopPropagation()
+                view.state.onClick() // ; unpdateButton() aber ohne gibts double cancels? nein.
+            }
+            job.call()            
+            //job.commit('UI creates and calls job') // mach jetzt das ui update
+            // ist es richtig das hier nur änderungen innerhalb von job entstehen können?
+            // wie ist das bei project load?
+        })
     }
 
-    view.onclick = (e)=> { e.stopPropagation(); attachJob() }
+    view.onclick = e=> { e.stopPropagation(); attachJob() }
     view.style.fontSize = 12
     view.title = args.name
     return view
@@ -235,13 +238,15 @@ function a3View(model)
     var contentDelegate = ()=> autoMultiView(model, [autoView])
 
     if (model.type == 'Model')
-        contentDelegate = ()=> systemGraphView(model)
+        //contentDelegate = ()=> systemGraphView(model)
+        contentDelegate = ()=> autoMultiView(model, [autoView, systemGraphView])
 
     if (model.type == 'Project')
         contentDelegate = ()=> autoMultiView(model, [autoView, projectEdit])
 
     if (model.type == 'Job')
-        contentDelegate = ()=> autoMultiView(model, [jobStateTreeView, jobStateGantViewWithProgress, jobStateGraphView])
+        contentDelegate = ()=> autoMultiView(model,
+            [/*jobStateTreeView, jobStateGraphView, jobStateGantViewWithProgress,*/ jobPlot])
 
     if (model.type == 'Network')
         contentDelegate = ()=> autoMultiView(model, [autoView, systemView])

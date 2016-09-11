@@ -63,7 +63,6 @@ function project(url, noView)
             j.delegate(
                 ()=> ajaxLoadJob(this),
                 ()=> projectJob(this, args)
-                //()=> visiblePepRootJob(this) // todo: fix the sync bug to use this line
             )
         },
         '↻': function(j)

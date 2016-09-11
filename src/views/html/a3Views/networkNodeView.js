@@ -18,7 +18,7 @@ error.pOfSelect = function(model)
         select.options.add(new Option(" on response",   "onResponse"))
         select.options.add(new Option("⇥ on terminate",   "onTerminate"))
 
-    select.onchange = ()=> model.pof.commit(select.value)
+    select.onchange = ()=> model.pof.mergeAndCommit(select.value)
     select.update = ()=> select.value = model.pof.valueOf()
     select.update()
     model.pof.on('change', select.update)
@@ -44,8 +44,8 @@ error.exceptionsSelect = function(model)
             recoverable.style.color = 'lightgray'
             recoverable.style.width = 20
 
-    fatal.onclick = ()=> model.value.commit('fatal')
-    recoverable.onclick = ()=> model.value.commit('recoverable')
+    fatal.onclick = ()=> model.value.mergeAndCommit('fatal')
+    recoverable.onclick = ()=> model.value.mergeAndCommit('recoverable')
     var update = ()=> {
         recoverable.style.color = model.value.valueOf() === 'fatal' ? config.colors.disabledIcon : config.colors.enabledIcon
         fatal.style.color = model.value.valueOf() === 'fatal' ? config.colors.enabledIcon : config.colors.disabledIcon
@@ -122,13 +122,12 @@ function networkNodeSimConfig(nodeModel)
             simControl.className = 'errorSimControl'
             simControl.update = compositeUpdate({
                 view:simControl,
-                itemDelegate:(v, k)=>
-                {
+                itemDelegate:(v, k)=> {
                     var errorIcon = document.createElement('div')
                     errorIcon.className = 'buttonRight'
                     errorIcon.innerText = v.icon.valueOf()
                     errorIcon.title = v.text.valueOf()
-                    errorIcon.onclick = ()=> v.active.commit(!v.active.valueOf())
+                    errorIcon.onclick = ()=> v.active.mergeAndCommit(!v.active.valueOf())
                     errorIcon.update = ()=> errorIcon.style.color = v.active.valueOf() ? '#00CC66':'#aaa'
                     errorIcon.update()
                     v.active.on('change', errorIcon.update)
@@ -142,8 +141,7 @@ function networkNodeSimConfig(nodeModel)
             simActiveList.update = compositeUpdate({
                 view:simActiveList,
                 filter:(v, k)=> viewFactory[k],
-                itemDelegate:(v, k)=>
-                {
+                itemDelegate:(v, k)=> {
                     var errorView = document.createElement('li')
                         var errorIconActive = document.createElement('div')
                             errorIconActive.className = 'checkLeft'
@@ -161,7 +159,7 @@ function networkNodeSimConfig(nodeModel)
                         var errorVal = viewFactory[k](v)
                             errorVal.style.float = 'right'
 
-                    errorIconActive.onclick = errorText.onclick = line.onclick = ()=> v.active.commit(false)
+                    errorIconActive.onclick = errorText.onclick = line.onclick = ()=> v.active.mergeAndCommit(false)
                     errorText.update = ()=> errorView.style.display = v.active.valueOf() ? 'block':'none'
                     errorText.update()
                     v.active.on('change', errorText.update)
@@ -182,7 +180,7 @@ function networkNodeSimConfig(nodeModel)
 }
 
 function networkNodeView(nodeModel)
-{
+{   
     var view = a3expander({
             model:nodeModel,
             expanded:false,

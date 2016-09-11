@@ -30,7 +30,7 @@ new Object({
         src: serverOuput,
         args: {
             text: 'this text will appear in output',            
-            timeout: 500
+            timeout: 1500
         },
     },
     tests: []

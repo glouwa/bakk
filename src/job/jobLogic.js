@@ -62,7 +62,8 @@
 
     function configureSubjob(sj, parent, jidx, onSubjobReturn)
     {
-        sj.onUpdate = (j, sd, od)=> onSubjobUpdate(j, sd, od, parent, parent.workflow.pAa.valueOf(), parent.workflow.count.valueOf())
+        var wc = parent.workflow.count ? parent.workflow.count.valueOf() : undefined
+        sj.onUpdate = (j, sd, od)=> onSubjobUpdate(j, sd, od, parent, parent.workflow.pAa.valueOf(), wc)
         sj.onReturn = j=> onSubjobReturn(j, jidx)
         parent.update('subjobs.'+sj.id, sj)
         return parent.subjobs[sj.id] || app.model.jobs[sj.id.valueOf()]
@@ -70,21 +71,17 @@
 
     function onSubjobUpdate(sj, diff, outputDiff, parent, pAa, jobCount)
     {
-        if (console.groupCollapsed)
-            console.groupCollapsed('%c' + parent.workflow.type + '.onSjUpdate ' + parent.id, 'background:violet')
+        q.logGroup( parent.workflow.type + '.onSjUpdate ' + parent.id, 'violet', ()=> {
+            var pdiff = {
+                state: { progress: avgProgress(parent, pAa, jobCount) },
+                subjobs: { [sj.id.valueOf()]:diff }
+            }
 
-        var pdiff = {
-            state: { progress: avgProgress(parent, pAa, jobCount) },
-            subjobs: { [sj.id.valueOf()]:diff }
-        }
+            if (pdiff.state.progress == 1)
+                delete pdiff.state.progress // wtf?
 
-        if (pdiff.state.progress == 1)
-            delete pdiff.state.progress // wtf?
-
-        parent.updateJob(pdiff, outputDiff)
-
-        if (console.groupCollapsed)
-            console.groupEnd()
+            parent.updateJob(pdiff, outputDiff)
+        })
     }
 
     //-----------------------------------------------------------------------------------------
@@ -100,27 +97,25 @@
         // terminate strategy
         var lastCreatedIdx = 0
         var jobNodeMap = {} // terminiert ein sj muss man wiessen welche node job braucht
-        function onSubjobReturn(j, jidx) {
-            console.group('%c' + args.type + ' onSjReturn ' + parent.id, 'background:violet')
-
-            if (lastCreatedIdx < args.count)
-                if (j.state.detail.valueOf() === 'ok') {
-                    var node =  jobNodeMap[j.id.valueOf()]
-                    var newSjInitDiff = args.job(lastCreatedIdx, node)
-                    var newSj = configureSubjob(newSjInitDiff, parent, lastCreatedIdx, onSubjobReturn)
-                    jobNodeMap[newSj.id.valueOf()] = node
-                    newSj.call()
-                    lastCreatedIdx++
-                }
+        function onSubjobReturn(j, jidx) {            
+            q.logGroup(args.type + ' onSjReturn ' + parent.id, 'violet', ()=> {
+                if (lastCreatedIdx < args.count)
+                    if (j.state.detail.valueOf() === 'ok') {
+                        var node =  jobNodeMap[j.id.valueOf()]
+                        var newSjInitDiff = args.job(lastCreatedIdx, node)
+                        var newSj = configureSubjob(newSjInitDiff, parent, lastCreatedIdx, onSubjobReturn)
+                        jobNodeMap[newSj.id.valueOf()] = node
+                        newSj.call()
+                        lastCreatedIdx++
+                    }
                 else if(j.state.detail.valueOf() !== 'canceled')
                     // hmmm. könnte sein das sync jobs den parent hier schon geschlossen haben
                     parent.ret('failed', 'failed', 'one subjob failed')
 
-            if (parent.state.type != 'returned') // wenn newSj.call() sync dann ist parent schon zu, weil onr return die parents raus geht
+                if (parent.state.type != 'returned') // wenn newSj.call() sync dann ist parent schon zu, weil onr return die parents raus geht
                 if (allHaveState(parent.subjobs, 'type', 'returned'))
                     parent.ret(resultState(parent), args.desc + ' ' + resultState(parent))
-
-            console.groupEnd()
+            })
         }
 
         // startstrategy
@@ -142,13 +137,11 @@
     {
         // terminate strategy
         function onSubjobReturn() {
-            console.group('%c' + args.type + ' onSjReturn ' + parent.id, 'background:violet')
-
-            if (parent.state.type != 'returned') // wenn newSj.call() sync dann ist parent schon zu, weil onr return die parents raus geht
-                if (allHaveState(parent.subjobs, 'type', 'returned'))
-                    parent.ret(resultState(parent), args.desc + ' ' + resultState(parent))
-
-            console.groupEnd()
+            q.logGroup(args.type + ' onSjReturn ' + parent.id, 'violet', ()=> {
+                if (parent.state.type != 'returned') // wenn newSj.call() sync dann ist parent schon zu, weil onr return die parents raus geht
+                    if (allHaveState(parent.subjobs, 'type', 'returned'))
+                        parent.ret(resultState(parent), args.desc + ' ' + resultState(parent))
+            })
         }
 
         // startstrategy
@@ -170,25 +163,24 @@
     {
         // terminate strategy
         function onSubjobReturn(j, jidx) {
-            console.group('%c'+args.type+'.onSjReturn {' + parent.id +','+ j.id +','+ jidx, 'background:violet')
+            q.logGroup(args.type+'.onSjReturn {' + parent.id +','+ j.id +','+ jidx, 'violet', ()=> {
 
-            if (jidx < args.job.length-1)
-                if (j.state.detail.valueOf() === 'ok') {
-                    var nextIdx = jidx+1
-                    var newSjInitDiff = args.job[nextIdx](nextIdx)
-                    var newSj = configureSubjob(newSjInitDiff, parent, nextIdx, onSubjobReturn)
-                    newSj.call()
-                }
-                else if(j.state.detail.valueOf() !== 'canceled')
-                    parent.ret('failed', 'failed', 'one subjob failed')
-            else
-                console.assert(allHaveState(parent.subjobs, 'type', 'returned'))
+                if (jidx < args.job.length-1)
+                    if (j.state.detail.valueOf() === 'ok') {
+                        var nextIdx = jidx+1
+                        var newSjInitDiff = args.job[nextIdx](nextIdx)
+                        var newSj = configureSubjob(newSjInitDiff, parent, nextIdx, onSubjobReturn)
+                        newSj.call()
+                    }
+                    else if(j.state.detail.valueOf() !== 'canceled')
+                        parent.ret('failed', 'failed', 'one subjob failed')
+                else
+                    console.assert(allHaveState(parent.subjobs, 'type', 'returned'))
 
-            if (parent.state.type != 'returned') // wenn newSj.call() sync dann ist parent schon zu, weil onr return die parents raus geht
-                if (allHaveState(parent.subjobs, 'type', 'returned'))
-                    parent.ret(resultState(parent), parent.state.log)
-
-            console.groupEnd()
+                if (parent.state.type != 'returned') // wenn newSj.call() sync dann ist parent schon zu, weil onr return die parents raus geht
+                    if (allHaveState(parent.subjobs, 'type', 'returned'))
+                        parent.ret(resultState(parent), parent.state.log)
+            })
         }
 
         // startstrategy

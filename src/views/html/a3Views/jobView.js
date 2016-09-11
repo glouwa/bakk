@@ -22,7 +22,7 @@ function jobAllView(jobModel)
 {    
     var tab = a3Frame(jobModel,  jobHeaderView)
         //tab.className = 'search'
-        //var starterArgs = a3View(jobModel.params)
+        var starterArgs = a3View(jobModel.params)
         var statusTab = a3View(jobModel)/*a3expander({
             model:jobModel,
             expanded:true,
@@ -30,20 +30,24 @@ function jobAllView(jobModel)
             contentFactory:()=> autoMultiView(jobModel, [jobStateGraphView])
         })*/
 
-    function update(changes)
-    {
-        if (changes.newMembers)
-            if (changes.newMembers.output)
-            {
+    function update(changes) {
+        if (changes.newMembers) {
+            if (changes.newMembers.output) {
                 var result = a3View(jobModel.output)
                     result.id = 'result'
                 tab.appendChild(result)
             }
+            /*if (changes.newMembers.params) {
+                var result = a3View(jobModel.params)
+                    result.id = 'params'
+                tab.appendChild(result)
+            }*/
+        }
     }
     update({ newMembers:jobModel })
     jobModel.on('change', update)
 
-    //tab.appendChild(starterArgs)
+    tab.appendChild(starterArgs)
     tab.appendChild(statusTab)
     return tab
 }

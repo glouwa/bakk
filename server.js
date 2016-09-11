@@ -7,8 +7,6 @@ jf.workerId = 'S₀'
 
 //-------------------------------------------------------------------------------------------
 
-
-
 app.update({
     clientId: 0,
     model: {
@@ -70,7 +68,7 @@ app.getNodesByType = function(criteria, emptyResultIsOk)
 
 // called by Net --------------------------------------------------------------------------
 
-app.onNetworkStateChange = function(state, connection)
+function onNetworkStateChange(state, connection)
 {
     var stateHandlers =
     {
@@ -120,8 +118,8 @@ var messageHandlers =
 //-------------------------------------------------------------------------------------------
 
 var network = require('./src/network/nodeWs').network
-network.onConnectionChanged = app.onNetworkStateChange
-network.onMessage = app.onMessage
+network.onConnectionChanged = onNetworkStateChange
+network.onMessage = appOnMessageDefault
 network.sim = sim
 network.listen()
 

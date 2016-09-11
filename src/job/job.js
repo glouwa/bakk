@@ -30,6 +30,7 @@
                             j.cancel()
                             // todo: state machine
                             j.ret('failed', 'timeout ' + j.params.timeout)
+                            app.commit('timer')
 
                         }, j.params.timeout.valueOf())
                     }
@@ -47,16 +48,13 @@
                         [j.isRemote?'debugRemote':'debug']:{
                             node:jm.workerId,
                             host:jm.host,
-                            callTime:Date.now(),
-                            callTimeloc: jm.workerId,
-                            lastModification: Date.now(),
-                            lastModificationloc: jm.workerId
+                            callTime:Date.now(),                            
+                            lastModification: Date.now()
                         },
-                        log:[3, 4, 6]
+                        ///log:[3, 4, 6]
                     }
 
-                    // apply
-                    console.log('Merging j ', j.path.valueOf(), diff)
+                    // apply                    
                     j.merge(diff, !j.isRoot) // model aktualisieren
                     j.onUpdate(j, diff)      // parent jobs ...
                     j.onCall(j, diff)        // user event
@@ -81,10 +79,8 @@
                             lastWorker: jm.workerId
                         },
                         [j.isRemote?'debugRemote':'debug']:{
-                            cancelTime:Date.now(),
-                            cancelTimeloc: jm.workerId,
-                            lastModification: Date.now(),
-                            lastModificationloc: jm.workerId
+                            cancelTime:Date.now(),                            
+                            lastModification: Date.now(),                            
                         }
                     }
 
@@ -104,10 +100,8 @@
                     console.assert(!diff.output)
 
                     diff[j.isRemote?'debugRemote':'debug'] = {
-                        updateTime:Date.now(),
-                        updateTimeloc: jm.workerId,
-                        lastModification: Date.now(),
-                        lastModificationloc: jm.workerId
+                        updateTime:Date.now(),                        
+                        lastModification: Date.now()
                     }
 
                     if (diff.state.progress && diff.state.progress.valueOf() == 1) {
@@ -120,7 +114,7 @@
                             outputDiff = undefined
                             console.warn('got output', outputDiff)
                         }
-                        console.log('Merging j ', j.path.valueOf(), diff)
+
                         j.merge(diff, !j.isRoot)
                         j.onUpdate(j, diff, outputDiff)
                     }
@@ -130,13 +124,10 @@
             Object.defineProperty(jp, 'ret', { value:function ret(detail, log)
             {
                 var j = this
-                j.exception2localError('ret', function ret_()
-                {
+                j.exception2localError('ret', function ret_() {
                     //console.trace('j-' + j.id + ' ret')
-
                     if (j.state.type != 'returned') {
                         clearTimeout(j.timer)
-
                         var diff = {
                             state: {
                                 progress: 1,
@@ -145,21 +136,16 @@
                                 log:log,
                                 lastWorker: jm.workerId
                             },
-                            [j.isRemote?'debugRemote':'debug']:{
-                                returnTime:Date.now(),
-                                returnTimeloc: jm.workerId,
-                                lastModification: Date.now(),
-                                lastModificationloc: jm.workerId
+                            [j.isRemote?'debugRemote':'debug']: {
+                                returnTime:Date.now(),                                
+                                lastModification: Date.now()
                             }
                         }
-
-                        console.log('Merging j ', j.path.valueOf(), diff)
                         j.merge(diff, !j.isRoot)
                         j.onUpdate(j, diff)
                         j.onReturn(j, diff)
                     }
-                    else
-                    {
+                    else {
                         console.assert(false, 'double return '
                                             + j.state.detail + '/' + + j.state.log
                                             + ' --> ' + detail + '/' + log)
@@ -189,28 +175,29 @@
                     }
                 }
 
-                console.group('%c ' + this.id + ' delegates to ' + args.type, 'background:violet')
+                q.logGroup(this.id + ' delegates to ' + args.type, 'violet', ()=> {
 
-                this.merge({ workflow:{
-                        type: args.type,
-                        pAa: this.state.progress.valueOf(),
-                        count: args.count
-                    }},
-                    !this.isRoot
-                )
-                this.updateJob({ state:{
-                    type:'running',
-                    detail:'delegating',
-                    log:args.desc
-                }})
+                    this.merge({ workflow:{
+                            type: args.type,
+                            pAa: this.state.progress.valueOf(),
+                            count: args.count
+                        }},
+                        !this.isRoot
+                    )
 
-                this.onCancel = j=> this.subjobs.forEach(sj=> {
-                    if(sj.state.type.valueOf() != 'returned')
-                        sj.cancel()
+                    this.updateJob({ state:{
+                        type:'running',
+                        detail:'delegating',
+                        log:args.desc
+                    }})
+
+                    this.onCancel = j=> this.subjobs.forEach(sj=> {
+                        if(sj.state.type.valueOf() != 'returned')
+                            sj.cancel()
+                    })
+
+                    jm.jl[args.type + 'Logic'](this, args)
                 })
-
-                jm.jl[args.type + 'Logic'](this, args)
-                console.groupEnd()
             }})
 
             //-------------------------------------------------------------------------------------
@@ -236,7 +223,7 @@
                             log:log
                         }
                     }
-                    this.merge(diff, !this.isRoot)
+                    this.merge(diff)
                     this.onUpdate(this, diff)
                     this.onReturn(this, detail)
                 }
@@ -250,28 +237,7 @@
 
             Object.defineProperty(jp, 'exception2localError', { value:function e2le(ttype, action)
             {
-               var cmap = {
-                    call:         '#FFD900',
-                    update:       '#A5F7B8',
-                    cancel:       '#EAB0F1',
-                    ret:          '#FF0000',
-                }
-                var color = cmap[ttype] || 'black'
-                var css = 'background:'+color
-                if (color == 'black') css += ';text-decoration:underline;  color:white'
-                css += ';font-weight:lighter;'
-                console.group('%c'+ttype + ' ' + this.path, css,  ' ' + this.desc)
-
-                try
-                {
-                    action()
-                }
-                catch(e)
-                {
-                    console.error('local error: ' + e.stack)
-                    this.onLocalError(e.message === 'recoverable' ? 'recoverable' : 'fatal', e.stack)
-                }
-                console.groupEnd()
+                q.addJob(ttype, this, action)
             }})
 
             //-------------------------------------------------------------------------------------
@@ -320,9 +286,12 @@
             if (!diff.debug) diff.debug = {
                 node:jm.workerId,
                 host:jm.host,
+
                 lastModification: Date.now(),
-                lastModificationloc: jm.workerId
+                //lastModificationloc: jm.workerId
             }
+            diff.debug.createTime = Date.now()
+
             if (!diff.onCancel) diff.onCancel = j=> j.ret('canceled', 'default cancel')
             if (!diff.onUpdate) diff.onUpdate = j=> { /*gui update | parent updaet */ }
             if (!diff.onReturn) diff.onReturn = j=> { /*subjoblogic */ }
@@ -383,47 +352,61 @@
             }
         }}
 
+        /// TODO: begin, commit+send (mit one(e=>send(e)) vorm commit()?)
+        // oder so lang er lebt? weil ander könntne ihn auch ändern
+
         jm.onReceive = function(c, parsed, evalInAppContext, app, pduSize)
         {
             var job = jm.remoteJobs[parsed.id] // jm.remoteJobs ?== app.model.jobs
             if (!job)
             {
                 var jd = jm.job(parsed.diff.unpack(evalInAppContext))
-
+                jd.isRemote = true
+                //jd.isRoot = true // todo: causes double return
+                jd.desc = '↷ ' + jd.desc
                 console.assert(jd.state)
                 console.assert(jd.debug)
 
                 // jedes jd. kann auch in realjob gemacht werden
-                jd.onUpdate = (j, diff, o)=> {
+                /*jd.onUpdate = (j, diff, o)=> {
                     //sim.log('job', 'log', '⟶', diff, o)
                     c.send(jobMsg('updateJob', jd.id, diff, o))
-                }
-                jd.isRemote = true
-                //jd.isRoot = true // todo: causes double return
-                jd.desc = '↷ ' + jd.desc
+                }*/
 
                 app.update('model.jobs.'+jd.id, jd)
                 job = app.model.jobs[jd.id]
 
+                app.commit('flush workaround (dont send back)')
+
+                app.on('commit', egal=> {
+                           if (!job.changes) {
+                               console.log('############### no changes!!!')
+                            return
+                           }
+                    console.log('############### commiting', JSON.stringify(job.changes.diff,0,4))
+                    var msg = jobMsg('updateJob', jd.id, job.changes.diff)
+                    console.log('############### sending', JSON.stringify(msg,0,4))
+                    c.send(msg)
+                })
+
                 // job.onReturn => unregister
                 jm.remoteJobs[jd.id] = job
             }
-            parsed.diff.state[parsed.type+'-InBytes'] = (job.state[parsed.type+'-InBytes']|0) + pduSize
 
+            parsed.diff.state[parsed.type+'-InBytes'] = (job.state[parsed.type+'-InBytes']|0) + pduSize
             // call / cancel / update / return
             job[parsed.type](parsed.diff, parsed.odiff)
+
+
+            //var msg = jobMsg('updateJob', job.id, job.changes.diff)
+            //console.log('############### sending', JSON.stringify(msg,0,4))
+            //c.send(msg)
         }
 
-        jm.jobTime = function(j)
-        {
+        jm.jobTime = function(j) {
             var debug = j.debug
-
             if (!debug.callTime)
                 return 0
-
-            console.assert(j.isRemote ||
-                           debug.lastModificationloc.valueOf() == debug.callTimeloc.valueOf(), j.state)
-
             return debug.lastModification.valueOf() - debug.callTime.valueOf()
         }
 

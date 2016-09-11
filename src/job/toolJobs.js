@@ -23,7 +23,7 @@
             },
             onCall: function(j)
             {
-                xmlhttp.onreadystatechange = ()=> j.exception2localError('Message From Ajax ' + xmlhttp.readyState, ()=>
+                xmlhttp.onreadystatechange = ()=> q.addJob('Message From Ajax ' + xmlhttp.readyState, j, ()=>
                 {
                     if (canceled) // TODO: or not running
                     {
@@ -43,7 +43,7 @@
                             j.updateJob(diff)
 
                         else if (xmlhttp.readyState < 4 && xmlhttp.status == 200)
-                            j.updateJob(diff)
+                        {}//    j.updateJob(diff)
 
                         else if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
                         {

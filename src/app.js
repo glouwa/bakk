@@ -15,12 +15,21 @@ var tj       = require('./src/job/toolJobs.js')
 var mvj      = require('./src/types/mvj.js')
 var pSet     = require('./src/types/pSet.js')
 
+//-------------------------------------------------------------------------------------------
+
+q            = require('./src/q.js')
+
+app = mvj.model('', {
+    wsUrl: 'ws://' + config.server.wshost + ':' + config.server.wsport,
+    clientId: 'unknown',
+    model: {}
+})
+
+
 sim.config = config.clientDefaultSimConfig
 
 var osDir = os.type() == 'Linux' ? 'posix64' : 'dotnet'
-
 var binDir = 'bin/' + osDir + '/'
-
 // nicht hin schaun
 var jf = jff.jm()
 jf.jl = jl
@@ -30,22 +39,8 @@ jf.host = os.hostname()
 tj.jm = jf
 tj.config = config
 mvj.jm = jf
-
-//-------------------------------------------------------------------------------------------
-
-var app = mvj.model('', {
-    wsUrl: 'ws://' + config.server.wshost + ':' + config.server.wsport,
-    clientId: 'unknown',
-    model: {}
-})
-
-/*
-function callUiJob(args)
-{
-    console.group('%cMessage From UI','text-decoration:underline; background-color:black; color:white;')
-    rootJob(args).call()
-    console.groupEnd()
-}*/
+mvj.app = app
+q.app = app
 
 function rootJob(args)
 {
@@ -59,7 +54,7 @@ function rootJob(args)
 
 // called by Net --------------------------------------------------------------------------
 
-app.onMessage = function(c, parsed, pduSize)
+appOnMessageDefault = function(c, parsed, pduSize)
 {
     var channelHandlers =
     {
@@ -71,24 +66,16 @@ app.onMessage = function(c, parsed, pduSize)
 
         onJobMessage: function(c, parsed, pduSize)
         {
-            console.group('%cMessage from ' + c.id,'text-decoration:underline; background-color:black; color:white;')
-
-            try
-            {
+            q.addRoot('Message from Connection ' + c.id, ()=> {
                 sim.log('job', 'log', '⟵', pduSize, parsed)
                 jf.onReceive(c, parsed, code=> eval(code), app, pduSize)
-            }
-            catch(e)
-            {
-                console.error(e.stack)
-            }
-            console.groupEnd()
+            })
         }
 
     }['on'+parsed.type+'Message'](c, parsed.payload, pduSize)
 }
 
-app.onNetworkStateChange = function(state, connection)
+function appOnNetworkStateChangeWithLog(state, connection)
 {
     var stateHandlers =
     {
