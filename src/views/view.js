@@ -1,3 +1,11 @@
+function modelType(m)
+{
+    var              result = undefined
+    if (m && m.type) result = m.type.valueOf()
+    if (!result)     result = m === undefined ? 'undefined' : typeof m.valueOf()
+    return result // fuction und view sollte hier unterschieden werden
+}
+
 function compositeUpdate(args)
 {
     var childViews = {}
@@ -47,7 +55,7 @@ function itemGridView(psetModel, delegate)
     }
 
     var view =  document.createElement('div')
-        view.id = 'database'        
+        view.id = 'database'
         var info =  document.createElement('div')
             info.id = 'info'
             var workers =  document.createElement('div')
@@ -83,5 +91,3 @@ function itemGridView(psetModel, delegate)
 
     return view
 }
-
-

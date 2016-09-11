@@ -16,7 +16,7 @@ function jobPlotGant(view, jobModel)
     var w = 550
     var h = 300
     var m = { top:30, right:10, bottom:30, left:80 }
-    var data = { /*circles:[],*/ jobs:[]/*, clines:[] */}    
+    var data = { /*circles:[],*/ jobs:[]/*, clines:[] */}
     var t = 500//750
     var mergeDotR = 5
     var uiUpdateDotR = 6
@@ -74,7 +74,7 @@ function jobPlotGant(view, jobModel)
             .domain(['commits'].concat(data.jobs.map(d=> d.id.valueOf())))
 
         this.xAxis = d3.axisBottom().scale(this.x)
-        this.yAxis = d3.axisLeft().scale(this.y)            
+        this.yAxis = d3.axisLeft().scale(this.y)
 
         this.clip = this.vis.append('clipPath')
             .attr('id', 'clip')
@@ -209,7 +209,7 @@ function jobPlotGant(view, jobModel)
     d3g.redrawAll = function(t) {
         var vist = this.vis.transition()
         vist.select(".x.axis")
-            .duration(t)            
+            .duration(t)
             .call(this.xAxis)
 
         vist.select(".y.axis")
@@ -256,4 +256,76 @@ function jobPlotGant(view, jobModel)
 
     d3g.init()
     return d3g
+}
+
+function jobPlot(jobModel)
+{
+    var view = document.createElement('div')
+        view.className = 'plot'
+        var pv = jobStateWithLogView(jobModel, jpViewFactory({ caption:false, log:true, width:'100%' }))
+            pv.style.width = '100%'
+            pv.style.margin = '-1 0 0 0'
+        var gv = jobStateGantD3View(jobModel)
+        var aView = undefined
+        view.appendChild(pv)
+        view.appendChild(gv)
+
+    gv.d3handler.onFocus= function(e) {
+        if (aView) {
+            view.removeChild(aView)
+            aView = undefined
+        }
+        if (e) {
+            aView = autoView(e.__data__)
+            aView.style.borderStyle = 'dashed none none none'
+            aView.style.borderWidth = 1;
+            aView.style.borderColor = '#B0B0B0'
+            view.appendChild(aView)
+        }
+    }
+    return view
+}
+
+function jobStateGantD3View(jobModel)
+{
+    var view = document.createElement('div')
+        view.style.margin = '10'
+        view.d3handler = jobPlotGant(view, jobModel)
+
+    function addJob(jm) {
+        view.d3handler.addJob(jm)
+        jm.state.on('change', changes=> view.d3handler.addUiUpdate(jm, changes))
+
+        updateJob({ newMembers:jm }, jm.path)
+        jm.on('change', updateJob)
+
+        if (jm.subjobs)
+        {
+            //jm.subjobs.forEach((v, k, idx)=> addJob(v))
+            console.warn('+++++++++++++++++++++', jm.id.valueOf(), Object.keys(jm.subjobs))
+        }
+    }
+
+    function updateJob(changes, nodeId) {
+
+        function updateSubjobs(changes) {
+            if (changes.newMembers)
+                changes.newMembers.forEach((v, k, idx)=> addJob(v))
+        }
+
+        if (changes.newMembers)
+            if (changes.newMembers.subjobs) {
+                console.warn('+++++++++++++++++++++', Object.keys(changes.newMembers.subjobs))
+                updateSubjobs({ newMembers:changes.newMembers.subjobs })
+                changes.newMembers.subjobs.on('change', updateSubjobs)
+            }
+    }
+
+    var beginLastCommit = new Date()
+    addJob(jobModel)
+    view.d3handler.addCommit(jobModel, beginLastCommit, new Date())
+    jobModel.on('commit', ()=> beginLastCommit = new Date())
+    jobModel.on('endCommit', ()=> view.d3handler.addCommit(jobModel, beginLastCommit, new Date()))
+
+    return view
 }

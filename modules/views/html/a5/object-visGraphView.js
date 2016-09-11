@@ -1,17 +1,3 @@
-function systemView(model)
-{
-    var system = document.createElement('div')
-        system.classList.add('networkNodes')
-        var nodes = listView(
-            model,
-            networkNodeView,
-            'networkView',
-            (v, k, idx)=> typeof v !== 'function' && k !== 'currentTransaction'
-        )
-        nodes.style.margin = '30 0'
-        system.appendChild(nodes)
-    return system
-}
 
 function systemGraphView(networkModel)
 {
@@ -114,9 +100,9 @@ function systemGraphView(networkModel)
 
         if (changes.deletedMembers)
             changes.deletedMembers.forEach(function(v, k, idx)
-            {                
-                data.nodes.remove({ id:v.path })                
-                data.edges.remove({ id:changes.sender.path + ' -to- ' + v.path })
+            {
+data.nodes.remove({ id:v.path })
+                e({ id:changes.sender.path + ' -to- ' + v.path })
             })
     }
 
@@ -145,5 +131,3 @@ function systemGraphView(networkModel)
     networkModel.on('change', update)
     return view
 }
-
-

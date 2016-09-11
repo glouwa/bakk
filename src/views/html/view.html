@@ -2,73 +2,81 @@
     <head>
         <meta charset="UTF-8">
 
-        <link href="view.css" rel="stylesheet" type="text/css" charset="UTF-8">        
-        <link href="a3Views/d3.css" rel="stylesheet" type="text/css" charset="UTF-8">
-        <link href="../../../modules/jobs/workerModel3d.css" rel="stylesheet" type="text/css" charset="UTF-8">
-        <link href="lib/vis/dist/vis.css" rel="stylesheet" type="text/css" charset="UTF-8">
-
-
-        <!--<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>-->
+        <link  href="../../../modules/jobs/workerModel3d.css" rel="stylesheet">
         <script src="https://d3js.org/d3.v4.js"></script>
+        <!--<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>-->
 
-        <script src="lib/HackTimer.js"           charset="UTF-8"></script>
-        <script src="lib/jquery-1.11.3.js"       charset="UTF-8"></script>
-        <script src="lib/jquery.color-2.1.0.js"  charset="UTF-8"></script>
-        <script src="lib/ace/ace.js"             charset="utf-8"></script>
-        <script src="lib/vis/dist/vis.js"        charset="utf-8"></script>
+        <script src="../../../modules/views/html/htmlBasics.js"></script>
 
-        <script src="lineViews/decorators.js"    charset="UTF-8"></script>
-        <script src="lineViews/primitives.js"    charset="UTF-8"></script>
-        <script src="lineViews/comboBox.js"      charset="UTF-8"></script>
-        <script src="lineViews/labeledSlider.js" charset="UTF-8"></script>
+        <link  href="../../../modules/views/html/lib/vis/dist/vis.css" rel="stylesheet">
+        <script src="../../../modules/views/html/lib/HackTimer.js"></script>
+        <script src="../../../modules/views/html/lib/jquery-1.11.3.js"></script>
+        <script src="../../../modules/views/html/lib/jquery.color-2.1.0.js"></script>
+        <script src="../../../modules/views/html/lib/ace/ace.js"></script>
+        <script src="../../../modules/views/html/lib/vis/dist/vis.js"></script>
 
-        <script src="a3Views/decorators.js"      charset="UTF-8"></script>
-        <script src="a3Views/graphView.js"       charset="UTF-8"></script>
-        <script src="a3Views/networkNodeView.js" charset="UTF-8"></script>
-        <script src="a3Views/networkView.js"     charset="UTF-8"></script>
-        <script src="a3Views/jobStatusView.js"   charset="UTF-8"></script>
-        <script src="a3Views/d3gant.js"          charset="UTF-8"></script>
-        <script src="a3Views/jobView.js"         charset="UTF-8"></script>
-        <script src="a3Views/projectView.js"     charset="UTF-8"></script>
+        <script src="../../../modules/views/html/primitive/decorators.js"></script>
+        <script src="../../../modules/views/html/primitive/primitives.js"></script>
+        <script src="../../../modules/views/html/primitive/job-buttonView.js"></script>
+        <script src="../../../modules/views/html/primitive/selectable-comboBoxView.js"></script>
+        <script src="../../../modules/views/html/primitive/number-labeledSlider.js"></script>
+        <script src="../../../modules/views/html/primitive/object-autoJobButtonView.js"></script>
 
-        <script src="../../config.js"            charset="UTF-8"></script>
-        <script src="../../sim.js"               charset="UTF-8"></script>
-        <script src="../../messages.js"          charset="UTF-8"></script>
-        <script src="../../tools.js"             charset="UTF-8"></script>
-        <script src="../../q.js"                 charset="UTF-8"></script>
+        <script src="../../../modules/views/html/line/object-autoView.js"></script>
+        <script src="../../../modules/views/html/line/job-lineView.js"></script>
+        <script src="../../../modules/views/html/line/file-lineView.js"></script>
 
-        <script src="../../network/browserWs.js" charset="UTF-8"></script>
+        <link  href="../../../modules/views/html/a5/d3.css" rel="stylesheet">
+        <script src="../../../modules/views/html/a5/decorators.js"></script>
+        <script src="../../../modules/views/html/a5/graphView.js"></script>
+        <script src="../../../modules/views/html/a5/job-d3gantView.js"></script>
+        <script src="../../../modules/views/html/a5/job-progressLineView.js"></script>
+        <script src="../../../modules/views/html/a5/job-progressTreeView.js"></script>
+        <script src="../../../modules/views/html/a5/job-runView.js"></script>
+        <script src="../../../modules/views/html/a5/job-visGantView.js"></script>
+        <script src="../../../modules/views/html/a5/job-visGraphView.js"></script>
+        <script src="../../../modules/views/html/a5/network-listView.js"></script>
+        <script src="../../../modules/views/html/a5/node-panelView.js"></script>
+        <script src="../../../modules/views/html/a5/object-a5lazyExpanderView.js"></script>
+        <script src="../../../modules/views/html/a5/object-autoView.js"></script>
+        <script src="../../../modules/views/html/a5/object-visGraphView.js"></script>
 
-        <script src="../../job/job.js"           charset="UTF-8"></script>
-        <script src="../../job/jobLogic.js"      charset="UTF-8"></script>
-        <script src="../../job/toolJobs.js"      charset="UTF-8"></script>
+        <script src="../../../modules/views/html/a5/project-editView.js"></script>
 
-        <script src="../../types/mvj.js"         charset="UTF-8"></script>
-        <script src="../../types/network.js"     charset="UTF-8"></script>
-        <script src="../../types/project.js"     charset="UTF-8"></script>
-        <script src="../../types/pSet.js"        charset="UTF-8"></script>
+        <script src="../../config.js"></script>
+        <script src="../../sim.js"></script>
+        <script src="../../messages.js"></script>
+        <script src="../../tools.js"></script>
+        <script src="../../q.js"></script>
 
-        <script src="client.js"                  charset="UTF-8"></script>
-        <script src="view.js"                    charset="UTF-8"></script>
-        <script src="htmlBasics.js"              charset="UTF-8"></script>
-        <script src="setView.js"                 charset="UTF-8"></script>
+        <script src="../../network/browserWs.js"></script>
+
+        <script src="../../job/job.js"></script>
+        <script src="../../job/jobLogic.js"></script>
+        <script src="../../job/toolJobs.js"></script>
+
+        <script src="../../types/mvj.js"></script>
+        <script src="../../types/network.js"></script>
+        <script src="../../types/project.js"></script>
+        <script src="../../types/pSet.js"></script>
+
+        <script src="../view.js"></script>
+
+        <link  href="view.css" rel="stylesheet">
+        <script src="client.js"></script>
 
     </head>
     <body id="body" onload="appInit()">
         <div id="workspace">
-
-            <div id="footer">
-                <div id="thisId"></div>
-                <a href="../../../doc/bsc/Abschlussarbeit.pdf">
-                    <div id="connectionState"></div>
-                    <div id="connectionDate"></div>
-                </a>
-            </div>
-
-            <div id="modelTabPaper" class="paper" style="float:left;"></div>
-            <!--<div id="projectTabPaper" class="paper" style="float:left;" ></div>-->
+            <div id="modelTabPaper" class="paper" style="float:left;"></div>            
             <div id="jobTabPaper" class="paper" style="float:left;"></div>            
-
-         </div>
+        </div>
+        <div id="footer">
+            <div id="thisId"></div>
+            <a href="../../../doc/bsc/Abschlussarbeit.pdf">
+                <div id="connectionState"></div>
+                <div id="connectionDate"></div>
+            </a>
+        </div>
     </body>
 </html>

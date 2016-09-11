@@ -18,8 +18,9 @@ function jobHeaderView(jobModel)
     return view
 }
 
+
 function jobAllView(jobModel)
-{    
+{
     var tab = a3Frame(jobModel,  jobHeaderView)
         //tab.className = 'search'
         var starterArgs = a3View(jobModel.params)
@@ -51,4 +52,3 @@ function jobAllView(jobModel)
     tab.appendChild(statusTab)
     return tab
 }
-
