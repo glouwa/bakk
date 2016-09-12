@@ -3,8 +3,8 @@ var archy = require('archy')
 var logUpdate = require('log-update')
 
 eval(fs.readFileSync('../app.js')+'')
-eval(fs.readFileSync('../types/project.js')+'')
-eval(fs.readFileSync('../types/project.js')+'')
+eval(fs.readFileSync('./modules/types/project.js')+'')
+//eval(fs.readFileSync('../types/project.js')+'')
 
 var messageHandlers = clientMessageHandlerFactory('C', 'Client', [], ()=> aProjectJob().call())
 

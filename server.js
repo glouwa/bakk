@@ -1,9 +1,27 @@
 var fs = require('fs')
 
 eval(fs.readFileSync('src/app.js')+'')
-eval(fs.readFileSync('src/types/project.js')+'')
+//eval(fs.readFileSync('src/types/project.js')+'')
 
 jf.workerId = 'S₀'
+
+//-------------------------------------------------------------------------------------------
+
+var network = require('./src/network/nodeWs').network
+network.onConnectionChanged = onNetworkStateChange
+network.onMessage = appOnMessageDefault
+network.sim = sim
+network.listen()
+
+//-------------------------------------------------------------------------------------------
+
+var connect = require('connect')
+var serveStatic = require('serve-static')
+connect().use(serveStatic('./')).listen(config.server.httpport)
+
+//-------------------------------------------------------------------------------------------
+
+
 
 //-------------------------------------------------------------------------------------------
 
@@ -114,21 +132,5 @@ var messageHandlers =
         network.sendMulticast(receivers, channelMsg)
     }
 }
-
-//-------------------------------------------------------------------------------------------
-
-var network = require('./src/network/nodeWs').network
-network.onConnectionChanged = onNetworkStateChange
-network.onMessage = appOnMessageDefault
-network.sim = sim
-network.listen()
-
-//-------------------------------------------------------------------------------------------
-
-var connect = require('connect')
-var serveStatic = require('serve-static')
-connect().use(serveStatic('./')).listen(config.server.httpport)
-
-//-------------------------------------------------------------------------------------------
 
 

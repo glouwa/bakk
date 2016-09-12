@@ -9,11 +9,11 @@ var messages = require('./src/messages.js')
 var tools    = require('./src/tools.js')
 
 var jff      = require('./src/job/job.js')
-var jl       = require('./src/job/jobLogic.js')
+var jl       = require('./src/job/workflows.js')
 var tj       = require('./src/job/toolJobs.js')
 
-var mvj      = require('./src/types/mvj.js')
-var pSet     = require('./src/types/pSet.js')
+var mvj      = require('./src/mvj.js')
+var pSet     = require('./modules/types/pSet.js')
 
 //-------------------------------------------------------------------------------------------
 
@@ -24,7 +24,6 @@ app = mvj.model('', {
     clientId: 'unknown',
     model: {}
 })
-
 
 sim.config = config.clientDefaultSimConfig
 

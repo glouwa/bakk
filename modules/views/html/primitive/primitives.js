@@ -41,7 +41,8 @@ viewCollection.appendView = function(model)
         try
         {
             var diff = eval('({' + varvalue.value + '})')
-            model.update(diff)
+            model.merge(diff)
+            model.commit(diff)
             varvalue.value = ''
         }
         catch(e)

@@ -8,7 +8,7 @@ var app = mvj.model('', {
 
 function callUiJob(args)
 {
-    q.addRoot('Message From UI ' + args.desc, ()=>{
+    q.addRoot('Message From UI ' + args.desc, ()=> {
         rootJob(args).call()
     })
 }
@@ -28,143 +28,140 @@ function rootJob(args)
 
 // called by GUI --------------------------------------------------------------------------
 
-function appInit()
-{
-    q.addRoot('App init', ()=> {
+function appInit() { q.addRoot('App init', ()=> {
 
-        sim.config = config.clientDefaultSimConfig
+    sim.config = config.clientDefaultSimConfig
 
-        // nicht hin schaun
-        jf.jl = jl
-        jf.workerId = undefined
-        jf.host = undefined
-        jf.nextFreeId = 0
-        tj.jm = jf
-        tj.config = config
-        mvj.jm = jf
-        mvj.app = app
-        q.app = app
+    // nicht hin schaun
+    jf.jl = jl
+    jf.workerId = undefined
+    jf.host = undefined
+    jf.nextFreeId = 0
+    tj.jm = jf
+    tj.config = config
+    mvj.jm = jf
+    mvj.app = app
+    q.app = app
 
-        app.clientId.on('change', function(changes)
-        {
-            jf.workerId = 'C' + Number(app.clientId).toSubscript()
-            jf.host = 'Browser'
-            document.title = jf.workerId
-            $('#thisId').text(jf.workerId)
-        })
-
-        // network -----------------------------------------------------
-
-        network.onMessage = appOnMessage
-        network.onConnectionChanged = appOnNetworkStateChange
-        network.connect(app.wsUrl.valueOf())
-        mvj.onCommit = function(path, diff)
-        {
-            if (network.connections[0])
-            {
-                var msg = messages.networkInfoMsg(path, diff)
-                var channelMsg = messages.channelMsg('Ws', msg)
-                node: network.connections[0].send(channelMsg)
-
-                sim.log('app', 'log', '⟶', msg)
-            }
-            else
-            {
-                // todo:
-            }
-        }
-
-        // projects ----------------------------------------------------
-
-        app.model.update({
-            type: 'Model',
-            jobs: { type:'Set<Job>' },
-            store: { type:'Store' },
-            projects: // fileset(path, 'Set<Project>', (filename)=> project(filename))
-            {
-                type:'Set<Project>',
-                '↻': function(j) {
-                    this.merge({
-                        '↻': 'deadbeef',
-                        'services': {
-                            type:'Set<Project>',
-                            '✕': function free(j) {},
-                            '🖥 Start workers':                       project('modules/jobs/overlordWorkers.js'),
-                            '☠ Kill all':                            project('modules/jobs/workerKill.js'),
-                        },
-                        'tests': {
-                            type:'Set<Project>',
-                            '✕': function free(j) {},
-                            '▸': function run(j) {
-                                // this =  tests
-                                //var projectMembers = this.filter(i=> i.type == 'project')
-
-                                //$('#jobTab')[0].add(j.id, { content:jobAllView(j) } )
-
-                                var projectMembers = [
-                                    this['💻 server cmd'],
-                                    this['📂 server folder'],
-                                    this['🗩 server output'],
-                                    this['↷ local paralell AJAX'],
-                                    this['🗩 local output'],
-                                    this['🐼 Process fracturing folder on workers'],
-                                    this['🐁 Process empty jobs on worker'],
-                                    this['❄ Find similar 3d models on worker'],
-                                    this['ℙ Find prime numbers with C++ on workers'],
-                                ]
-
-                                j.updateJob({ state:{}}, projectMembers)
-
-                                var pjobs = projectMembers.map(i=> {
-                                    //return ()=> jf.job({ params:i.service.args, onCall:i.service.src })
-
-                                    return ()=> jf.job({
-                                        desc:i.desc,
-                                        //args:
-                                        onCall: j=> i['▸'](j),
-
-                                    })
-                                })
-                                j.updateJob({ state:{}}, pjobs)
-
-                                j.delegate({ type:'sequence', job:pjobs })
-
-                                //j.delegateToSequence(projectMembers.map(i=> new Job(i))
-                            },
-                            '🐼 Process fracturing folder on workers':    project('modules/jobs/workerBacc0.js'),
-                            '🐁 Process empty jobs on worker':            project('modules/jobs/workerBacc1.js'),
-                            '❄ Find similar 3d models on worker':        project('modules/jobs/workerModel3d.js'),
-                            'ℙ Find prime numbers with C++ on workers':  project('modules/jobs/workerPrimeCpp.js'),
-                            '💢 server fragment folder':                  project('modules/jobs/serverFragmentFolder.js'),
-                            '💻 server cmd':                              project('modules/jobs/serverCmd.js'),
-                            '📂 server folder':                           project('modules/jobs/serverFolder.js'),
-                            '🗩 server output':                           project('modules/jobs/serverOutput.js'),
-                            '❄ local find 3d models':                    project('modules/jobs/localSetIteration.js'),
-                            '↷ local paralell AJAX':                     project('modules/jobs/localAjax.js'),
-                            '🗩 local output':                            project('modules/jobs/localOutput.js'),
-                        },
-                    })
-                    j.ret('ok', '+11 projects')
-                }
-            },
-            registry:
-            {
-                type:'Registry',
-                config: config,
-                views: viewCollection,
-                lineViews:{},
-                primitiveViews:{},
-                graphViews:{},
-                types: { type:'Set<Type>' }
-            },
-        })
-
-        $('#modelTabPaper').append(tab('modelTab'))
-        $('#jobTabPaper').append(tab('jobTab'))
-
-        //$('#modelTab')[0].add('☍', { content:a3View(app.model) })
+    app.clientId.on('change', function(changes)
+    {
+        jf.workerId = 'C' + Number(app.clientId).toSubscript()
+        jf.host = 'Browser'
+        document.title = jf.workerId
+        $('#thisId').text(jf.workerId)
     })
-}
+
+    // network -----------------------------------------------------
+
+    network.onMessage = appOnMessage
+    network.onConnectionChanged = appOnNetworkStateChange
+    network.connect(app.wsUrl.valueOf())
+    mvj.onCommit = function(path, diff)
+    {
+        if (network.connections[0])
+        {
+            var msg = messages.networkInfoMsg(path, diff)
+            var channelMsg = messages.channelMsg('Ws', msg)
+            node: network.connections[0].send(channelMsg)
+
+            sim.log('app', 'log', '⟶', msg)
+        }
+        else
+        {
+            // todo:
+        }
+    }
+
+    // projects ----------------------------------------------------
+
+    app.model.update({
+        type: 'Model',
+        jobs: { type:'Set<Job>' },
+        store: { type:'Store' },
+        projects: // fileset(path, 'Set<Project>', (filename)=> project(filename))
+        {
+            type:'Set<Project>',
+            '↻': function(j) {
+                this.merge({
+                    '↻': 'deadbeef',
+                    'services': {
+                        type:'Set<Project>',
+                        '✕': function free(j) {},
+                        '🖥 Start workers':                       project('modules/jobs/overlordWorkers.js'),
+                        '☠ Kill all':                            project('modules/jobs/workerKill.js'),
+                    },
+                    'tests': {
+                        type:'Set<Project>',
+                        '✕': function free(j) {},
+                        '▸': function run(j) {
+                            // this =  tests
+                            //var projectMembers = this.filter(i=> i.type == 'project')
+
+                            //$('#jobTab')[0].add(j.id, { content:jobAllView(j) } )
+
+                            var projectMembers = [
+                                this['💻 server cmd'],
+                                this['📂 server folder'],
+                                this['🗩 server output'],
+                                this['↷ local paralell AJAX'],
+                                this['🗩 local output'],
+                                this['🐼 Process fracturing folder on workers'],
+                                this['🐁 Process empty jobs on worker'],
+                                this['❄ Find similar 3d models on worker'],
+                                this['ℙ Find prime numbers with C++ on workers'],
+                            ]
+
+                            j.updateJob({ state:{}}, projectMembers)
+
+                            var pjobs = projectMembers.map(i=> {
+                                //return ()=> jf.job({ params:i.service.args, onCall:i.service.src })
+
+                                return ()=> jf.job({
+                                    desc:i.desc,
+                                    //args:
+                                    onCall: j=> i['▸'](j),
+
+                                })
+                            })
+                            j.updateJob({ state:{}}, pjobs)
+
+                            j.delegate({ type:'sequence', job:pjobs })
+
+                            //j.delegateToSequence(projectMembers.map(i=> new Job(i))
+                        },
+                        '🐼 Process fracturing folder on workers':    project('modules/jobs/workerBacc0.js'),
+                        '🐁 Process empty jobs on worker':            project('modules/jobs/workerBacc1.js'),
+                        '❄ Find similar 3d models on worker':        project('modules/jobs/workerModel3d.js'),
+                        'ℙ Find prime numbers with C++ on workers':  project('modules/jobs/workerPrimeCpp.js'),
+                        '💢 server fragment folder':                  project('modules/jobs/serverFragmentFolder.js'),
+                        '💻 server cmd':                              project('modules/jobs/serverCmd.js'),
+                        '📂 server folder':                           project('modules/jobs/serverFolder.js'),
+                        '🗩 server output':                           project('modules/jobs/serverOutput.js'),
+                        '❄ local find 3d models':                    project('modules/jobs/localSetIteration.js'),
+                        '↷ local paralell AJAX':                     project('modules/jobs/localAjax.js'),
+                        '🗩 local output':                            project('modules/jobs/localOutput.js'),
+                    },
+                })
+                j.ret('ok', '+11 projects')
+            }
+        },
+        registry:
+        {
+            type:'Registry',
+            config: config,
+            views: viewCollection,
+            lineViews:{},
+            primitiveViews:{},
+            graphViews:{},
+            types: { type:'Set<Type>' }
+        },
+    })
+
+    $('#modelTabPaper').append(tab('modelTab'))
+    $('#jobTabPaper').append(tab('jobTab'))
+
+    //$('#modelTab')[0].add('☍', { content:a3View(app.model) })
+})}
 
 // called by Net --------------------------------------------------------------------------
 

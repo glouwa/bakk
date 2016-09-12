@@ -1,7 +1,7 @@
 var fs = require('fs')
 
 eval(fs.readFileSync('src/app.js')+'')
-eval(fs.readFileSync('src/types/project.js')+'')
+//eval(fs.readFileSync('src/types/project.js')+'')
 
 var messageHandlers = clientMessageHandlerFactory('O', 'Overlord', [], ()=>{})
 
