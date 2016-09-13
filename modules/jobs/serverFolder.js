@@ -3,7 +3,7 @@ function folderPrototype()
     return {
         type:'Folder',
         '↻':function(j) {
-            j.update({
+            j.merge({
                 state:{ progress:0.1, type:'running', log:'setting output reference' },
                 output:this
             })
@@ -52,9 +52,9 @@ function folderPrototype()
 
 function insertFolder(j, diff)
 {
-    app.update('model.store.'+j.id, { type:'Folder', directory:j.params.directory.valueOf() })
+    app.mergePath('model.store.'+j.id, { type:'Folder', directory:j.params.directory.valueOf() })
 
-    j.update({
+    j.merge({
         state:{ progress:0.1, type:'running', log:'setting output reference' },
         output: app.model.store[j.id.valueOf()]
     })

@@ -76,7 +76,7 @@ viewCollection.stringView = function(name, model)
             varvalue.ondragstart = ev=> ev.preventDefault()
         view.appendChild(varvalue)
 
-    varvalue.onchange = ()=> model.update(varvalue.value)
+    varvalue.onchange = ()=> model.merge(varvalue.value)
     var update = ()=> varvalue.value = model.valueOf()
     update()
     model.on('change', update)
@@ -90,7 +90,7 @@ viewCollection.textView = function(name, model)
             varvalue.className = 'textView'
         view.appendChild(varvalue)
 
-    varvalue.onchange = ()=> model.update(varvalue.value)
+    varvalue.onchange = ()=> model.merge(varvalue.value)
     var update = ()=> varvalue.value = model.valueOf()
     update()
     model.on('change', update)
@@ -107,7 +107,7 @@ viewCollection.numberView = function(name, model)
             varvalue.ondragstart = ev=> ev.preventDefault()
         view.appendChild(varvalue)
 
-    varvalue.onchange = ()=> model.update(varvalue.value)
+    varvalue.onchange = ()=> model.merge(varvalue.value)
     var update = ()=> varvalue.value = model.valueOf()
     update()
     model.on('change', update)
@@ -122,7 +122,7 @@ viewCollection.booleanView = function(name, model)
             varvalue.className = 'primitiveValue'            
         view.appendChild(varvalue)
 
-    varvalue.onchange = ()=> model.update(varvalue.checked)
+    varvalue.onchange = ()=> model.merge(varvalue.checked)
     view.update = ()=> varvalue.checked = model.valueOf()
     view.update()
     model.on('change', view.update)    
@@ -224,7 +224,7 @@ function codeEdit(model)
         console.log(func.toString())
 
         if (func)
-            model.update(func)
+            model.merge(func)
     })
 
     return code

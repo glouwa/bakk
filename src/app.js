@@ -47,7 +47,7 @@ function rootJob(args)
     // unddie starten keine jobs (cli?)
     args.desc = 'GUI RootJob'
     var jd = jf.job(args)
-    app.update('model.jobs.'+jd.id, jd)
+    app.mergePath('model.jobs.'+jd.id, jd)
     return app.model.jobs[jd.id.valueOf()]
 }
 
@@ -100,7 +100,7 @@ var clientMessageHandlerFactory = (shortType, type, cap, onConnected)=> { return
             hostname: os.hostname()
         }
 
-        //app.networkInfo.update(mynodeInfo)
+        //app.networkInfo.merge(mynodeInfo)
         var msg = messages.networkInfoMsg('model.network.' + app.clientId, mynodeInfo)
         var channelMsg = messages.channelMsg('Ws', msg)
         network.connections[0].send(channelMsg)
@@ -108,7 +108,7 @@ var clientMessageHandlerFactory = (shortType, type, cap, onConnected)=> { return
         onConnected()
     },
 
-    onNetworkInfo: (c, parsed)=> app.update(parsed.path, parsed.diff),
+    onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
     onReload: (c, parsed) => {}
 }}
 

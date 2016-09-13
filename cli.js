@@ -71,7 +71,7 @@ function jobToArchyNode(j) {
 }
 
 function aProjectJob() {
-    app.model.update({
+    app.model.merge({
         type: 'Model',
         jobs: { type:'Set<Job>' },
         store: { type:'Store' },

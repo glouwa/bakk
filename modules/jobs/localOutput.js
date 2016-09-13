@@ -1,7 +1,7 @@
 function localOutput(j, diff)
 {
-    app.update('model.store.'+j.id, {})
-    j.update({
+    app.mergePath('model.store.'+j.id, {})
+    j.merge({
         state:{ progress: 0.1, type: 'running', log:'setting output reference' },
         output: app.model.store[j.id.valueOf()]
     })
@@ -29,7 +29,7 @@ function localOutput(j, diff)
         }
     )
 
-    // throw new Error('try it')
+    //throw new Error('try it')
     // try also to forget to return
     j.ret('ok', 'no exceptions')
 }

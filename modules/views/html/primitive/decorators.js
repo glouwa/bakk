@@ -52,24 +52,6 @@ function hoverDiv(model)
     return view
 }
 
-function lineFrameAppender(name, model)
-{
-    im = { 'null':'␀', 'undefined':'␥', 'string':'𝕊', 'number':'ℕ', 'number':'ℝ', 'boolean':'𝔹' }
-
-    var view = hoverDiv(model)
-        view.className = 'lineFramePrimitive'
-
-        var icon = document.createElement('div')
-            icon.innerText = '+' //i
-            icon.style.float = 'left'
-            icon.style.width = 15
-            icon.style.color = '#D0D0D0'
-            icon.style.marginLeft = 6
-
-        view.appendChild(icon)
-    return view
-}
-
 function lineFramePrimitive(name, model)
 {
     var n = name.charAt(0).toUpperCase() + name.slice(1)        
@@ -126,7 +108,7 @@ function lineFrame(name, model, content)
         view.appendChild(autoButtons)
         /*view.update = function(changes)
         {
-            content.update(changes)
+            content.merge(changes)
             type.innerText = modelType(model)
         }*/
     return view
@@ -164,9 +146,9 @@ function lineExpander(args)
             header.indicator = document.createElement('div')
             header.indicator.style.float = 'left'
             header.indicator.style.width = 15
-            header.indicator.style.marginTop = 1
+            header.indicator.style.marginTop = 0
             header.indicator.style.color = '#D0D0D0'
-            header.indicator.style.marginLeft = 6
+            header.indicator.style.marginLeft = 4
         var content = document.createElement('div')
             content.style.display = 'inline-block'
             content.style.width = '100%'
@@ -176,7 +158,7 @@ function lineExpander(args)
             getContent()
 
         content.style.display = view.expanded ? 'block' : 'none'
-        header.indicator.innerText = view.expanded ? '🞃' : '🞂' //⌄⌵› ⯈⯆  🞃🞂
+        header.indicator.innerText = view.expanded ? '⏷' : '⏵' //⌄⌵› 🞃⯈⯆  🞂🞃🞂
     }
     view.update()
 

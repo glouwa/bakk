@@ -1,7 +1,7 @@
 function findPrimes(j, diff)
 {
-    app.update('model.store.'+j.id, { type:'DistSet' })
-    j.update({
+    app.mergePath('model.store.'+j.id, { type:'DistSet' })
+    j.merge({
         state:{ progress:0.1, type:'running', log:'setting output reference' },
         output: app.model.store[j.id.valueOf()]
     })
@@ -84,7 +84,7 @@ function primeStatsView(outputModel)
         var newItemCount = Object.keys(outputModel).length + statModel.primeNumberCount
         //var newItemCount = payload.length + statModel.itemCount
 
-        statModel.update({
+        statModel.merge({
             messageCount: newMsgCount,
             primeNumberCount: newItemCount,
             test: {

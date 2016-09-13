@@ -54,7 +54,7 @@
             var set = this
             for (var idx = set.begin.valueOf(); idx <= set.end.valueOf(); idx++)
                 if (set.data[idx])
-                    set.data.update(idx.toString(), 'deadbeef')
+                    set.data.mergePath(idx.toString(), 'deadbeef')
         }*/
 
         set.load = function(j)
@@ -63,14 +63,14 @@
 
             // set range
             if (j.params)
-                set.update({ begin:j.params.begin, end:j.params.end })
+                set.merge({ begin:j.params.begin, end:j.params.end })
 
             if (!set.begin.valueOf() == undefined || !set.end.valueOf() == undefined)
                 throw new Error('set.begin or set.end is undefined')
 
             // create items
             for (var idx = set.begin.valueOf(); idx <= set.end.valueOf(); idx++)                
-                set.data.update(idx.toString(), set.ictor(idx))
+                set.data.mergePath(idx.toString(), set.ictor(idx))
 
             // load items
             j.delegate({
@@ -86,7 +86,7 @@
             var idxStr = idx.toString()
 
             if (!set.data[idxStr])
-                set.data.update(idxStr, set.ictor(idx))
+                set.data.mergePath(idxStr, set.ictor(idx))
 
             console.assert(set.data[idxStr])
 

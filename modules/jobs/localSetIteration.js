@@ -1,6 +1,6 @@
 function localFind3dModel(j, diff)
 {
-    j.update({
+    j.merge({
         state:{ progress:0.1, type:'running', log:'setting output reference' },
         output: { type:'model3dResultSet' }
     })
@@ -49,7 +49,7 @@ new Object({
                             url: this.url.valueOf(),
                             onData: (j, s, d)=> {
                                 if (element['↻'])
-                                    element.update({
+                                    element.merge({
                                         features: JSON.parse(d).features,
                                         '↻':'deadbeef',
                                         '✕':j=> {},

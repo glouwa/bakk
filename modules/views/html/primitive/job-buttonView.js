@@ -73,7 +73,7 @@ function jobRootButon(args)// name, args, src, noIcons, obj)   // der erstellt e
                     else          args.src(j, params)              // project service?
                 }
             })
-            app.update('model.jobs.'+jd.id, jd)
+            app.mergePath('model.jobs.'+jd.id, jd)
             job = app.model.jobs[jd.id.valueOf()]
             $('#jobTab')[0].add(job.id, { content:jobAllView(job) }/*, 'inBg'*/)
         }

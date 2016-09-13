@@ -48,6 +48,7 @@
             var args = [].slice.call(arguments, 1)
             var callbacks = this._callbacks['$' + event]
 
+            /*
             if (this.path.startsWith('model.network') || this.path == 'model') {}
             else {
                 if (callbacks && callbacks.length > 0) {
@@ -58,7 +59,7 @@
                         console.debug('changes: '+JSON.stringify(Object.keys(arguments[1].changedMembers), 0, 4))
                     })
                 }
-            }
+            }*/
 
             if (callbacks) {
                 callbacks = callbacks.slice(0)
@@ -82,7 +83,7 @@
             || typeof o === 'function'
     }
 
-    function box(content)
+    function box(content, path)
     {      
         if (isPrimitive(content))
         {
@@ -120,8 +121,8 @@
             {
                 box.__proto__ = exports.jm.jobPrototype
 
-                if(content.isProxy)
-                    exports.jm.remoteJobs[content.id.valueOf()] = box
+                if(content.isProxy && !path.startsWith('model.tmp'))
+                        exports.jm.remoteJobs[content.id.valueOf()] = box
             }
 
             if (content.type == 'Folder' && app.model.registry.types.folder)
@@ -170,42 +171,25 @@
 
     //-----------------------------------------------------------------------------------------
 
-    function mergeAndCommit(diff)
+    function mergePath(path, diff) // merge by relative path
     {
-        //this.add()
-        this.merge(diff)
-        //this.commit()
-        exports.onCommit(this.path, diff)
-    }
-
-    function update(a1, a2)
-    {
-        var pathUsed = arguments.length === 2 ? true:false
-        var wdiff = pathUsed ? path2wrapper(a1, a2) : a1
-        var path = pathUsed ? a1 : this.path
-
-        if (!path.startsWith('model.network'))
-            console.log('Merging u ' + path, JSON.stringify(wdiff, 0, 4))
-
-        return this.merge_(wdiff)
-    }
-
-    function attachChanges(m, diff) {
-        console.assert(typeof diff !== 'undefined')
-        m.changes = m.changes || {
-            diff:diff,
-            sender:m,
-            newMembers:{},
-            deletedMembers:{},
-            changedMembers:{}
-        }
+        return this.merge(path2wrapper(path, diff))
     }
 
     function merge(diff)
     {
-        console.log('Merging x', this.path.valueOf(), JSON.stringify(diff, 0, 4))
+        //if (!path.startsWith('model.network'))
+        q.logBigMsg('Merging ' + this.path.valueOf(), JSON.stringify(diff, 0, 4))
         var fullDiff = path2wrapper(this.path.valueOf(), diff)
         exports.app.merge_(fullDiff)
+    }
+
+    function commit(msg)
+    {
+        q.logGroup('commit ' + this.path + ': ' + msg, 'white', ()=> {
+            exports.app.commit_()
+            exports.onCommit(this.path, 0)
+        })
     }
 
     function merge_(diff)
@@ -256,14 +240,6 @@
         return this
     }
 
-    function commit(msg)
-    {        
-        q.logGroup('commit ' + this.path + ': ' + msg, 'white', ()=> {
-            exports.app.commit_()
-            exports.onCommit(this.path, /*v.diff*/0)
-        })
-    }
-
     function commit_()
     {
         if (this.changes) {
@@ -280,7 +256,7 @@
             })
             this.emit('change', this.changes)
             this.emit('endCommit', this.changes)
-            this.log__.push(this.changes)
+            this.commitlog_.push(this.changes)
             this.changes = undefined
         }
         //else
@@ -301,6 +277,16 @@
             this.emit('change', changes)
     }
 
+    function attachChanges(m, diff) {
+        console.assert(typeof diff !== 'undefined')
+        m.changes = m.changes || {
+            diff:diff,
+            sender:m,
+            newMembers:{},
+            deletedMembers:{},
+            changedMembers:{}
+        }
+    }
 
     exports.model = function(path, initDiff)
     {
@@ -310,7 +296,7 @@
         else if (initDiff.path)
             return initDiff //console.trace('using boxedObj as initDiff\n' + initDiff.path +'\n'+ path)
 
-        var model = box(initDiff)        
+        var model = box(initDiff, path)
 
         Object.defineProperty(model, 'path',             { writable:true, value:path })
 
@@ -320,19 +306,18 @@
         Object.defineProperty(model, 'emit',             { value:Emitter.emit })
 
         //Object.defineProperty(model, 'begin',            { writable:true, value:begin })
-        Object.defineProperty(model, 'update',           { writable:true, value:update })
-        Object.defineProperty(model, 'merge',            { writable:true, value:merge })        
-        Object.defineProperty(model, 'mergeAndCommit',   { writable:true, value:mergeAndCommit })
+        Object.defineProperty(model, 'mergelog_',        { writable:true, value:[] })
+        Object.defineProperty(model, 'commitlog_',       { writable:true, value:[] })
+        Object.defineProperty(model, 'mergePath',        { writable:true, value:mergePath })
+        Object.defineProperty(model, 'merge',            { writable:true, value:merge })
         Object.defineProperty(model, 'commit',           { writable:false, value:commit })
-        Object.defineProperty(model, 'destroyRecursive', { writable:true, value:destroyRecursive })
-
-        Object.defineProperty(model, 'log__',            { writable:true, value:[] })
 
         Object.defineProperty(model, 'changes',          { writable:true })
         Object.defineProperty(model, 'lastcommit',       { writable:true })
 
         Object.defineProperty(model, 'merge_',           { writable:true, value:merge_ })
         Object.defineProperty(model, 'commit_',          { writable:false, value:commit_ })
+        Object.defineProperty(model, 'destroyRecursive', { writable:true, value:destroyRecursive })
 
         model.merge_(initDiff)
         return model

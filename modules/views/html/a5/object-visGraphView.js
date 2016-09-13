@@ -66,7 +66,7 @@ function systemGraphView(networkModel)
                         else
                         {
                             var initPos = getInitPos(v.path)
-                            data.nodes.add(Object.assign({
+                            data.nodes.update(Object.assign({
                                 id:v.path,
                                 model:v,
                                 x:initPos.x,
@@ -76,7 +76,7 @@ function systemGraphView(networkModel)
                             },
                             gc))
 
-                            data.edges.add({
+                            data.edges.update({
                                 id:parentPath + ' -to- ' + v.path,
                                 from:parentPath,
                                 to:v.path,
@@ -101,8 +101,8 @@ function systemGraphView(networkModel)
         if (changes.deletedMembers)
             changes.deletedMembers.forEach(function(v, k, idx)
             {
-data.nodes.remove({ id:v.path })
-                e({ id:changes.sender.path + ' -to- ' + v.path })
+                data.nodes.remove({ id:v.path })
+                //update({ id:changes.sender.path + ' -to- ' + v.path })
             })
     }
 

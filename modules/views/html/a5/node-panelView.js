@@ -18,7 +18,7 @@ error.pOfSelect = function(model)
         select.options.add(new Option(" on response",   "onResponse"))
         select.options.add(new Option("⇥ on terminate",   "onTerminate"))
 
-    select.onchange = ()=> model.pof.mergeAndCommit(select.value)
+    select.onchange = ()=> q.addRoot('pof select onchange', ()=> model.pof.merge(select.value))
     select.update = ()=> select.value = model.pof.valueOf()
     select.update()
     model.pof.on('change', select.update)
@@ -44,8 +44,8 @@ error.exceptionsSelect = function(model)
             recoverable.style.color = 'lightgray'
             recoverable.style.width = 20
 
-    fatal.onclick = ()=> model.value.mergeAndCommit('fatal')
-    recoverable.onclick = ()=> model.value.mergeAndCommit('recoverable')
+    fatal.onclick = ()=> q.addRoot('on fatal click', ()=> model.value.merge('fatal'))
+    recoverable.onclick = ()=> q.addRoot('on recoverable click', ()=> model.value.merge('recoverable'))
     var update = ()=> {
         recoverable.style.color = model.value.valueOf() === 'fatal' ? config.colors.disabledIcon : config.colors.enabledIcon
         fatal.style.color = model.value.valueOf() === 'fatal' ? config.colors.enabledIcon : config.colors.disabledIcon
@@ -127,7 +127,7 @@ function networkNodeSimConfig(nodeModel)
                     errorIcon.className = 'buttonRight'
                     errorIcon.innerText = v.icon.valueOf()
                     errorIcon.title = v.text.valueOf()
-                    errorIcon.onclick = ()=> v.active.mergeAndCommit(!v.active.valueOf())
+                    errorIcon.onclick = ()=> q.addRoot('on error icon click', ()=> v.active.merge(!v.active.valueOf()))
                     errorIcon.update = ()=> errorIcon.style.color = v.active.valueOf() ? '#00CC66':'#aaa'
                     errorIcon.update()
                     v.active.on('change', errorIcon.update)
@@ -159,7 +159,8 @@ function networkNodeSimConfig(nodeModel)
                         var errorVal = viewFactory[k](v)
                             errorVal.style.float = 'right'
 
-                    errorIconActive.onclick = errorText.onclick = line.onclick = ()=> v.active.mergeAndCommit(false)
+                    errorIconActive.onclick = errorText.onclick = line.onclick =
+                        ()=> q.addRoot('on error icon click', ()=> v.active.merge(false))
                     errorText.update = ()=> errorView.style.display = v.active.valueOf() ? 'block':'none'
                     errorText.update()
                     v.active.on('change', errorText.update)

@@ -1,7 +1,7 @@
 function find3dModel(j, diff)
 {
-    app.update('model.store.'+j.id, { type:'model3dResultSet' })
-    j.update({
+    app.mergePath('model.store.'+j.id, { type:'model3dResultSet' })
+    j.merge({
         state:{ progress:0.1, type:'running', log:'setting output reference' },
         output: app.model.store[j.id.valueOf()]
     })
@@ -30,7 +30,7 @@ function find3dModel(j, diff)
                         ()=> jf.job({ desc: 'load compared', onCall:cj=> jw.params.set.get(cj, jw.params.selected.valueOf(), 'load') }),
                         ()=> jf.job({ desc: 'load partition', onCall:cj=> jw.params.set.load(cj) }),
                         ()=> jf.job({ desc: 'comparing', onCall:cj=>
-                            setTimeout(()=> { // todo: syncbug
+                            //setTimeout(()=> { // todo: syncbug
                                 jw.params.set.visit(cj, (vj, i, idx, p)=> {
                                     var l  = 'compared ' + jw.params.set.begin + '-' + idx
                                     var v1 = i.features
@@ -48,7 +48,7 @@ function find3dModel(j, diff)
                                     vj.updateJob({ state:{ progress:p, type:'running', log:l } }, m)
 
                                 })})
-                                },10)
+                                //},10)
                     )
                 })
             })
@@ -176,15 +176,13 @@ new Object({
                     id: idx,
                     url: 'data/3dModel/vectorfiles/m' + idx + '.json',
                     tUrl: 'data/3dModel/thumbnails/m' + idx + '_thumb.png',
-                    '↻': function(j)
-                    {
+                    '↻': function(j) {
                         var element = this
                         return tj.ajaxJob({
                             url: this.url.valueOf(),
-                            onData: (j, s, d)=>
-                            {
+                            onData: (j, s, d)=> {
                                 if (element['↻'])
-                                    element.update({
+                                    element.merge({
                                         features: JSON.parse(d).features,
                                         '↻': 'deadbeef',
                                         '✕': function free(j) { },

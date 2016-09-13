@@ -25,7 +25,7 @@ connect().use(serveStatic('./')).listen(config.server.httpport)
 
 //-------------------------------------------------------------------------------------------
 
-app.update({
+app.merge({
     clientId: 0,
     model: {
         network: {
@@ -105,7 +105,7 @@ function onNetworkStateChange(state, connection)
 
             var path = 'model.network.'+connection.id
 
-            try { app.update(path, 'deadbeef') } catch(e) {}
+            try { app.mergePath(path, 'deadbeef') } catch(e) {}
 
             var msg = messages.networkInfoMsg(path, 'deadbeef')
             var channelMsg = messages.channelMsg('Ws', msg)
@@ -125,7 +125,7 @@ var messageHandlers =
 
     onNetworkInfo: function(c, parsed)
     {
-        app.update(parsed.path, parsed.diff)
+        app.mergePath(parsed.path, parsed.diff)
 
         var receivers = Object.keys(network.connections).without([c.id.toString()])
         var channelMsg = messages.channelMsg('Ws', parsed)

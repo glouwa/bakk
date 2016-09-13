@@ -23,7 +23,7 @@ function jobAllView(jobModel)
 {
     var tab = a3Frame(jobModel,  jobHeaderView)
         //tab.className = 'search'
-        var starterArgs = a3View(jobModel.params)
+        //var starterArgs = a3View(jobModel.params)
         var statusTab = a3View(jobModel)/*a3expander({
             model:jobModel,
             expanded:true,
@@ -48,7 +48,7 @@ function jobAllView(jobModel)
     update({ newMembers:jobModel })
     jobModel.on('change', update)
 
-    tab.appendChild(starterArgs)
+    //tab.appendChild(starterArgs)
     tab.appendChild(statusTab)
     return tab
 }

@@ -1,6 +1,6 @@
 function multipleAjaxCalls(j, diff)
 {
-    j.update({
+    j.merge({
         state:{ progress:0.1, type:'running', log:'setting output reference' },
         output: {}
     })

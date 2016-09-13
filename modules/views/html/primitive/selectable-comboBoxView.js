@@ -23,7 +23,7 @@ function comboBox(psetModel, selectionModel, itemDelegate)
             comboContent.replaceChild(newSelectedItemView, comboContent.childNodes[0])
 
             selectedIndex = index
-            selectionModel.update(index)
+            selectionModel.merge(index)
         }
         combo.onblur()
     }

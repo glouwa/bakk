@@ -16,21 +16,16 @@
         return exports.jm.job({
             desc: args.url,
             params: args,
-            onCancel: function()
-            {
+            onCancel: function() {
                 canceled = true
                 xmlhttp.abort()
             },
-            onCall: function(j)
-            {
-                xmlhttp.onreadystatechange = ()=> q.addJob('Message From Ajax ' + xmlhttp.readyState, j, ()=>
-                {
-                    if (canceled) // TODO: or not running
-                    {
+            onCall: function(j) {
+                xmlhttp.onreadystatechange = ()=> q.addJob('Message From Ajax ' + xmlhttp.readyState, j, ()=> {
+                    if (canceled) { // TODO: or not running
                         j.ret('canceled', 'xhr borted')
                     }
-                    else
-                    {
+                    else {
                         var diff = {
                             state: {
                                 progress: 0.15 + xmlhttp.readyState / 5,
@@ -42,11 +37,11 @@
                         if (xmlhttp.readyState === 1)
                             j.updateJob(diff)
 
-                        else if (xmlhttp.readyState < 4 && xmlhttp.status == 200)
-                        {}//    j.updateJob(diff)
+                        else if (xmlhttp.readyState < 4 && xmlhttp.status == 200) {
+                            //    j.updateJob(diff)
+                        }
 
-                        else if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
-                        {
+                        else if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                             args.onData(j, diff.state, xmlhttp.responseText)
                             j.ret('ok', 'xhr ok')
                         }
@@ -55,9 +50,7 @@
                             j.ret('fatal', 'error at xhr ' + xmlhttp.status)
                     }
                 })
-
-                var rrul = (inBrowser ? '/../../../' : '') + args.url
-                xmlhttp.open("GET", rrul, true)
+                xmlhttp.open("GET", args.url, true)
                 xmlhttp.send()
             }
         })
@@ -107,12 +100,10 @@
             }
         })
 
-        if (args.justStart && args.justStart.valueOf())
-        {
+        if (args.justStart && args.justStart.valueOf()) {
             j.ret('ok', process.pid + ' no exception') //  at spawn/exec, register on error makes no senes since we want to return asap')
         }
-        else
-        {
+        else {
             function dataHandler(data, eventEmitter) {
                 j.exception2localError('Message from Process', ()=> {
                     if (!canceled)

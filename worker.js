@@ -54,4 +54,4 @@ function updateWorkerInfo(pf)
     osUtils.cpuFree(updateWorkerInfo)
 }
 
-osUtils.cpuFree(updateWorkerInfo)
+//osUtils.cpuFree(updateWorkerInfo)

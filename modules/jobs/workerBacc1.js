@@ -1,7 +1,7 @@
 function getCmdSet(j, diff)
 {
-    app.update('model.store.'+j.id, {})
-    j.update({
+    app.mergePath('model.store.'+j.id, {})
+    j.merge({
         state:{ progress:0.1, type:'running', log:'setting output reference' },
         output: app.model.store[j.id.valueOf()]
     })

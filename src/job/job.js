@@ -55,7 +55,7 @@
                     }
 
                     // apply                    
-                    j.merge(diff, !j.isRoot) // model aktualisieren
+                    j.merge(diff) // model aktualisieren
                     j.onUpdate(j, diff)      // parent jobs ...
                     j.onCall(j, diff)        // user event
                 })
@@ -85,7 +85,7 @@
                     }
 
                     console.log('Merging j ', j.path.valueOf(), diff)
-                    j.merge(diff, !j.isRoot)
+                    j.merge(diff)
                     j.onUpdate(j, diff)
                     j.onCancel(j)
                 })
@@ -98,24 +98,28 @@
                 {
                     //console.trace('j-' + j.id + ' updateJob')
                     console.assert(!diff.output)
+                    //console.assert(j.state.type °= 'returned')
+                    if (j.state.type == 'returned')
+                        console.log('########## updating returned job' + j.state.type != 'returned')
 
                     diff[j.isRemote?'debugRemote':'debug'] = {
                         updateTime:Date.now(),                        
                         lastModification: Date.now()
                     }
 
-                    if (diff.state.progress && diff.state.progress.valueOf() == 1) {
+                    //if (diff.state.progress && diff.state.progress.valueOf() == 1) {
+                    if (diff.state.type == 'returned') {
                         console.assert(!outputDiff)
                         j.ret(diff.state.detail, diff.state.log + ' (update to return)')
                     }
                     else {
                         if (j.output && outputDiff) {
-                            j.output.update(outputDiff)
+                            j.output.merge(outputDiff)
                             outputDiff = undefined
                             console.warn('got output', outputDiff)
                         }
 
-                        j.merge(diff, !j.isRoot)
+                        j.merge(diff)
                         j.onUpdate(j, diff, outputDiff)
                     }
                 })
@@ -141,7 +145,7 @@
                                 lastModification: Date.now()
                             }
                         }
-                        j.merge(diff, !j.isRoot)
+                        j.merge(diff)
                         j.onUpdate(j, diff)
                         j.onReturn(j, diff)
                     }
@@ -181,8 +185,7 @@
                             type: args.type,
                             pAa: this.state.progress.valueOf(),
                             count: args.count
-                        }},
-                        !this.isRoot
+                        }}
                     )
 
                     this.updateJob({ state:{
@@ -208,7 +211,7 @@
                 {
                     // same as ret, but without exception2localError
                     // to avoid endless recursionif theres a error at return
-                    console.assert(j.state.type != 'returned',
+                    console.assert(this.state.type != 'returned',
                                           'double return '
                                         + this.state.detail + '/' + + this.state.log
                                         + ' --> ' + detail + '/' + log)
@@ -221,6 +224,10 @@
                             type: 'returned',
                             detail: detail,
                             log:log
+                        },
+                        [this.isRemote?'debugRemote':'debug']: {
+                            returnTime:Date.now(),
+                            lastModification: Date.now()
                         }
                     }
                     this.merge(diff)
@@ -368,21 +375,22 @@
                 console.assert(jd.debug)
 
                 // jedes jd. kann auch in realjob gemacht werden
+                jd.onUpdate = (j, diff, o)=> {} // brauch ma
                 /*jd.onUpdate = (j, diff, o)=> {
                     //sim.log('job', 'log', '⟶', diff, o)
                     c.send(jobMsg('updateJob', jd.id, diff, o))
                 }*/
 
-                app.update('model.jobs.'+jd.id, jd)
+                app.mergePath('model.jobs.'+jd.id, jd)
                 job = app.model.jobs[jd.id]
 
                 app.commit('flush workaround (dont send back)')
 
                 app.on('commit', egal=> {
-                           if (!job.changes) {
-                               console.log('############### no changes!!!')
-                            return
-                           }
+                    if (!job.changes) {
+                        console.log('############### no changes!!!')
+                        return
+                    }
                     console.log('############### commiting', JSON.stringify(job.changes.diff,0,4))
                     var msg = jobMsg('updateJob', jd.id, job.changes.diff)
                     console.log('############### sending', JSON.stringify(msg,0,4))

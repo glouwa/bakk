@@ -1,6 +1,6 @@
 function serverOuput(j, diff)
 {
-    j.update({
+    j.merge({
         state:{ progress:0.1, type:'running', log:'setting output reference' },
         output: {}
     })
@@ -30,7 +30,7 @@ new Object({
         src: serverOuput,
         args: {
             text: 'this text will appear in output',            
-            timeout: 1500
+           // timeout: 1500
         },
     },
     tests: []

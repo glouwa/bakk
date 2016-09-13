@@ -3,7 +3,7 @@ function fragmentFolderSet()
     return {
         type:'Set<FragmentFolder>',
         '↻':function(j) {
-            j.update({
+            j.merge({
                 state:{ progress:0.1, type:'running', log:'setting output reference' },
                 output:this
             })
@@ -51,7 +51,7 @@ function fragmentFolder()
     return {
         type:'FragmentFolder',
         '↻':function(j) {
-            j.update({
+            j.merge({
                 state:{ progress:0.1, type:'running', log:'setting output reference' },
                 output:this
             })
@@ -97,12 +97,12 @@ function fragmentFolder()
 
 function insertFolder(j, diff)
 {
-    app.update(
+    app.mergePath(
         'model.store.'+j.id,
         { type:'Set<FragmentFolder>', dir:j.params.dir.valueOf() }
     )
 
-    j.update({
+    j.merge({
         state:{ progress:0.1, type:'running', log:'setting output reference' },
         output:app.model.store[j.id.valueOf()]
     })

@@ -114,7 +114,8 @@ function jobPlotGant(view, jobModel)
             .attr('fill', c)
             .attr('stroke-width', 1.5)
             .attr('stroke', '#fff')
-            .on('click', handleMouseClick)
+            .attr('cursor', 'pointer')
+            .on('click', d=> d3g.onFocus({ __data__:d.c } )) //handleMouseClick)
             .attr("cx", d=> this.x(d.t))
     }
 
@@ -136,6 +137,7 @@ function jobPlotGant(view, jobModel)
             .attr("class", "jline")
             .attr("y", -jobBarHeight/2)
             .attr("height", jobBarHeight)
+            .attr('cursor', 'pointer')
             //.attr('fill', '#ccc')
             .attr('fill', d=> config.getColor(d.state))
             .attr('stroke', '#fff')
@@ -144,7 +146,7 @@ function jobPlotGant(view, jobModel)
             .attr("x",     d=> this.x(getStartTime(d)))
             .attr("width", d=> this.x(getEndTime(d))-this.x(getStartTime(d)))
 
-        this.appendCircle(d3job, { t:new Date() }, uiUpdateDotR, '#ccc')
+        this.appendCircle(d3job, { t:new Date(), c:'created with parent' }, 4, '#ccc')
         this.appendCircle(d3job, { t:new Date(jm.debug.createTime) }, 4, config.jobStatTypeColorMap.idle)
         if (jm.debug.callTime)
             this.appendCircle(d3job, { t:new Date(jm.debug.callTime) }, 4, config.jobStatTypeColorMap.calling)
@@ -153,13 +155,19 @@ function jobPlotGant(view, jobModel)
             this.appendCircle(d3job, { t:new Date(jm.debug.returnTime) }, 4, config.getColor(jm.state))
     }
 
-    var ac=0
+    var uiUpdateConut = 0
     d3g.addUiUpdate = function(jm, changes) {
 
         var v = this.vis.select('.d3jobs').select("#d3job-"+jm.id.valueOf())
+        //var c = jm.id.valueOf() + JSON.stringify(changes.diff, 0, 4)
+        var diffCopy = JSON.parse(JSON.stringify(changes.diff, 0, 4))
+        var diffId = "focustmp-d3job-" + jm.id.valueOf() + '-' + uiUpdateConut++
+        app.model.merge({ tmp:{ [diffId]:diffCopy }})
+        var c = app.model.tmp[diffId]
+        //var c = diffCopy
 
-        this.appendCircle(v, { t:new Date() }, uiUpdateDotR, '#ccc')
-        this.appendCircle(v, { t:new Date(jm.debug.lastModification) }, 4, config.getColor(jm.state))
+        this.appendCircle(v, { t:new Date(), c:c }, uiUpdateDotR, '#ccc')
+        this.appendCircle(v, { t:new Date(jm.debug.lastModification), c:c }, 4, config.getColor(jm.state))
 
         this.updateDomain()
     }
@@ -294,16 +302,14 @@ function jobStateGantD3View(jobModel)
 
     function addJob(jm) {
         view.d3handler.addJob(jm)
-        jm.state.on('change', changes=> view.d3handler.addUiUpdate(jm, changes))
+        jm.on('change', changes=> view.d3handler.addUiUpdate(jm, changes))
 
         updateJob({ newMembers:jm }, jm.path)
         jm.on('change', updateJob)
 
-        if (jm.subjobs)
-        {
-            //jm.subjobs.forEach((v, k, idx)=> addJob(v))
-            console.warn('+++++++++++++++++++++', jm.id.valueOf(), Object.keys(jm.subjobs))
-        }
+        //if (jm.subjobs) { //jm.subjobs.forEach((v, k, idx)=> addJob(v))
+        //    console.warn('+++++++++++++++++++++', jm.id.valueOf(), Object.keys(jm.subjobs))
+        //}
     }
 
     function updateJob(changes, nodeId) {

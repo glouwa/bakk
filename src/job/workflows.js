@@ -1,51 +1,44 @@
 (function(exports)
 {
 
-    function every(o, p)
-    {
+    function every(o, p) {
         for (k in o)
             if (!p(o[k]))
                 return false
         return true
     }
 
-    function allHaveState(sjm, m, c)
-    {
-        return every(sjm, function(i)
-        {
+    function allHaveState(sjm, m, c) {
+        return every(sjm, function(i) {
             console.assert(i.state[m])
             return i.state[m].valueOf() == c
         })
     }
 
-    function resultState(parent)
-    {
-        if (allHaveState(parent.subjobs, 'detail', 'ok')) return 'ok'
-
+    function resultState(parent) {
+        if (allHaveState(parent.subjobs, 'detail', 'ok'))
+            return 'ok'
         if (parent.state.detail.valueOf() == 'canceling')
             if (allHaveState(parent.subjobs, 'type', 'returned')) return 'canceled'
             // todo: if some are failed --> parent = failed
-
         return 'failed'
     }
 
-    function countStateNot(sjm, state)
-    {
+    function countStateNot(sjm, state) {
         var jids = Object.keys(sjm)
         return jids.reduce((count, i)=> count + (sjm[i].state.type.valueOf() !== state ? 1:0), 0)
     }
 
-    function avgProgress(parent, pAa, jobCount)
-    {
+    function avgProgress(parent, pAa, jobCount) {
         if (!parent.subjobs)
             return pAa
 
         var jids = Object.keys(parent.subjobs)
         jobCount = jobCount || jids.length
 
-        var callProgress = 0.05 //parent.params.config.callProgress
-                         * countStateNot(parent.subjobs, 'idle')
-                         / jobCount
+        var callProgress  = 0.05 //parent.params.config.callProgress
+                          * countStateNot(parent.subjobs, 'idle')
+                          / jobCount
 
         var avgSjProgress = jids.reduce((sum, k)=> sum + parent.subjobs[k].state.progress.valueOf(), 0)
                           / jobCount
@@ -65,7 +58,7 @@
         var wc = parent.workflow.count ? parent.workflow.count.valueOf() : undefined
         sj.onUpdate = (j, sd, od)=> onSubjobUpdate(j, sd, od, parent, parent.workflow.pAa.valueOf(), wc)
         sj.onReturn = j=> onSubjobReturn(j, jidx)
-        parent.update('subjobs.'+sj.id, sj)
+        parent.mergePath('subjobs.'+sj.id, sj)
         return parent.subjobs[sj.id] || app.model.jobs[sj.id.valueOf()]
     }
 
@@ -137,8 +130,9 @@
     {
         // terminate strategy
         function onSubjobReturn() {
-            q.logGroup(args.type + ' onSjReturn ' + parent.id, 'violet', ()=> {
+            q.logGroup(args.type + ' onSjReturn ' + parent.id, 'violet', ()=> {               
                 if (parent.state.type != 'returned') // wenn newSj.call() sync dann ist parent schon zu, weil onr return die parents raus geht
+                    //args.end(lastCreatedIdx))
                     if (allHaveState(parent.subjobs, 'type', 'returned'))
                         parent.ret(resultState(parent), args.desc + ' ' + resultState(parent))
             })
@@ -150,9 +144,11 @@
             // kommt sofort in die parent.subjob liste
             var newSjInitDiff = args.job(lastCreatedIdx)
             var newSj = configureSubjob(newSjInitDiff, parent, lastCreatedIdx, onSubjobReturn)
-            newSj.call()
+            //newSj.call()
             lastCreatedIdx++
         }
+
+        parent.subjobs.forEach((v)=>v.call())
 
         console.assert(lastCreatedIdx > 0, 'subjoblogic with 0 subjobs?')
     }

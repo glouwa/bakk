@@ -19,7 +19,7 @@ function rootJob(args)
     args.isRoot = true
     var jd = jf.job(args)
 
-    app.update('model.jobs.'+jd.id, jd)
+    app.mergePath('model.jobs.'+jd.id, jd)
     var observableJob = app.model.jobs[jd.id.valueOf()]
 
     //$('#jobTab')[0].add(observableJob.id, { content:jobAllView(observableJob) }/*, 'inBg'*/)
@@ -43,8 +43,7 @@ function appInit() { q.addRoot('App init', ()=> {
     mvj.app = app
     q.app = app
 
-    app.clientId.on('change', function(changes)
-    {
+    app.clientId.on('change', changes=> {
         jf.workerId = 'C' + Number(app.clientId).toSubscript()
         jf.host = 'Browser'
         document.title = jf.workerId
@@ -56,10 +55,9 @@ function appInit() { q.addRoot('App init', ()=> {
     network.onMessage = appOnMessage
     network.onConnectionChanged = appOnNetworkStateChange
     network.connect(app.wsUrl.valueOf())
-    mvj.onCommit = function(path, diff)
-    {
-        if (network.connections[0])
-        {
+    mvj.onCommit = function(path, diff) {
+        /*
+        if (network.connections[0]) {
             var msg = messages.networkInfoMsg(path, diff)
             var channelMsg = messages.channelMsg('Ws', msg)
             node: network.connections[0].send(channelMsg)
@@ -69,12 +67,12 @@ function appInit() { q.addRoot('App init', ()=> {
         else
         {
             // todo:
-        }
+        }*/
     }
 
     // projects ----------------------------------------------------
 
-    app.model.update({
+    app.model.merge({
         type: 'Model',
         jobs: { type:'Set<Job>' },
         store: { type:'Store' },
@@ -167,33 +165,31 @@ function appInit() { q.addRoot('App init', ()=> {
 
 function appOnMessage(c, parsed, pduSize)
 {    
+    q.addRoot('app on "' + parsed.type + '" message ' + c.id + ' ('+pduSize+'b)', ()=>
     ({
         onWsMessage: (c, parsed)=> {
-
             sim.log('app', 'log', '⟵', parsed)
             var messageHandlers = {
 
                 onServerHallo: (c, parsed)=> {
 
-                    q.addRoot('ServerHallo1 from ' + c.id + ' ('+pduSize+'b)', ()=> {
-                        app.merge(parsed.diff) // pull
-                    })
+                    app.merge(parsed.diff) // pull
+                    app.commit('got my id')
 
-                    q.addRoot('ServerHallo2 from ' + c.id + ' ('+pduSize+'b)', ()=> {
-                        var mynodeInfo = {
-                            [app.clientId]:{
-                                type:'Client',
-                                id:jf.workerId,
-                                capabilitys:['JS'],
-                                simconfig:config.clientDefaultSimConfig,
-                                osType:'Browser',
-                                hostname:''
-                            }
+
+                    var mynodeInfo = {
+                        [app.clientId]:{
+                            type:'Client',
+                            id:jf.workerId,
+                            capabilitys:['JS'],
+                            simconfig:config.clientDefaultSimConfig,
+                            osType:'Browser',
+                            hostname:''
                         }
-
-                        app.model.network.merge(mynodeInfo)
-                        sim.config = app.model.network[app.clientId.valueOf()].simconfig
-                    })
+                    }
+                    app.model.network.merge(mynodeInfo)
+                    sim.config = app.model.network[app.clientId.valueOf()].simconfig
+                    app.commit('my properties')
 
                     // ui sollte nur ein mal passieren
                     var projectsDiv = document.createElement('div')
@@ -207,52 +203,50 @@ function appOnMessage(c, parsed, pduSize)
                         if (changes.deletedMembers && changes.deletedMembers.network)
                             projectsDiv.removeChild(projectsDiv.childNodes[1])
                     })
-                    //$('#modelTab')[0].add('☍', { content:a3View(app.model) })
+                    $('#modelTab')[0].add('a', { content:a3View(app) })
                     $('#modelTab')[0].add('🌐', { content:projectsDiv })
-                    $('#jobTab')[0].add('⥂', { content:a3View(app.model.jobs) })
+                    $('#modelTab')[0].add('☍', { content:a3View(app.model) })
+                    $('#jobTab')  [0].add('⥂', { content:a3View(app.model.jobs) })
                 },
-                onNetworkInfo: (c, parsed)=> app.update(parsed.path, parsed.diff),
+
+                onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
                 onReload:      (c, parsed)=> location.reload(true)
 
             }['on'+parsed.type](c, parsed)
         },
 
         onJobMessage: (c, parsed, pduSize)=> {
-
-            q.addRoot('Message from Connection ' + c.id, ()=> {
-                //sim.log('job', 'log', '⟵', pduSize, parsed)
-                console.info('%cjob', 'text-decoration:underline;', '⟵', pduSize, parsed)
-                jf.onReceive(c, parsed, code=> eval(code), app, pduSize)
-            })
+            //sim.log('job', 'log', '⟵', pduSize, parsed)
+            console.info('%cjob', 'text-decoration:underline;', '⟵', pduSize, parsed)
+            jf.onReceive(c, parsed, code=> eval(code), app, pduSize)
         }
 
-    })['on'+parsed.type+'Message'](c, parsed.payload, pduSize)
+    })['on'+parsed.type+'Message'](c, parsed.payload, pduSize))
 }
 
 function appOnNetworkStateChange(state, connection)
 {
-    q.addRoot('Message from ' + connection.id + ' ('+state+')', ()=>
-        ({
-            onConnecting:()=>
-            {
-                $('#thisId').text()
-                $('#connectionState').text('Auto reconnect to ' + app.wsUrl.valueOf()+ ' \u21c4')
-            },
-            onConnected:()=>
-            {
-                $('#thisId').text('Connected')
-                $('#connectionState').text('Connected to ' + app.wsUrl.valueOf())
-                $('#connectionDate').text('since ' + new Date())
-                app.model.merge({ network:networkType() })
-            },
-            onDisconnected:()=>
-            {
-                $('#thisId').text('')
-                $('#connectionState').text('Disconnected')
-                $('#connectionDate').text('')
-                app.model.merge({ network:'deadbeef' })
-            }
+    q.addRoot('Network state changed ' + connection.id + ' ('+state+')', ()=>
+    ({
+        onConnecting:()=>
+        {
+            $('#thisId').text()
+            $('#connectionState').text('Auto reconnect to ' + app.wsUrl.valueOf()+ ' \u21c4')
+        },
+        onConnected:()=>
+        {
+            $('#thisId').text('Connected')
+            $('#connectionState').text('Connected to ' + app.wsUrl.valueOf())
+            $('#connectionDate').text('since ' + new Date())
+            app.model.merge({ network:networkType() })
+        },
+        onDisconnected:()=>
+        {
+            $('#thisId').text('')
+            $('#connectionState').text('Disconnected')
+            $('#connectionDate').text('')
+            app.model.merge({ network:'deadbeef' })
+        }
 
-        })['on'+state]()
-    )
+    })['on'+state]())
 }

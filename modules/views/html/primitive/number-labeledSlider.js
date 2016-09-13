@@ -23,7 +23,7 @@ function labeledSlider(model, min, max, pre, post, precision, captionWidth)
             threshholdSlider.setAttribute('min', min*100)
             threshholdSlider.setAttribute('max', max*100)
 
-    threshholdSlider.oninput = ()=> model.mergeAndCommit(threshholdSlider.value/100)
+    threshholdSlider.oninput = ()=> q.addRoot('on slider change', ()=> model.merge(threshholdSlider.value/100))
     slider.update = function() {
         var newValue = model.valueOf()
         threshholdSlider.value = newValue * 100
