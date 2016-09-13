@@ -127,6 +127,8 @@ function appInit() { q.addRoot('App init', ()=> {
 
                             //j.delegateToSequence(projectMembers.map(i=> new Job(i))
                         },
+
+                               // TODO: lazy(project(...))  : lazy wrapet alle members von project
                         '🐼 Process fracturing folder on workers':    project('modules/jobs/workerBacc0.js'),
                         '🐁 Process empty jobs on worker':            project('modules/jobs/workerBacc1.js'),
                         '❄ Find similar 3d models on worker':        project('modules/jobs/workerModel3d.js'),
@@ -176,20 +178,25 @@ function appOnMessage(c, parsed, pduSize)
                     app.merge(parsed.diff) // pull
                     app.commit('got my id')
 
-
                     var mynodeInfo = {
-                        [app.clientId]:{
-                            type:'Client',
-                            id:jf.workerId,
-                            capabilitys:['JS'],
-                            simconfig:config.clientDefaultSimConfig,
-                            osType:'Browser',
-                            hostname:''
-                        }
+                        type:'Client',
+                        id:jf.workerId,
+                        capabilitys:['JS'],
+                        simconfig:config.clientDefaultSimConfig,
+                        osType:'Browser',
+                        hostname:''
                     }
-                    app.model.network.merge(mynodeInfo)
+
+                    var networkInfo = { [app.clientId]:mynodeInfo }
+
+                    app.model.network.merge(networkInfo)
                     sim.config = app.model.network[app.clientId.valueOf()].simconfig
                     app.commit('my properties')
+
+                     // todo: überleg da was besseres
+                    var msg = messages.networkInfoMsg('model.network.' + app.clientId, mynodeInfo)
+                    var channelMsg = messages.channelMsg('Ws', msg)
+                    network.connections[0].send(channelMsg)
 
                     // ui sollte nur ein mal passieren
                     var projectsDiv = document.createElement('div')

@@ -233,7 +233,6 @@
                     this.changes.changedMembers = this[id]
                     if (this[id].changes)
                         this.changes.diff[id] = this[id].changes.diff        // ää nein, nicht das ganze v
-
                 }
             }
         })
