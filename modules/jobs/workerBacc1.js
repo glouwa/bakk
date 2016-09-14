@@ -7,6 +7,7 @@ function getCmdSet(j, diff)
     })
 
     j.delegate(()=> jf.remoteProxyJob({
+        icon: 'Ⓟ',
         desc: 'delegating to server',
         node: network.connections[0],
         args: j.params,
@@ -20,6 +21,7 @@ function getCmdSet(j, diff)
                 count: elements,
                 desc: workers.length + ' worker, ' + elements + ' elements',
                 job: (idx, node)=> jf.remoteProxyJob({
+                    icon: '⛶',
                     desc: 'empty job',
                     node:node,
                     args:{},
@@ -32,7 +34,7 @@ function getCmdSet(j, diff)
 
 new Object({
     type: 'Project',
-    icon: 'B',
+    icon: '🐁Ⓓ',
     desc: 'Process empty jobs',
     service: {
         type: 'Service',

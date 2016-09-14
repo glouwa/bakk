@@ -6,6 +6,7 @@ function spawnCmd(j)
     })
 
     j.delegate(()=> jf.remoteProxyJob({
+        icon: '⌘',
         desc: 'delegate to server',
         args: j.params,
         node: network.connections[0],

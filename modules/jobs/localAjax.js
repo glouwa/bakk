@@ -20,7 +20,7 @@ function multipleAjaxCalls(j, diff)
 }
 
 new Object({
-    icon: '↷',
+    icon: '🔃*',
     desc: 'Multiple AJAX calls',
     service:
     {

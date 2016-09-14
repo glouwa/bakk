@@ -16,6 +16,7 @@ function callUiJob(args)
 function rootJob(args)
 {
     // todo: use this in view.createRootJob
+    args.icon = 'mai'
     args.isRoot = true
     var jd = jf.job(args)
 
@@ -101,7 +102,7 @@ function appInit() { q.addRoot('App init', ()=> {
                                 this['💻 server cmd'],
                                 this['📂 server folder'],
                                 this['🗩 server output'],
-                                this['↷ local paralell AJAX'],
+                                this['🔃* local paralell AJAX'],
                                 this['🗩 local output'],
                                 this['🐼 Process fracturing folder on workers'],
                                 this['🐁 Process empty jobs on worker'],
@@ -138,7 +139,7 @@ function appInit() { q.addRoot('App init', ()=> {
                         '📂 server folder':                           project('modules/jobs/serverFolder.js'),
                         '🗩 server output':                           project('modules/jobs/serverOutput.js'),
                         '❄ local find 3d models':                    project('modules/jobs/localSetIteration.js'),
-                        '↷ local paralell AJAX':                     project('modules/jobs/localAjax.js'),
+                        '🔃* local paralell AJAX':                     project('modules/jobs/localAjax.js'),
                         '🗩 local output':                            project('modules/jobs/localOutput.js'),
                     },
                 })
@@ -238,7 +239,7 @@ function appOnNetworkStateChange(state, connection)
         onConnecting:()=>
         {
             $('#thisId').text()
-            $('#connectionState').text('Auto reconnect to ' + app.wsUrl.valueOf()+ ' \u21c4')
+            $('#connectionState').text('Auto reconnect to ' + app.wsUrl.valueOf()+ ' ⇄')
         },
         onConnected:()=>
         {

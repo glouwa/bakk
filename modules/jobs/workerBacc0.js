@@ -7,6 +7,7 @@ function getCmdSet(j, diff)
     })
 
     j.delegate(()=> jf.remoteProxyJob({
+        icon: 'Ⓟ',
         desc: 'delegating to server',
         node: network.connections[0],
         args: j.params,
@@ -46,6 +47,7 @@ function getCmdSet(j, diff)
                 count: output.commands.length,
                 desc: workers.length + ' worker, ' + output.commands.length + ' elements',
                 job: (idx, node)=> jf.remoteProxyJob({
+                    icon:'⚙',
                     desc:output.commands[idx].dir,
                     node:node,
                     args:{ command:output.commands[idx], idx:idx, timeout:js.params.workerTimeout },
@@ -66,7 +68,7 @@ function getCmdSet(j, diff)
 
 new Object({
     type: 'Project',
-    icon: 'A',
+    icon: '🐈Ⓓ',
     desc: 'Process fragment folder',
     service: {
         type: 'Service',

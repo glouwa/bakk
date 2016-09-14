@@ -11,13 +11,15 @@ function folderPrototype()
             j.params.directory = this.directory
 
             j.delegate(()=> jf.remoteProxyJob({
+                icon: '📂',
+                desc: 'delegate to server and list files',
                 node: network.connections[0],
                 args: j.params,
                 realJob: (js, diff)=> {
+
                     var fs = require('fs')
                     var path = require('path')
                     var dir = js.params.directory.valueOf()
-
                     fs.readdir(
                         dir,
                         (err, files)=> js.exception2localError('Message from FS', ()=>
@@ -52,16 +54,17 @@ function folderPrototype()
 
 function insertFolder(j, diff)
 {
-    app.mergePath('model.store.'+j.id, { type:'Folder', directory:j.params.directory.valueOf() })
+    //app.mergePath('model.store.'+j.id, { type:'Folder', directory:j.params.directory.valueOf() })
 
     j.merge({
         state:{ progress:0.1, type:'running', log:'setting output reference' },
-        output: app.model.store[j.id.valueOf()]
+        output: { type:'Folder', directory:j.params.directory.valueOf() }
     })
 
     j.delegate(()=> jf.job({
+        icon: '↻',
         params:{},
-        onCall:lj=> app.model.store[j.id.valueOf()]['↻'](lj)
+        onCall:lj=> j.output['↻'](lj)
     }))
 }
 

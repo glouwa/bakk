@@ -14,6 +14,7 @@
         var canceled = false
 
         return exports.jm.job({
+            icon: '🔁', //⇌🔃🔄
             desc: args.url,
             params: args,
             onCancel: function() {
@@ -68,6 +69,7 @@
     exports.spawnJob = function(args)
     {
         return exports.jm.job({
+            icon: '⚙',
             desc: args.path?args.path.valueOf() + args.args:args.cmd.valueOf(),
             onCall:j=> exports.spawn(j, args)
         })

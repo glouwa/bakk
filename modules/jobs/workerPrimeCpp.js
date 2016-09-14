@@ -7,6 +7,7 @@ function findPrimes(j, diff)
     })
 
     j.delegate(()=> jf.remoteProxyJob({
+        icon: 'ⓟ',
         desc: 'delegating to server',
         args: j.params,
         node: network.connections[0],
@@ -17,6 +18,7 @@ function findPrimes(j, diff)
                 type: 'parallel',
                 end: idx=> idx < nodes.length,
                 job: idx=> jf.remoteProxyJob({
+                    icon: '⚙',
                     desc: 'starting process',
                     args: js.params.set.shrink(idx, nodes.length),
                     node: nodes[idx],

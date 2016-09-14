@@ -5,6 +5,7 @@ function project(url, noView)
     function projectJob(p, args)
     {     
         return jf.job({
+            icon:   p.icon,
             desc:   p.desc,
             params: args?args:p.service.args,
             onCall: (j, params)=> p.service.src(j, params),
@@ -15,7 +16,7 @@ function project(url, noView)
 
     function ajaxLoadJob(project)
     {
-        return tj.ajaxJob({
+        return tj.ajaxJob({                
             url: url,
             onData: (j, s, d)=>
             {

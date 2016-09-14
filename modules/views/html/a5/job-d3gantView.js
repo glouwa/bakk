@@ -3,6 +3,9 @@ var toSmallTimeSpan = date=> '' + date.getHours() +':'+
                                 date.getSeconds() +'.'+
                                 date.getMilliseconds()
 
+var jobToDomain  = j=> j.icon ? j.icon.valueOf() + ' ' +  j.id.valueOf() : j.id.valueOf()
+var buildDomain  = data=> ['commits'].concat(data.jobs.map(d=> jobToDomain(d)))
+
 //var getDebug     = function(j) { return j.debugRemote ? j.debugRemote : j.debug }
 var getDebug     = function(j) { return j.debug }
 var getColor     = function(j) { return config.getColor(j.state) }
@@ -71,7 +74,7 @@ function jobPlotGant(view, jobModel)
         this.y = this.yz0 = d3.scaleBand()
             .align(0)
             .range([m.top, h-m.bottom])
-            .domain(['commits'].concat(data.jobs.map(d=> d.id.valueOf())))
+            .domain(buildDomain(data))
 
         this.xAxis = d3.axisBottom().scale(this.x)
         this.yAxis = d3.axisLeft().scale(this.y)
@@ -101,7 +104,7 @@ function jobPlotGant(view, jobModel)
 
     d3g.updateDomain = function(){
         this.xz0.domain([beginTime, new Date()])
-        this.yz0.domain(['commits'].concat(data.jobs.map(d=> d.id.valueOf())))
+        this.yz0.domain(buildDomain(data))
     }
 
     //----------------------------------------------------------------------------------------
@@ -130,7 +133,7 @@ function jobPlotGant(view, jobModel)
             .datum(jm)
             .attr('id', 'd3job-'+jm.id.valueOf())
             .attr("class", "d3job")
-            .attr("transform", d=> 'translate(0,'+(this.y(d.id.valueOf()) + this.y.bandwidth()/2) +')')
+            .attr("transform", d=> 'translate(0,'+(this.y(jobToDomain(d)) + this.y.bandwidth()/2) +')')
 
         d3job.append("rect")
             .datum(jm)
@@ -228,7 +231,7 @@ function jobPlotGant(view, jobModel)
         var d3jobs = vist.select('.d3jobs')
         d3jobs.selectAll(".d3job")
             .duration(t)
-            .attr("transform", d=> 'translate(0,'+(this.y(d.id.valueOf()) + this.y.bandwidth()/2) +')')
+            .attr("transform", d=> 'translate(0,'+(this.y(jobToDomain(d)) + this.y.bandwidth()/2) +')')
 
         d3jobs.selectAll(".jline")
             .duration(t)

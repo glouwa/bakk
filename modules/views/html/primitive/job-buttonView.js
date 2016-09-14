@@ -65,6 +65,7 @@ function jobRootButon(args)// name, args, src, noIcons, obj)   // der erstellt e
 
         function createRootJob() {
             var jd = jf.job({
+                icon: '⎇',
                 desc: 'button ' + args.name,
                 isRoot: true,
                 params: args.args,

@@ -315,6 +315,7 @@
             // j is a valid variable bcause this functions are evaluated remotly in
             // a context where j exists. c is the connection on remoteside
             var realJob = jm.job({
+                icon: '↷'+args.icon,
                 desc: args.desc,
                 params: args.args,
                 onCall: args.realJob                
@@ -325,6 +326,7 @@
             // locally called
             var proxyJob = jm.job({
                 id: realJob.id,
+                icon: '↷'+args.icon,
                 desc: args.desc,
                 isProxy: true,                
                 params: args.args,

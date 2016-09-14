@@ -45,6 +45,7 @@ function rootJob(args)
 {
     // hmmmm das wird vermutlich nur auf ui losen verwendet
     // unddie starten keine jobs (cli?)
+    args.icon = 'mai'
     args.desc = 'GUI RootJob'
     var jd = jf.job(args)
     app.mergePath('model.jobs.'+jd.id, jd)
