@@ -1,8 +1,5 @@
 (function(exports, inNode)
 {
-    exports.depth = -1
-    exports.app = undefined
-
     /*exports.rootUi
     exports.rootTimer
     exports.rootMessage
@@ -18,10 +15,11 @@
         var cmap = { call:'#FFD900', update:'#A5F7B8', cancel:'#EAB0F1', ret:'#FF0000' }
         var color = cmap[ttype] || 'black'
         var desc = ttype + ' ' + j.path + ' ' + j.desc
-        this.logGroup(desc, color, a, j)
+        this.execQframe(desc, color, a, j)
     }
 
     // private! use addRoot or addJob
+    exports.depth = -1
     exports.execQframe = function(desc, color, a, j)
     {
         this.logGroup(desc, color, ()=> {
@@ -63,7 +61,7 @@
         console.groupEnd()
     }
 
-    exports.logBigMsg = exports.logGroup = (d, bgc, a)=> { if (a) a() }
+    //exports.logBigMsg = exports.logGroup = (d, bgc, a)=> { if (a) a() }
 })
 (typeof exports === 'undefined' ? this['q']={} : exports, typeof exports !== 'undefined')
 
