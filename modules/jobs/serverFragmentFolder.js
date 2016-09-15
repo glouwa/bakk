@@ -11,6 +11,7 @@ function fragmentFolderSet()
             j.params.dir = this.dir
 
             j.delegate(()=> jf.remoteProxyJob({
+                icon: '💢',
                 node: network.connections[0],
                 args: j.params,
                 realJob: js=> {
@@ -58,7 +59,7 @@ function fragmentFolder()
 
             j.params.dir = this.dir
 
-            j.delegate(()=> jf.remoteProxyJob({
+            j.delegate(()=> jf.remoteProxyJob({                
                 node: network.connections[0],
                 args: j.params,
                 realJob: js=> {
@@ -107,7 +108,7 @@ function insertFolder(j, diff)
         output:app.model.store[j.id.valueOf()]
     })
 
-    j.delegate(()=> jf.job({ onCall:lj=> app.model.store[j.id.valueOf()]['↻'](lj), params:{} }))
+    j.delegate(()=> jf.job({ icon:'↻', onCall:lj=> app.model.store[j.id.valueOf()]['↻'](lj), params:{} }))
 }
 
 new Object({

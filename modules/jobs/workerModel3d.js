@@ -7,6 +7,7 @@ function find3dModel(j, diff)
     })
 
     j.delegate(()=> jf.remoteProxyJob({
+        icon: '❄',
         node: network.connections[0],
         desc:'delegate to server',
         args: j.params,
@@ -18,6 +19,7 @@ function find3dModel(j, diff)
                 desc: 'process partition on worker',
                 end: idx=> idx < nodes.length,
                 job: idx=> jf.remoteProxyJob({
+                    icon: 'W',
                     desc: 'load and compare partition',
                     node: nodes[idx],
                     //args: Object.assign({ set:js.params.set.shrink(idx, nodes.length) }, js.params),
@@ -27,9 +29,9 @@ function find3dModel(j, diff)
                         threshold: js.params.threshold
                     },
                     realJob: (jw, diff)=> jw.delegate(
-                        ()=> jf.job({ desc: 'load compared', onCall:cj=> jw.params.set.get(cj, jw.params.selected.valueOf(), 'load') }),
-                        ()=> jf.job({ desc: 'load partition', onCall:cj=> jw.params.set.load(cj) }),
-                        ()=> jf.job({ desc: 'comparing', onCall:cj=>
+                        ()=> jf.job({ icon:'✪', desc: 'load compared', onCall:cj=> jw.params.set.get(cj, jw.params.selected.valueOf(), 'load') }),
+                        ()=> jf.job({ icon:'🔃*', desc: 'load partition', onCall:cj=> jw.params.set.load(cj) }),
+                        ()=> jf.job({ icon:'≟', desc: 'comparing', onCall:cj=>
                             //setTimeout(()=> { // todo: syncbug
                                 jw.params.set.visit(cj, (vj, i, idx, p)=> {
                                     var l  = 'compared ' + jw.params.set.begin + '-' + idx
