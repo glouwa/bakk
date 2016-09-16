@@ -1,6 +1,7 @@
 function runWorkers(j, diff)
 {
     j.delegate(()=> jf.remoteProxyJob({
+        icon: '4w+',
         desc: 'delegating to server',
         args: j.params,
         node: network.connections[0],
@@ -18,7 +19,7 @@ function runWorkers(j, diff)
                 job: idx=> {
 
                     if (idx < nodes.length) return jf.remoteProxyJob({
-                        icon: '⚙1',
+                        icon: '⚙w*',
                         desc:'spawing workers',
                         node: nodes[idx],
                         args: js.params,
@@ -26,7 +27,7 @@ function runWorkers(j, diff)
                             type: 'parallel',
                             end: idx=> idx < jw.params.workerCount,
                             job: idx=> tj.spawnJob({
-                                icon: '⚙2',
+                                icon: '⚙w',
                                 path:'node',
                                 args:['worker.js'],
                                 justStart:jw.params.justStart

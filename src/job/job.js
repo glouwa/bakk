@@ -357,7 +357,7 @@
                 onCall: args.realJob                
                 // todo: onUpdate
                 // vll onReturn
-            })            
+            })
 
             // locally called
             var proxyJob = jm.job({
