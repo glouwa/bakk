@@ -31,8 +31,8 @@ function fragmentFolderSet()
                                 folderDiff[v] = { type:'FragmentFolder', dir:subdir }
                         })
 
-                        js.updateJob({ state:{ type:'running', log:'dir', progress:0.33 } }, folderDiff)
-                        js.updateJob({ state:{ type:'running', log:'dir', progress:0.95 } }, { '↻':'deadbeef' })
+                        js.updateJob({ state:{ type:'running', log:'dir', progress:0.33 }, output:folderDiff })
+                        js.updateJob({ state:{ type:'running', log:'dir', progress:0.95 }, output:{ '↻':'deadbeef' }})
 
                         js.ret('ok', 'listed ' + dir)
                     }))
@@ -79,15 +79,18 @@ function fragmentFolder()
                                     cmd += ' ' + v
                         })
 
-                        js.updateJob(
-                            { state:{ type:'running', log:'dir', progress:0.95 } },
-                            {
+                        js.updateJob({
+                            state:{
+                                type:'running',
+                                log:'dir',
+                                progress:0.95
+                            },
+                            output:{
                                 '↻':'deadbeef',
                                  cmd:cmd + ' output.off',
-                                 '⚙':function(j) {          // todo: wir sind hier am server!                                     
-                                 }
+                                 '⚙':function(j) {} // todo: wir sind hier am server!
                             }
-                        )
+                        })
                         js.ret('ok', 'cmd generated: ' + cmd)
                     }))
                 }

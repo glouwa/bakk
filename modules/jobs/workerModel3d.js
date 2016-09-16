@@ -29,28 +29,36 @@ function find3dModel(j, diff)
                         threshold: js.params.threshold
                     },
                     realJob: (jw, diff)=> jw.delegate(
-                        ()=> jf.job({ icon:'✪', desc: 'load compared', onCall:cj=> jw.params.set.get(cj, jw.params.selected.valueOf(), 'load') }),
-                        ()=> jf.job({ icon:'🔃*', desc: 'load partition', onCall:cj=> jw.params.set.load(cj) }),
-                        ()=> jf.job({ icon:'≟', desc: 'comparing', onCall:cj=>
-                            //setTimeout(()=> { // todo: syncbug
-                                jw.params.set.visit(cj, (vj, i, idx, p)=> {
-                                    var l  = 'compared ' + jw.params.set.begin + '-' + idx
-                                    var v1 = i.features
-                                    var v2 = jw.params.set.data[jw.params.selected.valueOf()].features
-                                    var d  = v1.map((i, idx)=> v2[idx] - i)
-                                    var r  = d.reduce((acc, c)=> acc + c*c)
-                                    var l2 = Math.sqrt(r)
-                                    var m  = l2 < jw.params.threshold.valueOf()
-                                           ? { [idx]:{ dbEntity:i, diff:l2 } }
-                                           : undefined
+                        ()=> jf.job({
+                            icon:'✪',
+                            desc: 'load compared',
+                            onCall:cj=> jw.params.set.get(cj, jw.params.selected.valueOf(), 'load')
+                        }),
+                        ()=> jf.job({
+                            icon:'🔃*',
+                            desc: 'load partition',
+                            onCall:cj=> jw.params.set.load(cj)
+                        }),
+                        ()=> jf.job({
+                            icon:'≟',
+                            desc: 'comparing',
+                            onCall:cj=> jw.params.set.visit(cj, (vj, i, idx, p)=> {
+                                var l  = 'compared ' + jw.params.set.begin + '-' + idx
+                                var v1 = i.features
+                                var v2 = jw.params.set.data[jw.params.selected.valueOf()].features
+                                var d  = v1.map((i, idx)=> v2[idx] - i)
+                                var r  = d.reduce((acc, c)=> acc + c*c)
+                                var l2 = Math.sqrt(r)
+                                var m  = l2 < jw.params.threshold.valueOf()
+                                       ? { [idx]:{/* dbEntity:i,*/ diff:l2 } }
+                                       : undefined
 
-                                    if (jw.params.selected.valueOf() != idx)
-                                        delete i.features
+                                if (jw.params.selected.valueOf() != idx)
+                                    delete i.features
 
-                                    vj.updateJob({ state:{ progress:p, type:'running', log:l } }, m)
-
-                                })})
-                                //},10)
+                                vj.updateJob({ state:{ progress:p, type:'running', log:l }, output:m })
+                            })
+                        })
                     )
                 })
             })
@@ -171,23 +179,19 @@ new Object({
             type: 'Model3dArgs',
             threshold: 16,
             selected: 26,
-            set: pSet.lazySet(
-                0,
-                5,
-                idx=> ({
-                    id: idx,
+            set: pSet.lazySet(0, 5, idx=> ({
+                    idx: idx,
                     url: 'data/3dModel/vectorfiles/m' + idx + '.json',
                     tUrl: 'data/3dModel/thumbnails/m' + idx + '_thumb.png',
                     '↻': function(j) {
-                        var element = this
                         return tj.ajaxJob({
                             url: this.url.valueOf(),
                             onData: (j, s, d)=> {
-                                if (element['↻'])
-                                    element.merge({
+                                if (this['↻'])
+                                    this.merge({
                                         features: JSON.parse(d).features,
-                                        '↻': 'deadbeef',
-                                        '✕': function free(j) { },
+                                        //'↻': 'deadbeef',
+                                        '✕': j=> {},
                                     })
                                 j.updateJob({ state:s })
                             }

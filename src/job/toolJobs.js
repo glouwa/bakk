@@ -15,7 +15,7 @@
 
         return exports.jm.job({
             icon: '🔁', //⇌🔃🔄
-            desc: args.url,
+            desc: 'xhr: ' + args.url,
             params: args,
             onCancel: function() {
                 canceled = true
@@ -24,7 +24,7 @@
             onCall: function(j) {
                 xmlhttp.onreadystatechange = ()=> q.addJob('Message From Ajax ' + xmlhttp.readyState, j, ()=> {
                     if (canceled) { // TODO: or not running
-                        j.ret('canceled', 'xhr borted')
+                        j.ret('canceled', 'xhr aborted')
                     }
                     else {
                         var diff = {
@@ -48,10 +48,11 @@
                         }
 
                         else
-                            j.ret('fatal', 'error at xhr ' + xmlhttp.status)
+                            j.ret('fatal', 'error at xhr sdf-' + xmlhttp.status)
                     }
                 })
-                xmlhttp.open("GET", args.url, true)
+                var prefix = inBrowser?'':'http://'+exports.config.server.wshost+':'+exports.config.server.httpport+'/'
+                xmlhttp.open("GET",prefix+args.url, true)
                 xmlhttp.send()
             }
         })

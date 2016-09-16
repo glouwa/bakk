@@ -13,7 +13,7 @@ function findPrimes(j, diff)
         node: network.connections[0],
         realJob: js=> {
             var nodes = app.getNodesByCapability('POSIX64')
-            js.updateJob({ state:{ type:'running' } }, { workerCount:nodes.length })
+            js.updateJob({ state:{ type:'running' }, output:{ workerCount:nodes.length }})
             js.delegate({
                 type: 'parallel',
                 end: idx=> idx < nodes.length,

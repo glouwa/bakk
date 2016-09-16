@@ -76,7 +76,7 @@
             j.delegate({
                 type: 'parallel',
                 end: idx=> idx < set.size(),
-                job: idx=> set.data[set.begin + idx]['↻'](j)
+                job: idx=> set.data[((set.begin + idx).toString())]['↻'](j)
             })
         }
 

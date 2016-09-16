@@ -61,7 +61,7 @@
         console.groupEnd()
     }
 
-    //exports.logBigMsg = exports.logGroup = (d, bgc, a)=> { if (a) a() }
+    exports.logBigMsg = exports.logGroup = (d, bgc, a)=> { if (a) a() }
 })
 (typeof exports === 'undefined' ? this['q']={} : exports, typeof exports !== 'undefined')
 

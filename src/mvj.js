@@ -217,7 +217,7 @@
                     delete this[id]                                      
                 }
 
-                else if (!this[id]) {                                        // adding
+                else if (typeof this[id] == "undefined") {                                        // adding
                     var p = this.path == '' ? id : (this.path + '.' + id)
                     this[id] = exports.model(p, v)
 
@@ -227,7 +227,7 @@
                 }
 
                 else {                                                       // child changes (rekursion)
-                    console.assert(this[id].merge_)
+                    console.assert(this[id].merge_, id, this.path)
                     this[id].merge_(v)                                       // RECURSION
 
                     this.changes.changedMembers = this[id]

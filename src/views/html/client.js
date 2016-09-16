@@ -213,7 +213,7 @@ function appOnMessage(c, parsed, pduSize)
                     })
                     $('#modelTab')[0].add('a', { content:a3View(app) })
                     $('#modelTab')[0].add('🌐', { content:projectsDiv })
-                    $('#modelTab')[0].add('☍', { content:a3View(app.model) })
+                    //$('#modelTab')[0].add('☍', { content:a3View(app.model) })
                     $('#jobTab')  [0].add('⥂', { content:a3View(app.model.jobs) })
                 },
 

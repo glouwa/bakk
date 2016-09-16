@@ -18,6 +18,7 @@ function runWorkers(j, diff)
                 job: idx=> {
 
                     if (idx < nodes.length) return jf.remoteProxyJob({
+                        icon: '⚙1',
                         desc:'spawing workers',
                         node: nodes[idx],
                         args: js.params,
@@ -25,6 +26,7 @@ function runWorkers(j, diff)
                             type: 'parallel',
                             end: idx=> idx < jw.params.workerCount,
                             job: idx=> tj.spawnJob({
+                                icon: '⚙2',
                                 path:'node',
                                 args:['worker.js'],
                                 justStart:jw.params.justStart

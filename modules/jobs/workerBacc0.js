@@ -39,7 +39,13 @@ function getCmdSet(j, diff)
             var workers = app.getNodesByCapability('POSIX64')
             var output = addCommandsOfFolder(js.params.directory.valueOf())
             output.workerCount = workers.length
-            js.updateJob({ state:{ type:'running', log:'collected commands'} }, output)
+            js.updateJob({
+                state:{
+                    type:'running',
+                    log:'collected commands'
+                },
+                output:output
+            })
 
             js.delegate({
                 type: 'pool',

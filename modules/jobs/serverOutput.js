@@ -12,10 +12,16 @@ function serverOuput(j, diff)
         desc: 'Generate output',
         realJob: (js, diff)=>
         {
-            js.updateJob(
-                { state: { type: 'running', log: 'output at server', progress: 0.95 } },
-                { msg: js.params.text }
-            )
+            js.updateJob({
+                state:{
+                    type: 'running',
+                    log: 'output at server',
+                    progress: 0.95
+                },
+                output:{
+                    msg: js.params.text
+                }
+            })
             js.ret('ok', 'no exceptions')
         }
     }))

@@ -9,12 +9,12 @@ function multipleAjaxCalls(j, diff)
         type: 'parallel',
         desc: 'parallel ajax * ' + j.params.amount,
         //mode: subjobs.async_obligate_replace,
-        end: (idx)=> idx < j.params.amount,
-        job: (idx)=> tj.ajaxJob({
-            url: '../../../data/3dModel/vectorfiles/m' + idx + '.json',
+        end:idx=> idx < j.params.amount,
+        job:idx=> tj.ajaxJob({
+            url: 'data/3dModel/vectorfiles/m' + idx + '.json',
             onData: (j, s, d) =>
                 //j.updateJob({ state:s }, tj.wrap(idx, JSON.parse(d)))
-                j.updateJob({ state:s }, { [idx]:JSON.parse(d) })
+                j.updateJob({ state:s, output:{ [idx]:JSON.parse(d) }})
         })
     })
 }

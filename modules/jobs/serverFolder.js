@@ -39,9 +39,9 @@ function folderPrototype()
                                     fileDiff[v] = { type:'File' }
                             })
 
-                            js.updateJob({ state:{ type:'running', log:'dir', progress:0.33 } }, folderDiff)
-                            js.updateJob({ state:{ type:'running', log:'dir', progress:0.66 } }, fileDiff)
-                            js.updateJob({ state:{ type:'running', log:'dir', progress:0.95 } }, {'↻':'deadbeef'})
+                            js.updateJob({ state:{ type:'running', log:'dir', progress:0.33 }, output:folderDiff})
+                            js.updateJob({ state:{ type:'running', log:'dir', progress:0.66 }, output:fileDiff})
+                            js.updateJob({ state:{ type:'running', log:'dir', progress:0.95 }, output:{'↻':'deadbeef'}})
 
                             js.ret('ok', 'listed ' + dir)
                         })

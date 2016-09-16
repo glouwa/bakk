@@ -42,14 +42,13 @@
                             type: 'calling',
                             progress: 0.051,
                             detail: 'calling',                        
-                            log: 'calling function',
-                            lastWorker: jm.workerId,
+                            log: 'calling function'
                         },
                         [j.isRemote?'debugRemote':'debug']:{
                             node:jm.workerId,
                             host:jm.host,
                             callTime:Date.now(),                            
-                            lastModification: Date.now()
+                            updateTime: Date.now()
                         },
                         ///log:[3, 4, 6]
                     }
@@ -75,12 +74,11 @@
                             progress: 0.95,
                             type: 'canceling',
                             detail: 'canceling',
-                            log: 'canceling',
-                            lastWorker: jm.workerId
+                            log: 'canceling'
                         },
                         [j.isRemote?'debugRemote':'debug']:{
                             cancelTime:Date.now(),                            
-                            lastModification: Date.now(),                            
+                            updateTime: Date.now(),
                         }
                     }
 
@@ -91,38 +89,119 @@
                 })
             }})
 
-            Object.defineProperty(jp, 'updateJob', { value:function updateJob(diff/*stateDiff*/, outputDiff)
+            // events: call, update, cancel, return
+            /*valid = {
+                init:['call'],
+                running:['cancel', 'update', 'return'],
+                canceling:['return'],
+                returned:[],
+            }
+            errors = {
+                init:['update', 'cancel', 'return'],
+                running:['call'],
+                canceling:['call', 'cancel'],
+                returned:['call', 'update', 'cancel', 'return']
+            }
+            // rest is egal
+
+            function transition(j, eventName, evetnAction, diff)
+            {
+                exception2localError(name, ()=> {
+                    if (error)
+                        throw new Error('InvalidStateError ' + state +'-->'+ event)
+
+                    if (valid)
+                        action(diff)
+                }
+            }
+
+            update = transition('update', function updateJob(diff, outputDiff) {
+
+            })*/
+/*
+            function transition(j, eventName, evetnAction)
+            {
+                return function(diff) {
+                    // this ist der job
+                    var j = this
+                    j.exception2localError(eventName, ()=> {
+                        if (error)
+                            throw new Error('InvalidStateError ' + state +'-->'+ event)
+
+                        if (diff.state.type == 'returned')
+                            event = 'ret'
+
+                        if (valid)
+                            action(j, diff)
+                    }
+                }
+            }
+
+            Object.defineProperty(jp, 'updateJob', { value:transition(diff, 'update', ()=>)
+            {
+                      //console.trace('j-' + j.id + ' updateJob')
+                      console.assert(!diff.output)
+                      //console.assert(j.state.type °= 'returned')
+                      if (j.state.type == 'returned')
+                          console.log('########## updating returned job' + j.state.type != 'returned')
+
+                      diff[j.isRemote?'debugRemote':'debug'] = {
+                          updateTime:Date.now(),
+                          lastModification: Date.now()
+                      }
+
+                      //if (diff.state.progress && diff.state.progress.valueOf() == 1) {
+                      if (diff.state.type == 'returned') {
+                          console.assert(!outputDiff)
+                          j.ret(diff.state.detail, diff.state.log + ' (update to return)')
+                      }
+                      else {
+                          if (j.output && outputDiff) {
+                              j.output.merge(outputDiff)
+                              outputDiff = undefined
+                              console.warn('got output', outputDiff)
+                          }
+
+                          j.merge(diff)
+                          j.onUpdate(j, diff, outputDiff)
+                      }
+            }})*/
+
+            Object.defineProperty(jp, 'updateJob', { value:function updateJob(diff)
             {
                 var j = this
                 j.exception2localError('update', function update_()
                 {
-                    //console.trace('j-' + j.id + ' updateJob')
-                    console.assert(!diff.output)
                     //console.assert(j.state.type °= 'returned')
-                    if (j.state.type == 'returned')
-                        console.log('########## updating returned job' + j.state.type != 'returned')
-
-                    diff[j.isRemote?'debugRemote':'debug'] = {
-                        updateTime:Date.now(),                        
-                        lastModification: Date.now()
-                    }
-
-                    //if (diff.state.progress && diff.state.progress.valueOf() == 1) {
                     if (diff.state.type == 'returned') {
-                        console.assert(!outputDiff)
-                        j.ret(diff.state.detail, diff.state.log + ' (update to return)')
+                        j.retDiff(diff)
                     }
                     else {
-                        if (j.output && outputDiff) {
-                            j.output.merge(outputDiff)
-                            outputDiff = undefined
-                            console.warn('got output', outputDiff)
-                        }
+                        diff.state.type = 'running'
+                        console.assert(!diff[j.isRemote?'debugRemote':'debug'])
+                        diff[j.isRemote?'debugRemote':'debug'] = {}
+                        diff[j.isRemote?'debugRemote':'debug'].updateTime = Date.now()
 
                         j.merge(diff)
-                        j.onUpdate(j, diff, outputDiff)
+                        j.onUpdate(j, diff)
                     }
                 })
+            }})
+
+            Object.defineProperty(jp, 'retDiff', { value:function retDiff(diff)
+            {
+                clearTimeout(this.timer)
+
+                diff.state.type = 'returned'
+                diff.state.progress = 1
+                console.assert(!diff[this.isRemote?'debugRemote':'debug'])
+                diff[this.isRemote?'debugRemote':'debug'] = {}
+                diff[this.isRemote?'debugRemote':'debug'].returnTime = Date.now()
+                diff[this.isRemote?'debugRemote':'debug'].updateTime = Date.now()
+
+                this.merge(diff)
+                this.onUpdate(this, diff)
+                this.onReturn(this, diff)
             }})
 
             Object.defineProperty(jp, 'ret', { value:function ret(detail, log)
@@ -130,33 +209,9 @@
                 var j = this
                 j.exception2localError('ret', function ret_() {
                     //console.trace('j-' + j.id + ' ret')
-                    if (j.state.type != 'returned') {
-                        clearTimeout(j.timer)
-                        var diff = {
-                            state: {
-                                progress: 1,
-                                type:'returned',
-                                detail:detail,
-                                log:log,
-                                lastWorker: jm.workerId
-                            },
-                            [j.isRemote?'debugRemote':'debug']: {
-                                returnTime:Date.now(),                                
-                                lastModification: Date.now()
-                            }
-                        }
-                        j.merge(diff)
-                        j.onUpdate(j, diff)
-                        j.onReturn(j, diff)
-                    }
-                    else {
-                        console.assert(false, 'double return '
-                                            + j.state.detail + '/' + + j.state.log
-                                            + ' --> ' + detail + '/' + log)
-                    }
+                    j.retDiff({ state:{ detail:detail, log:log }})
                 })
             }})
-
 
             Object.defineProperty(jp, 'delegate', { value:function delegate(a1)
             {                
@@ -211,28 +266,11 @@
                 {
                     // same as ret, but without exception2localError
                     // to avoid endless recursionif theres a error at return
-                    console.assert(this.state.type != 'returned',
-                                          'double return '
-                                        + this.state.detail + '/' + + this.state.log
-                                        + ' --> ' + detail + '/' + log)
+                    console.assert(this.state.type != 'returned', 'double return '
+                                  + this.state.detail + '/' + + this.state.log
+                                  + ' --> ' + detail + '/' + log)
 
-                    clearTimeout(this.timer)
-
-                    var diff = {
-                        state: {
-                            progress: 1,
-                            type: 'returned',
-                            detail: detail,
-                            log:log
-                        },
-                        [this.isRemote?'debugRemote':'debug']: {
-                            returnTime:Date.now(),
-                            lastModification: Date.now()
-                        }
-                    }
-                    this.merge(diff)
-                    this.onUpdate(this, diff)
-                    this.onReturn(this, detail)
+                    this.retDiff({ state:{ detail:detail, log:log }})
                 }
                 catch(e)
                 {
@@ -293,9 +331,7 @@
             if (!diff.debug) diff.debug = {
                 node:jm.workerId,
                 host:jm.host,
-
-                lastModification: Date.now(),
-                //lastModificationloc: jm.workerId
+                updateTime:Date.now()
             }
             diff.debug.createTime = Date.now()
 
@@ -351,13 +387,12 @@
             return proxyJob
         }
 
-        jobMsg = function(type, id, diff, odiff) { return {
+        jobMsg = function(type, id, diff) { return {
             type: 'Job',
             payload: {
                 type: type,
                 id: id,
-                diff: diff,
-                odiff: odiff
+                diff: diff
             }
         }}
 
@@ -392,8 +427,7 @@
                     if (!job.changes) {
                         console.log('############### no changes!!!')
                         return
-                    }
-                    console.log('############### commiting', JSON.stringify(job.changes.diff,0,4))
+                    }                    
                     var msg = jobMsg('updateJob', jd.id, job.changes.diff)
                     console.log('############### sending', JSON.stringify(msg,0,4))
                     c.send(msg)
@@ -405,7 +439,7 @@
 
             parsed.diff.state[parsed.type+'-InBytes'] = (job.state[parsed.type+'-InBytes']|0) + pduSize
             // call / cancel / update / return
-            job[parsed.type](parsed.diff, parsed.odiff)
+            job[parsed.type](parsed.diff)
 
 
             //var msg = jobMsg('updateJob', job.id, job.changes.diff)
@@ -417,7 +451,7 @@
             var debug = j.debug
             if (!debug.callTime)
                 return 0
-            return debug.lastModification.valueOf() - debug.callTime.valueOf()
+            return debug.updateTime.valueOf() - debug.callTime.valueOf()
         }
 
         return jm

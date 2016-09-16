@@ -6,7 +6,7 @@ function killServerOverlordsAndWorkers(j)
         node: network.connections[0],
         realJob: js=> js.delegate(
 
-            ()=> jf.job({ desc:'send kill signal to workers', onCall: kwj=> {
+            ()=> jf.job({ icon: 'kw', desc:'send kill signal to workers', onCall: kwj=> {
                 var nodes = app.getNodesByType(js.params.nodeType, 'emptyResultIsOk')
                 if (nodes.length == 0)
                     kwj.ret('ok', 'no workers to kill')
@@ -26,7 +26,7 @@ function killServerOverlordsAndWorkers(j)
                     })
 
             }}),
-            ()=> jf.job({ desc:'suicide', onCall: ksj=> {
+            ()=> jf.job({ icon: 'ks', desc:'suicide', onCall: ksj=> {
                 //setTimeout(()=> { // todo: if last job in sequence is sync -> double return (swaped)
                    var serverkill = js.params.nodeType.some(i=> i.valueOf() == 'Server')
                    ksj.ret('ok', serverkill ? 'S₀ will exit in ½s' : ' S₀ does nothing')

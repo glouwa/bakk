@@ -6,20 +6,24 @@ function localOutput(j, diff)
         output: app.model.store[j.id.valueOf()]
     })
 
-    j.updateJob({ state:{
+    j.updateJob({
+        state:{
             progress: 0.5,
             log: 'adding greetings to output'
-        }},{
+        },
+        output:{
             greetings: 'Hello world!',            
             obj: {
                 boolOutput: true
             }
         }
-    )
+    })
 
-    j.updateJob({ state:{
+    j.updateJob({
+        state:{
             progress: 0.95
-        }},{
+        },
+        output:{
             greetings: 'Hello universe!',
             obj: {
                 boolOutput: false,
@@ -27,7 +31,7 @@ function localOutput(j, diff)
                 realOutput: 7.7
             }
         }
-    )
+    })
 
     //throw new Error('try it')
     // try also to forget to return

@@ -10,7 +10,7 @@ var buildDomain  = data=> ['commits'].concat(data.jobs.map(d=> jobToDomain(d)))
 var getDebug     = function(j) { return j.debug }
 var getColor     = function(j) { return config.getColor(j.state) }
 var getStartTime = function(j) { return new Date(getDebug(j).createTime.valueOf()) }
-var getEndTime   = function(j) { return new Date(getDebug(j).lastModification.valueOf()) }
+var getEndTime   = function(j) { return new Date(getDebug(j).updateTime.valueOf()) }
 
 function handleMouseOver() { }
 function handleMouseOut() { }
@@ -170,7 +170,7 @@ function jobPlotGant(view, jobModel)
         //var c = diffCopy
 
         this.appendCircle(v, { t:new Date(), c:c }, uiUpdateDotR, '#ccc')
-        this.appendCircle(v, { t:new Date(jm.debug.lastModification), c:c }, 4, config.getColor(jm.state))
+        this.appendCircle(v, { t:new Date(jm.debug.updateTime), c:c }, 4, config.getColor(jm.state))
 
         this.updateDomain()
     }

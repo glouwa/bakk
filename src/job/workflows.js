@@ -56,24 +56,22 @@
     function configureSubjob(sj, parent, jidx, onSubjobReturn)
     {
         var wc = parent.workflow.count ? parent.workflow.count.valueOf() : undefined
-        sj.onUpdate = (j, sd, od)=> onSubjobUpdate(j, sd, od, parent, parent.workflow.pAa.valueOf(), wc)
+        sj.onUpdate = (j, diff)=> onSubjobUpdate(j, diff, parent, parent.workflow.pAa.valueOf(), wc)
         sj.onReturn = j=> onSubjobReturn(j, jidx)
         parent.mergePath('subjobs.'+sj.id, sj)
         return parent.subjobs[sj.id] || app.model.jobs[sj.id.valueOf()]
     }
 
-    function onSubjobUpdate(sj, diff, outputDiff, parent, pAa, jobCount)
+    function onSubjobUpdate(sj, diff, parent, pAa, jobCount)
     {
         q.logGroup( parent.workflow.type + '.onSjUpdate ' + parent.id, 'violet', ()=> {
             var pdiff = {
                 state: { progress: avgProgress(parent, pAa, jobCount) },
-                subjobs: { [sj.id.valueOf()]:diff }
+                subjobs: { [sj.id.valueOf()]:diff },
+                //output:  { [sj.id.valueOf()]:output }
             }
 
-            if (pdiff.state.progress == 1)
-                delete pdiff.state.progress // wtf?
-
-            parent.updateJob(pdiff, outputDiff)
+            parent.updateJob(pdiff)
         })
     }
 
@@ -148,7 +146,7 @@
             lastCreatedIdx++
         }
 
-        parent.subjobs.forEach((v)=>v.call())
+        parent.subjobs.forEach(v=>v.call())
 
         console.assert(lastCreatedIdx > 0, 'subjoblogic with 0 subjobs?')
     }
