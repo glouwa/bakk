@@ -55,7 +55,7 @@ function a3expander(args) // { header, conetentFactory, model, expanded } : onhe
         content.appendChild(c)
 
         if (args.model && args.model['↻'])
-            callUiJob({ desc:'expander ↻', onCall:j=> args.model['↻'](j), params:{} })
+            app.callUiJob({ desc:'expander ↻', onCall:j=> args.model['↻'](j), params:{} })
 
         return c
     }

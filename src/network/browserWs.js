@@ -2,8 +2,6 @@ var network = {}
 network.isUp = false
 network.connections = {}
 network.nextFreeConnectionId = 0
-network.onMessage = undefined
-network.onConnectionChanged = undefined
 network.allConnectionIds = ()=> Object.keys(network.connections)
 
 network.connect = url=>
@@ -20,10 +18,10 @@ network.connect = url=>
 
         network.isUp = true
         network.connections[connection.id] = connection
-        network.onConnectionChanged('Connected', connection)
+        app.onNetworkStateChange('Connected', connection)
     }
 
-    network.onConnectionChanged('Connecting', connection)
+    app.onNetworkStateChange('Connecting', connection)
 }
 
 // ------------------------------------------------------------------------------------------
@@ -50,7 +48,7 @@ function receiveMsg(connection, msg)
     {
         var parsed = messages.parse(msg)
         sim.log('net', 'log', '⟵', connection.id, msg.length, parsed)        
-        network.onMessage(connection, parsed, msg.length)
+        app.onMessage(connection, parsed, msg.length)
     }
     catch(e)
     {
@@ -65,7 +63,7 @@ function cleanUpConnection(connection, url)
     if (network.isUp)
     {
         network.isUp = false
-        network.onConnectionChanged('Disconnected', connection)
+        app.onNetworkStateChange('Disconnected', connection)
     }
     else
     {

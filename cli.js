@@ -1,10 +1,32 @@
+require( 'console-group' ).install()
+console.debug = ()=> {}
+
 var fs = require('fs')
 var archy = require('archy')
 var logUpdate = require('log-update')
 
+var os       = require('os')
+
+var config   = require('./src/config.js')
+var sim      = require('./src/sim.js')
+var tools    = require('./src/tools.js')
+
+var jff      = require('./src/job/job.js')
+var jl       = require('./src/job/workflows.js')
+
+var mvj      = require('./src/mvj.js')
+var pSet     = require('./modules/types/pSet.js')
+
+var tj       = require('./src/job/toolJobs.js')
+var messages = require('./src/messages.js')
+var q            = require('./src/q.js')
+
 eval(fs.readFileSync('../app.js')+'')
 eval(fs.readFileSync('./modules/types/project.js')+'')
 //eval(fs.readFileSync('../types/project.js')+'')
+
+var osDir = os.type() == 'Linux' ? 'posix64' : 'dotnet'
+var binDir = 'bin/' + osDir + '/'
 
 var messageHandlers = clientMessageHandlerFactory('C', 'Client', [], ()=> aProjectJob().call())
 
@@ -135,7 +157,8 @@ function aProjectJob() {
              ? { devCount:devCount, workerCount:workerPerDev, justStart:true}
              : undefined
 
-    return rootJob({
+    return app.rootJob({
+        icon:'r',
         desc:'cli',
         onCall:   j=> app.model.projects['cliProject']['▸'](j, {}, args),
         onUpdate: j=> printjobUpdate(j),

@@ -45,7 +45,9 @@
 
         <script src="modules/types/network.js"></script>
         <script src="modules/types/project.js"></script>
+        <script src="modules/types/projectFolder.js"></script>
         <script src="modules/types/pSet.js"></script>
+
 
         <script src="src/mvj.js"></script>
         <script src="src/q.js"></script>
@@ -53,6 +55,7 @@
         <script src="src/tools.js"></script>
         <script src="src/messages.js"></script>
         <script src="src/sim.js"></script>
+        <script src="src/app.js"></script>
 
         <script src="src/network/browserWs.js"></script>
 
@@ -65,7 +68,11 @@
         <script src="src/views/html/client.js"></script>
 
     </head>
-    <body id="body" onload="appInit()">
+    <body id="body" onload="app.init({
+            wsUrl:'ws://' + document.location.hostname + ':' + config.server.wsport,
+            onInit:onInit,
+            onConnect:onConnect
+        })">
         <div id="workspace">
             <div id="modelTabPaper" class="paper" style="float:left;"></div>            
             <div id="jobTabPaper" class="paper" style="float:left;"></div>            

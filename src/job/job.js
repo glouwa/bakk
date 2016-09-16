@@ -354,9 +354,7 @@
                 icon: '↷'+args.icon,
                 desc: args.desc,
                 params: args.args,
-                onCall: args.realJob                
-                // todo: onUpdate
-                // vll onReturn
+                onCall: args.realJob
             })
 
             // locally called
@@ -405,18 +403,12 @@
             if (!job)
             {
                 var jd = jm.job(parsed.diff.unpack(evalInAppContext))
-                jd.isRemote = true
-                //jd.isRoot = true // todo: causes double return
+                jd.isRemote = true                
                 jd.desc = '↷ ' + jd.desc
                 console.assert(jd.state)
                 console.assert(jd.debug)
 
-                // jedes jd. kann auch in realjob gemacht werden
-                jd.onUpdate = (j, diff, o)=> {} // brauch ma
-                /*jd.onUpdate = (j, diff, o)=> {
-                    //sim.log('job', 'log', '⟶', diff, o)
-                    c.send(jobMsg('updateJob', jd.id, diff, o))
-                }*/
+                jd.onUpdate = (j, diff, o)=> {}
 
                 app.mergePath('model.jobs.'+jd.id, jd)
                 job = app.model.jobs[jd.id]
@@ -457,4 +449,4 @@
         return jm
     }
 })
-(typeof exports === 'undefined' ? this['jobFactory']={} : exports)
+(typeof exports === 'undefined' ? this['jff']={} : exports)

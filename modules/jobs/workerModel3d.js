@@ -28,7 +28,7 @@ function find3dModel(j, diff)
                         selected: js.params.selected,
                         threshold: js.params.threshold
                     },
-                    realJob: (jw, diff)=> jw.delegate(
+                    realJob: jw=> jw.delegate(
                         ()=> jf.job({
                             icon:'✪',
                             desc: 'load compared',
@@ -102,7 +102,7 @@ function entityView(model)
             view.appendChild(img)
         var modelIndex = document.createElement('div')
             modelIndex.className = 'index'
-            modelIndex.innerText = model.id.valueOf()
+            modelIndex.innerText = model.idx.valueOf()
             view.appendChild(modelIndex)
     return view
 }
@@ -128,7 +128,7 @@ function resultView(outputModel)
 
 function parameterView(argsModel)
 {
-    callUiJob({ desc:'combobox.↻', onCall:j=> argsModel.set.load(j) })
+    app.callUiJob({ desc:'combobox.↻', onCall:j=> argsModel.set.load(j) })
 
     var view = document.createElement("div")
         view.style.display = 'inline-flex'
@@ -178,7 +178,7 @@ new Object({
         args: {
             type: 'Model3dArgs',
             threshold: 16,
-            selected: 26,
+            selected: 2,
             set: pSet.lazySet(0, 5, idx=> ({
                     idx: idx,
                     url: 'data/3dModel/vectorfiles/m' + idx + '.json',

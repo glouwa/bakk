@@ -38,6 +38,21 @@ function localOutput(j, diff)
     j.ret('ok', 'no exceptions')
 }
 
+/*
+new Object({
+    type:'Project',
+    job:{
+        icon: '🗩',
+        desc: 'Generate some output',
+        type:'JobPrototype',
+        params:{
+            timeout: 200
+        },
+        onCall:localOutput
+    },
+    tests: []
+})*/
+
 new Object({    
     type:'Project',
     icon: '🗩',

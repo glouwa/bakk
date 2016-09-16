@@ -23,7 +23,7 @@ function findPrimes(j, diff)
                     args: js.params.set.shrink(idx, nodes.length),
                     node: nodes[idx],
                     realJob: jw=> tj.spawn(jw, {
-                        path:binDir + '/prime.exe',
+                        path:app.binDir + '/prime.exe',
                         args:[jw.params.begin.valueOf(), jw.params.end.valueOf()],
                         onJsonStdOut:(jw, data)=> {
                             arguments.callee.count = arguments.callee.count || 1

@@ -60,7 +60,7 @@ function graphConfig(obj)
     if (type == 'Job' && obj.isRemote)
         type = 'remoteJob'
 
-    if (type == 'Job' && obj.isRoot)
+    if (type == 'Job')
         type = 'rootJob'
 
     return graphConfigMap[type]

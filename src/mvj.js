@@ -1,7 +1,6 @@
 (function(exports, inNode)
 {
-    exports.jm = undefined
-    exports.app = undefined
+    exports.jm = undefined    
     exports.onCommit = function() {}    
 
     var Emitter = {
@@ -181,13 +180,13 @@
         //if (!path.startsWith('model.network'))
         q.logBigMsg('Merging ' + this.path.valueOf(), JSON.stringify(diff, 0, 4))
         var fullDiff = path2wrapper(this.path.valueOf(), diff)
-        exports.app.merge_(fullDiff)
+        app.merge_(fullDiff)
     }
 
     function commit(msg)
     {
         q.logGroup('commit ' + this.path + ': ' + msg, 'white', ()=> {
-            exports.app.commit_()
+            app.commit_()
             exports.onCommit(this.path, 0)
         })
     }

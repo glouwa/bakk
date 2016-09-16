@@ -62,28 +62,17 @@ function jobRootButon(args)// name, args, src, noIcons, obj)   // der erstellt e
             view.setProgress(job.state.progress.valueOf(), config.getColor(job.state))
         }
 
-
-        function createRootJob() {
-            var jd = jf.job({
+        q.addRoot('Message From UI ' + args.name, ()=>{
+            job = app.rootJob({
                 icon: '⎇',
                 desc: 'button ' + args.name,
-                isRoot: true,
-                params: args.args,
+                args: args.args,
                 onCall: (j, params)=> {
                     if (args.obj) args.obj[args.name](j, params)   // model obj method?
                     else          args.src(j, params)              // project service?
                 }
             })
-            app.mergePath('model.jobs.'+jd.id, jd)
-            job = app.model.jobs[jd.id.valueOf()]
             $('#jobTab')[0].add(job.id, { content:jobAllView(job) }/*, 'inBg'*/)
-        }
-
-        //if (jobModel)
-        //    jobModel.state.off('change', unpdateButton) TODO
-
-        q.addRoot('Message From UI ' + args.name, ()=>{
-            createRootJob()
             updateView()
             job.state.on('change', updateView)
             view.onclick = e=> {
@@ -91,7 +80,7 @@ function jobRootButon(args)// name, args, src, noIcons, obj)   // der erstellt e
                 view.state.onClick() // ; unpdateButton() aber ohne gibts double cancels? nein.
             }
             job.call()
-//job.commit('UI creates and calls job') // mach jetzt das ui update
+            //job.commit('UI creates and calls job') // mach jetzt das ui update
             // ist es richtig das hier nur änderungen innerhalb von job entstehen können?
             // wie ist das bei project load?
         })

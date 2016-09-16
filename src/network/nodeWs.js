@@ -6,8 +6,6 @@ var ServerSocket = require('ws').Server
 var network = {}
 network.connections = {}
 network.nextFreeConnectionId = 1
-network.onMessage = undefined
-network.onConnectionChanged = undefined
 network.allConnectionIds = ()=> Object.keys(network.connections)
 network.connectionCount = ()=> Object.keys(network.connections).length
 network.sendMulticast = (receivers, msg)=> receivers.forEach(cid=> network.connections[cid].send(msg))
@@ -27,10 +25,10 @@ network.connect = function(url)
         connection.send = msg=> sendMsg(connection, msg)
 
         network.connections[connection.id] = connection
-        network.onConnectionChanged('Connected', connection)
+        app.onNetworkStateChange('Connected', connection)
     })
 
-    network.onConnectionChanged('Connecting', connection)
+    app.onNetworkStateChange('Connecting', connection)
 }
 
 network.listen = function()
@@ -50,7 +48,7 @@ network.listen = function()
         connection.send = msg=> sendMsg(connection, msg)
 
         network.connections[connection.id] = connection
-        network.onConnectionChanged('Connected', connection)
+        app.onNetworkStateChange('Connected', connection)
     })
 }
 
@@ -78,7 +76,7 @@ function receiveMsg(connection, msg)
     {
         var parsed = messages.parse(msg)
         network.sim.log('net', 'log', '⟵', connection.id, parsed)
-        network.onMessage(connection, parsed, msg.length)
+        app.onMessage(connection, parsed, msg.length)
     }
     catch(e)
     {
@@ -90,7 +88,7 @@ function cleanUpConnection(connection, url)
 {
     delete network.connections[connection.id]
     if (url) setTimeout(()=> network.connect(url), config.client.reconnectIntervall)
-    network.onConnectionChanged('Disconnected', connection)
+    app.onNetworkStateChange('Disconnected', connection)
 }
 
 exports.network = network

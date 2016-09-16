@@ -1,116 +1,99 @@
-require( 'console-group' ).install()
-console.debug = ()=> {}
-
-var os       = require('os')
-
-var config   = require('./src/config.js')
-var sim      = require('./src/sim.js')
-var messages = require('./src/messages.js')
-var tools    = require('./src/tools.js')
-
-var jff      = require('./src/job/job.js')
-var jl       = require('./src/job/workflows.js')
-var tj       = require('./src/job/toolJobs.js')
-
-var mvj      = require('./src/mvj.js')
-var pSet     = require('./modules/types/pSet.js')
-
-//-------------------------------------------------------------------------------------------
-
-q            = require('./src/q.js')
-
 app = mvj.model('', {
-    wsUrl: 'ws://' + config.server.wshost + ':' + config.server.wsport,
+    wsUrl: 'unknown',
     clientId: 'unknown',
-    model: {}
+    model:{
+        type: 'Model',
+        jobs: { type:'Set<Job>' },
+        store: { type:'Store' },
+        projects: projectFolder.create(),
+        registry: { type:'Registry' }
+    },
+    callUiJob:function(args){
+        q.addRoot('Message From UI ' + args.desc, ()=> {
+            this.rootJob(args).call()
+        })
+    },
+    rootJob:function(args){
+        var jd = jf.job(args)
+        app.mergePath('model.jobs.'+jd.id, jd)
+        return app.model.jobs[jd.id.valueOf()]
+    },
+    init:function(args){
+        q.addRoot('App init', ()=> {
+            sim.config = config.clientDefaultSimConfig
+
+            this.merge({ wsUrl:args.wsUrl })
+
+            jf.jl = jl
+            jf.workerId = undefined
+            jf.host = args.host
+            jf.nextFreeId = 0
+            tj.jm = jf
+            tj.config = config
+            mvj.jm = jf
+            q.app = app
+
+            args.onInit()
+        })
+    },
+    onMessage:function(c, parsed, pduSize){
+        q.addRoot('app on "' + parsed.type + '" message ' + c.id + ' ('+pduSize+'b)', ()=>{
+            var channelHandlers = {
+                onWsMessage: function(c, parsed){
+                    sim.log('app', 'log', '⟵', parsed)
+                    app.wsMessageHandlers['on'+parsed.type](c, parsed)
+                },
+
+                onJobMessage: function(c, parsed, pduSize){
+                    sim.log('job', 'log', '⟵', pduSize, parsed)
+                    jf.onReceive(c, parsed, code=> eval(code), app, pduSize)
+                }
+
+            }['on'+parsed.type+'Message'](c, parsed.payload, pduSize)
+        })
+    },
+    onNetworkStateChange:function(state, connection){
+        q.addRoot('Network state changed ' + connection.id + ' ('+state+')', ()=>{
+            app.networkStateChangeHandlers['on'+state](connection)
+        })
+    }
 })
-
-sim.config = config.clientDefaultSimConfig
-
-var osDir = os.type() == 'Linux' ? 'posix64' : 'dotnet'
-var binDir = 'bin/' + osDir + '/'
-// nicht hin schaun
-var jf = jff.jm()
-jf.jl = jl
-jf.workerId = undefined
-jf.nextFreeId = 0
-jf.host = os.hostname()
-tj.jm = jf
-tj.config = config
-mvj.jm = jf
-mvj.app = app
-q.app = app
-
-function rootJob(args)
-{
-    // hmmmm das wird vermutlich nur auf ui losen verwendet
-    // unddie starten keine jobs (cli?)
-    args.icon = 'mai'
-    args.desc = 'GUI RootJob'
-    var jd = jf.job(args)
-    app.mergePath('model.jobs.'+jd.id, jd)
-    return app.model.jobs[jd.id.valueOf()]
-}
 
 // called by Net --------------------------------------------------------------------------
 
-appOnMessageDefault = function(c, parsed, pduSize)
-{
-    var channelHandlers =
-    {
-        onWsMessage: function(c, parsed)
+var consoleLogNetworkStateChangeHandler = {
+    onConnecting:   connection=> console.info('...'),
+    onConnected:    connection=> console.info('+ connected'),
+    onDisconnected: connection=> console.info('- disconnected')
+}
+
+var clientMessageHandlerFactory = (shortType, type, cap, onConnected)=> {
+    return {
+        onServerHallo: function(c, parsed)
         {
-            sim.log('app', 'log', '⟵', parsed)
-            messageHandlers['on'+parsed.type](c, parsed)
+            app.clientId = parsed.diff.clientId
+            jf.workerId = shortType + Number(app.clientId).toSubscript()
+
+            var mynodeInfo = {
+                type: type,
+                id: jf.workerId,
+                capabilitys: cap,
+                simconfig: config.clientDefaultSimConfig,
+                osType: os.type(),
+                hostname: os.hostname()
+            }
+
+            //app.networkInfo.merge(mynodeInfo)
+            var msg = messages.networkInfoMsg('model.network.' + app.clientId, mynodeInfo)
+            var channelMsg = messages.channelMsg('Ws', msg)
+            network.connections[0].send(channelMsg)
+
+            onConnected()
         },
 
-        onJobMessage: function(c, parsed, pduSize)
-        {
-            q.addRoot('Message from Connection ' + c.id, ()=> {
-                sim.log('job', 'log', '⟵', pduSize, parsed)
-                jf.onReceive(c, parsed, code=> eval(code), app, pduSize)
-            })
-        }
-
-    }['on'+parsed.type+'Message'](c, parsed.payload, pduSize)
-}
-
-function appOnNetworkStateChangeWithLog(state, connection)
-{
-    var stateHandlers =
-    {
-        onConnecting:  ()=> console.info('...'),
-        onConnected:   ()=> console.info('+ connected'),
-        onDisconnected:()=> console.info('- disconnected')
+        onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
+        onReload: (c, parsed) => {}
     }
-    stateHandlers['on'+state]()
 }
-
-var clientMessageHandlerFactory = (shortType, type, cap, onConnected)=> { return {
-    onServerHallo: function(c, parsed)
-    {
-        app.clientId = parsed.diff.clientId
-        jf.workerId = shortType + Number(app.clientId).toSubscript()
-
-        var mynodeInfo = {
-            type: type,
-            id: jf.workerId,
-            capabilitys: cap,
-            simconfig: config.clientDefaultSimConfig,
-            osType: os.type(),
-            hostname: os.hostname()
-        }
-
-        //app.networkInfo.merge(mynodeInfo)
-        var msg = messages.networkInfoMsg('model.network.' + app.clientId, mynodeInfo)
-        var channelMsg = messages.channelMsg('Ws', msg)
-        network.connections[0].send(channelMsg)
-
-        onConnected()
-    },
-
-    onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
-    onReload: (c, parsed) => {}
-}}
 
 

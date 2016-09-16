@@ -126,7 +126,7 @@ function lineExpander(args)
         content.appendChild(c)
 
         if (args.model && args.model['↻'])
-            callUiJob({ desc:'lexpander', onCall:j=> args.model['↻'](j), params:{}})
+            app.callUiJob({ desc:'lexpander', onCall:j=> args.model['↻'](j), params:{}})
 
         return c
     }
