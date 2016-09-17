@@ -43,23 +43,23 @@ function a3View(model)
 
     if (model.type == 'PrimeArgs')
         contentDelegate = ()=>
-            autoMultiView(model, [autoView, app.model.registry.views['primeParameterView'].ctor])
+            autoMultiView(model, [autoView, app.registry.views['primeParameterView'].ctor])
 
     if (model.type == 'PrimeResult')
         contentDelegate = ()=>
-            autoMultiView(model, [autoView, app.model.registry.views['primeResultView'].ctor])
+            autoMultiView(model, [autoView, app.registry.views['primeResultView'].ctor])
 
     if (model.type == 'Model3dArgs')
         contentDelegate = ()=>
-            autoMultiView(model, [autoView, app.model.registry.views['model3dParameter'].ctor])
+            autoMultiView(model, [autoView, app.registry.views['model3dParameter'].ctor])
 
     if (model.type == 'model3dResultSet')
         contentDelegate = ()=>
-            autoMultiView(model, [autoView, app.model.registry.views['model3dResultSet'].ctor])
+            autoMultiView(model, [autoView, app.registry.views['model3dResultSet'].ctor])
 
     if (model.type == 'CmdResult')
         contentDelegate = ()=>
-            autoMultiView(model, [autoView, app.model.registry.views['cmdResult'].ctor])
+            autoMultiView(model, [autoView, app.registry.views['cmdResult'].ctor])
 
     return a3expander({
         model:model,

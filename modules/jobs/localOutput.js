@@ -41,17 +41,17 @@ function localOutput(j, diff)
 /*
 new Object({
     type:'Project',
-    job:{
-        icon: '🗩',
-        desc: 'Generate some output',
-        type:'JobPrototype',
-        params:{
+    jobPrototype: {
+        type:'jobPrototype',
+        icon:'🗩',
+        desc:'Generate some output',
+        args:{
             timeout: 200
         },
         onCall:localOutput
-    },
-    tests: []
-})*/
+    }
+})
+*/
 
 new Object({    
     type:'Project',

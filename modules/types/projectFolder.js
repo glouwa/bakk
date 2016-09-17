@@ -29,30 +29,26 @@ function project(url, noView)
                 var projectDiff = eval(d)
 
                 if (projectDiff.types)
-                    app.model.registry.types.merge(projectDiff.types)
+                    app.registry.types.merge(projectDiff.types)
 
                 if (projectDiff.views && !noView)
-                    app.model.registry.views.merge(projectDiff.views)
+                    app.registry.views.merge(projectDiff.views)
 
                 project.merge(Object.assign(projectDiff, {
                     '↻':'deadbeef',
                     '✕': function(j) {},
-                    '▸': function(j, diff, args)
-                    {
+                    '▸': function(j, diff, args) {
                         j.delegate(()=> projectJob(project, args))  //instantiateAndRun(j, project),
                     },
-                    '↕': function(j) //⥯…
-                    {
+                    '↕': function(j) { //⥯…
                         j.ret('failed', 'not imlpemented')
                     },
-                    '⎇': function(j) //…
-                    {
+                    '⎇': function(j) { //…
                         //new job = projectJob(project)
                         //$('#jobTab')[0].add(project.icon, { content:a3View(newJob) }/*, 'inBg'*/)
                         j.ret('ok', '+1 idle job, +1 view')         // done
                     },
-                    '⋯': function(j)
-                    {
+                    '⋯': function(j) {
                         $('#modelTab')[0].add(project.icon, { content:a3View(project) }/*, 'inBg'*/)
                         j.ret('ok', '+1 project view')
                     }

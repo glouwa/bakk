@@ -124,14 +124,14 @@
                         exports.jm.remoteJobs[content.id.valueOf()] = box
             }
 
-            if (content.type == 'Folder' && app.model.registry.types.folder)
-                box.__proto__ = app.model.registry.types.folder
+            if (content.type == 'Folder' && app.registry.types.folder)
+                box.__proto__ = app.registry.types.folder
 
-            if (content.type == 'Set<FragmentFolder>' && app.model.registry.types.fragmentFolderSet)
-                box.__proto__ = app.model.registry.types.fragmentFolderSet
+            if (content.type == 'Set<FragmentFolder>' && app.registry.types.fragmentFolderSet)
+                box.__proto__ = app.registry.types.fragmentFolderSet
 
-            if (content.type == 'FragmentFolder' && app.model.registry.types.fragmentFolder)
-                box.__proto__ = app.model.registry.types.fragmentFolder
+            if (content.type == 'FragmentFolder' && app.registry.types.fragmentFolder)
+                box.__proto__ = app.registry.types.fragmentFolder
 
             return box
         }
@@ -145,8 +145,7 @@
         var result = {}
         var current = result
         var nodes = path.split('.')
-        for (var i = 0; i < nodes.length-1; i++)
-        {
+        for (var i = 0; i < nodes.length-1; i++) {
             current[nodes[i]] = {}
             current = current[nodes[i]]
         }
