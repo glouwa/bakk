@@ -42,12 +42,12 @@ function cmdResultView(model)
 
 
 new Object({
-    type: 'Project',
-    icon: '💻',
-    desc: 'Spawn process on server',
-    service: {
-        type: 'Service',
-        src: spawnCmd,
+    type: 'Project',    
+    jobPrototype: {
+        type: 'JobPrototype',
+        icon: '💻',
+        desc: 'Spawn process on server',
+        onCall: spawnCmd,
         args: {
             cmd: 'ls ../.. -l',
             justStart:false,

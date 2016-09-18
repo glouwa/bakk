@@ -31,7 +31,7 @@ function jobAllView(jobModel)
             contentFactory:()=> autoMultiView(jobModel, [jobStateGraphView])
         })*/
 
-    function update(changes) {
+   function update(changes) {
         if (changes.newMembers) {
             if (changes.newMembers.output) {
                 var result = a3View(jobModel.output)
@@ -46,7 +46,7 @@ function jobAllView(jobModel)
         }
     }
     update({ newMembers:jobModel })
-    jobModel.on('change', update)
+    //jobModel.on('change', update)
 
     //tab.appendChild(starterArgs)
     tab.appendChild(statusTab)

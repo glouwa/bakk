@@ -73,12 +73,12 @@ function getCmdSet(j, diff)
 }
 
 new Object({
-    type: 'Project',
-    icon: '🐈Ⓓ',
-    desc: 'Process fragment folder',
-    service: {
-        type: 'Service',
-        src: getCmdSet,
+    type: 'Project',    
+    jobPrototype: {
+        type: 'JobPrototype',
+        icon: '🐈Ⓓ',
+        desc: 'Process fragment folder',
+        onCall: getCmdSet,
         args: {
             directory: 'data/fragmented/',
             timeout:25*60*1000,

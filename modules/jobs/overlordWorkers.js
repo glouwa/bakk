@@ -54,12 +54,11 @@ function runWorkers(j, diff)
 
 new Object({
     type:'Project',
-    icon: '🖥',
-    desc: 'Run some workers on server',
-    service:
-    {
-        type: 'Service',
-        src: runWorkers,
+    jobPrototype: {
+        type: 'JobPrototype',
+        icon: '🖥',
+        desc: 'Run some workers on server',
+        onCall: runWorkers,
         args: { workerCount: 3, justStart:true },
     },
     tests: []

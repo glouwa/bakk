@@ -63,8 +63,8 @@ function itemGridView(psetModel, delegate)
                 workers.style.width = 80
                 workers.style.height = 23
                 workers.style.display = 'inline-block'
-            var prev = jobRootButon({ name:'◃', args:{}, src:createJobHandler(-1), noIcons:true})
-            var next = jobRootButon({ name:'▹', args:{}, src:createJobHandler(+1), noIcons:true})
+            var prev = jobRootButon({ name:'◃', args:{}, onCall:createJobHandler(-1), noIcons:true})
+            var next = jobRootButon({ name:'▹', args:{}, onCall:createJobHandler(+1), noIcons:true})
         var entities = document.createElement('div')
             entities.id = 'entities'
             info.appendChild(workers)

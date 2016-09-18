@@ -1,6 +1,5 @@
 function localOutput(j, diff)
-{
-    app.mergePath('model.store.'+j.id, {})
+{    
     j.merge({
         state:{ progress: 0.1, type: 'running', log:'setting output reference' },
         output: app.model.store[j.id.valueOf()]
@@ -38,11 +37,10 @@ function localOutput(j, diff)
     j.ret('ok', 'no exceptions')
 }
 
-/*
 new Object({
     type:'Project',
     jobPrototype: {
-        type:'jobPrototype',
+        type:'JobPrototype',
         icon:'🗩',
         desc:'Generate some output',
         args:{
@@ -51,19 +49,5 @@ new Object({
         onCall:localOutput
     }
 })
-*/
 
-new Object({    
-    type:'Project',
-    icon: '🗩',
-    desc: 'Generate some output',
-    service:
-    {
-        type: 'Service',
-        src: localOutput,
-        args: {
-            timeout: 200
-        }
-    },
-    tests: []
-})
+

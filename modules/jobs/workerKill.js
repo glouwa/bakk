@@ -45,13 +45,13 @@ function killServerOverlordsAndWorkers(j)
 }
 
 new Object({
-    type:'Project',
-    icon: '☠',
-    desc: 'Kill server and overlords',
-    service:
+    type:'Project',    
+    jobPrototype:
     {
-        type: 'Service',
-        src: killServerOverlordsAndWorkers,
+        type: 'JobPrototype',
+        icon: '☠',
+        desc: 'Kill server and overlords',
+        onCall: killServerOverlordsAndWorkers,
         args: { nodeType: ['Server', 'Overlord', 'Worker'] },
     },
     tests: []

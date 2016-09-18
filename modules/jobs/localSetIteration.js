@@ -33,12 +33,11 @@ function localFind3dModel(j, diff)
 }
 
 new Object({
-    type:'Project',
-    icon: '❄',
-    desc: 'Find similar 3d models locally',
-    service: {
-        type: 'Service',
-        src: localFind3dModel,
+    type:'Project',    
+    jobPrototype: {
+        type: 'JobPrototype',
+        icon: '❄',
+        desc: 'Find similar 3d models locally',
         args: {
             type: 'Model3dArgs',
             threshold: 17,
@@ -64,6 +63,7 @@ new Object({
             ),            
             timeout: 7000
         },
+        onCall:localFind3dModel
     },
     tests: [],    
 })

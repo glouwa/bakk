@@ -33,12 +33,12 @@ function getCmdSet(j, diff)
 }
 
 new Object({
-    type: 'Project',
-    icon: '🐁Ⓓ',
-    desc: 'Process empty jobs',
-    service: {
-        type: 'Service',
-        src: getCmdSet,
+    type: 'Project',    
+    jobPrototype: {
+        type: 'JobPrototype',
+        icon: '🐁Ⓓ',
+        desc: 'Process empty jobs',
+        onCall: getCmdSet,
         args: {           
             timeout:25000,
             workerTimeout:12000

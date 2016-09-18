@@ -10,8 +10,8 @@ function project(url, noView)
         return jf.job({
             icon:   p.icon,
             desc:   p.desc,
-            params: args?args:p.service.args,
-            onCall: (j, params)=> p.service.src(j, params),
+            params: args?args:p.jobPrototype.args,
+            onCall: j=> p.jobPrototype.onCall(j),
         })
     }
 
@@ -49,7 +49,7 @@ function project(url, noView)
                         j.ret('ok', '+1 idle job, +1 view')         // done
                     },
                     '⋯': function(j) {
-                        $('#modelTab')[0].add(project.icon, { content:a3View(project) }/*, 'inBg'*/)
+                        $('#modelTab')[0].add(project.jobPrototype.icon, { content:a3View(project) }/*, 'inBg'*/)
                         j.ret('ok', '+1 project view')
                     }
                 }))
@@ -59,15 +59,13 @@ function project(url, noView)
 
     return {
         type: 'Project',
-        '▸': function(j, diff, args)
-        {
+        '▸': function(j, diff, args) {
             j.delegate(
                 ()=> ajaxLoadJob(this),
                 ()=> projectJob(this, args)
             )
         },
-        '↻': function(j)
-        {
+        '↻': function(j) {
             j.delegate(()=> ajaxLoadJob(this))
         }
     }
@@ -121,7 +119,7 @@ exports.create = function projectFolder() { return {
                     j.updateJob({ state:{}}, projectMembers)
 
                     var pjobs = projectMembers.map(i=> {
-                        //return ()=> jf.job({ params:i.service.args, onCall:i.service.src })
+                        //return ()=> jf.job({ params:i.jobPrototype.args, onCall:i.jobPrototype.src })
                         return ()=> jf.job({
                             desc:i.desc,
                             //args:

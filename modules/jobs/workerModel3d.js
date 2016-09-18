@@ -169,12 +169,12 @@ function parameterView(argsModel)
 }
 
 new Object({
-    type:'Project',
-    icon: '⤑❄',
-    desc: 'Find similar 3d models',
-    service: {
-        type: 'Service',
-        src: find3dModel,
+    type:'Project',    
+    jobPrototype: {
+        type: 'JobPrototype',
+        icon: '⤑❄',
+        desc: 'Find similar 3d models',
+        onCall: find3dModel,
         args: {
             type: 'Model3dArgs',
             threshold: 16,

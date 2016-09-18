@@ -28,13 +28,13 @@ function serverOuput(j, diff)
 }
 
 new Object({
-    type:'Project',
-    icon: '⤑🗩',
-    desc: 'Generate some output at server',
-    service:
+    type:'Project',    
+    jobPrototype:
     {
-        type: 'Service',
-        src: serverOuput,
+        type: 'JobPrototype',
+        icon: '⤑🗩',
+        desc: 'Generate some output at server',
+        onCall: serverOuput,
         args: {
             text: 'this text will appear in output',            
            // timeout: 1500

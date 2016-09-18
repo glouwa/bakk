@@ -46,9 +46,7 @@
         if (isNaN(pAa + avgSjProgress))
             throw new Error('avgSjProgress is NaN')
 
-        return pAa
-             //+ (callProgress
-             + avgSjProgress * 0.9
+        return pAa + avgSjProgress * 0.9
     }
 
     //-----------------------------------------------------------------------------------------
@@ -58,19 +56,24 @@
         var wc = parent.workflow.count ? parent.workflow.count.valueOf() : undefined
         sj.onUpdate = (j, diff)=> onSubjobUpdate(j, diff, parent, parent.workflow.pAa.valueOf(), wc)
         sj.onReturn = j=> onSubjobReturn(j, jidx)
+
         parent.mergePath('subjobs.'+sj.id, sj)
-        return parent.subjobs[sj.id] || app.model.jobs[sj.id.valueOf()]
+        console.assert(parent.subjobs[sj.id])
+        var boxedsj = parent.subjobs[sj.id] || app.model.jobs[sj.id.valueOf()]
+
+        console.assert(parent.output, parent.id+' has no output')
+        boxedsj.merge({ output:parent.output })
+        return boxedsj
     }
 
     function onSubjobUpdate(sj, diff, parent, pAa, jobCount)
     {
-        q.logGroup( parent.workflow.type + '.onSjUpdate ' + parent.id, 'violet', ()=> {
+        q.logGroup(parent.workflow.type+'.onSjUpdate '+parent.id, 'violet', ()=> {
             var pdiff = {
                 state: { progress: avgProgress(parent, pAa, jobCount) },
                 subjobs: { [sj.id.valueOf()]:diff },
                 //output:  { [sj.id.valueOf()]:output }
             }
-
             parent.updateJob(pdiff)
         })
     }

@@ -82,8 +82,22 @@
             || typeof o === 'function'
     }
 
+    function updateJsProto(type, box)
+    {
+        if (type == 'Folder' && app.registry.types.folder)
+            box.__proto__ = app.registry.types.folder
+
+        if (type == 'Set<FragmentFolder>' && app.registry.types.fragmentFolderSet)
+            box.__proto__ = app.registry.types.fragmentFolderSet
+
+        if (type == 'FragmentFolder' && app.registry.types.fragmentFolder)
+            box.__proto__ = app.registry.types.fragmentFolder
+    }
+
     function box(content, path)
     {      
+        console.assert(!content.path, 'boxed obj already has a path member')
+
         if (isPrimitive(content))
         {
             var box = typeof content === 'function'
@@ -116,23 +130,14 @@
         else
         {
             var box = content instanceof Array ? [] : {}
-            if (content.type == 'Job')
-            {
+            if (content.type == 'Job') {
                 box.__proto__ = exports.jm.jobPrototype
 
                 if(content.isProxy && !path.startsWith('model.tmp'))
                         exports.jm.remoteJobs[content.id.valueOf()] = box
             }
 
-            if (content.type == 'Folder' && app.registry.types.folder)
-                box.__proto__ = app.registry.types.folder
-
-            if (content.type == 'Set<FragmentFolder>' && app.registry.types.fragmentFolderSet)
-                box.__proto__ = app.registry.types.fragmentFolderSet
-
-            if (content.type == 'FragmentFolder' && app.registry.types.fragmentFolder)
-                box.__proto__ = app.registry.types.fragmentFolder
-
+            updateJsProto(content.type, box)
             return box
         }
     }
@@ -198,7 +203,11 @@
             console.assert(isPrimitive(diff) || diff.isLeafType, 'Model is primitive but diff is not', this, diff)
 
             attachChanges(this, diff)
-            this.changes.diff = this.value = isPrimitive(diff) ? diff : diff.value            
+
+            this.value =
+            this.changes.diff = isPrimitive(diff)&&!diff.path ? diff : diff.value
+
+            console.assert(!this.value.path, 'assigning value to box: ' + this.path)
         }
 
         else diff.forEach((v, id, idx)=> { // [] or {}
@@ -207,7 +216,8 @@
                 console.assert(!(v === 'deadbeef' && !this[id]), 'Trying to delete non existing member ' + id)
 
                 attachChanges(this, diff)
-                if (v === 'deadbeef') {                                      // removing
+
+                if (v === 'deadbeef' && this[id]) {                          // removing
                     this.changes.deletedMembers[id] = this[id]
                     this.changes.diff[id] = 'deadbeef'
 
@@ -215,9 +225,12 @@
                     delete this[id]                                      
                 }
 
-                else if (typeof this[id] == "undefined") {                                        // adding
+                else if (typeof this[id] == "undefined") {                   // adding
                     var p = this.path == '' ? id : (this.path + '.' + id)
                     this[id] = exports.model(p, v)
+
+                    if (this[id].path != p)
+                        this[id].isLink = true
 
                     this.changes.newMembers[id] = this[id]
                     if (!this.changes.diff[id]) //?
@@ -234,6 +247,8 @@
                 }
             }
         })
+
+        updateJsProto(this.type, this)
         return this
     }
 
@@ -296,6 +311,7 @@
         var model = box(initDiff, path)
 
         Object.defineProperty(model, 'path',             { writable:true, value:path })
+        Object.defineProperty(model, 'isLink',           { writable:true, value:undefined })
 
         Object.defineProperty(model, '_callbacks',       { value:{} })
         Object.defineProperty(model, 'on',               { value:Emitter.on }) //mixin(model)

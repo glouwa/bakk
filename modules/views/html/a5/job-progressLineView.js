@@ -29,7 +29,7 @@ function jobStateWithLogView(jobModel, contentFactory)
         if (keys.length == 0)
             return
 
-        console.warn(keys.length <= 1, 'jdiff.subjobs.keys.lenght > 1 (multi orgin) ' + keys)
+        //console.warn(keys.length <= 1, 'jdiff.subjobs.keys.lenght > 1 (multi orgin) ' + keys)
 
         return { model:current.model.subjobs[keys[0]], diff:current.diff.subjobs[keys[0]] }
     }

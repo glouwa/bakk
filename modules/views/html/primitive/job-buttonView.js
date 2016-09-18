@@ -62,14 +62,15 @@ function jobRootButon(args)// name, args, src, noIcons, obj)   // der erstellt e
             view.setProgress(job.state.progress.valueOf(), config.getColor(job.state))
         }
 
-        q.addRoot('Message From UI ' + args.name, ()=>{
+        q.addRoot('Message From UI ' + args.name, ()=> {
             job = app.rootJob({
                 icon: '⎇',
                 desc: 'button ' + args.name,
-                args: args.args,
-                onCall: (j, params)=> {
-                    if (args.obj) args.obj[args.name](j, params)   // model obj method?
-                    else          args.src(j, params)              // project service?
+                params: args.args,
+                output:{},
+                onCall: j=> {
+                    if (args.obj) args.obj[args.name](j)   // model obj method?
+                    else          args.onCall(j)              // project service?
                 }
             })
             $('#jobTab')[0].add(job.id, { content:jobAllView(job) }/*, 'inBg'*/)

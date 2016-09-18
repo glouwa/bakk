@@ -101,26 +101,25 @@ function fragmentFolder()
 
 function insertFolder(j, diff)
 {
-    app.mergePath(
-        'model.store.'+j.id,
-        { type:'Set<FragmentFolder>', dir:j.params.dir.valueOf() }
-    )
-
     j.merge({
         state:{ progress:0.1, type:'running', log:'setting output reference' },
-        output:app.model.store[j.id.valueOf()]
+        output:{ type:'Set<FragmentFolder>', dir:j.params.dir.valueOf() }
     })
 
-    j.delegate(()=> jf.job({ icon:'↻', onCall:lj=> app.model.store[j.id.valueOf()]['↻'](lj), params:{} }))
+    j.delegate(()=> jf.job({
+        icon:'↻',
+        params:{},
+        onCall:lj=> j.output['↻'](lj)
+    }))
 }
 
 new Object({
-    type: 'Project',
-    icon: '💢',
-    desc: 'Show fragment folder',
-    service: {
-        type: 'Service',
-        src: insertFolder,
+    type: 'Project',    
+    jobPrototype: {
+        type: 'JobPrototype',
+        icon: '💢',
+        desc: 'Show fragment folder',
+        onCall: insertFolder,
         args: {
             dir: 'data/fragmented/',
             timeout:500

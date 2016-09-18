@@ -6,17 +6,17 @@ function projectEdit(model)
     function update(changes)
     {
         if (changes.newMembers)
-            if (changes.newMembers.service)
+            if (changes.newMembers.jobPrototype)
             {
                 view.appendChild(
-                    a3View(model.service.args)
+                    a3View(model.jobPrototype.args)
                 )
                 view.appendChild(
                     a3expander({
-                    model:model.service.src,
+                    model:model.jobPrototype.onCall,
                     expanded:true,
-                    header:a3Frame(model.service.src),
-                    contentFactory:()=> codeEdit(model.service.src)
+                    header:a3Frame(model.jobPrototype.onCall),
+                    contentFactory:()=> codeEdit(model.jobPrototype.onCall)
                 }))
             }
     }

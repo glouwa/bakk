@@ -81,11 +81,9 @@
         value: function (obj)
         {
             var clone = this instanceof Array ? [] : {}
-            for(var i in this)
-            {
+            for(var i in this) {
                 var v = this[i]
-                if(typeof v == 'object' && v != null)
-                {
+                if(typeof v == 'object' && v != null) {
                     if (v.isLeafType)
                         clone[i] = v.value
                     else if (i !== 'data')
@@ -93,16 +91,13 @@
                     else
                         clone[i] = {}
                 }
-                else if (typeof v == 'function')
-                {
+                else if (typeof v == 'function') {
                     clone['$' + i] = '(' + v.toString() + ')'
                     clone[i] = v
                     //console.warn('stringifying function ' + i)
                 }
                 else
-                {
-                    clone[i] = v
-                }
+                    clone[i] = v                
             }
 
             if (this.onCall)   clone['$onCall']   = '(' + this.onCall.toString()   + ')'
@@ -118,20 +113,16 @@
     {
         value: function (evaluator)
         {            
-            for(var i in this)
-            {
-                if(typeof this[i] == 'object' && this[i] != null)
-                {
+            for(var i in this) {
+                if(typeof this[i] == 'object' && this[i] != null) {
                     this[i].unpack(evaluator)
                 }
-                else if (i.indexOf('$') === 0)
-                {
+                else if (i.indexOf('$') === 0) {
                     //console.warn('unstringifying function ' + i)
                     this[i.substring(1)] = evaluator(this[i])
                     delete this[i]
                 }
-                else
-                {
+                else {
                 }
             }
             return this

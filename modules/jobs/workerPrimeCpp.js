@@ -107,13 +107,12 @@ function primeStatsView(outputModel)
 }
 
 new Object({
-    type:'Project',
-    icon: 'ℙ',
-    desc: 'Find some ℙ with C++',
-    service:
-    {
-        type: 'Service',
-        src: findPrimes,
+    type:'Project',    
+    jobPrototype: {
+        type: 'JobPrototype',
+        icon: 'ℙ',
+        desc: 'Find some ℙ with C++',
+        onCall: findPrimes,
         args: {
             type: 'PrimeArgs',
             set: pSet.lazySet(

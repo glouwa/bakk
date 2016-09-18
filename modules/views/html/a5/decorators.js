@@ -1,5 +1,3 @@
-
-
 function tab(id)
 {
     var view = document.createElement('div')

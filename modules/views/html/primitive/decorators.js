@@ -78,9 +78,20 @@ function lineFramePrimitive(name, model)
             type.style.marginLeft = 5
             type.style.fontSize = 9
 
-        view.appendChild(icon)
-        view.appendChild(varname)
-        view.appendChild(type)
+    view.appendChild(icon)
+    view.appendChild(varname)
+    view.appendChild(type)
+
+    if (model.isLink) {
+        var link = document.createElement('div')
+            link.innerText = '→ '+model.path
+            link.style.float = 'left'
+            link.style.color = 'red'
+            link.style.marginTop = 5
+            link.style.marginLeft = 5
+            link.style.fontSize = 9
+        view.appendChild(link)
+    }
     return view
 }
 
@@ -101,16 +112,21 @@ function lineFrame(name, model, content)
             autoButtons.style.paddingRight = 4
             autoButtons.style.margin = '-1 0 -1 0'
 
-        view.appendChild(varName(name))
-        view.appendChild(type)
-        if (content)
-            view.appendChild(content)
-        view.appendChild(autoButtons)
-        /*view.update = function(changes)
-        {
-            content.merge(changes)
-            type.innerText = modelType(model)
-        }*/
+    view.appendChild(varName(name))
+    view.appendChild(type)
+    if (model.isLink) {
+        var link = document.createElement('div')
+            link.innerText = '→ '+model.path
+            link.style.float = 'left'
+            link.style.color = 'red'
+            link.style.marginTop = 5
+            link.style.marginLeft = 5
+            link.style.fontSize = 9
+        view.appendChild(link)
+    }
+    if (content)
+        view.appendChild(content)
+    view.appendChild(autoButtons)
     return view
 }
 
@@ -126,8 +142,12 @@ function lineExpander(args)
         content.appendChild(c)
 
         if (args.model && args.model['↻'])
-            app.callUiJob({ desc:'lexpander', onCall:j=> args.model['↻'](j), params:{}})
-
+            app.callUiJob({
+                desc:'lexpander',
+                onCall:j=> args.model['↻'](j),
+                params:{},
+                output:args.model
+        })
         return c
     }
     // args.expanded
@@ -166,6 +186,7 @@ function lineExpander(args)
         header.appendChild(h)
     view.appendChild(header)        
     view.appendChild(content)
+    //view.style.transition = 'height 1s ease'
     return view
 }
 

@@ -350,27 +350,32 @@
             // transfered, unpacket and called remotely
             // j is a valid variable bcause this functions are evaluated remotly in
             // a context where j exists. c is the connection on remoteside
-            var realJob = jm.job({
-                icon: '↷'+args.icon,
-                desc: args.desc,
-                params: args.args,
-                onCall: args.realJob
-            })
 
             // locally called
-            var proxyJob = jm.job({
-                id: realJob.id,
+            var proxyJob = jm.job({                
                 icon: '↷'+args.icon,
                 desc: args.desc,
                 isProxy: true,                
                 params: args.args,
-                //node: args.node,
                 onCall:   pj=> {
+                    var realJob = {
+                        id: proxyJob.id,
+                        icon: proxyJob.icon,
+                        desc: proxyJob.desc,
+                        params: proxyJob.params,
+                        output: proxyJob.output,
+                        onCall: args.realJob
+                    }
                     //sim.log('job', 'log', '⟶', realJob)
                     console.info('%cjob', 'text-decoration:underline;', realJob.id, '⟶', realJob)
                     c.send(jobMsg('call', realJob.id, realJob.pack()))
                 },
                 onCancel: pj=> {
+                    var realJob = {
+                        id: proxyJob.id,
+                        onCall: args.realJob,
+                        // todo: onacncel wär interessanter oder?
+                    }
                     //sim.log('job', 'log', '⟶', realJob)
                     console.info('job', '⟶', realJob)
                     c.send(jobMsg('cancel', realJob.id, realJob.pack()))
@@ -378,10 +383,8 @@
                 //onUpdate: wird ganz normal von logic oder anwender definiert
                 //onReturn: wird ganz normal von logic oder anwender definiert
             })
-
             // is jetzt in mvj ... jm.remoteJobs[proxyJob.id] = proxyJob
             // todo: unregister on return (on('return',...))
-
             return proxyJob
         }
 
