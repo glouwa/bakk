@@ -84,7 +84,7 @@ function lineFramePrimitive(name, model)
 
     if (model.isLink) {
         var link = document.createElement('div')
-            link.innerText = '→ '+model.path
+            link.innerText = model.isLink.length + '→ '+model.path
             link.style.float = 'left'
             link.style.color = 'red'
             link.style.marginTop = 5
@@ -116,7 +116,7 @@ function lineFrame(name, model, content)
     view.appendChild(type)
     if (model.isLink) {
         var link = document.createElement('div')
-            link.innerText = '→ '+model.path
+            link.innerText = model.isLink.length +'→ '+model.path
             link.style.float = 'left'
             link.style.color = 'red'
             link.style.marginTop = 5
@@ -147,7 +147,7 @@ function lineExpander(args)
                 onCall:j=> args.model['↻'](j),
                 params:{},
                 output:args.model
-        })
+            })
         return c
     }
     // args.expanded

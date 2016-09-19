@@ -78,16 +78,26 @@
 
     Object.defineProperty(Object.prototype, 'pack',
     {
-        value: function (obj)
-        {
+        value: function()
+        {            
             var clone = this instanceof Array ? [] : {}
             for(var i in this) {
+                console.log('packing ' + i + '  ' +this[i].path)
                 var v = this[i]
                 if(typeof v == 'object' && v != null) {
                     if (v.isLeafType)
                         clone[i] = v.value
-                    else if (i !== 'data')
-                        clone[i] = v.pack() // todo: remove that shit
+                    else if (i !== 'data') {
+                        if (v.isLink)
+                            console.log('pack is link ' + v.path +'-->'+this.path+'.'+i)
+
+                        if (!v.isLink || v.path == this.path+'.'+i || i == 'params')
+                            clone[i] = v.pack() // todo: remove that shit
+                        else {
+                            clone[i] = {}
+                            console.log('skip packing ' + v.path +'-->'+this.path+'.'+i)
+                        }
+                    }
                     else
                         clone[i] = {}
                 }

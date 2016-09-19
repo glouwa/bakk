@@ -284,6 +284,7 @@ transform: perspective(10px) rotateX(3deg);
     display: inline-block;
     padding: 2 0 2 0;
     width: calc(100% - 6px);
+    cursor:pointer;
 }
 
 .lineFramePrimitive{
@@ -329,6 +330,7 @@ transform: perspective(10px) rotateX(3deg);
     position: relative;
     /*isplay: inline;*/
     display: block;
+    cursor:pointer;
 }
 
 .lineFrame{

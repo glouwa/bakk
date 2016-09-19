@@ -52,16 +52,11 @@ app = mvj.model('', {
     },
     onMessage:function(c, parsed, pduSize){
         q.addRoot('app on "' + parsed.type + '" message ' + c.id + ' ('+pduSize+'b)', ()=>{
-            var channelHandlers = {
-                onWsMessage: function(c, parsed){
-                    sim.log('app', 'log', '⟵', parsed)
-                    app.wsMessageHandlers['on'+parsed.type](c, parsed)
-                },
-                onJobMessage: function(c, parsed, pduSize){
-                    sim.log('job', 'log', '⟵', pduSize, parsed)
-                    jf.onReceive(c, parsed, code=> eval(code), app, pduSize)
-                }
-            }['on'+parsed.type+'Message'](c, parsed.payload, pduSize)
+            console.info('job', '⟵', pduSize, parsed);
+            ({
+                onWsMessage:  (c, p, s)=> app.wsMessageHandlers['on'+p.type](c, p),
+                onJobMessage: (c, p, s)=> jf.onReceive(c, p, code=> eval(code), app, s)
+            })['on'+parsed.type+'Message'](c, parsed.payload, pduSize)
         })
     },
     onNetworkStateChange:function(state, connection){
@@ -80,7 +75,7 @@ var consoleLogNetworkStateChangeHandler = {
 }
 
 var clientMessageHandlerFactory = (shortType, type, cap, onConnected)=> ({
-    onServerHallo: function(c, parsed) {
+    onServerHallo: (c, parsed)=> {
         app.clientId = parsed.diff.clientId
         jf.workerId = shortType + Number(app.clientId).toSubscript()
 
@@ -92,7 +87,6 @@ var clientMessageHandlerFactory = (shortType, type, cap, onConnected)=> ({
             osType: os.type(),
             hostname: os.hostname()
         }
-
         //app.networkInfo.merge(mynodeInfo)
         var msg = messages.networkInfoMsg('model.network.' + app.clientId, mynodeInfo)
         var channelMsg = messages.channelMsg('Ws', msg)
@@ -102,7 +96,7 @@ var clientMessageHandlerFactory = (shortType, type, cap, onConnected)=> ({
     },
 
     onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
-    onReload: (c, parsed) => {}
+    onReload:      (c, parsed)=> {}
 })
 
 

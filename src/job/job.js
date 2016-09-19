@@ -423,7 +423,7 @@
                         console.log('############### no changes!!!')
                         return
                     }                    
-                    var msg = jobMsg('updateJob', jd.id, job.changes.diff)
+                    var msg = jobMsg('updateJob', jd.id, job.changes.diff.pack())
                     console.log('############### sending', JSON.stringify(msg,0,4))
                     c.send(msg)
                 })

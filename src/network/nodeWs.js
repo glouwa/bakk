@@ -59,8 +59,7 @@ function sendMsg(connection, msg)
     try
     {
         var data = messages.stringify(msg) // sollte nicht dem try sein
-        connection.ws.send(data)
-        network.sim.log('net', 'log', '⟶', connection.id, msg)
+        connection.ws.send(data)        
         return data.length
     }
     catch(e)
@@ -74,8 +73,7 @@ function receiveMsg(connection, msg)
 {
     try
     {
-        var parsed = messages.parse(msg)
-        network.sim.log('net', 'log', '⟵', connection.id, parsed)
+        var parsed = messages.parse(msg)        
         app.onMessage(connection, parsed, msg.length)
     }
     catch(e)

@@ -1,9 +1,8 @@
 function find3dModel(j, diff)
-{
-    app.mergePath('model.store.'+j.id, { type:'model3dResultSet' })
+{ 
     j.merge({
         state:{ progress:0.1, type:'running', log:'setting output reference' },
-        output: app.model.store[j.id.valueOf()]
+        output: { type:'model3dResultSet' }
     })
 
     j.delegate(()=> jf.remoteProxyJob({

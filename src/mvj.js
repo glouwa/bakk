@@ -98,37 +98,35 @@
     {      
         console.assert(!content.path, 'boxed obj already has a path member')
 
-        if (isPrimitive(content))
-        {
+        if (isPrimitive(content)) {
             var box = typeof content === 'function'
                     ? function() { return box.value.apply(this, arguments) }
                     : {}
 
             Object.defineProperty(box, 'isLeafType',{ writable:true, value:true })
             Object.defineProperty(box, 'value',     { writable:true, value:content })
-            Object.defineProperty(box, 'valueOf',   { writable:true, value:function()
-            {
+            Object.defineProperty(box, 'valueOf',   { writable:true, value:function() {
                 return this.value !== undefined
                      ? this.value.valueOf()
                      : undefined
             }})
-            Object.defineProperty(box, 'toJSON', { writable:true, value:function()
-            {
+            Object.defineProperty(box, 'toJSON', { writable:true, value:function() {
+                /*if (this.isLink) {
+                    console.log('skipping JSON ' + this.path)
+                    return
+                }*/
                 if (this.value === undefined)
                     return
                 return this.value//.valueOf()
             }})
-            Object.defineProperty(box, 'toString', { writable:true, value:function()
-            {
+            Object.defineProperty(box, 'toString', { writable:true, value:function() {
                 if (this.value === undefined)
                     return 'undefined'
                 return this.value.toString()
             }})
-
             return box
         }
-        else
-        {
+        else {
             var box = content instanceof Array ? [] : {}
             if (content.type == 'Job') {
                 box.__proto__ = exports.jm.jobPrototype
@@ -136,7 +134,6 @@
                 if(content.isProxy && !path.startsWith('model.tmp'))
                         exports.jm.remoteJobs[content.id.valueOf()] = box
             }
-
             updateJsProto(content.type, box)
             return box
         }
@@ -229,8 +226,10 @@
                     var p = this.path == '' ? id : (this.path + '.' + id)
                     this[id] = exports.model(p, v)
 
-                    if (this[id].path != p)
-                        this[id].isLink = true
+                    if (this[id].path != p) {
+                        this[id].isLink = this[id].isLink ? this[id].isLink.concat(p) : []
+                        console.log('isLink=true ' + p +' --> '+ this[id].path)
+                    }
 
                     this.changes.newMembers[id] = this[id]
                     if (!this.changes.diff[id]) //?
@@ -241,9 +240,9 @@
                     console.assert(this[id].merge_, id, this.path)
                     this[id].merge_(v)                                       // RECURSION
 
-                    this.changes.changedMembers = this[id]
+                    this.changes.changedMembers[id] = this[id]
                     if (this[id].changes)
-                        this.changes.diff[id] = this[id].changes.diff        // ää nein, nicht das ganze v
+                        this.changes.diff[id] = this[id].changes.diff
                 }
             }
         })
@@ -275,7 +274,7 @@
         //    console.warn(this.path + ' should not be in chaged list (has no changes but is in diff of parent)')
     }
 
-    function destroyRecursive(parent, noEvents, inShadow)
+    function destroyRecursive(parent)
     {
         var changes = { diff:{}, sender:this, newMembers:{}, deletedMembers:{} }
 
@@ -285,8 +284,7 @@
             changes.deletedMembers[id] = this[id]
         })
 
-        if (!noEvents)
-            this.emit('change', changes)
+        this.emit('destroy', changes)
     }
 
     function attachChanges(m, diff) {

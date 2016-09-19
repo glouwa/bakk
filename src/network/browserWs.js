@@ -46,8 +46,7 @@ function receiveMsg(connection, msg)
 {    
     try
     {
-        var parsed = messages.parse(msg)
-        sim.log('net', 'log', '⟵', connection.id, msg.length, parsed)        
+        var parsed = messages.parse(msg)        
         app.onMessage(connection, parsed, msg.length)
     }
     catch(e)
