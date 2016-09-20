@@ -1,6 +1,6 @@
 function hexToRgb(hex)
 {
-    hex = hex.replace(/[^0-9A-F]/gi, '')
+    hex = hex.valueOf().replace(/[^0-9A-F]/gi, '')
     var bigint = parseInt(hex, 16)
     var r = (bigint >> 16) & 255
     var g = (bigint >> 8) & 255

@@ -52,7 +52,7 @@ app = mvj.model('', {
     },
     onMessage:function(c, parsed, pduSize){
         q.addRoot('app on "' + parsed.type + '" message ' + c.id + ' ('+pduSize+'b)', ()=>{
-            console.info('job', '⟵', pduSize, parsed);
+            console.info('job', '⟵', pduSize, JSON.stringify(parsed, 0, 4));
             ({
                 onWsMessage:  (c, p, s)=> app.wsMessageHandlers['on'+p.type](c, p),
                 onJobMessage: (c, p, s)=> jf.onReceive(c, p, code=> eval(code), app, s)

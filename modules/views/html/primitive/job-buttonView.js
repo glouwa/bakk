@@ -18,7 +18,7 @@ function jobControlingButton(jobModel) // der bekommt ein model
         view.caption.innerText = view.state.caption || config.getIcon(jobModel.state)
         view.onclick = view.state.onClick
         view.disable(view.state.disabled)
-        view.setProgress(jobModel.state.progress, config.getColor(jobModel.state))
+        view.setProgress(+jobModel.state.progress, config.getColor(jobModel.state))
     }
 
     unpdateButton()

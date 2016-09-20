@@ -39,13 +39,13 @@ function getCmdSet(j, diff)
             var workers = app.getNodesByCapability('POSIX64')
             var output = addCommandsOfFolder(js.params.directory.valueOf())
             output.workerCount = workers.length
-            js.updateJob({
+            /*js.updateJob({
                 state:{
                     type:'running',
                     log:'collected commands'
                 },
                 output:output
-            })
+            })*/ // weil commands nicht gesendet werden wenn sie im output sind
 
             js.delegate({
                 type: 'pool',
@@ -63,7 +63,7 @@ function getCmdSet(j, diff)
                         options:{ cwd:jw.params.command.dir.valueOf(), env:Object.assign({ OMP_NUM_THREADS:4 }, process.env) },
                         onStdOut: (jw, data)=> jw.commitJob(
                             { type:'running', progress:0.5, log:data },
-                            { commands:{ [jw.params.idx.valueOf()]:{ fileState:'ok'} }}
+                            { commands:{ [jw.params.idx]:{ fileState:'ok'} }}
                         )
                     })
                 })
@@ -84,6 +84,6 @@ new Object({
             timeout:25*60*1000,
             workerTimeout:5*60*1000
         },
-    },    
+    },
     tests: []
 })

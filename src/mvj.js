@@ -96,11 +96,13 @@
 
     function box(content, path)
     {      
-        console.assert(!content.path, 'boxed obj already has a path member')
+        console.assert(!content.path || content.linkThatShit, 'boxed obj already has a path member')
 
         if (isPrimitive(content)) {
             var box = typeof content === 'function'
-                    ? function() { return box.value.apply(this, arguments) }
+                    ? function() {
+                        return box.value.apply(this, arguments)
+                    }
                     : {}
 
             Object.defineProperty(box, 'isLeafType',{ writable:true, value:true })
@@ -195,14 +197,13 @@
     function merge_(diff)
     {        
         console.assert(this.path != '' || !this.path)
+        attachChanges(this, diff)
 
         if (this.isLeafType) {
             console.assert(isPrimitive(diff) || diff.isLeafType, 'Model is primitive but diff is not', this, diff)
 
-            attachChanges(this, diff)
-
-            this.value =
-            this.changes.diff = isPrimitive(diff)&&!diff.path ? diff : diff.value
+            this.value = isPrimitive(diff)&&!diff.path ? diff : diff.value
+            this.changes.diff = this
 
             console.assert(!this.value.path, 'assigning value to box: ' + this.path)
         }
@@ -212,11 +213,9 @@
                 console.assert(!isPrimitive(diff), 'Model is not primitive but diff is')
                 console.assert(!(v === 'deadbeef' && !this[id]), 'Trying to delete non existing member ' + id)
 
-                attachChanges(this, diff)
-
                 if (v === 'deadbeef' && this[id]) {                          // removing
                     this.changes.deletedMembers[id] = this[id]
-                    this.changes.diff[id] = 'deadbeef'
+                    this.changes.diff[id]           = 'deadbeef'
 
                     this[id].destroyRecursive(this)
                     delete this[id]                                      
@@ -227,13 +226,12 @@
                     this[id] = exports.model(p, v)
 
                     if (this[id].path != p) {
-                        this[id].isLink = this[id].isLink ? this[id].isLink.concat(p) : []
+                        this[id].isLink = this[id].isLink ? this[id].isLink.concat(p) : [p]
                         console.log('isLink=true ' + p +' --> '+ this[id].path)
                     }
 
                     this.changes.newMembers[id] = this[id]
-                    if (!this.changes.diff[id]) //?
-                        this.changes.diff[id] = this[id] // ja, das ganze?                      
+                    this.changes.diff[id]       = this[id] // ja, das ganze?
                 }
 
                 else {                                                       // child changes (rekursion)
@@ -241,8 +239,7 @@
                     this[id].merge_(v)                                       // RECURSION
 
                     this.changes.changedMembers[id] = this[id]
-                    if (this[id].changes)
-                        this.changes.diff[id] = this[id].changes.diff
+                    this.changes.diff[id] =           this[id].changes.diff
                 }
             }
         })
@@ -276,7 +273,7 @@
 
     function destroyRecursive(parent)
     {
-        var changes = { diff:{}, sender:this, newMembers:{}, deletedMembers:{} }
+        var changes = { sender:this, diff:{}, newMembers:{}, deletedMembers:{} }
 
         this.forEach((v, id, idx)=> {
             // todo: check ownership
@@ -290,18 +287,28 @@
     function attachChanges(m, diff) {
         console.assert(typeof diff !== 'undefined')
         m.changes = m.changes || {
-            diff:diff,
             sender:m,
+            diff:{}, // special tactics
             newMembers:{},
             deletedMembers:{},
             changedMembers:{}
         }
+        Object.defineProperty(m.changes.diff, 'path',    { writable:true, value:m.path })
+        Object.defineProperty(m.changes.diff, 'isLink',  { writable:true, value:m.isLink })
     }
 
     exports.model = function(path, initDiff)
     {
         if (initDiff === undefined)
             console.warn('initDiff is undefined', path)
+
+        else if (initDiff.linkPath && initDiff.linkThatShit) {
+            try {
+                return exports.traverse(initDiff.linkPath, app)
+            } catch(e) {
+                path = initDiff.linkPath
+            }
+        }
 
         else if (initDiff.path)
             return initDiff //console.trace('using boxedObj as initDiff\n' + initDiff.path +'\n'+ path)

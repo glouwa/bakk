@@ -357,27 +357,27 @@
                 desc: args.desc,
                 isProxy: true,                
                 params: args.args,
-                onCall:   pj=> {
+                onCall: pj=> {
                     var realJob = {
-                        id: proxyJob.id,
-                        icon: proxyJob.icon,
-                        desc: proxyJob.desc,
-                        params: proxyJob.params,
-                        output: proxyJob.output,
-                        onCall: args.realJob
+                        id: pj.id,
+                        icon: pj.icon,
+                        desc: pj.desc,
+                        params: pj.params,
+                        onCall: args.realJob,
+                        output: pj.output
                     }
                     //sim.log('job', 'log', '⟶', realJob)
-                    console.info('%cjob', 'text-decoration:underline;', realJob.id, '⟶', realJob)
-                    c.send(jobMsg('call', realJob.id, realJob.pack()))
+                    console.info('%cjob', 'text-decoration:underline;', realJob.id, '⟶', JSON.stringify(realJob))
+                    c.send(jobMsg('call', realJob.id, realJob.pack(true)))
                 },
                 onCancel: pj=> {
                     var realJob = {
-                        id: proxyJob.id,
+                        id: pj.id,
                         onCall: args.realJob,
                         // todo: onacncel wär interessanter oder?
                     }
                     //sim.log('job', 'log', '⟶', realJob)
-                    console.info('job', '⟶', realJob)
+                    console.info('job', '⟶', JSON.stringify(realJob))
                     c.send(jobMsg('cancel', realJob.id, realJob.pack()))
                 }
                 //onUpdate: wird ganz normal von logic oder anwender definiert
@@ -435,7 +435,6 @@
             parsed.diff.state[parsed.type+'-InBytes'] = (job.state[parsed.type+'-InBytes']|0) + pduSize
             // call / cancel / update / return
             job[parsed.type](parsed.diff)
-
 
             //var msg = jobMsg('updateJob', job.id, job.changes.diff)
             //console.log('############### sending', JSON.stringify(msg,0,4))

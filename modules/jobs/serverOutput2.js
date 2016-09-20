@@ -21,7 +21,7 @@ function serverOuput(j, diff)
                         progress: 0.95
                     },
                     output:{
-                        msg: js.params.text
+                        msg: js.params.text.valueOf()
                     }
                 })
                 js2.ret('ok', 'no exceptions')

@@ -78,30 +78,37 @@
 
     Object.defineProperty(Object.prototype, 'pack',
     {
-        value: function()
+        value:function(pf)
         {            
             var clone = this instanceof Array ? [] : {}
-            for(var i in this) {
-                console.log('packing ' + i + '  ' +this[i].path)
+            for(var i in this) {                
                 var v = this[i]
+                console.log('packing ' + i + '  ' +(v?v.path:'...'))
+
                 if(typeof v == 'object' && v != null) {
+
                     if (v.isLeafType)
                         clone[i] = v.value
+
                     else if (i !== 'data') {
                         if (v.isLink)
                             console.log('pack is link ' + v.path +'-->'+this.path+'.'+i)
 
                         if (!v.isLink || v.path == this.path+'.'+i || i == 'params')
-                            clone[i] = v.pack() // todo: remove that shit
+                            clone[i] = v.pack(pf) // todo: remove that shit
                         else {
-                            clone[i] = {}
+                            clone[i] = v.pack()
+                            clone[i].linkThatShit = true
+                            clone[i].linkPath = v.path
+
                             console.log('skip packing ' + v.path +'-->'+this.path+'.'+i)
                         }
                     }
+
                     else
                         clone[i] = {}
                 }
-                else if (typeof v == 'function') {
+                else if (typeof v == 'function' && pf) {
                     clone['$' + i] = '(' + v.toString() + ')'
                     clone[i] = v
                     //console.warn('stringifying function ' + i)
