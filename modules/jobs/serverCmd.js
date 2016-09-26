@@ -13,11 +13,10 @@ function spawnCmd(j)
         realJob: js=> tj.spawn(js, {
             desc: js.params.cmd,
             cmd: js.params.cmd,
-            justStart:js.params.justStart,
-            onStdOut: function onStdOut(jw, data)
-            {
+            //justStart:js.params.justStart,
+            onStdOut: function onStdOut(jw, data) {
                 onStdOut.count = onStdOut.count || 1
-                jw.commitJob({ type:'running', progress:0.95 }, { stdout:data })
+                jw.updateJob({ state:{ progress:0.95 }, output:{ type:'CmdResult', stdout:data }})
             }
         })
     }))
@@ -49,7 +48,7 @@ new Object({
         desc: 'Spawn process on server',
         onCall: spawnCmd,
         args: {
-            cmd: 'ls ../.. -l',
+            cmd: 'ls ./ -l',
             justStart:false,
             timeout:500
         },

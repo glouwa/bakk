@@ -1,23 +1,20 @@
-
 function autoMultiView(model, viewsf)
 {
     var view = document.createElement('div')
         var views = btab()
-            viewsf.forEach((v, k, idx)=>
-            {
+            viewsf.forEach((v, k, idx)=> {
                 var currentView = viewsf[k](model)
                 var viewName = currentView.classList.item(currentView.classList.length-1)
                 views.add(viewName, { content:currentView })
             })
+
     view.appendChild(views)
     return view
 }
 
-
-
 function a3View(model)
 {
-    var contentDelegate = ()=> autoMultiView(model, [autoView])
+    var contentDelegate = ()=> autoMultiView(model, [objectd3treeView, /*objectd3graphView,*/ autoView])
 
     if (model.type == 'Model')
         //contentDelegate = ()=> systemGraphView(model)
@@ -28,7 +25,7 @@ function a3View(model)
 
     if (model.type == 'Job')
         contentDelegate = ()=> autoMultiView(model,
-            [/*jobStateTreeView, jobStateGraphView , jobStateGantViewWithProgress*/, jobPlot])
+            [/*jobStateTreeView, jobStateGraphView , jobStateGantViewWithProgress,*/ jobPlot])
 
     if (model.type == 'Network')
         contentDelegate = ()=> autoMultiView(model, [autoView, systemView])

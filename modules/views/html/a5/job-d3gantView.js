@@ -287,7 +287,8 @@ function jobPlot(jobModel)
             aView = undefined
         }
         if (e) {
-            aView = autoView(e.__data__)
+            //aView = autoView(e.__data__)
+            aView = objectd3treeView(e.__data__)
             aView.style.borderStyle = 'dashed none none none'
             aView.style.borderWidth = 1;
             aView.style.borderColor = '#B0B0B0'

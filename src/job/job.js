@@ -236,12 +236,13 @@
 
                 q.logGroup(this.id + ' delegates to ' + args.type, 'violet', ()=> {
 
-                    this.merge({ workflow:{
+                    this.merge({
+                        workflow:{
                             type: args.type,
                             pAa: this.state.progress.valueOf(),
                             count: args.count
-                        }}
-                    )
+                        }
+                    })
 
                     this.updateJob({ state:{
                         type:'running',
