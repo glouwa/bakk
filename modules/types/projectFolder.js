@@ -97,7 +97,7 @@ exports.create = function projectFolder() { return {
                 '❄ local find 3d models':                    project('modules/jobs/localSetIteration.js'),
                 '🔃* local paralell AJAX':                    project('modules/jobs/localAjax.js'),
                 '🗩 local output':                            project('modules/jobs/localOutput.js'),
-                '🗩 serevr output 2':                          project('modules/jobs/serverOutput2.js'),
+                '🗩 serevr output 2':                         project('modules/jobs/serverOutput2.js'),
                 '✕': function free(j) {},
                 '▸': function run(j) {
                     // this =  tests

@@ -55,7 +55,8 @@ function tab(id)
             view.active = p
             view.active.flap.className = 'tab-active'
             //view.active.content.style.display = 'block'
-            view.active.content.style.display = 'table'
+            view.active.content.style.display = 'flex'
+            view.active.content.style.flexDirection = 'column'
         }
 
         view.appendChild(header)
@@ -92,6 +93,11 @@ function splitter(v1, v2)
 function btab()
 {
     var view = document.createElement('div')
+        view.className = 'btab-container'
+        view.style.display = 'flex'
+        view.style.flexDirection = 'column'
+        view.style.flexGrow = 1
+
         view.style.marginBottom = -1
         var header = document.createElement('div')
             header.className = 'btab-header'
@@ -99,6 +105,8 @@ function btab()
             header.style.color = 'gray'
             header.style.clear = 'both'
         var content = document.createElement('div')
+            content.className = 'btab-content'
+            content.style.flexGrow = 1
             //content.style.paddingTop = 20
             //content.style.paddingBottom = 20
         view.active = undefined

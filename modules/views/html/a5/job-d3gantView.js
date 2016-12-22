@@ -16,8 +16,8 @@ function handleMouseOver() { }
 function handleMouseOut() { }
 function jobPlotGant(view, jobModel)
 {
-    var w = 550
-    var h = 300
+    var w = 800
+    var h = 400
     var m = { top:30, right:10, bottom:30, left:80 }
     var data = { /*circles:[],*/ jobs:[]/*, clines:[] */}
     var t = 500//750
@@ -56,8 +56,10 @@ function jobPlotGant(view, jobModel)
         this.zoom = d3.zoom()
             .scaleExtent([0.8, 10])
             .on("zoom", ()=> {
-                this.x = d3.event.transform.rescaleX(this.xz0);
+                this.x = d3.event.transform.rescaleX(this.xz0)
+                this.y = d3.event.transform.rescaleY(this.yz0)
                 this.xAxis.scale(this.x)
+                this.yAxis.scale(this.y)
                 this.redrawAll(0)
             })
 

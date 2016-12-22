@@ -7,7 +7,7 @@ function lineFrameAppender(name, model)
         view.className = 'lineFramePrimitive'
 
         var icon = document.createElement('div')
-            icon.innerText = '+' //i
+            icon.innerText = '›' //i
             icon.style.float = 'left'
             icon.style.width = 15
             icon.style.color = '#D0D0D0'

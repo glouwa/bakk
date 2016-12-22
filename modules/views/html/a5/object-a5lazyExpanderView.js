@@ -33,7 +33,7 @@ function a3Frame(model, headerFactory)
             desc.style.fontStyle = 'italic'
             desc.style.fontWeight = '800'
             desc.style.color = '#1FBF6F'
-        var header = headerFactory(model)
+        var header = headerFactory(model)            
             //buttonHeader.style.marginBottom = 20
         view.appendChild(name)
         view.appendChild(type)
@@ -51,7 +51,8 @@ function a3expander(args) // { header, conetentFactory, model, expanded } : onhe
     function getContent()
     {
         if (c) return c
-        c = args.contentFactory()
+
+        c = args.contentFactory()        
         content.appendChild(c)
 
         if (args.model && args.model['↻'])
@@ -66,8 +67,12 @@ function a3expander(args) // { header, conetentFactory, model, expanded } : onhe
         view.draggable = true
         view.ondragstart = ev=> onDragStart(ev, args.model)
         var content = document.createElement('div')
-            content.style.display = 'inline-block'
-            content.style.width = '100%'
+            content.className = 'a3expanderContent'
+            content.style.display = 'flex'
+            content.style.flexDirection = 'column'
+            content.style.flexGrow = 1
+            //content.style.display = 'inline-block'
+            //content.style.width = '100%'
 
     h.onclick = function toggle() // open/close fehlt
     {
@@ -80,7 +85,8 @@ function a3expander(args) // { header, conetentFactory, model, expanded } : onhe
         if (view.expanded)
             getContent()
 
-        content.style.display = view.expanded ? 'block' : 'none'
+        //content.style.display = view.expanded ? 'block' : 'none'
+        content.style.display = view.expanded ? 'flex' : 'none'
     }
     view.update()
 

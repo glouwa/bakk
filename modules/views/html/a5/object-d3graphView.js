@@ -1,7 +1,7 @@
 function objectd3graph(view)
 {
-    var w = 500
-    var h = 300
+    var w = 700
+    var h = 500
     var m = { top:30, right:0, bottom:30, left:0 }
     var t = 500//750
 
@@ -28,7 +28,7 @@ function objectd3graph(view)
 
         simulation
             //.force('link', d3.forceLink().id(d=> d.id))
-            .force("link", d3.forceLink().distance(0.2).strength(2))
+            .force("link", d3.forceLink().distance(0.1).strength(1))
             .force('charge', d3.forceManyBody())
             .force('center', d3.forceCenter(w/2, h/2))
 

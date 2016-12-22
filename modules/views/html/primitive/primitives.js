@@ -191,8 +191,7 @@ viewCollection.JobView = function(name, model)
     updateView()
     model.on('change', updateView)
 
-    return lineExpander(
-    {
+    return lineExpander({
         model: model,
         header: lineFrame(name, model, view),
         contentFactory: ()=> autoViewLine(model)
@@ -212,7 +211,7 @@ function codeEdit(model)
         editor.setTheme("ace/theme/tomorrow")
         editor.setValue(model.toString(), -1)
         editor.setOptions({
-            maxLines: 200,
+            maxLines: 55,
             fontFamily: "Monospace",
             fontSize: "8pt"
         })

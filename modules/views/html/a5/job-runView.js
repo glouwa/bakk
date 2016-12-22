@@ -18,18 +18,42 @@ function jobHeaderView(jobModel)
     return view
 }
 
+function jobAllView(jobModel)
+{
+    var view = document.createElement('div')
+        var tab = a3Frame(jobModel,  jobHeaderView)
+        var statusTab = a3View(jobModel)
 
+        function update(changes) {
+            if (changes.newMembers) {
+                if (changes.newMembers.output) {
+                    var result = a3View(jobModel.output)
+                        result.id = 'result'
+                    tab.appendChild(result)
+                }
+            }
+        }
+
+        update({ newMembers:jobModel })
+        tab.appendChild(statusTab)
+
+    view.appendChild(tab)
+    view.appendChild(statusTab)
+    return view
+}
+
+/*
 function jobAllView(jobModel)
 {
     var tab = a3Frame(jobModel,  jobHeaderView)
         //tab.className = 'search'
         //var starterArgs = a3View(jobModel.params)
-        var statusTab = a3View(jobModel)/*a3expander({
+        var statusTab = a3View(jobModel)/ *a3expander({
             model:jobModel,
             expanded:true,
             header:a3Frame(jobModel),
             contentFactory:()=> autoMultiView(jobModel, [jobStateGraphView])
-        })*/
+        })* /
 
    function update(changes) {
         if (changes.newMembers) {
@@ -38,11 +62,11 @@ function jobAllView(jobModel)
                     result.id = 'result'
                 tab.appendChild(result)
             }
-            /*if (changes.newMembers.params) {
+            / * if (changes.newMembers.params) {
                 var result = a3View(jobModel.params)
                     result.id = 'params'
                 tab.appendChild(result)
-            }*/
+            }* /
         }
     }
     update({ newMembers:jobModel })
@@ -52,3 +76,4 @@ function jobAllView(jobModel)
     tab.appendChild(statusTab)
     return tab
 }
+*/

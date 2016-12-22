@@ -1,6 +1,7 @@
 function autoMultiView(model, viewsf)
 {
     var view = document.createElement('div')
+        view.className = 'autoMultiView'
         var views = btab()
             viewsf.forEach((v, k, idx)=> {
                 var currentView = viewsf[k](model)
@@ -14,7 +15,38 @@ function autoMultiView(model, viewsf)
 
 function a3View(model)
 {
-    var contentDelegate = ()=> autoMultiView(model, [objectd3treeView, /*objectd3graphView,*/ autoView])
+    /*
+    var typeViewMap = {
+        'default':        [objectd3treeView, objectd3graphView, autoView],
+        'function':       [autoView, codeEdit],
+        Model:            [autoView, systemGraphView],
+        Project:          [autoView, projectEdit],
+        Job:              [jobStateTreeView, jobStateGraphView,
+                            //jobStateGantViewWithProgress,
+                            jobPlot],
+        Network:          [autoView, systemView],
+        Worker:           [autoView, networkNodeView],
+        Client:           [autoView, networkNodeView],
+        Server:           [autoView, networkNodeView],
+        PrimeArgs:        [autoView, app.registry.views['primeParameterView'].ctor],
+        PrimeResult:      [autoView, app.registry.views['primeResultView'].ctor],
+        Model3dArgs:      [autoView, app.registry.views['model3dParameter'].ctor],
+        model3dResultSet: [autoView, app.registry.views['model3dResultSet'].ctor],
+        CmdResult:        [autoView, app.registry.views['cmdResult'].ctor],
+    }
+
+    var viewSet = typeViewMap[model.type] ? typeViewMap[model.type] : typeViewMap['default']
+
+    return a3expander({
+        model:model,
+        expanded:true,
+        header:a3Frame(model),
+        contentFactory:()=> autoMultiView(model, viewSet)
+    })
+
+*/
+
+    var contentDelegate = ()=> autoMultiView(model, [autoView, objectd3treeView, objectd3graphView])
 
     if (model.type == 'Model')
         //contentDelegate = ()=> systemGraphView(model)
@@ -25,7 +57,7 @@ function a3View(model)
 
     if (model.type == 'Job')
         contentDelegate = ()=> autoMultiView(model,
-            [/*jobStateTreeView, jobStateGraphView , jobStateGantViewWithProgress,*/ jobPlot])
+            [jobStateTreeView, jobStateGraphView /*, jobStateGantViewWithProgress*/, jobPlot])
 
     if (model.type == 'Network')
         contentDelegate = ()=> autoMultiView(model, [autoView, systemView])

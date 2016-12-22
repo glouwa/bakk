@@ -89,6 +89,7 @@ function jpViewFactory(args)
                     progress.className = 'progress'
                     progress.style.width = args.width
                     progress.style.height = args.height = 12
+                    progress.style.position = 'relative'
                     view.appendChild(progress)
             }
             if (args.caption) {
