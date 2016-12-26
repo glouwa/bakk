@@ -1,7 +1,7 @@
-var viewCollection = {}
-viewCollection.type = 'Set<View>'
+var lineViews = {}
+lineViews.type = 'Set<View>'
 
-viewCollection.nullView = function(name, value)
+lineViews.nullView = function(name, value)
 {
     var view = lineFramePrimitive(name, value)
         var varvalue = document.createElement('input')
@@ -13,7 +13,7 @@ viewCollection.nullView = function(name, value)
     return view
 }
 
-viewCollection.undefinedView = function(name, value)
+lineViews.undefinedView = function(name, value)
 {
     var view = lineFramePrimitive(name, value)
         var varvalue = document.createElement('input')
@@ -25,7 +25,7 @@ viewCollection.undefinedView = function(name, value)
     return view
 }
 
-viewCollection.appendView = function(model)
+lineViews.appendView = function(model)
 {
     var view = lineFrameAppender('', undefined)
         var varvalue = document.createElement('input')
@@ -66,7 +66,7 @@ viewCollection.appendView = function(model)
     return view
 }
 
-viewCollection.stringView = function(name, model)
+lineViews.stringView = function(name, model)
 {    
     var view = lineFramePrimitive(name, model)
         var varvalue = document.createElement('input')
@@ -83,7 +83,7 @@ viewCollection.stringView = function(name, model)
     return view
 }
 
-viewCollection.textView = function(name, model)
+lineViews.textView = function(name, model)
 {
     var view = lineFramePrimitive(name, model)
         var varvalue = document.createElement('span')
@@ -97,7 +97,7 @@ viewCollection.textView = function(name, model)
     return view
 }
 
-viewCollection.numberView = function(name, model)
+lineViews.numberView = function(name, model)
 {    
     var view = lineFramePrimitive(name, model) //ℝ
         var varvalue = document.createElement('input')
@@ -114,7 +114,7 @@ viewCollection.numberView = function(name, model)
     return view
 }
 
-viewCollection.booleanView = function(name, model)
+lineViews.booleanView = function(name, model)
 {    
     var view = lineFramePrimitive(name, model)
         var varvalue = document.createElement('input')
@@ -129,14 +129,15 @@ viewCollection.booleanView = function(name, model)
     return view
 }
 
-viewCollection.FileView = function(name, model)
+lineViews.FileView = function(name, model)
 {
     return lineFramePrimitive(name, model)
 }
 
-viewCollection.JobView = function(name, model)
+lineViews.JobView = function(name, model)
 {
     var view = document.createElement('div')
+        view.className = 'jobLineView'
         view.style.marginRight = '5'
         view.style.float = 'right'
         var desc = document.createElement('div')

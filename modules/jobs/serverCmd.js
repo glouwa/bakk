@@ -55,10 +55,12 @@ new Object({
     },
     tests: [],
     views: {
-        cmdResult: {
-            type: 'View',
-            demoViewModel: {},
-            ctor: m=> cmdResultView(m)
+        a5: {
+            cmdResult: {
+                type: 'View',
+                demoViewModel: {},
+                ctor: m=> cmdResultView(m)
+            }
         }
     }
 })

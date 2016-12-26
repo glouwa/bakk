@@ -1,5 +1,21 @@
 var jf = jff.jm()
-
+/*
+model{
+    registry:{
+        views: some default, some loaded with project
+        types: some default, some loaded with project
+        jobs: some default, some loaded with project
+        workflows: loaded with project?
+        config: bound to file
+    }
+    model:{
+        jobs: dynamic / log
+        store: bound to folder
+        projects: bound to folder
+        network: dynamic
+    }
+}
+*/
 function onInit() {
     app.clientId.on('change', changes=> {
         jf.workerId = 'C' + Number(app.clientId).toSubscript()
@@ -23,7 +39,9 @@ function onInit() {
 
     app.registry.merge({
         config:config,
-        views:viewCollection
+        views:{
+           lineViews:lineViews
+       }
     })
 
     app.merge({

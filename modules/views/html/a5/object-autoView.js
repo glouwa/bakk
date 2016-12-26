@@ -46,7 +46,7 @@ function a3View(model)
 
 */
 
-    var contentDelegate = ()=> autoMultiView(model, [autoView, objectd3treeView, objectd3graphView])
+    var contentDelegate = ()=> autoMultiView(model, [objectd3treeView, objectd3graphView, autoView])
 
     if (model.type == 'Model')
         //contentDelegate = ()=> systemGraphView(model)
@@ -72,23 +72,23 @@ function a3View(model)
 
     if (model.type == 'PrimeArgs')
         contentDelegate = ()=>
-            autoMultiView(model, [autoView, app.registry.views['primeParameterView'].ctor])
+            autoMultiView(model, [autoView, app.registry.views.a5['primeParameterView'].ctor])
 
     if (model.type == 'PrimeResult')
         contentDelegate = ()=>
-            autoMultiView(model, [autoView, app.registry.views['primeResultView'].ctor])
+            autoMultiView(model, [autoView, app.registry.views.a5['primeResultView'].ctor])
 
     if (model.type == 'Model3dArgs')
         contentDelegate = ()=>
-            autoMultiView(model, [autoView, app.registry.views['model3dParameter'].ctor])
+            autoMultiView(model, [autoView, app.registry.views.a5['model3dParameter'].ctor])
 
     if (model.type == 'model3dResultSet')
         contentDelegate = ()=>
-            autoMultiView(model, [autoView, app.registry.views['model3dResultSet'].ctor])
+            autoMultiView(model, [autoView, app.registry.views.a5['model3dResultSet'].ctor])
 
     if (model.type == 'CmdResult')
         contentDelegate = ()=>
-            autoMultiView(model, [autoView, app.registry.views['cmdResult'].ctor])
+            autoMultiView(model, [autoView, app.registry.views.a5['cmdResult'].ctor])
 
     return a3expander({
         model:model,

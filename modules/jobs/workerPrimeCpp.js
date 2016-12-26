@@ -125,20 +125,22 @@ new Object({
     },
     tests: [],
     views: {
-        primeNummberView: {
-            type: 'View',
-            demoViewModel: { mid:1 },
-            ctor: function(m) { return primeNummberView(m) }
-        },
-        primeParameterView: {
-            type: 'View',
-            demoViewModel: {},//project.args,
-            ctor: function(m) { return primeRangeView(m) }
-        },
-        primeResultView: {
-            type: 'View',
-            demoViewModel: [],
-            ctor: function(m) { return primeStatsView(m) }
+        a5: {
+            primeNummberView: {
+                type: 'View',
+                demoViewModel: { mid:1 },
+                ctor: function(m) { return primeNummberView(m) }
+            },
+            primeParameterView: {
+                type: 'View',
+                demoViewModel: {},//project.args,
+                ctor: function(m) { return primeRangeView(m) }
+            },
+            primeResultView: {
+                type: 'View',
+                demoViewModel: [],
+                ctor: function(m) { return primeStatsView(m) }
+            }
         }
     }
 })

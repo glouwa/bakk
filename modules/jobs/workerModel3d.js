@@ -209,30 +209,32 @@ new Object({
     },
     tests: [],
     views: {
-        model3dEntity: {
-            type: 'View',
-            demoViewModel: {},
-            ctor: m=> entityViewPanel(m, entityView)
-        },
-        model3dInitialSet: {
-            type: 'View',
-            demoViewModel: {},
-            ctor: m=> initialSetView(m)
-        },
-        model3dParameter: {
-            type: 'View',
-            demoViewModel: {},
-            ctor: m=> parameterView(m)
-        },
-        model3dResultSet: {
-            type: 'View',
-            demoViewModel: [],
-            ctor: m=> resultView(m)
-        },
-        model3dMatchEntity: {
-            type: 'View',
-            demoViewModel: { diff:15.0, dbEntity: { mid:0 } },
-            ctor: m=> entityViewPanel(m, matchEntityView)
+        a5: {
+            model3dEntity: {
+                type: 'View',
+                demoViewModel: {},
+                ctor: m=> entityViewPanel(m, entityView)
+            },
+            model3dInitialSet: {
+                type: 'View',
+                demoViewModel: {},
+                ctor: m=> initialSetView(m)
+            },
+            model3dParameter: {
+                type: 'View',
+                demoViewModel: {},
+                ctor: m=> parameterView(m)
+            },
+            model3dResultSet: {
+                type: 'View',
+                demoViewModel: [],
+                ctor: m=> resultView(m)
+            },
+            model3dMatchEntity: {
+                type: 'View',
+                demoViewModel: { diff:15.0, dbEntity: { mid:0 } },
+                ctor: m=> entityViewPanel(m, matchEntityView)
+            }
         }
     }
 })

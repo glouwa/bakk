@@ -52,6 +52,7 @@ function hoverDiv(model)
     return view
 }
 
+// use for: null, undef, bool, string, text, number, file (as base)
 function lineFramePrimitive(name, model)
 {
     var n = name.charAt(0).toUpperCase() + name.slice(1)        
@@ -95,6 +96,8 @@ function lineFramePrimitive(name, model)
     return view
 }
 
+// used for: lineObjectView/expanderheader,
+// has buttons
 function lineFrame(name, model, content)
 {
     var view = document.createElement('div')
