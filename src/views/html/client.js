@@ -40,7 +40,7 @@ function onInit() {
     app.registry.merge({
         config:config,
         views:{
-           lineViews:lineViews
+           primitive:primitiveViews
        }
     })
 

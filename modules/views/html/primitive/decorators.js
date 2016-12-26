@@ -56,7 +56,7 @@ function hoverDiv(model)
 function lineFramePrimitive(name, model)
 {
     var n = name.charAt(0).toUpperCase() + name.slice(1)        
-    im = { 'null':'␀', 'undefined':'␥', 'string':'𝕊', 'number':'ℕ', 'number':'ℝ', 'boolean':'𝔹' }
+    var im = { 'null':'␀', 'undefined':'␥', 'string':'𝕊', 'number':'ℕ', 'number':'ℝ', 'boolean':'𝔹' }
 
     var view = hoverDiv(model)
         view.className = 'lineFramePrimitive'

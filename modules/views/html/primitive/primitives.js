@@ -1,140 +1,92 @@
-var lineViews = {}
-lineViews.type = 'Set<View>'
+var primitiveViews = {}
+primitiveViews.type = 'Set<View>'
 
-lineViews.nullView = function(name, value)
+primitiveViews.null = function(model)
 {
-    var view = lineFramePrimitive(name, value)
-        var varvalue = document.createElement('input')
-            varvalue.value = '␀'
-            varvalue.className = 'primitiveValue'
-            varvalue.style.width = '45%'
-    view.appendChild(varvalue)
-
+    var view = document.createElement('input')
+        view.value = '␀'
+        view.className = 'primitiveValue'
+        view.style.width = '45%'
     return view
 }
 
-lineViews.undefinedView = function(name, value)
+primitiveViews.undefined = function(model)
 {
-    var view = lineFramePrimitive(name, value)
-        var varvalue = document.createElement('input')
-            varvalue.value = 'undefined'
-            varvalue.className = 'primitiveValue'
-            varvalue.style.width = '45%'
-    view.appendChild(varvalue)
-
+    var view = document.createElement('input')
+        view.value = 'undefined'
+        view.className = 'primitiveValue'
+        view.style.width = '45%'
     return view
 }
 
-lineViews.appendView = function(model)
+primitiveViews.string = function(model)
 {
-    var view = lineFrameAppender('', undefined)
-        var varvalue = document.createElement('input')
-            varvalue.className = 'primitiveValue'
-            varvalue.style.width = 'calc(100% - 31px)'
-            varvalue.style.textAlign= 'left'
-            varvalue.draggable = true
-            varvalue.ondragstart = ev=> ev.preventDefault()
-        view.appendChild(varvalue)
+    var view = document.createElement('input')
+        view.className = 'primitiveValue'
+        view.style.width = '45%'
+        view.draggable = true
+        view.ondragstart = ev=> ev.preventDefault()
 
-    function addEvalToModel()
-    {
-        try
-        {
-            var diff = eval('({' + varvalue.value + '})')
-            model.merge(diff)
-            model.commit(diff)
-            varvalue.value = ''
-        }
-        catch(e)
-        {
-           varvalue.value = e
-        }
-    }
+        view.onchange = ()=> model.merge(view.value)
+        view.update = ()=> view.value = model.valueOf()
+        view.update()
 
-    varvalue.onchange = ()=> addEvalToModel()
-    varvalue.onkeypress = function(e) {
-        var charCode = e.which || e.keyCode;
-        if (charCode == '13') {
-          addEvalToModel()
-          return false;
-        }
-    }
-
-    //var update = ()=> varvalue.value = model.valueOf()
-    //update()
-    //model.on('change', update)
+    model.on('change', view.update)
     return view
 }
 
-lineViews.stringView = function(name, model)
-{    
-    var view = lineFramePrimitive(name, model)
-        var varvalue = document.createElement('input')
-            varvalue.className = 'primitiveValue'    
-            varvalue.style.width = '45%'
-            varvalue.draggable = true
-            varvalue.ondragstart = ev=> ev.preventDefault()
-        view.appendChild(varvalue)
 
-    varvalue.onchange = ()=> model.merge(varvalue.value)
-    var update = ()=> varvalue.value = model.valueOf()
-    update()
-    model.on('change', update)
-    return view
-}
-
-lineViews.textView = function(name, model)
+primitiveViews.text = function(model)
 {
-    var view = lineFramePrimitive(name, model)
-        var varvalue = document.createElement('span')
-            varvalue.className = 'textView'
-        view.appendChild(varvalue)
+    var view = document.createElement('span')
+        view.className = 'textView'
 
-    varvalue.onchange = ()=> model.merge(varvalue.value)
-    var update = ()=> varvalue.value = model.valueOf()
-    update()
-    model.on('change', update)
+        view.onchange = ()=> model.merge(view.value)
+        view.update = ()=> view.innerText = model.valueOf()
+        view.update()
+
+    model.on('change', view.update)
     return view
 }
 
-lineViews.numberView = function(name, model)
-{    
-    var view = lineFramePrimitive(name, model) //ℝ
-        var varvalue = document.createElement('input')
-            varvalue.className = 'primitiveValue'
-            varvalue.style.width = '45%'
-            varvalue.draggable = true
-            varvalue.ondragstart = ev=> ev.preventDefault()
-        view.appendChild(varvalue)
+primitiveViews.number = function(model)
+{
+    var view = document.createElement('input')
+        view.className = 'primitiveValue'
+        view.style.width = '45%'
+        view.draggable = true
+        view.ondragstart = ev=> ev.preventDefault()
 
-    varvalue.onchange = ()=> model.merge(varvalue.value)
-    var update = ()=> varvalue.value = model.valueOf()
-    update()
-    model.on('change', update)
+        view.onchange = ()=> model.merge(view.value)
+        view.update = ()=> view.value = model.valueOf()
+        view.update()
+
+    model.on('change', view.update)
     return view
 }
 
-lineViews.booleanView = function(name, model)
-{    
-    var view = lineFramePrimitive(name, model)
-        var varvalue = document.createElement('input')
-            varvalue.type = 'checkbox'
-            varvalue.className = 'primitiveValue'            
-        view.appendChild(varvalue)
+primitiveViews.boolean = function(model)
+{
+    var view = document.createElement('input')
+        view.type = 'checkbox'
+        view.className = 'primitiveValue'
 
-    varvalue.onchange = ()=> model.merge(varvalue.checked)
-    view.update = ()=> varvalue.checked = model.valueOf()
-    view.update()
+        view.onchange = ()=> model.merge(view.checked)
+        view.update = ()=> view.checked = model.valueOf()
+        view.update()
+
     model.on('change', view.update)    
     return view
 }
 
-lineViews.FileView = function(name, model)
+primitiveViews.file = function(model)
 {
-    return lineFramePrimitive(name, model)
+    var view = document.createElement('div')
+        view.innerText = model.path
+    return view
 }
 
-lineViews.JobView = function(name, model)
+primitiveViews.Job = function(model)
 {
     var view = document.createElement('div')
         view.className = 'jobLineView'
@@ -166,38 +118,39 @@ lineViews.JobView = function(name, model)
         view.appendChild(time)
         view.appendChild(sig)
         view.appendChild(desc)
+        view.update = ()=>
+        {
+            var workTimeMs = jf.jobTime(model)
 
-    function updateView()
-    {
-        var workTimeMs = jf.jobTime(model)
+            if (workTimeMs > 1000*60*60)
+                time.innerText = ~~(workTimeMs/(1000*60*60)) + 'h'
+            else if (workTimeMs > 1000*60)
+                time.innerText = ~~(workTimeMs/(1000*60)) + 'm'
+            else if (workTimeMs > 1000)
+                time.innerText = ~~(workTimeMs/1000) + 's'
+            else
+                time.innerText = workTimeMs + 'ms'
 
-        if (workTimeMs > 1000*60*60)
-            time.innerText = ~~(workTimeMs/(1000*60*60)) + 'h'
-        else if (workTimeMs > 1000*60)
-            time.innerText = ~~(workTimeMs/(1000*60)) + 'm'
-        else if (workTimeMs > 1000)
-            time.innerText = ~~(workTimeMs/1000) + 's'
-        else
-            time.innerText = workTimeMs + 'ms'
+            desc.innerText = model.desc + ':'//🠒🠆➞➡→
+            sig.innerText =  '(…) → ' + model.state.log
 
-        desc.innerText = model.desc + ':'//🠒🠆➞➡→
-        sig.innerText =  '(…) → ' + model.state.log
+            if (model.state.type == 'returned')
+                state.innerText = config.getIcon(model.state)
+            else
+                state.innerText = (model.state.progress.valueOf()*100).toFixed(0) + '%'
+        }
+        view.update()
 
-        if (model.state.type == 'returned')
-            state.innerText = config.getIcon(model.state)
-        else
-            state.innerText = (model.state.progress.valueOf()*100).toFixed(0) + '%'
-    }
-
-    updateView()
-    model.on('change', updateView)
-
-    return lineExpander({
-        model: model,
-        header: lineFrame(name, model, view),
-        contentFactory: ()=> autoViewLine(model)
-    })
+    model.on('change', view.update)
+    return view
 }
+/* job
+return lineExpander({
+    model: model,
+    header: lineFrame(name, model, view),
+    contentFactory: ()=> autoViewLine(model)
+})
+*/
 
 function codeEdit(model)
 {

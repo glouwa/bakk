@@ -298,7 +298,7 @@ transform: perspective(10px) rotateX(3deg);
 .expander-header{
     clear: both;
     display: inline-block;
-    padding: 2 0 2 0;
+    padding: 1 0 1 0;
     width: calc(100% - 6px);
     cursor:pointer;
 }

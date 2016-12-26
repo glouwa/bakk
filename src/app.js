@@ -4,8 +4,8 @@ app = mvj.model('', {
     registry: {
         type:'Registry',
         views:{
-            primitiveViews:{},
-            lineViews:{},
+            primitive:{},
+            line:{},
             d3:{},
             a5:{},
             a4:{},
