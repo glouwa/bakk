@@ -4,7 +4,10 @@ app = mvj.model('', {
     registry: {
         type:'Registry',
         views:{
-            primitive:{},
+            primitive:{
+                //type:'Folder',
+                //directory:'/modules/views/html/primitive'
+            },            
             line:{},
             d3:{},
             a5:{},

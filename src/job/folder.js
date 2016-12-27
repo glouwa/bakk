@@ -1,4 +1,4 @@
-/*var folderPrototype = {
+var Folder = {
     type:'Folder',
     '↻':function(j) {
         j.params.directory = this.directory
@@ -12,6 +12,7 @@
                 var fs = require('fs')
                 var path = require('path')
                 var dir = js.params.directory.valueOf()
+
                 fs.readdir(dir, (err, files)=> js.exception2localError('Message from FS', ()=> {
                     if (err) throw new Error(err)
                     var folderDiff = {}, fileDiff = {}
@@ -20,7 +21,7 @@
                         if (fs.statSync(directory).isDirectory())
                             folderDiff[v] = { type:'Folder', directory:directory }
                         else
-                            fileDiff[v] = { type:'File' }
+                            fileDiff[v] = { type:'File', fileName:directory }
                     })
                     js.updateJob({ state:{ log:'dir', progress:0.33 }, output:folderDiff})
                     js.updateJob({ state:{ log:'dir', progress:0.66 }, output:fileDiff})
@@ -30,37 +31,4 @@
             }
         })
     )}
-}*/
-
-
-function createAndLoadFolder(j)
-{
-    j.merge({
-        state:{ progress:0.1, log:'setting output reference' },
-        output: { type:'Folder', directory:j.params.directory.valueOf() }
-    })
-
-    j.delegate(()=> jf.job({
-        icon: '↻',
-        params:{},
-        onCall:lj=> j.output['↻'](lj)
-    }))
 }
-
-new Object({
-    type: 'Project',    
-    jobPrototype: {
-        type: 'JobPrototype',
-        icon: '⤑📂',
-        desc: 'Show folder',
-        onCall: createAndLoadFolder,
-        args: {
-            directory: './modules/views/html/primitive',
-            timeout:500
-        },
-    },
-    types: {
-        //folder:folderPrototype
-    },
-    tests: []
-})

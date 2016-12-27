@@ -38,9 +38,19 @@ function onInit() {
     }
 
     app.registry.merge({
+        types:{
+            Folder:Folder
+        }
+    })
+
+    app.registry.merge({
         config:config,
         views:{
-           primitive:primitiveViews
+            primitive:primitiveViews,
+            primitiveBound:{
+                type:'Folder',
+                directory:'./modules/views/html/primitive/'
+           }
        }
     })
 

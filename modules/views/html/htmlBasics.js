@@ -18,6 +18,14 @@ function hexToRgba(hex, a)
     return 'rgba(' + [r, g, b, (a||0.4)].join() + ')'
 }
 
+function onDragStart(ev, model)
+{
+    ev.stopPropagation()
+    ev.dataTransfer.effectAllowed = 'link'
+    ev.dataTransfer.setData("text", model.path)
+    console.log('ondragstart ' + model.path)
+}
+
 function div(className, caption)
 {
     var view = document.createElement('div')

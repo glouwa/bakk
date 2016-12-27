@@ -1,11 +1,3 @@
-function onDragStart(ev, model)
-{
-    ev.stopPropagation()
-    ev.dataTransfer.effectAllowed = 'link'
-    ev.dataTransfer.setData("text", model.path)
-    console.log('ondragstart ' + model.path)
-}
-
 function hoverDiv(model)
 {    
     var alphaSteps = [1, 0.2, 0.15, 0.1, 0.05]
@@ -81,7 +73,6 @@ function lineFramePrimitive(name, model)
 
     view.appendChild(icon)
     view.appendChild(varname)
-    view.appendChild(type)
 
     if (model.isLink) {
         var link = document.createElement('div')
@@ -93,6 +84,8 @@ function lineFramePrimitive(name, model)
             link.style.fontSize = 9
         view.appendChild(link)
     }
+    view.appendChild(type)
+
     return view
 }
 
@@ -117,6 +110,7 @@ function lineFrame(name, model, content)
 
     view.appendChild(varName(name))
     view.appendChild(type)
+
     if (model.isLink) {
         var link = document.createElement('div')
             link.innerText = model.isLink.length +'→ '+model.path
@@ -127,6 +121,7 @@ function lineFrame(name, model, content)
             link.style.fontSize = 9
         view.appendChild(link)
     }
+
     if (content)
         view.appendChild(content)
     view.appendChild(autoButtons)

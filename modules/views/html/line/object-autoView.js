@@ -2,7 +2,7 @@ function lineObjectView(name, model)
 {
     var type = modelType(model)
     var primitive = app.registry.views.primitive[type]
-                  ?  app.registry.views.primitive[type](model)
+                  ?  app.registry.views.primitive[type].ctor(model)
                   : undefined
     return lineExpander({
         model: model,
@@ -18,7 +18,7 @@ function linePrimitiveView(k, model)
     var type = modelType(model)
     var view = lineFramePrimitive(k, model)
         //view.className = 'lineLeaf'
-        view.primitive = app.registry.views.primitive[type](model)
+        view.primitive = app.registry.views.primitive[type].ctor(model)
         view.appendChild(view.primitive)
     return view
 }
@@ -75,16 +75,17 @@ function autoViewLine(model)
             if (   t=='number'
                 || t=='string'
                 //|| t=='Job'
+                || t=='File' // zumindest wenns nicht weiter geladen ist. (vll sorgar ein json)
                 || t=='string'
                 || t=='string'
                 || t=='string')
             {
                 console.log('primitive')
-                return linePrimitiveView(k.toString(), v)
+                return linePrimitiveView(k.toString(), v) // leaf
             }
             else {
                 //console.log('object')
-                return lineObjectView(k.toString(), v)
+                return lineObjectView(k.toString(), v) // recirsion (maybe delayed)
             }
             //var viewFactory = app.registry.views.line[modelType(v) + 'View']
             //               || lineObjectView

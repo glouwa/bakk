@@ -71,7 +71,6 @@ function project(url, noView)
     }
 }
 
-
 exports.create = function projectFolder() { return {
     type:'Set<Project>',
     '↻': function(j) {
@@ -109,7 +108,7 @@ exports.create = function projectFolder() { return {
                         this['💻 server cmd'],
                         this['📂 server folder'],
                         this['🗩 server output'],
-                        this['🔃* local paralell AJAX'],
+                        this['🔃 local paralell AJAX'],
                         this['🗩 local output'],
                         this['🐼 Process fracturing folder on workers'],
                         this['🐁 Process empty jobs on worker'],

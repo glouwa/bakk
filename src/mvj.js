@@ -84,8 +84,8 @@
 
     function updateJsProto(type, box)
     {
-        if (type == 'Folder' && app.registry.types.folder)
-            box.__proto__ = app.registry.types.folder
+        if (type == 'Folder' && app.registry.types.Folder)
+            box.__proto__ = app.registry.types.Folder
 
         if (type == 'Set<FragmentFolder>' && app.registry.types.fragmentFolderSet)
             box.__proto__ = app.registry.types.fragmentFolderSet
@@ -130,12 +130,21 @@
         }
         else {
             var box = content instanceof Array ? [] : {}
+
             if (content.type == 'Job') {
                 box.__proto__ = exports.jm.jobPrototype
 
                 if(content.isProxy && !path.startsWith('model.tmp'))
                         exports.jm.remoteJobs[content.id.valueOf()] = box
             }
+
+            /*if (content.type == 'Folder') {
+                box.__proto__ = exports.jm.jobPrototype
+
+                if(content.isProxy && !path.startsWith('model.tmp'))
+                        exports.jm.remoteJobs[content.id.valueOf()] = box
+            }*/
+
             updateJsProto(content.type, box)
             return box
         }
@@ -225,6 +234,12 @@
                     var p = this.path == '' ? id : (this.path + '.' + id)
                     this[id] = exports.model(p, v)
 
+                    if (!this[id])
+                        console.log('this id = undef'
+                                    + '\nid: ' + id
+                                    + '\nv: ' + JSON.stringify(v)
+                                    + '\npath: '+ p)
+
                     if (this[id].path != p) {
                         this[id].isLink = this[id].isLink ? this[id].isLink.concat(p) : [p]
                         console.log('isLink=true ' + p +' --> '+ this[id].path)
@@ -304,7 +319,13 @@
 
         else if (initDiff.linkPath && initDiff.linkThatShit) {
             try {
-                return exports.traverse(initDiff.linkPath, app)
+                console.log('model by existing model -> initDiff.linkPath && initDiff.linkThatShit')
+                var targetObj = exports.traverse(initDiff.linkPath, app)
+
+                if (targetObj)
+                    return targetObj
+                else
+                    path = initDiff.linkPath
             } catch(e) {
                 path = initDiff.linkPath
             }
