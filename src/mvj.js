@@ -84,14 +84,23 @@
 
     function updateJsProto(type, box)
     {
-        if (type == 'Folder' && app.registry.types.Folder)
-            box.__proto__ = app.registry.types.Folder
+        if(!type)
+            return // primitives hav not type member, and need no proto
 
-        if (type == 'Set<FragmentFolder>' && app.registry.types.fragmentFolderSet)
-            box.__proto__ = app.registry.types.fragmentFolderSet
+        if (!app)
+            console.log('app is unedf and requesting type ' + type + box.path)
 
-        if (type == 'FragmentFolder' && app.registry.types.fragmentFolder)
-            box.__proto__ = app.registry.types.fragmentFolder
+        if (app.registry.types[type] == box)
+            return
+
+        if (app.registry.types[type])
+            box.__proto__ = app.registry.types[type] // protoy sind auch beboxed
+
+        /*if (type == 'Set<FragmentFolder>' && app.registry.types.FragmentFolderSet)
+            box.__proto__ = app.registry.types.FragmentFolderSet
+
+        if (type == 'FragmentFolder' && app.registry.types.FragmentFolder)
+            box.__proto__ = app.registry.types.FragmentFolder*/
     }
 
     function box(content, path)

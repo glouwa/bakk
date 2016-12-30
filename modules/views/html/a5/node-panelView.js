@@ -92,7 +92,7 @@ function networkNodeHeader(nodeModel)
                 nodeModel.freeMemPercent.on('change', updateFree)
             }
             //nodeModel.freeMemPercent.on('change', updateFree)
-        var headerActions = autoJobButtonLineView(nodeModel)
+        var headerActions = autoJobButtonView(nodeModel)
             headerActions.style.float = 'right'
         var headerBar = document.createElement('div')
             headerBar.className = 'headerBar'

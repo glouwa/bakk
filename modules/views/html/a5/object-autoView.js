@@ -46,7 +46,7 @@ function a3View(model)
 
 */
 
-    var contentDelegate = ()=> autoMultiView(model, [objectd3treeView, objectd3graphView, autoView])
+    var contentDelegate = ()=> autoMultiView(model, [objectd3treeView, /*objectd3graphView,*/ autoView])
 
     if (model.type == 'Model')
         //contentDelegate = ()=> systemGraphView(model)

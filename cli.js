@@ -171,7 +171,7 @@ function aProjectJob() {
     return app.rootJob({
         icon:'r',
         desc:'cli',
-        onCall:   j=> app.model.projects['cliProject']['▸'](j, {}, args),
+        onCall:   j=> app.model.mods['cliProject']['▸'](j, {}, args),
         onUpdate: j=> printjobUpdate(j),
         onReturn: j=> printjobResult(j)
     })

@@ -1,1 +1,65 @@
  
+/* expander stuff, and headers*/
+
+.lineFrame{
+    width: 100%;
+    padding: 0 0 1 0;
+    position: relative;
+    /*isplay: inline;*/
+    display: block;
+}
+
+.lineFramePrimitive{
+    width: 100%;
+    clear: both;
+    display: inline-block;
+    padding: 1 0 1 0;
+    margin: 0 0 0 5;
+    width: calc(100% - 6px);
+    border: 1px solid transparent;
+}
+
+.expander:hover, .lineFramePrimitive:hover{/*.line-hover, {*/
+    background-color: #fcfcfc;
+    border-style: dashed none dashed dashed;
+    border-width: 1;
+    border-color: #B0B0B0;
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+    /*box-shadow: 0.5px 0.5px 9px rgba(0, 0, 0, 0.03) inset;*/
+}
+
+.expander{
+    margin: 0 0 0 5;
+    border-style: solid none solid solid;
+    border-width: 1 0 1 1;
+    border-color: transparent;
+}
+
+.expander-header{
+    clear: both;
+    display: inline-block;
+    padding: 1 0 1 0;
+    width: calc(100% - 6px);
+    cursor:pointer;
+}
+
+/* javascript edit stuff */
+
+.primitiveValue{
+    float: right;
+    text-align: right;
+    border-width: 1;
+    //background-color: #FDFDFD;
+    border-color: #ffffff;
+    border-style: solid;
+    border-radius: 2px;
+    padding: 0 2;
+    outline: none;
+    margin: 0 10 0 0;
+}
+
+.primitiveValue:hover{
+    border-color: #ECECEC;
+    //background-color: #FDFDFD;
+}

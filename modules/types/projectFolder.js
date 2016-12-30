@@ -72,18 +72,18 @@ function project(url, noView)
 }
 
 exports.create = function projectFolder() { return {
-    type:'Set<Project>',
+    //type:'Set<Project>',
     '↻': function(j) {
         this.merge({
             '↻': 'deadbeef',
             'services': {
-                type:'Set<Project>',
+                //type:'Set<Project>',
                 '✕': function free(j) {},
                 '🖥 Start workers':                       project('modules/jobs/overlordWorkers.js'),
                 '☠ Kill all':                            project('modules/jobs/workerKill.js'),
             },
             'tests': {
-                type:'Set<Project>',
+                //type:'Set<Project>',
                 // TODO: lazy(project(...))  : lazy wrapet alle members von project
                 '🐼 Process fracturing folder on workers':    project('modules/jobs/workerBacc0.js'),
                 '🐁 Process empty jobs on worker':            project('modules/jobs/workerBacc1.js'),

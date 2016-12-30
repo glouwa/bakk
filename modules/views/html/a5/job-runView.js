@@ -2,19 +2,10 @@ function jobHeaderView(jobModel)
 {
     var view = document.createElement('div')
         view.className = 'autoJobButtonView'
-        view.style.backgroundColor = config.colors.paperBorder
-        view.style.height = 16
         view.style.paddingRight = 10
-        view.style.borderStyle = 'none none solid none'
-        view.style.borderWidth = 1;
-        view.style.borderColor = '#fafafa'
 
-    view.style.paddingTop = 20
-    view.style.paddingBottom = 14 // ändert nichts ?!?!
-
-    var defaultAction = jobControlingButton(jobModel)
+    var defaultAction = app.registry.views.primitiveBound.query('jobfunctions')(jobModel)
     view.appendChild(defaultAction)
-
     return view
 }
 

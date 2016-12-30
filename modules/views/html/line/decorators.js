@@ -44,88 +44,39 @@ function hoverDiv(model)
     return view
 }
 
-// use for: null, undef, bool, string, text, number, file (as base)
-function lineFramePrimitive(name, model)
+function appendObjInfo(view, model)
 {
-    var n = name.charAt(0).toUpperCase() + name.slice(1)        
     var im = { 'null':'␀', 'undefined':'␥', 'string':'𝕊', 'number':'ℕ', 'number':'ℝ', 'boolean':'𝔹' }
-
-    var view = hoverDiv(model)
-        view.className = 'lineFramePrimitive'
-
-        var icon = document.createElement('div')
-            icon.innerText = '•' //i
-            icon.style.float = 'left'
-            icon.style.width = 15
-            icon.style.color = 'gray'
-            icon.style.marginLeft = 6
-        var varname = document.createElement('div')
-            varname.innerText = n
-            varname.style.float = 'left'
-            varname.style.color = '#00CC66'
-        var type = document.createElement('div')
-            type.innerText = im[modelType(model)] || modelType(model)            
-            type.style.float = 'left'
-            type.style.color = '#969696'
-            type.style.marginTop = 5
-            type.style.marginLeft = 5
-            type.style.fontSize = 9
-
-    view.appendChild(icon)
-    view.appendChild(varname)
+    var type = document.createElement('div')
+        type.innerText = im[modelType(model)] || modelType(model)
+        type.style.float = 'left'
+        type.style.color = '#969696'
+        type.style.marginTop = 5
+        type.style.marginLeft = 5
+        type.style.fontSize = 9
 
     if (model.isLink) {
-        var link = document.createElement('div')
-            link.innerText = model.isLink.length + '→ '+model.path
-            link.style.float = 'left'
-            link.style.color = 'red'
-            link.style.marginTop = 5
-            link.style.marginLeft = 5
-            link.style.fontSize = 9
+        if (model.path == '') {
+            var link = document.createElement('div')
+                link.innerText = model.isLink.length + '→ '+model.path
+                link.style.float = 'left'
+                link.style.color = 'red'
+                link.style.marginTop = 5
+                link.style.marginLeft = 5
+                link.style.fontSize = 9
+        }
+        else{
+            var link = document.createElement('div')
+                link.innerText = model.isLink.length + '→ '+model.path
+                link.style.float = 'left'
+                link.style.color = 'blue'
+                link.style.marginTop = 5
+                link.style.marginLeft = 5
+                link.style.fontSize = 9
+        }
         view.appendChild(link)
     }
     view.appendChild(type)
-
-    return view
-}
-
-// used for: lineObjectView/expanderheader,
-// has buttons
-function lineFrame(name, model, content)
-{
-    var view = document.createElement('div')
-        view.className = 'lineFrame'
-        //view.draggable = true
-        //view.ondragstart = ev=> onDragStart(ev, model)
-        var type = document.createElement('div')
-            type.innerText = modelType(model)
-            type.style.float = 'left'
-            type.style.color = '#969696'
-            type.style.marginTop = 5
-            type.style.marginLeft = 5
-            type.style.fontSize = 9
-        var autoButtons = autoJobButtonLineView(model)
-            autoButtons.style.paddingRight = 4
-            autoButtons.style.margin = '-1 0 -1 0'
-
-    view.appendChild(varName(name))
-    view.appendChild(type)
-
-    if (model.isLink) {
-        var link = document.createElement('div')
-            link.innerText = model.isLink.length +'→ '+model.path
-            link.style.float = 'left'
-            link.style.color = 'red'
-            link.style.marginTop = 5
-            link.style.marginLeft = 5
-            link.style.fontSize = 9
-        view.appendChild(link)
-    }
-
-    if (content)
-        view.appendChild(content)
-    view.appendChild(autoButtons)
-    return view
 }
 
 function lineExpander(args)

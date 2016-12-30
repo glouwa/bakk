@@ -149,6 +149,8 @@
             lastCreatedIdx++
         }
 
+        //parent.subjobs is not created -> args end bug
+
         parent.subjobs.forEach(v=>v.call())
         console.assert(lastCreatedIdx > 0, 'subjoblogic with 0 subjobs?')
     }

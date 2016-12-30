@@ -1,26 +1,100 @@
+function addStandardLine(view, name, model)
+{
+    view.appendChild(varName(name))
+
+    appendObjInfo(view, model)
+
+    var autoButtons =  app.registry.views.primitiveBound.query('object-buttons')(model)
+        autoButtons.style.paddingRight = 4
+        autoButtons.style.margin = '-1 0 -1 0'
+    view.appendChild(autoButtons)
+
+    var type = modelType(model)
+    var primitive = app.registry.views.primitiveBound.query(type)(model)
+    if (primitive)
+        view.appendChild(primitive)
+}
+
 function lineObjectView(name, model)
 {
-    var type = modelType(model)
-    var primitive = app.registry.views.primitive[type]
-                  ?  app.registry.views.primitive[type].ctor(model)
-                  : undefined
+    // used for: lineObjectView/expanderheader,
+    // has buttons
+    function lineFrame(name, model)
+    {
+        var view = document.createElement('div')
+            view.className = 'lineFrame'
+        addStandardLine(view, name, model)
+        return view
+    }
+
     return lineExpander({
         model: model,
         expanded: name == 'subjobs',
-        header: lineFrame(name, model, primitive),
+        header: lineFrame(name, model),
         contentFactory: ()=> autoViewLine(model)
     })
 }
 
 function linePrimitiveView(k, model)
-{
-    console.log('adding leaf!')
-    var type = modelType(model)
-    var view = lineFramePrimitive(k, model)
-        //view.className = 'lineLeaf'
-        view.primitive = app.registry.views.primitive[type].ctor(model)
-        view.appendChild(view.primitive)
-    return view
+{/*
+    // use for: null, undef, bool, string, text, number, file (as base)
+    function primitiveHeader(name, model)
+    {
+        var view = hoverDiv(model)
+            view.className = 'lineFramePrimitive'
+
+            var icon = document.createElement('div')
+                icon.innerText = '•' //i
+                icon.style.float = 'left'
+                icon.style.width = 15
+                icon.style.color = 'gray'
+                icon.style.marginLeft = 6
+
+        view.appendChild(icon)
+        addStandardLine(view, name, model)
+        return view
+    }
+
+    function nonExpander(args){
+        var view = hoverDiv(args.model)
+            view.className = 'expander'
+
+            var icon = document.createElement('div')
+                icon.innerText = '•' //i
+                icon.style.float = 'left'
+                icon.style.width = 15
+                icon.style.color = 'gray'
+                icon.style.marginLeft = 6
+
+        view.append(args.header)
+        return view
+    }
+
+    return nonExpander({ // alias dot hoverdiv
+        model: model,
+        header:primitiveHeader(k, model)
+    })
+*/
+
+    // use for: null, undef, bool, string, text, number, file (as base)
+    function lineFramePrimitive(name, model)
+    {
+        var view = hoverDiv(model)
+            view.className = 'lineFramePrimitive'
+
+            var icon = document.createElement('div')
+                icon.innerText = '•' //i
+                icon.style.float = 'left'
+                icon.style.width = 15
+                icon.style.color = 'gray'
+                icon.style.marginLeft = 6
+
+        view.appendChild(icon)
+        addStandardLine(view, name, model)
+        return view
+    }
+
+    return lineFramePrimitive(k, model)
 }
 
 function lineAppendView(model)
@@ -66,10 +140,10 @@ function autoViewLine(model)
 
     view.update = compositeUpdate({
         view:view,
-        filter:v=> typeof v !== 'function',
+        filter: (v, k)=> typeof v !== 'function' && k != 'linkPath' && k != 'linkThatShit',
         itemDelegate:(v, k)=> {
 
-            console.log(modelType(v), app.registry.views.primitive?true:false)
+            //console.log(modelType(v), app.registry.views.primitive?true:false)
 
             var t = modelType(v)
             if (   t=='number'
@@ -80,7 +154,7 @@ function autoViewLine(model)
                 || t=='string'
                 || t=='string')
             {
-                console.log('primitive')
+                //console.log('primitive')
                 return linePrimitiveView(k.toString(), v) // leaf
             }
             else {

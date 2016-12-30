@@ -6,9 +6,9 @@ function networkType()
             window.open('./view.html', '_blank')
             j.ret('ok', "window.open(...) called")
         },
-        '+4 worker': j=> app.model.projects.services['🖥 Start workers']['▸'](j),
-        '☠ worker': j=> app.model.projects.services['☠ Kill all']['▸'](j, {}, { nodeType:['Worker']}),
-        '☠ all': j=> app.model.projects.services['☠ Kill all']['▸'](j, {}, { nodeType:['Server', 'Overlord', 'Worker']}),
+        '+4 worker': j=> app.model.mods.services['🖥 Start workers']['▸'](j),
+        '☠ worker': j=> app.model.mods.services['☠ Kill all']['▸'](j, {}, { nodeType:['Worker']}),
+        '☠ all': j=> app.model.mods.services['☠ Kill all']['▸'](j, {}, { nodeType:['Server', 'Overlord', 'Worker']}),
         '↻ clients': j=> {
             var reloadmsg = messages.reloadMsg()
             var channelMsg = messages.channelMsg('Ws', reloadmsg)

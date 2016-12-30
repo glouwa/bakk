@@ -1,1 +1,24 @@
- 
+.a3Frame{
+    width: 100%;
+    //padding: 0 0 1 0;
+    position: relative;
+
+    /*isplay: inline;*/
+    display: block;
+    cursor:pointer;
+    border-style: none none solid;
+    border-width: 1px;
+    border-color: rgb(242, 242, 242);
+}
+
+.a3Frame > .autoJobButtonView {
+    padding: 8 14 10 0;
+
+    display: inline-block;
+    float: right;
+    clear: right;
+}
+
+.a3Frame > .autoJobButtonView:empty {
+    padding: 0 0 0 0
+}

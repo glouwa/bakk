@@ -1,28 +1,42 @@
+/*app muss in mehreren schritten initiatiliert werden
+- app muss existieren, da mvj.model merge verwendet
+- es müssen alle typen für einen merge vorhanden sein, dh zu erst müssen built in geladen werden
+  man kann beim ersten zb. kein registry oder model verwenden
+*/
+
 app = mvj.model('', {
     wsUrl: 'unknown',
     clientId: 'unknown',
     registry: {
-        type:'Registry',
+        types:{}
+    }
+})
+
+app.merge({
+    wsUrl: 'unknown',
+    clientId: 'unknown',
+    registry: {
+        //type:'Registry',
         views:{
-            primitive:{
-                //type:'Folder',
-                //directory:'/modules/views/html/primitive'
-            },            
+            primitiveBound:{ index:{} },
             line:{},
             d3:{},
             a5:{},
             a4:{},
             a3:{},
         },
-        types:{ type:'Set<Type>' },
-        jobs:{ type:'Set<JobPrototype>' },
-        workflows:{ type:'Set<Workflow>' }
+        types:{
+            //type:'Set<Type>',
+            jobs:{ type:'Set<JobPrototype>' },
+            workflows:{ type:'Set<Workflow>' },
+            io:{ type:'Set<ObjIo>' }, // typ von index? oder nur r/w
+        },
     },
     model:{
-        type: 'Model',
-        jobs: { type:'Set<Job>' },
+        //type: 'Model',
+        log: { type:'Set<Job>' },
         store: { type:'Store' },
-        projects: projectFolder.create()
+        mods: projectFolder.create()
     },
     callUiJob:function(args){
         q.addRoot('Message From UI ' + args.desc, ()=> {

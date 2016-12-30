@@ -1,7 +1,7 @@
 function fragmentFolderSet()
 {
     return {
-        type:'Set<FragmentFolder>',
+        type:'FragmentFolderSet',
         '↻':function(j) {
             j.merge({
                 state:{ progress:0.1, type:'running', log:'setting output reference' },
@@ -103,7 +103,7 @@ function insertFolder(j, diff)
 {
     j.merge({
         state:{ progress:0.1, type:'running', log:'setting output reference' },
-        output:{ type:'Set<FragmentFolder>', dir:j.params.dir.valueOf() }
+        output:{ type:'FragmentFolderSet', dir:j.params.dir.valueOf() }
     })
 
     j.delegate(()=> jf.job({
@@ -126,8 +126,8 @@ new Object({
         },
     },
     types: {
-        fragmentFolderSet: fragmentFolderSet(),
-        fragmentFolder: fragmentFolder()
+        FragmentFolderSet: fragmentFolderSet(),
+        FragmentFolder: fragmentFolder()
     },
     tests: []
 })
