@@ -107,6 +107,9 @@ function btab()
         var content = document.createElement('div')
             content.className = 'btab-content'
             content.style.flexGrow = 1
+            content.style.overflowY = 'auto';
+
+
             //content.style.paddingTop = 20
             //content.style.paddingBottom = 20
         view.active = undefined

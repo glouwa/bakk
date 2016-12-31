@@ -32,9 +32,9 @@ function jobStateTreeView(jobModel)
         var treeRoot = jobAndSubjobsView(jobModel, 0)
             treeRoot.style.margin = '20 0'
             treeRoot.style.padding = '0 0 1 0'
-            treeRoot.style.maxHeight = '200'
-            treeRoot.style.overflowY = 'auto'
-            treeRoot.style.overflow = 'auto'
+            //treeRoot.style.maxHeight = '200'
+            //treeRoot.style.overflowY = 'auto'
+            //treeRoot.style.overflow = 'auto'
 
     view.appendChild(treeRoot)
     return view

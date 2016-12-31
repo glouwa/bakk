@@ -29,10 +29,15 @@
                 state.style.float = 'right'
                 state.style.textAlign = 'right'
                 state.style.minWidth = 40
+            var jobControlingButton = app.registry.views.primitiveBound.query('jobfunctions')(model)
+            jobControlingButton.style.height = 15
+            jobControlingButton.style.margin = '-1 0 -1 10'
+            view.appendChild(jobControlingButton)
             view.appendChild(state)
             view.appendChild(time)
             view.appendChild(sig)
             view.appendChild(desc)
+
             view.update = ()=>
             {
                 var workTimeMs = jf.jobTime(model)
@@ -50,7 +55,7 @@
                 sig.innerText =  '(…) → ' + model.state.log
 
                 if (model.state.type == 'returned')
-                    state.innerText = config.getIcon(model.state)
+                    state.innerText = ''//config.getIcon(model.state)
                 else
                     state.innerText = (model.state.progress.valueOf()*100).toFixed(0) + '%'
             }

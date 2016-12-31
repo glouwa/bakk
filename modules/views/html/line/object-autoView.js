@@ -36,46 +36,7 @@ function lineObjectView(name, model)
 }
 
 function linePrimitiveView(k, model)
-{/*
-    // use for: null, undef, bool, string, text, number, file (as base)
-    function primitiveHeader(name, model)
-    {
-        var view = hoverDiv(model)
-            view.className = 'lineFramePrimitive'
-
-            var icon = document.createElement('div')
-                icon.innerText = '•' //i
-                icon.style.float = 'left'
-                icon.style.width = 15
-                icon.style.color = 'gray'
-                icon.style.marginLeft = 6
-
-        view.appendChild(icon)
-        addStandardLine(view, name, model)
-        return view
-    }
-
-    function nonExpander(args){
-        var view = hoverDiv(args.model)
-            view.className = 'expander'
-
-            var icon = document.createElement('div')
-                icon.innerText = '•' //i
-                icon.style.float = 'left'
-                icon.style.width = 15
-                icon.style.color = 'gray'
-                icon.style.marginLeft = 6
-
-        view.append(args.header)
-        return view
-    }
-
-    return nonExpander({ // alias dot hoverdiv
-        model: model,
-        header:primitiveHeader(k, model)
-    })
-*/
-
+{
     // use for: null, undef, bool, string, text, number, file (as base)
     function lineFramePrimitive(name, model)
     {

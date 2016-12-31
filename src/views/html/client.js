@@ -63,12 +63,12 @@ function onInit() {
                 app.commit('got my id') // für logging
 
                 var mynodeInfo = {
-                  type:'Client',
-                  id:jf.workerId,
-                  capabilitys:['JS'],
-                  simconfig:config.clientDefaultSimConfig,
-                  osType:'Browser',
-                  hostname:''
+                    type:'Client',
+                    id:jf.workerId,
+                    capabilitys:['JS'],
+                    simconfig:config.clientDefaultSimConfig,
+                    osType:'Browser',
+                    hostname:''
                 }
 
                 var networkInfo = { [app.clientId]:mynodeInfo }
@@ -83,35 +83,40 @@ function onInit() {
                 var channelMsg = messages.channelMsg('Ws', msg)
                 network.connections[0].send(channelMsg)
 
-                          // jobs ready to use?
+                // jobs ready to use?
+
+                $('#modelTabPaper').append(tab('modelTab'))
+                $('#jobTabPaper').append(tab('jobTab'))
 
                 //load basic modules with ajax
                 app.callUiJob({
-                    desc:'load primitives',
-                    onCall:j=> app.registry.views.primitiveBound['↻'](j),
+                    desc:'load primitives',                    
                     params:{},
-                    output:app.registry.views.primitiveBound
+                    output:app.registry.views.primitiveBound,
+                    onCall:j=> app.registry.views.primitiveBound['↻'](j),
                 })
 
-
                 setTimeout(()=> {
-                          $('#modelTabPaper').append(tab('modelTab'))
-                          $('#jobTabPaper').append(tab('jobTab'))
-                          //$('#modelTab')[0].add('☍', { content:a3View(app.model) })
 
-                          var projectsDiv = document.createElement('div')
-                          projectsDiv.appendChild(a3View(app.model.mods))
-                          app.model.on('change', changes=> {
-                            if (changes.newMembers && changes.newMembers.network)
-                                projectsDiv.appendChild(a3View(app.model.network))
+                    var initJ = app.model.jobs[jf.workerId + '\u208B' + Number(0).toSubscript()]
+                    $('#jobTab')[0].add(initJ.id, { content:jobAllView(initJ) })
 
-                            if (changes.deletedMembers && changes.deletedMembers.network)
-                                projectsDiv.removeChild(projectsDiv.childNodes[1])
-                          })
-                          $('#modelTab')[0].add('☍', { content:a3View(app) })
-                          $('#modelTab')[0].add('🌐', { content:projectsDiv })
-                          $('#jobTab')  [0].add('⥂', { content:a3View(app.model.jobs) })
-                          },1000    )
+                    var projectsDiv = document.createElement('div')
+                    projectsDiv.appendChild(a3View(app.model.mods))
+                    projectsDiv.appendChild(a3View(app.model.network))
+
+                    app.model.on('change', changes=> {
+                        if (changes.newMembers && changes.newMembers.network)
+                            projectsDiv.appendChild(a3View(app.model.network))
+
+                        if (changes.deletedMembers && changes.deletedMembers.network)
+                            projectsDiv.removeChild(projectsDiv.childNodes[1])
+                    })
+
+                    $('#modelTab')[0].add('☍', { content:a3View(app) })
+                    $('#modelTab')[0].add('🌐', { content:projectsDiv })
+                    $('#jobTab')  [0].add('⥂', { content:a3View(app.model.jobs) }, 'inBg')
+                },200)
             },
             onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
             onReload:      (c, parsed)=> location.reload(true)

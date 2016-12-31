@@ -260,7 +260,7 @@ transform: perspective(10px) rotateX(3deg);
 
 .btab-active{
     float: right;
-    margin: -2 0 3 0;
+    margin: -1 0 3 0;
     padding: 4 20 0 20;
     cursor: hand;
     font-weight: normal;

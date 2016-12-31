@@ -57,7 +57,7 @@ function a3View(model)
 
     if (model.type == 'Job')
         contentDelegate = ()=> autoMultiView(model,
-            [jobStateTreeView, jobStateGraphView /*, jobStateGantViewWithProgress*/, jobPlot])
+            [autoView, jobStateTreeView, jobStateGraphView /*, jobStateGantViewWithProgress*/, jobPlot])
 
     if (model.type == 'Network')
         contentDelegate = ()=> autoMultiView(model, [autoView, systemView])
