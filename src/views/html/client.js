@@ -1,5 +1,7 @@
 var jf = jff.jm()
 /*
+  obligate objekte sollten im html mit datasource versehen werden
+
 model{
     registry:{
         views: some default, some loaded with project
@@ -16,6 +18,18 @@ model{
     }
 }
 */
+
+
+/* init jobtree
+  load built in types
+  load network (an attach app.clientId.on('change')
+  connect network
+  load more types (maybe?)
+  load views
+  crates views
+
+*/
+
 function onInit() {
     app.clientId.on('change', changes=> {
         jf.workerId = 'C' + Number(app.clientId).toSubscript()
@@ -142,9 +156,6 @@ function onInit() {
     })
 
     app.commit('ui needs model')
-
-
-
     network.connect(app.wsUrl.valueOf())
 }
 

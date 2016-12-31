@@ -18,13 +18,14 @@ function jobPlotGant(view, jobModel)
 {
     var w = 800
     var h = 400
-    var m = { top:30, right:10, bottom:30, left:80 }
+    var m = { top:30, right:10, bottom:30, left:100 }
     var data = { /*circles:[],*/ jobs:[]/*, clines:[] */}
     var t = 500//750
     var mergeDotR = 5
     var uiUpdateDotR = 6
     var jobBarHeight = 7
     var beginTime = getStartTime(jobModel)
+    var lastCommitEnd = 0
 
     function handleMouseClick() {
         if (d3g.focus === this) {
@@ -105,7 +106,10 @@ function jobPlotGant(view, jobModel)
     }
 
     d3g.updateDomain = function(){
-        this.xz0.domain([beginTime, new Date()])
+        var endTime = getEndTime(jobModel) > lastCommitEnd
+                    ? getEndTime(jobModel)
+                    : lastCommitEnd
+        this.xz0.domain([beginTime, endTime])
         this.yz0.domain(buildDomain(data))
     }
 
@@ -180,6 +184,7 @@ function jobPlotGant(view, jobModel)
     d3g.addCommit = function(j, s, e) {
         //w = view.clientWidth
         this.updateDomain()
+        lastCommitEnd = e
         var cm = { j:j, s:s, e:e }
 
         var d3commits = this.vis.select('.d3commits')
@@ -335,9 +340,15 @@ function jobStateGantD3View(jobModel)
 
     var beginLastCommit = new Date()
     addJob(jobModel)
-    view.d3handler.addCommit(jobModel, beginLastCommit, new Date())
+    //view.d3handler.addCommit(jobModel, beginLastCommit, new Date())
+    view.d3handler.updateDomain()
+    view.d3handler.redrawAll()
+
     jobModel.on('commit', ()=> beginLastCommit = new Date())
-    jobModel.on('endCommit', ()=> view.d3handler.addCommit(jobModel, beginLastCommit, new Date()))
+    jobModel.on('endCommit', ()=> {
+        //if (beginLastCommit)
+            view.d3handler.addCommit(jobModel, beginLastCommit, new Date())
+    })
 
     return view
 }

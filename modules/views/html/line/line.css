@@ -7,6 +7,7 @@
     position: relative;
     /*isplay: inline;*/
     display: block;
+    height: 18;
 }
 
 .lineFramePrimitive{

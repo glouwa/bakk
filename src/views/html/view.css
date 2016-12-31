@@ -115,14 +115,14 @@ html {
     min-width: 8;
     text-align: center;
     float: right;
-    height: 17px;
+    height: 15px;
     background: linear-gradient(#FdFdFd, #f5f5f5 );
     padding: 3 12 0 13;
     border-width: 1;
     border-color: #e5e5e5 #dAdAdA #d4d4d4 #dBdBdB;
     border-style: solid;
     border-radius: 2px;
-    margin: -3 0 -3 -1;
+    margin: -1 0 -3 -1;
     position: relative;
     overflow: hidden;
     cursor: hand;

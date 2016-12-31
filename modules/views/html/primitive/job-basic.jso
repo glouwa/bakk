@@ -7,6 +7,14 @@
             view.className = 'jobLineView'
             view.style.marginRight = '5'
             view.style.float = 'right'
+            var icon = document.createElement('div')
+                icon.className = 'textView'
+                icon.style.float = 'right'
+                icon.style.marginLeft = 10
+                icon.style.maxWidth = 100
+                icon.style.whiteSpace = 'nowrap'
+                icon.style.overflow = 'hidden'
+                icon.innerText = model.icon?model.icon.toString():'undef'
             var desc = document.createElement('div')
                 desc.className = 'textView'
                 desc.style.float = 'right'
@@ -37,6 +45,7 @@
             view.appendChild(time)
             view.appendChild(sig)
             view.appendChild(desc)
+            view.appendChild(icon)
 
             view.update = ()=>
             {
