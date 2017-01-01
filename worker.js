@@ -1,4 +1,4 @@
-require( 'console-group' ).install()
+require('console-group').install()
 console.debug = ()=> {}
 
 var fs       = require('fs')
