@@ -82,6 +82,8 @@ exports.create = function projectFolder() { return {
                 '🖥 Start workers':                       project('modules/jobs/overlordWorkers.js'),
                 '☠ Kill all':                            project('modules/jobs/workerKill.js'),
             },
+           'libs': {
+            },
             'tests': {
                 //type:'Set<Project>',
                 // TODO: lazy(project(...))  : lazy wrapet alle members von project

@@ -576,26 +576,41 @@ input[type=range]:focus::-webkit-slider-runnable-track {
     width: 80;
 }
 
-::-webkit-scrollbar {
-    width: 6px;
-    background-color: #FCFCFC;
-}
 ::-webkit-scrollbar:horizontal{
     display: none;
 }
+
+::-webkit-scrollbar {
+    width: 16px;
+    /*background-color: #FCFCFC;*/
+    background-color: white;
+}
+
 ::-webkit-scrollbar:hover {
-    background-color: #FCFCFC;
+    /*background-color: #FCFCFC;*/
 }
 
 ::-webkit-scrollbar-thumb:vertical {
     background: rgba(0,0,0,0.07);
+    background-color: #CCC;
+    border-left-style: solid;
+    border-left-color: white;
+    border-left-width: 14px;
+    border-bottom-left-radius: 4px;
+    border-top-left-radius: 4px;
+    transition: border-left-width 2s ease-in-out;
+    transition: border-color 2s ease;
 }
-::-webkit-scrollbar-thumb:vertical:active {
-    background: rgba(0,0,0,0.5);
-}
+
 ::-webkit-scrollbar-thumb:vertical:hover {
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.2);
+    border-left-width: 0px;    
 }
+
+::-webkit-scrollbar-thumb:vertical:active {
+    background: rgba(0,0,0,0.3);
+}
+
 
 a:link {
     text-decoration: none;

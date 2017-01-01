@@ -38,16 +38,19 @@ app.merge({
         store: { type:'Store' },
         mods: projectFolder.create()
     },
-    callUiJob:function(args){
-        q.addRoot('Message From UI ' + args.desc, ()=> {
-            this.rootJob(args).call()
-        })
-    },
+
+
     rootJob:function(args){
         var jd = jf.job(args)
         app.mergePath('model.jobs.'+jd.id, jd)
         return app.model.jobs[jd.id.valueOf()]
     },
+    callUiJob:function(args){
+        q.addRoot('Message From UI ' + args.desc, ()=> {
+            this.rootJob(args).call()
+        })
+    },
+
     init:function(args){
         q.addRoot('App init', ()=> {
             sim.config = config.clientDefaultSimConfig
