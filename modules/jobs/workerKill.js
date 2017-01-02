@@ -4,7 +4,7 @@ function killServerOverlordsAndWorkers(j)
         icon: '☠',
         desc: 'delegating to server',
         args: j.params,
-        node: network.connections[0],
+        node: app.network[0],
         realJob: js=> js.delegate(
             ()=> jf.job({
                 icon: '☠w*',
@@ -23,7 +23,7 @@ function killServerOverlordsAndWorkers(j)
                                 node: nodes[idx],
                                 args: js.params,
                                 realJob: jw=> {
-                                    jw.ret('ok', jf.workerId.valueOf() + ' will exit in ½s')
+                                    jw.ret('ok', app.workerId().valueOf() + ' will exit in ½s')
                                     setTimeout(()=>process.exit(0), 500)
                                 }
                             })

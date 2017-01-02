@@ -57,6 +57,29 @@
         enumerable: false
     })
 
+
+    Object.defineProperty(String.prototype, 'removeSubscript',
+    {
+        value: function()
+        {
+          var result = ''
+          var str = this.toString()
+          for (var i = 0; i < str.length; i++) {
+              var numberWith = str.charCodeAt(i)
+              if (numberWith)
+                if (numberWith >= 8320 && numberWith < 8332)
+                    result += String(numberWith - 8320)
+                else
+                    result += str.charAt(i)
+          }
+          return result
+        },
+        writable: true,
+        configurable: true,
+        enumerable: false
+    })
+
+
     Object.defineProperty(Object.prototype, 'clone',
     {
         value: function (obj)
@@ -83,7 +106,7 @@
             var clone = this instanceof Array ? [] : {}
             for(var i in this) {                
                 var v = this[i]
-                console.log('packing ' + i + '  ' +(v?v.path:'...'))
+                //vjconsole.log('packing ' + i + '  ' +(v?v.path:'...'))
 
                 if(typeof v == 'object' && v != null) {
 

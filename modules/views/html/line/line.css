@@ -22,6 +22,7 @@
 
 .expander:hover, .lineFramePrimitive:hover{/*.line-hover, {*/
     background-color: #fcfcfc;
+    /*transition: all 0.4s linear;*/
     border-style: dashed none dashed dashed;
     border-width: 1;
     border-color: #B0B0B0;

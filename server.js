@@ -28,44 +28,44 @@ app.init({
          jf.workerId = 'S₀'
 
          app.merge({
-             clientId: 0,
-             binDir: 'bin/' + osDir + '/',
-             model: {
-                 network: {
-                     '0': {
-                         type: 'Server',
-                         id: jf.workerId,
-                         clientcount: 0,
-                         capabilitys: [],
-                         simconfig: sim.config,
-                         osType: os.type(),
-                         hostname: os.hostname()
-                     }
-                 }
-             },
-             wsMessageHandlers:{
-                 onReload: function(c, parsed){
-                     var channelMsg = messages.channelMsg('Ws', parsed)
-                     network.sendBroadcast(channelMsg)
+             type:'S',
+             clientId: 0,             
+             binDir: 'bin/' + osDir + '/',             
+             network: {
+                 '0': {
+                     type: 'Server',
+                     id: jf.workerId, // damed
+                     clientcount: 0,
+                     capabilitys: [],
+                     simconfig: sim.config,
+                     osType: os.type(),
+                     hostname: os.hostname()
                  },
-                 onNetworkInfo: function(c, parsed){
-                     app.mergePath(parsed.path, parsed.diff)
+                 msgHandlers:{
+                     onReload: function(c, parsed){
+                         var channelMsg = messages.channelMsg('Ws', parsed)
+                         network.sendBroadcast(channelMsg)
+                     },
+                     onNetworkInfo: function(c, parsed){
+                         app.mergePath(parsed.path, parsed.diff)
 
-                     var receivers = Object.keys(network.connections).without([c.id.toString()])
-                     var channelMsg = messages.channelMsg('Ws', parsed)
-                     network.sendMulticast(receivers, channelMsg)
+                         var receivers = Object.keys(app.network).without([c.id.toString()])
+                         console.log(receivers)
+                         var channelMsg = messages.channelMsg('Ws', parsed)
+                         network.sendMulticast(receivers, channelMsg)
+                    }
                  }
              },
              networkStateChangeHandlers:{
                  onConnected: function(connection){
                      console.log('+ connection ' + connection.id)
-                     var msg = messages.serverHalloMsg(connection.id, app.model.network)
+                     var msg = messages.serverHalloMsg(connection.id, app.network)
                      var channelMsg = messages.channelMsg('Ws', msg)
                      connection.send(channelMsg)
                  },
                  onDisconnected: function(connection){
                      console.log('- connection ' + connection.id)
-                     var path = 'model.network.'+connection.id
+                     var path = 'network.'+connection.id
 
                      try { app.mergePath(path, 'deadbeef') } catch(e) {}
 
@@ -76,9 +76,9 @@ app.init({
              }
          })
 
-         app.model.network[0].simconfig.on('change', function(changes){
+         app.network[0].simconfig.on('change', function(changes){
              console.log('simconfig.on change')
-             sim.config = app.model.network[0].simconfig
+             sim.config = app.network[0].simconfig
          })
 
          network.onConnectionChanged =
@@ -95,19 +95,33 @@ connect().use(serveStatic('./')).listen(config.server.httpport)
 
 //-------------------------------------------------------------------------------------------
 
+function isNode(n){
+    return n.type && (
+           n.type == 'Worker'
+        || n.type == 'Server'
+        || n.type == 'Client'
+        || n.type == 'Overlord'
+    )
+}
+
 app.getNodesByCapability = function(criteria)
 {
+    console.log('getNodesByCapability(' + criteria + ')')
     var nodes = []
-    app.model.network.forEach(function(nval, nkey, nidx)
+    app.network.forEach(function(node, nkey, nidx)
     {
-        nval.capabilitys.forEach(function(cval, ckey, cidx)
-        {
-            if (cval.valueOf() == criteria)
-                nodes.push(network.connections[nkey])
-        })
+        if (isNode(node)) {
+            node.capabilitys.forEach(function(cval, ckey, cidx)
+            {
+                if (cval.valueOf() == criteria)
+                    nodes.push(app.network[nkey])
+            })
+        }
     })
     if (nodes.length == 0)
         throw new Error('no workers available')
+
+    console.log(nodes)
     return nodes
 }
 
@@ -115,14 +129,14 @@ app.getNodesByType = function(criteria, emptyResultIsOk)
 {
     console.log('getNodesByType(' + criteria + ')')
     var nodes = []
-    app.model.network.forEach(function(nval, nkey, nidx)
+    app.network.forEach(function(nval, nkey, nidx)
     {        
         criteria.forEach(function(cval, ckey, cidx)
         {
-            if (nval.type.valueOf() == cval && cval != 'Server')
+            if (nval.type && nval.type.valueOf() == cval && cval != 'Server')
             {
                 console.log(' + ' + nkey)
-                nodes.push(network.connections[nkey])
+                nodes.push(app.network[nkey])
             }
         })
     })    

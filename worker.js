@@ -19,16 +19,18 @@ var network       = require('./src/network/nodeWs').network
 var jf = jff.jm()
 eval(fs.readFileSync('src/app.js')+'')
 
-app.init({
-     host:os.hostname(),
+app.init({     
      wsUrl:'ws://' + config.server.wshost + ':' + config.server.wsport,
      onInit:function(){
          var osDir = os.type() == 'Linux' ? 'posix64' : 'dotnet'
 
          app.merge({
+            type:'W',
+            host:os.hostname(),
             binDir: 'bin/' + osDir + '/',
-            wsMessageHandlers:clientMessageHandlerFactory('W', 'Worker', ['JS', 'POSIX64', 'Matlab'], ()=>{}),
-            networkStateChangeHandlers:consoleLogNetworkStateChangeHandler
+            network:{
+                msgHandlers:clientMessageHandlerFactory('W', 'Worker', ['JS', 'POSIX64', 'Matlab'], ()=>{}),
+            }
          })
 
          network.sim = sim
@@ -66,11 +68,11 @@ function updateWorkerInfo(pf)
     workerInfo.freeMemPercent = (osUtils.freememPercentage()*100).toFixed(0)+'%'
     workerInfo.freeCpuPercent = (pf*100).toFixed(0)+'%'
 
-    if (network.connections[0].send)
+    if (app.network[0].send)
     {
         var msg = messages.networkInfoMsg('model.network.' + app.clientId, workerInfo)
         var channelMsg = messages.channelMsg('Ws', msg)
-        network.connections[0].send(channelMsg)
+        app.network[0].send(channelMsg)
     }
 
     osUtils.cpuFree(updateWorkerInfo)

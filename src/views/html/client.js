@@ -21,21 +21,24 @@ model{
 
 
 /* init jobtree
+init
   load built in types
   load network (an attach app.clientId.on('change')
   connect network
   load more types (maybe?)
   load views
-  crates views
+  crates views                   echt? voher keine views? man könnte auch minimum über ajax oder html holen
 
 */
 
 function onInit() {
+
+    // Events zuerst
     app.clientId.on('change', changes=> {
-        jf.workerId = 'C' + Number(app.clientId).toSubscript()
+        //app.workerId = 'C' + Number(app.clientId).toSubscript()
         jf.host = 'Browser'
-        document.title = jf.workerId
-        $('#thisId').text(jf.workerId)
+        document.title = app.workerId()
+        $('#thisId').text(app.workerId())
     })
 
     mvj.onCommit = function(path, diff) {
@@ -51,111 +54,97 @@ function onInit() {
         }*/
     }
 
-    app.registry.merge({
-        types:{
-            'Folder':Folder,
-            'Folder<Mod>':ModuleFolder,
-            'File<Mod>':FileMod,
-            'Set<View>':ViewSet
+    // Daten
+    app.merge({
+        type:'C',
+        '+1 client': j=> {
+            window.open('./view.html', '_blank')
+            j.ret('ok', "window.open(...) called")
+        },
+        registry:{
+            config:config,
+            types:{
+                'Folder':Folder,
+                'Folder<Mod>':ModuleFolder,
+                'File<Mod>':FileMod,
+                'Set<View>':ViewSet,
+                'Network':networkType(),
+            },
         }
     })
 
-    app.registry.merge({
-        config:config,
-        views:{            
-            primitiveBound:{
-                type:'Folder<Mod>',
-                directory:'./modules/views/html/primitive/'
-           }
-       }
+    // min views
+    app.merge({
+        registry:{
+            config:config,
+            types:{
+                'Folder':Folder,
+                'Folder<Mod>':ModuleFolder,
+                'File<Mod>':FileMod,
+                'Set<View>':ViewSet,
+                'Network':networkType(),
+            },
+            views:{
+                primitiveBound:{
+                    type:'Folder<Mod>',
+                    directory:'./modules/views/html/primitive/'
+               }
+            }
+        },
+        network:{
+            type: 'Network',
+        }
     })
 
-    app.merge({
-        wsMessageHandlers:{
-            onServerHallo: (c, parsed)=> {
-                app.merge(parsed.diff)  // pull
-                app.commit('got my id') // für logging
+    $('#modelTabPaper').append(tab('modelTab'))
+    $('#jobTabPaper').append(tab('jobTab'))
 
-                var mynodeInfo = {
-                    type:'Client',
-                    id:jf.workerId,
-                    capabilitys:['JS'],
-                    simconfig:config.clientDefaultSimConfig,
-                    osType:'Browser',
-                    hostname:''
-                }
+/*
+    app.callUiJob({
+        desc:'app.init',        
+        params:{},
+        show:false,
+        output:{},
+        onCall:j=> app.network['⛓'](j),
+    })
+*/
 
-                var networkInfo = { [app.clientId]:mynodeInfo }
-
-                app.model.network.merge(networkInfo)
-                sim.config = app.model.network[app.clientId.valueOf()].simconfig
-                app.commit('network += my properties')
-
-                // server die eigene id bekannt geben
-                // todo: überleg da was besseres
-                var msg = messages.networkInfoMsg('model.network.' + app.clientId, mynodeInfo)
-                var channelMsg = messages.channelMsg('Ws', msg)
-                network.connections[0].send(channelMsg)
-
-                // jobs ready to use?
-
-                $('#modelTabPaper').append(tab('modelTab'))
-                $('#jobTabPaper').append(tab('jobTab'))
-
-                //load basic modules with ajax
-                app.callUiJob({
-                    desc:'load primitives',                    
-                    params:{},
-                    output:app.registry.views.primitiveBound,
-                    onCall:j=> app.registry.views.primitiveBound['↻'](j),
-                })
-
-                setTimeout(()=> {
-
-                    var initJ = app.model.jobs[jf.workerId + '\u208B' + Number(0).toSubscript()]
-                    $('#jobTab')[0].add(initJ.id, { content:jobAllView(initJ) })
-
+    app.callUiJob({
+        desc:'app.init',
+        params:{},
+        show:false,
+        output:{},
+        onCall:j=> j.delegate(
+            ()=> jf.job({
+                icon:'≟',
+                desc:'connect',
+                params:{},
+                onCall:j1=> app.network['⛓'](j1)
+            }),
+            ()=> jf.job({
+                icon:'≟',
+                desc:'load views',
+                params:{},
+                output:app.registry.views.primitiveBound,
+                onCall:j1=> app.registry.views.primitiveBound['↻'](j1),
+            }),
+            ()=> jf.job({
+                icon:'≟',
+                desc:'showui',
+                params:{},
+                onCall:j1=>{
                     var projectsDiv = document.createElement('div')
                     projectsDiv.appendChild(a3View(app.model.mods))
-                    projectsDiv.appendChild(a3View(app.model.network))
-
-                    app.model.on('change', changes=> {
-                        if (changes.newMembers && changes.newMembers.network)
-                            projectsDiv.appendChild(a3View(app.model.network))
-
-                        if (changes.deletedMembers && changes.deletedMembers.network)
-                            projectsDiv.removeChild(projectsDiv.childNodes[1])
-                    })
-
+                    projectsDiv.appendChild(a3View(app.network))
                     $('#modelTab')[0].add('☍', { content:a3View(app) })
-                    $('#modelTab')[0].add('🌐', { content:projectsDiv })
-                    $('#jobTab')  [0].add('⥂', { content:a3View(app.model.jobs) }, 'inBg')
-                },200)
-            },
-            onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
-            onReload:      (c, parsed)=> location.reload(true)
-        },
-        networkStateChangeHandlers:{
-            onConnecting:()=>{
-                $('#thisId').text()
-                $('#connectionState').text('Auto reconnect to ' + app.wsUrl.valueOf()+ ' ⇄')
-            },
-            onConnected:()=>{
-                $('#thisId').text('Connected')
-                $('#connectionState').text('Connected to ' + app.wsUrl.valueOf())
-                $('#connectionDate').text('since ' + new Date())
-                app.model.merge({ network:networkType() })
-            },
-            onDisconnected:()=>{
-                $('#thisId').text('')
-                $('#connectionState').text('Disconnected')
-                $('#connectionDate').text('')
-                app.model.merge({ network:'deadbeef' })
-            }
-        }
-    })
+                    $('#modelTab')[0].add('🌐', { content:projectsDiv }, 'inBg')
+                    $('#modelTab')[0].add('⥂', { content:a3View(app.model.jobs) }, 'inBg')
 
-    app.commit('ui needs model')
-    network.connect(app.wsUrl.valueOf())
+                    $('#jobTab')[0].add(j.id, { content:a3View(j) })
+                    j1.ret('ok', 'ui loaded')
+                }
+            })
+        )
+    })
 }
 

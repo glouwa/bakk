@@ -10,7 +10,7 @@ function findPrimes(j, diff)
         icon: 'ⓟ',
         desc: 'delegating to server',
         args: j.params,
-        node: network.connections[0],
+        node: app.network[0],
         realJob: js=> {
             var nodes = app.getNodesByCapability('POSIX64')
             js.updateJob({ state:{ type:'running' }, output:{ workerCount:nodes.length }})
@@ -27,7 +27,7 @@ function findPrimes(j, diff)
                         args:[jw.params.begin.valueOf(), jw.params.end.valueOf()],
                         onJsonStdOut:(jw, data)=> {
                             arguments.callee.count = arguments.callee.count || 1
-                            jw.commitJob(data.state, { [jf.workerId]:arguments.callee.count++ })
+                            jw.commitJob(data.state, { [app.workerId()]:arguments.callee.count++ })
                         }
                     })
                 })

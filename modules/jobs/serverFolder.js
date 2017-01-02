@@ -5,7 +5,7 @@
         j.delegate(()=> jf.remoteProxyJob({
             icon: '📂',
             desc: 'delegate to server and list files',
-            node: network.connections[0],
+            node: app.network[0],
             args: j.params,
             realJob: js=> {
 

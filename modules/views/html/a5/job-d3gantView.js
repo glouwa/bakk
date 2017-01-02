@@ -332,7 +332,8 @@ function jobStateGantD3View(jobModel)
 
         if (changes.newMembers)
             if (changes.newMembers.subjobs) {
-                console.warn('+++++++++++++++++++++', Object.keys(changes.newMembers.subjobs))
+                if (true) // es sollte nur gewarnt werden wenn bereits vorhanden
+                    console.warn('+++++++++++++++++++++', Object.keys(changes.newMembers.subjobs))
                 updateSubjobs({ newMembers:changes.newMembers.subjobs })
                 changes.newMembers.subjobs.on('change', updateSubjobs)
             }

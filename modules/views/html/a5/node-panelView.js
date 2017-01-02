@@ -65,6 +65,7 @@ function networkNodeHeader(nodeModel)
         header.className = 'header'
         var nodeName = document.createElement('div')
             nodeName.className = 'nodeHeaderName'
+            if (nodeModel.id)
             nodeName.innerText = nodeModel.id.valueOf()
         var headerHost = document.createElement('div')
             headerHost.className = 'nodeHeaderName'
@@ -73,6 +74,10 @@ function networkNodeHeader(nodeModel)
                                      + nodeModel.hostname
         var headerText = document.createElement('span')
             headerText.className = 'nodeHeaderText'
+
+            // TODO bindings!
+            //bind(headerText.innerText, nodeModel, 'capabilitys')
+            if (nodeModel.capabilitys || nodeModel.clientcount)
             headerText.innerText = nodeModel.capabilitys
                                  ? nodeModel.capabilitys.toString()
                                  : nodeModel.clientcount.valueOf() + ' clients connected'
@@ -122,6 +127,7 @@ function networkNodeSimConfig(nodeModel)
             simControl.className = 'errorSimControl'
             simControl.update = compositeUpdate({
                 view:simControl,
+                filter: (v, k)=> true,
                 itemDelegate:(v, k)=> {
                     var errorIcon = document.createElement('div')
                     errorIcon.className = 'buttonRight'
@@ -189,7 +195,7 @@ function networkNodeView(nodeModel)
             contentFactory:()=> networkNodeSimConfig(nodeModel)
         })
         view.className = 'networkNode'
-        if (nodeModel.id == jf.workerId)
+        if (nodeModel.id == app.workerId())
             view.style.backgroundColor = '#FFFFD0'
 
     return view

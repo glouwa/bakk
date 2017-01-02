@@ -4,13 +4,16 @@ function runWorkers(j, diff)
         icon: '4w+',
         desc: 'delegating to server',
         args: j.params,
-        node: network.connections[0],
+        node: app.network[0],
         realJob: js=> {
 
             var nodes = app.getNodesByType(['Overlord'], 'emptyResultIsOk')
             var devCount = js.params.devCount
                          ? Number(js.params.devCount.valueOf())
                          : nodes.length
+
+            console.log(nodes)
+                 //console.log(Object.Keys(nodes))
 
             js.delegate({
                 type: 'parallel',

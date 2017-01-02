@@ -22,3 +22,11 @@
 .a3Frame > .autoJobButtonView:empty {
     padding: 0 0 0 0
 }
+
+
+
+.networkNode .header{
+    overflow: hidden;
+    padding: 2 10 2 10;
+    text-align: center;
+}

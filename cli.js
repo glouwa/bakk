@@ -25,6 +25,7 @@ eval(fs.readFileSync('./modules/types/project.js')+'')
 //eval(fs.readFileSync('../types/project.js')+'')
 
 app.init({
+     type:'I',
      host:os.hostname(),
      wsUrl:'ws://' + config.server.wshost + ':' + config.server.wsport,
      onInit:function(){
@@ -178,7 +179,6 @@ function aProjectJob() {
 }
 
 var network = require('./network').network
-network.onConnectionChanged = appOnNetworkStateChangeWithLog
 network.onMessage = appOnMessageDefault
 network.sim = sim
 network.connect(app.wsUrl.valueOf())

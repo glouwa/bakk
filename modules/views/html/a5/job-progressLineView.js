@@ -11,12 +11,18 @@ function jobStateWithLogView(jobModel, contentFactory)
         view.className = 'jobStateWithLog'
         var jobState = contentFactory()
         var jobLog = jobLogView()
-            jobLog.id = 'j' + jobModel.id + 'jobLog'
+            var jidOhneSubscript = String(jobModel.id).removeSubscript()
+            //var jidOhneSubscript = String(jobModel.id)
+            var jobLogid = 'j' + jidOhneSubscript + 'jobLog'
+            jobLog.classList.add(jobLogid)
+            //jobLog.style.display = 'block'
 
     jobState.onclick = function()
-    {
-        $('.jobLog').not('#'+jobLog.id).hide()
-        $('#'+jobLog.id).toggle()
+    {        
+        $('.jobLog:not(.'+jobLogid+')').hide()
+        $('.'+jobLogid).toggle()
+        //$('#'+jobLog.id)[0].style.display = 'block'
+        //jobLog.style.display = 'block'
     }
 
     function getOrgin(current)

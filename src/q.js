@@ -61,6 +61,7 @@
         console.groupEnd()
     }
 
+    // uncomment this to disnable logtree
     exports.logBigMsg = exports.logGroup = (d, bgc, a)=> { if (a) a() }
 })
 (typeof exports === 'undefined' ? this['q']={} : exports, typeof exports !== 'undefined')

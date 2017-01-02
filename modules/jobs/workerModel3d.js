@@ -7,7 +7,7 @@ function find3dModel(j, diff)
 
     j.delegate(()=> jf.remoteProxyJob({
         icon: '❄',
-        node: network.connections[0],
+        node: app.network[0],
         desc:'delegate to server',
         args: j.params,
         realJob: (js, diff)=> {

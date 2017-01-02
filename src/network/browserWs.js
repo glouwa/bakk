@@ -18,10 +18,10 @@ network.connect = url=>
 
         network.isUp = true
         network.connections[connection.id] = connection
-        app.onNetworkStateChange('Connected', connection)
+        //app.onNetworkStateChange('Connected', connection)
     }
 
-    app.onNetworkStateChange('Connecting', connection)
+    //app.onNetworkStateChange('Connecting', connection)
 }
 
 // ------------------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ function cleanUpConnection(connection, url)
     if (network.isUp)
     {
         network.isUp = false
-        app.onNetworkStateChange('Disconnected', connection)
+        //app.onNetworkStateChange('Disconnected', connection)
     }
     else
     {

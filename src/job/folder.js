@@ -27,7 +27,7 @@ var remoteFolderListToThisOutput = function(j, d) {
     j.delegate(()=> jf.remoteProxyJob({            // delegate to remote
         icon: '📂',
         desc: 'delegate to server and list files',
-        node: network.connections[0],
+        node: app.network[0],
         args: j.params,
         realJob: js=> {
 
@@ -65,9 +65,6 @@ var ModuleFolder = {
     type:'Folder<Mod>',
     index:{},
     query:function(type){
-        //console.log('query view for ' , type)
-
-
         if (!this.index[type])
             return this.index['object'].ctor
         return this.index[type].ctor
@@ -84,7 +81,7 @@ var ModuleFolder = {
             desc:'file contents',
             params:{},
             onCall:j1=>{
-                console.log('BINGO', j.output, j1)//j=> fetchAndIndexAllMods()
+                //console.log('BINGO', j.output, j1)//j=> fetchAndIndexAllMods()
                 var files = []
                 var names = []
                 j.output.forEach((v, k, idx)=> {
@@ -94,7 +91,7 @@ var ModuleFolder = {
                     }
                 })
                 var fileCount = Object.keys(j.output).length
-                console.log(files)
+                //console.log(files)
                 j1.delegate({
                     type: 'parallel',
                     end: idx=> idx < files.length,
@@ -123,7 +120,7 @@ var Folder = {
         j.delegate(()=> jf.remoteProxyJob({            // delegate to remote
             icon: '📂',
             desc: 'delegate to server and list files',
-            node: network.connections[0],
+            node: app.network[0],
             args: j.params,
             realJob: js=> {
 

@@ -3,8 +3,7 @@
     exports.jm = function()
     {
         var jm = {}
-        jm.nextFreeId = 0
-        jm.workerId = undefined
+        jm.nextFreeId = 0        
         jm.host = undefined
         jm.jl = undefined
 
@@ -37,7 +36,7 @@
 
                     // anderungen an job, muss leider zwischen remote und nicht unterscheiden
                     var diff = {
-                        id: j.id,
+                        id: j.id.valueOf(),
                         state: {                            
                             type: 'calling',
                             progress: 0.051,
@@ -45,7 +44,7 @@
                             log: 'calling function'
                         },
                         [j.isRemote?'debugRemote':'debug']:{
-                            node:jm.workerId,
+                            node:app.workerId(),
                             host:jm.host,
                             callTime:Date.now(),                            
                             updateTime: Date.now()
@@ -322,7 +321,7 @@
             var ljnr = jm.nextFreeId++
 
             diff.type = 'Job'
-            if (!diff.id) diff.id = jm.workerId + '\u208B' + ljnr.toSubscript()
+            if (!diff.id) diff.id = app.workerId() + '\u208B' + ljnr.toSubscript()
             if (!diff.state) diff.state = {
                 progress: 0,
                 type: 'idle',   // idle, running, canceling, returned
@@ -330,7 +329,7 @@
                 log: 'created'
             }
             if (!diff.debug) diff.debug = {
-                node:jm.workerId,
+                node:app.workerId().valueOf(),
                 host:jm.host,
                 updateTime:Date.now()
             }

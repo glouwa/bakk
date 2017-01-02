@@ -251,7 +251,7 @@
 
                     if (this[id].path != p) {
                         this[id].isLink = this[id].isLink ? this[id].isLink.concat(p) : [p]
-                        console.log('isLink=true ' + p +' --> '+ this[id].path)
+                        //console.log('isLink=true ' + p +' --> '+ this[id].path)
                     }
 
                     this.changes.newMembers[id] = this[id]
@@ -281,10 +281,12 @@
                     if (this[id].commit_)
                         this[id].commit_()
                     else
-                       console.warn(this.path + '.' + id + ': has no commit')
+                       if (id != 'onCancel')
+                        console.warn(this.path + '.' + id + ': has no commit')
                 else
                     if (v != 'deadbeef')
-                        console.warn(this.path + '.' + id + ': diff but no member')
+                        if (id != 'onCancel')
+                            console.warn(this.path + '.' + id + ': diff but no member')
             })
             this.emit('change', this.changes)
             this.emit('endCommit', this.changes)
@@ -328,7 +330,7 @@
 
         else if (initDiff.linkPath && initDiff.linkThatShit) {
             try {
-                console.log('model by existing model -> initDiff.linkPath && initDiff.linkThatShit')
+                console.log('Initialize model by linkPath\nPath: ' + path + '\nlinkPath: ' + initDiff.linkPath.valueOf())
                 var targetObj = exports.traverse(initDiff.linkPath, app)
 
                 if (targetObj)

@@ -414,7 +414,7 @@ transform: perspective(10px) rotateX(3deg);
 
 .networkNode .header{
     overflow: hidden;
-    padding: 5 10 5 10;
+    padding: 2 10 2 10;
     text-align: center;
 }
 

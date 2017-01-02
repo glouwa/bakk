@@ -22,7 +22,7 @@ function jobStateGraphView(jobModel)
             hover: true,
             navigationButtons: true
         },
-        height: '100',
+        height: '300',
         width: '100%'
     }
 
@@ -61,7 +61,7 @@ function jobStateGraphView(jobModel)
                 var pp1 = v.path.substr(0, v.path.lastIndexOf('.'))
                 var parentPath = pp1.substr(0, pp1.lastIndexOf('.'))
 
-                data.nodes.add({
+                data.nodes.update({ // use add to assert no double add
                     id:v.path.valueOf(),
                     model:v,
                     font: {size:'32'},

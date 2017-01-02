@@ -8,7 +8,9 @@ network.connections = {}
 network.nextFreeConnectionId = 1
 network.allConnectionIds = ()=> Object.keys(network.connections)
 network.connectionCount = ()=> Object.keys(network.connections).length
-network.sendMulticast = (receivers, msg)=> receivers.forEach(cid=> network.connections[cid].send(msg))
+network.sendMulticast = (receivers, msg)=> receivers.forEach(cid=> {
+                                                                 if(network.connections[cid])
+                                                                 network.connections[cid].send(msg)})
 network.sendBroadcast = msg=> network.connections.forEach((conn, idx, cid)=> conn.send(msg))
 
 network.connect = function(url)
@@ -25,9 +27,18 @@ network.connect = function(url)
         connection.send = msg=> sendMsg(connection, msg)
 
         network.connections[connection.id] = connection
+        app.network.merge({
+            [connection.id]:{
+                id:connection.id,
+                close:j=> connection.ws.close(),
+                send:msg=> sendMsg(connection, msg)
+            }
+        })
+        //if(app.onNetworkStateChange)
         app.onNetworkStateChange('Connected', connection)
     })
 
+    //if(app.onNetworkStateChange)
     app.onNetworkStateChange('Connecting', connection)
 }
 
@@ -48,6 +59,15 @@ network.listen = function()
         connection.send = msg=> sendMsg(connection, msg)
 
         network.connections[connection.id] = connection
+        app.network.merge({
+            [connection.id]:{
+                id:connection.id,
+                close:j=> connection.ws.close(),
+                send:msg=> sendMsg(connection, msg)
+            }
+        })
+
+        //if(app.onNetworkStateChange)
         app.onNetworkStateChange('Connected', connection)
     })
 }
@@ -86,6 +106,8 @@ function cleanUpConnection(connection, url)
 {
     delete network.connections[connection.id]
     if (url) setTimeout(()=> network.connect(url), config.client.reconnectIntervall)
+
+    //if(app.onNetworkStateChange)
     app.onNetworkStateChange('Disconnected', connection)
 }
 

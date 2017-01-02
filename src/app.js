@@ -4,17 +4,16 @@
   man kann beim ersten zb. kein registry oder model verwenden
 */
 
-app = mvj.model('', {
-    wsUrl: 'unknown',
+app = mvj.model('', {    
     clientId: 'unknown',
     registry: {
         types:{}
     }
 })
 
-app.merge({
-    wsUrl: 'unknown',
+app.merge({    
     clientId: 'unknown',
+    workerId:function() { return this.type.toString()+Number(app.clientId).toSubscript() },
     registry: {
         //type:'Registry',
         views:{
@@ -23,7 +22,7 @@ app.merge({
             d3:{},
             a5:{},
             a4:{},
-            a3:{},
+            //a3:{},
         },
         types:{
             //type:'Set<Type>',
@@ -38,12 +37,13 @@ app.merge({
         store: { type:'Store' },
         mods: projectFolder.create()
     },
-
-
     rootJob:function(args){
         var jd = jf.job(args)
         app.mergePath('model.jobs.'+jd.id, jd)
-        return app.model.jobs[jd.id.valueOf()]
+        var j = app.model.jobs[jd.id.valueOf()]
+        if (args.show)
+            $('#jobTab')[0].add(j.id, { content:jobAllView(j) })
+        return j
     },
     callUiJob:function(args){
         q.addRoot('Message From UI ' + args.desc, ()=> {
@@ -55,10 +55,9 @@ app.merge({
         q.addRoot('App init', ()=> {
             sim.config = config.clientDefaultSimConfig
 
-            this.merge({ wsUrl:args.wsUrl })
+            this.merge({ network: { endpoint:args.wsUrl }})
 
-            // seitn wos schenas gschriem
-            jf.workerId = undefined
+            // seitn wos schenas gschriem            
             jf.host = args.host
             jf.nextFreeId = 0
 
@@ -70,11 +69,12 @@ app.merge({
             args.onInit()
         })
     },
+              // TODO remove (to network)
     onMessage:function(c, parsed, pduSize){
         q.addRoot('app on "' + parsed.type + '" message ' + c.id + ' ('+pduSize+'b)', ()=>{
             console.info('job', '⟵', pduSize, JSON.stringify(parsed, 0, 4));
             ({
-                onWsMessage:  (c, p, s)=> app.wsMessageHandlers['on'+p.type](c, p),
+                onWsMessage:  (c, p, s)=> app.network.msgHandlers['on'+p.type](c, p),
                 onJobMessage: (c, p, s)=> jf.onReceive(c, p, code=> eval(code), app, s)
             })['on'+parsed.type+'Message'](c, parsed.payload, pduSize)
         })
@@ -108,9 +108,9 @@ var clientMessageHandlerFactory = (shortType, type, cap, onConnected)=> ({
             hostname: os.hostname()
         }
         //app.networkInfo.merge(mynodeInfo)
-        var msg = messages.networkInfoMsg('model.network.' + app.clientId, mynodeInfo)
+        var msg = messages.networkInfoMsg('network.' + app.clientId, mynodeInfo)
         var channelMsg = messages.channelMsg('Ws', msg)
-        network.connections[0].send(channelMsg)
+        c.send(channelMsg)
 
         onConnected()
     },

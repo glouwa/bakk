@@ -59,7 +59,7 @@
         <script src="src/sim.js"></script>
         <script src="src/app.js"></script>
 
-        <script src="src/network/browserWs.js"></script>
+        <!--<script src="src/network/browserWs.js"></script>-->
 
         <script src="src/job/job.js"></script>
         <script src="src/job/workflows.js"></script>
@@ -71,6 +71,9 @@
 
     </head>
     <body id="body" onload="app.init({
+            type:'C',
+            nodeId:'C₀',
+            userId:'M',
             wsUrl:'ws://' + document.location.hostname + ':' + config.server.wsport,
             onInit:onInit
         })">

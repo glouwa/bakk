@@ -19,15 +19,19 @@ var network       = require('./src/network/nodeWs').network
 var jf = jff.jm()
 eval(fs.readFileSync('src/app.js')+'')
 
-app.init({
+app.init({     
      host:os.hostname(),
      wsUrl:'ws://' + config.server.wshost + ':' + config.server.wsport,
      onInit:function(){
          var osDir = os.type() == 'Linux' ? 'posix64' : 'dotnet'
 
          app.merge({
+            type:'O',
+            clientId: 0,
             binDir: 'bin/' + osDir + '/',
-            wsMessageHandlers:clientMessageHandlerFactory('O', 'Overlord', [], ()=>{}),
+            network:{
+                msgHandlers:clientMessageHandlerFactory('O', 'Overlord', [], ()=>{}),
+            },
             networkStateChangeHandlers:consoleLogNetworkStateChangeHandler
          })
 

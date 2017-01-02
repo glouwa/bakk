@@ -16,9 +16,8 @@
         var msg = {}
         msg.type = 'ServerHallo'
         msg.diff = {}
-        msg.diff.clientId = cid
-        msg.diff.model = {}
-        msg.diff.model.network = networkInfo
+        msg.diff.clientId = cid        
+        msg.diff.network = networkInfo
         return msg
     }
 

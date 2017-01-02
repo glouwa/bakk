@@ -6,7 +6,13 @@ function systemView(model)
             model,
             networkNodeView,
             'networkView',
-            (v, k, idx)=> typeof v !== 'function' && k !== 'currentTransaction'
+            (v, k, idx)=> typeof v !== 'function'
+                       && v.type
+                       && (   v.type == 'Client'
+                           || v.type == 'Server'
+                           || v.type == 'Worker'
+                           || v.type == 'Overlord'
+                       )
         )
         nodes.style.margin = '30 0'
         system.appendChild(nodes)
