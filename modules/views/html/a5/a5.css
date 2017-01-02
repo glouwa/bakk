@@ -12,7 +12,7 @@
 }
 
 .a3Frame > .autoJobButtonView {
-    padding: 8 14 10 0;
+    padding: 8 4 10 0;
 
     display: inline-block;
     float: right;
@@ -22,8 +22,6 @@
 .a3Frame > .autoJobButtonView:empty {
     padding: 0 0 0 0
 }
-
-
 
 .networkNode .header{
     overflow: hidden;

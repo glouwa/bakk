@@ -4,9 +4,9 @@ function networkType()
     return {
         type:'Network',
         state:'idle',        
-        '+4 worker': j=> app.model.mods.services['🖥 Start workers']['▸'](j),
-        '☠ worker': j=> app.model.mods.services['☠ Kill all']['▸'](j, {}, { nodeType:['Worker']}),
-        '☠ all': j=> app.model.mods.services['☠ Kill all']['▸'](j, {}, { nodeType:['Server', 'Overlord', 'Worker']}),
+        '+4 worker': j=> app.model.mods.lib['🖥 Start workers']['▸'](j),
+        '☠ worker': j=> app.model.mods.lib['☠ Kill all']['▸'](j, {}, { nodeType:['Worker']}),
+        '☠ all': j=> app.model.mods.lib['☠ Kill all']['▸'](j, {}, { nodeType:['Server', 'Overlord', 'Worker']}),
         '↻ clients': j=> {
             var reloadmsg = messages.reloadMsg()
             var channelMsg = messages.channelMsg('Ws', reloadmsg)
@@ -61,6 +61,8 @@ function networkType()
             connection.ws.onclose = ev=> cleanUpConnection(connection, this.endpoint)
             connection.ws.onopen = ()=>
             {
+                connection.send = msg=> sendMsg(connection, msg)
+
                 this.merge({
                     state: 'connected',
                     ['0']:{

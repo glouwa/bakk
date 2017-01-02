@@ -76,14 +76,19 @@ exports.create = function projectFolder() { return {
     '↻': function(j) {
         this.merge({
             '↻': 'deadbeef',
-            'services': {
+            'demos': {
+                '🐼 Process fracturing folder on workers':    project('modules/jobs/workerBacc0.js'),
+                '❄ Find similar 3d models on worker':        project('modules/jobs/workerModel3d.js'),
+                'ℙ Find prime numbers with C++ on workers':  project('modules/jobs/workerPrimeCpp.js'),
+                '💻 server cmd':                              project('modules/jobs/serverCmd.js'),
+                '📂 server folder':                           project('modules/jobs/serverFolder.js'),
+            },
+            'lib': {
                 //type:'Set<Project>',
                 '✕': function free(j) {},
                 '🖥 Start workers':                       project('modules/jobs/overlordWorkers.js'),
                 '☠ Kill all':                            project('modules/jobs/workerKill.js'),
-            },
-           'libs': {
-            },
+            },           
             'tests': {
                 //type:'Set<Project>',
                 // TODO: lazy(project(...))  : lazy wrapet alle members von project

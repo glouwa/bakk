@@ -33,9 +33,10 @@ app.merge({
     },
     model:{
         //type: 'Model',
+        mods: projectFolder.create(),
+        jobs:{},
         log: { type:'Set<Job>' },
         store: { type:'Store' },
-        mods: projectFolder.create()
     },
     rootJob:function(args){
         var jd = jf.job(args)

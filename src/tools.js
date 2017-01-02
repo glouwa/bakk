@@ -29,6 +29,16 @@
         enumerable: false
     })
 
+    Object.defineProperty(Object.prototype, 'viewfilter',
+    {
+        value: function(v, k) {
+            return typeof v !== 'function' && k != 'linkPath' && k != 'linkThatShit'
+        },
+        writable: true,
+        configurable: true,
+        enumerable: false
+    })
+
     Object.defineProperty(Array.prototype, 'without',
     {
         value: function(toRemove)

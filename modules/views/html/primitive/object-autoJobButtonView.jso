@@ -6,7 +6,7 @@
         var isHidden = k=> k!='onCall' && k!='onCancel' && k!='onUpdate' && k!='onReturn'
         var view = document.createElement('div')
             view.className = 'autoJobButtonView'
-            view.style.paddingRight = 10
+            view.style.paddingRight = 10            
 
         view.update = compositeUpdate({
             view:view,

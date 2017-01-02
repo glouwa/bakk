@@ -58,40 +58,6 @@ function linePrimitiveView(k, model)
     return lineFramePrimitive(k, model)
 }
 
-function lineAppendView(model)
-{
-    var view = lineFrameAppender('', undefined)
-        var varvalue = document.createElement('input')
-            varvalue.className = 'primitiveValue'
-            varvalue.style.width = 'calc(100% - 31px)'
-            varvalue.style.textAlign= 'left'
-            varvalue.draggable = true
-            varvalue.ondragstart = ev=> ev.preventDefault()
-        view.appendChild(varvalue)
-
-    function addEvalToModel() {
-        try {
-            var diff = eval('({' + varvalue.value + '})')
-            model.merge(diff)
-            model.commit(diff)
-            varvalue.value = ''
-        }
-        catch(e) {
-           varvalue.value = e
-        }
-    }
-
-    varvalue.onchange = ()=> addEvalToModel()
-    varvalue.onkeypress = function(e) {
-        var charCode = e.which || e.keyCode;
-        if (charCode == '13') {
-          addEvalToModel()
-          return false;
-        }
-    }
-    return view
-}
-
 function autoViewLine(model)
 {
     var view = document.createElement('div')
@@ -101,7 +67,7 @@ function autoViewLine(model)
 
     view.update = compositeUpdate({
         view:view,
-        filter: (v, k)=> typeof v !== 'function' && k != 'linkPath' && k != 'linkThatShit',
+        filter: (v, k)=> model.viewfilter(v, k),
         itemDelegate:(v, k)=> {
 
             //console.log(modelType(v), app.registry.views.primitive?true:false)

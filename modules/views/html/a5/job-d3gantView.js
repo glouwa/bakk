@@ -171,8 +171,8 @@ function jobPlotGant(view, jobModel)
         //var c = jm.id.valueOf() + JSON.stringify(changes.diff, 0, 4)
         var diffCopy = JSON.parse(JSON.stringify(changes.diff, 0, 4))
         var diffId = "focustmp-d3job-" + jm.id.valueOf() + '-' + uiUpdateConut++
-        app.model.merge({ tmp:{ [diffId]:diffCopy }})
-        var c = app.model.tmp[diffId]
+        app.merge({ tmp:{ [diffId]:diffCopy }})
+        var c = app.tmp[diffId]
         //var c = diffCopy
 
         this.appendCircle(v, { t:new Date(), c:c }, uiUpdateDotR, '#ccc')

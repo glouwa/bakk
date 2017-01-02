@@ -16,7 +16,7 @@ function spawnCmd(j)
             //justStart:js.params.justStart,
             onStdOut: function onStdOut(jw, data) {
                 onStdOut.count = onStdOut.count || 1
-                jw.updateJob({ state:{ progress:0.95 }, output:{ type:'CmdResult', stdout:data }})
+                jw.updateJob({ state:{}, output:{ type:'CmdResult', stdout:data }})
             }
         })
     }))

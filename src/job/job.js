@@ -11,9 +11,20 @@
         {
             var jp = {}
 
+            Object.defineProperty(jp, 'viewfilter',
+            {
+                value: function(v, k) {
+                    return typeof v !== 'function'
+                               && k != 'linkPath' && k != 'linkThatShit'
+                               && k != 'id' && k != 'icon' && k != 'desc'
+                               && k != 'debug' && k != 'debugRemote'
+                               && k != 'state' && k != 'workflow'
+                },
+                writable: true,
+                configurable: true,
+                enumerable: false
+            })
             Object.defineProperty(jp, 'timer', { writable:true, value:null })
-            //Object.defineProperty(jp, 'dasdaesc', { writable:true, enumerable:true, value:'unnamed job' })
-
             Object.defineProperty(jp, 'call', { value:function call(initDiff)
             {
                 var j = this

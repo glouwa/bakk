@@ -40,9 +40,7 @@ function a3Frame(model, headerFactory)
         var header = headerFactory(model)            
             //buttonHeader.style.marginBottom = 20
         view.appendChild(name)
-        view.appendChild(type)
-        if (origHf || model.type == 'Project')
-            view.appendChild(desc)
+        view.appendChild(type)       
         view.appendChild(header)
     return view
 }

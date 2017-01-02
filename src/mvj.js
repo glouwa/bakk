@@ -143,14 +143,14 @@
             if (content.type == 'Job') {
                 box.__proto__ = exports.jm.jobPrototype
 
-                if(content.isProxy && !path.startsWith('model.tmp'))
-                        exports.jm.remoteJobs[content.id.valueOf()] = box
+                if(content.isProxy && !path.startsWith('tmp'))
+                    exports.jm.remoteJobs[content.id.valueOf()] = box
             }
 
             /*if (content.type == 'Folder') {
                 box.__proto__ = exports.jm.jobPrototype
 
-                if(content.isProxy && !path.startsWith('model.tmp'))
+                if(content.isProxy && !path.startsWith('tmp'))
                         exports.jm.remoteJobs[content.id.valueOf()] = box
             }*/
 

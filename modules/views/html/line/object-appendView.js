@@ -1,3 +1,36 @@
+function lineAppendView(model)
+{
+    var view = lineFrameAppender('', undefined)
+        var varvalue = document.createElement('input')
+            varvalue.className = 'primitiveValue'
+            varvalue.style.width = 'calc(100% - 31px)'
+            varvalue.style.textAlign= 'left'
+            varvalue.draggable = true
+            varvalue.ondragstart = ev=> ev.preventDefault()
+        view.appendChild(varvalue)
+
+    function addEvalToModel() {
+        try {
+            var diff = eval('({' + varvalue.value + '})')
+            model.merge(diff)
+            model.commit(diff)
+            varvalue.value = ''
+        }
+        catch(e) {
+           varvalue.value = e
+        }
+    }
+
+    varvalue.onchange = ()=> addEvalToModel()
+    varvalue.onkeypress = function(e) {
+        var charCode = e.which || e.keyCode;
+        if (charCode == '13') {
+          addEvalToModel()
+          return false;
+        }
+    }
+    return view
+}
 
 function lineFrameAppender(name, model)
 {
