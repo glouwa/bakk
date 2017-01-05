@@ -12,79 +12,89 @@ var config   = require('./src/config.js')
 var sim      = require('./src/sim.js')
 var tools    = require('./src/tools.js')
 var pSet          = require('./modules/types/pSet.js')
-projectFolder = require('./modules/types/projectFolder.js')
-var network       = require('./src/network/nodeWs').network
+projectFolder     = require('./modules/types/projectFolder.js')
+var network       = require('./modules/types/nodeWsNetwork.js').network
 
+var osDir = os.type() == 'Linux' ? 'posix64' : 'dotnet'
 var jf = jff.jm()
 eval(fs.readFileSync('src/app.js')+'')
 //eval(fs.readFileSync('src/types/project.js')+'')
 
-app.init({
-     host:os.hostname(),
-     wsUrl:'ws://' + config.server.wshost + ':' + config.server.wsport,
-     onInit:function(){
-         var osDir = os.type() == 'Linux' ? 'posix64' : 'dotnet'
+var serverId = 'S₀'
 
-         jf.workerId = 'S₀'
-
-         app.merge({
-             type:'S',
-             clientId: 0,             
-             binDir: 'bin/' + osDir + '/',             
-             network: {
-                 '0': {
-                     type: 'Server',
-                     id: jf.workerId, // damed
-                     clientcount: 0,
-                     capabilitys: [],
-                     simconfig: sim.config,
-                     osType: os.type(),
-                     hostname: os.hostname()
-                 },
-                 msgHandlers:{
-                     onReload: function(c, parsed){
-                         var channelMsg = messages.channelMsg('Ws', parsed)
-                         network.sendBroadcast(channelMsg)
-                     },
-                     onNetworkInfo: function(c, parsed){
-                         app.mergePath(parsed.path, parsed.diff)
-
-                         var receivers = Object.keys(app.network).without([c.id.toString()])
-                         console.log(receivers)
-                         var channelMsg = messages.channelMsg('Ws', parsed)
-                         network.sendMulticast(receivers, channelMsg)
+app.initC({
+    builtInTypes:{
+        'Network':network,
+    },
+    structure:{
+        type:'S',
+        clientId:0,
+        binDir: 'bin/' + osDir + '/',
+        host:os.hostname(),
+        network:{
+            type:'Network',
+            port:config.server.wsport,
+            '0': {
+                type: 'Server',
+                id: serverId, // damed
+                clientcount: 0,
+                capabilitys: [],
+                osType: os.type(),
+                hostname: os.hostname()
+            },
+            msgHandlers:{
+                onReload: function(c, parsed){
+                    network.sendBroadcast({
+                       type:'Ws',
+                       payload:parsed
+                    })
+                },
+                onNetworkInfo: function(c, parsed){
+                    app.mergePath(parsed.path, parsed.diff)
+                    console.log('app.network.connection')
+                    console.log(app.network.connections)
+                    console.log(c.id)
+                    var r = Object.keys(app.network.connections).without([c.id.toString()])
+                    console.log(r)
+                    network.sendMulticast(r, {
+                       type:'Ws',
+                       payload:parsed
+                    })
+                }
+            }
+        },
+        stateChangeHandlers:{
+            onConnected: function(connection){
+                console.log('+ connection ' + connection.id)
+                connection.send({
+                    type:'Ws',
+                    payload:{
+                        type: 'ServerHallo',
+                        diff: {
+                            clientId: connection.id,
+                            network: app.selectAll()
+                        }
                     }
-                 }
-             },
-             networkStateChangeHandlers:{
-                 onConnected: function(connection){
-                     console.log('+ connection ' + connection.id)
-                     var msg = messages.serverHalloMsg(connection.id, app.network)
-                     var channelMsg = messages.channelMsg('Ws', msg)
-                     connection.send(channelMsg)
-                 },
-                 onDisconnected: function(connection){
-                     console.log('- connection ' + connection.id)
-                     var path = 'network.'+connection.id
+                })
+            },
+            onDisconnected: function(connection){
+                console.log('- connection ' + connection.id)
+                var path = 'network.'+connection.id
 
-                     try { app.mergePath(path, 'deadbeef') } catch(e) {}
+                try { app.mergePath(path, 'deadbeef') } catch(e) {}
 
-                     var msg = messages.networkInfoMsg(path, 'deadbeef')
-                     var channelMsg = messages.channelMsg('Ws', msg)
-                     network.sendBroadcast(channelMsg)
-                 }
-             }
-         })
-
-         app.network[0].simconfig.on('change', function(changes){
-             console.log('simconfig.on change')
-             sim.config = app.network[0].simconfig
-         })
-
-         network.onConnectionChanged =
-         network.sim = sim
-         network.listen()
-    }
+                network.sendBroadcast({
+                    type:'Ws',
+                    payload:{
+                        type:'NetworkInfo',
+                        path:path,
+                        diff:'deadbeef'
+                    }
+                })
+            }
+        }
+    },
+    onInit:j=> app.network.listen(j)
 })
 
 //-------------------------------------------------------------------------------------------
@@ -96,19 +106,35 @@ connect().use(serveStatic('./')).listen(config.server.httpport)
 //-------------------------------------------------------------------------------------------
 
 function isNode(n){
-    return n.type && (
-           n.type == 'Worker'
-        || n.type == 'Server'
-        || n.type == 'Client'
-        || n.type == 'Overlord'
-    )
+    return true
+    returnn.type && (
+                n.type == 'Worker'
+             || n.type == 'Server'
+             || n.type == 'Client'
+             || n.type == 'Overlord'
+    )    
+}
+
+app.selectAll = function()
+{
+    var nodes = {}
+    app.network.forEach(function(node, nkey, nidx)
+    {
+        if (node.type && (
+            node.type == 'Worker'
+         || node.type == 'Server'
+         || node.type == 'Client'
+         || node.type == 'Overlord'))
+            nodes[nkey] = app.network[nkey]
+    })
+    return nodes
 }
 
 app.getNodesByCapability = function(criteria)
 {
     console.log('getNodesByCapability(' + criteria + ')')
     var nodes = []
-    app.network.forEach(function(node, nkey, nidx)
+    app.network.connections.forEach(function(node, nkey, nidx)
     {
         if (isNode(node)) {
             node.capabilitys.forEach(function(cval, ckey, cidx)
@@ -129,7 +155,7 @@ app.getNodesByType = function(criteria, emptyResultIsOk)
 {
     console.log('getNodesByType(' + criteria + ')')
     var nodes = []
-    app.network.forEach(function(nval, nkey, nidx)
+    app.network.connections.forEach(function(nval, nkey, nidx)
     {        
         criteria.forEach(function(cval, ckey, cidx)
         {

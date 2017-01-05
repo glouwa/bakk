@@ -38,6 +38,10 @@ app.merge({
         log: { type:'Set<Job>' },
         store: { type:'Store' },
     },
+    network:{
+        connections:{}
+    },
+
     rootJob:function(args){
         var jd = jf.job(args)
         app.mergePath('model.jobs.'+jd.id, jd)
@@ -51,23 +55,29 @@ app.merge({
             this.rootJob(args).call()
         })
     },
-
-    init:function(args){
+/*
+*/
+    initC:function(args){
         q.addRoot('App init', ()=> {
-            sim.config = config.clientDefaultSimConfig
 
-            this.merge({ network: { endpoint:args.wsUrl }})
-
-            // seitn wos schenas gschriem            
+            // seitn wos schenas gschriem
             jf.host = args.host
             jf.nextFreeId = 0
 
             jf.jl = jl
             tj.jm = jf
             tj.config = config
-            mvj.jm = jf           
+            mvj.jm = jf
 
-            args.onInit()
+            app.registry.types.merge(args.builtInTypes)
+            app.merge(args.structure)
+            app.callUiJob({
+                desc:'app.init',
+                params:{},
+                show:false,
+                output:{},
+                onCall:j=> args.onInit(j)
+            })
         })
     },
               // TODO remove (to network)
@@ -82,7 +92,7 @@ app.merge({
     },
     onNetworkStateChange:function(state, connection){
         q.addRoot('Network state changed ' + connection.id + ' ('+state+')', ()=>{
-            app.networkStateChangeHandlers['on'+state](connection)
+            app.stateChangeHandlers['on'+state](connection)
         })
     }
 })
@@ -97,22 +107,29 @@ var consoleLogNetworkStateChangeHandler = {
 
 var clientMessageHandlerFactory = (shortType, type, cap, onConnected)=> ({
     onServerHallo: (c, parsed)=> {
-        app.clientId = parsed.diff.clientId
-        jf.workerId = shortType + Number(app.clientId).toSubscript()
+        app.merge(parsed.diff)  // pull
+        app.commit('got my id') // für logging
 
         var mynodeInfo = {
             type: type,
             id: jf.workerId,
-            capabilitys: cap,
-            simconfig: config.clientDefaultSimConfig,
+            capabilitys: cap,            
             osType: os.type(),
             hostname: os.hostname()
         }
-        //app.networkInfo.merge(mynodeInfo)
-        var msg = messages.networkInfoMsg('network.' + app.clientId, mynodeInfo)
-        var channelMsg = messages.channelMsg('Ws', msg)
-        c.send(channelMsg)
 
+        app.network.merge({ [app.clientId]:mynodeInfo })
+        c.send({
+            type:'Ws',
+            payload:{
+                type:'NetworkInfo',
+                path:'network.' + app.clientId,
+                diff:mynodeInfo
+            }
+        })
+
+        app.commit('network += my properties')
+        c.connectJob.ret('ok', 'got serverhallo and sent my nodeinfo')
         onConnected()
     },
 

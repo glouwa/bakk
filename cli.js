@@ -17,7 +17,7 @@ var sim      = require('./src/sim.js')
 var tools    = require('./src/tools.js')
 var pSet          = require('./modules/types/pSet.js')
 var projectFolder = require('./modules/types/projectFolder.js')
-var network       = require('./src/network/nodeWs').network
+var network       = require('./modules/types/nodeWsNetwork.js').network
 
 var jf = jff.jm()
 eval(fs.readFileSync('src/app.js')+'')
@@ -34,7 +34,7 @@ app.init({
          app.merge({
             binDir: 'bin/' + osDir + '/',
             wsMessageHandlers:clientMessageHandlerFactory('C', 'Client', [], ()=> aProjectJob().call()),
-            networkStateChangeHandlers:consoleLogNetworkStateChangeHandler
+            stateChangeHandlers:consoleLogNetworkStateChangeHandler
          })
 
          network.sim = sim

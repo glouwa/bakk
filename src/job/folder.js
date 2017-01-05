@@ -27,7 +27,7 @@ var remoteFolderListToThisOutput = function(j, d) {
     j.delegate(()=> jf.remoteProxyJob({            // delegate to remote
         icon: '📂',
         desc: 'delegate to server and list files',
-        node: app.network[0],
+        node: app.network.connections[0],
         args: j.params,
         realJob: js=> {
 
@@ -120,7 +120,7 @@ var Folder = {
         j.delegate(()=> jf.remoteProxyJob({            // delegate to remote
             icon: '📂',
             desc: 'delegate to server and list files',
-            node: app.network[0],
+            node: app.network.connections[0],
             args: j.params,
             realJob: js=> {
 

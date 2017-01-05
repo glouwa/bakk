@@ -4,7 +4,7 @@ function killServerOverlordsAndWorkers(j)
         icon: '☠',
         desc: 'delegating to server',
         args: j.params,
-        node: app.network[0],
+        node: app.network.connections[0],
         realJob: js=> js.delegate(
             ()=> jf.job({
                 icon: '☠w*',

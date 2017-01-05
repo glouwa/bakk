@@ -44,7 +44,7 @@
 
         <link  href="modules/jobs/workerModel3d.css" rel="stylesheet">
 
-        <script src="modules/types/network.js"></script>
+        <script src="modules/types/browserWsNetwork.js"></script>
         <script src="modules/types/project.js"></script>
         <script src="modules/types/projectFolder.js"></script>
         <script src="modules/types/pSet.js"></script>
@@ -70,13 +70,134 @@
         <script src="src/views/html/client.js"></script>
 
     </head>
-    <body id="body" onload="app.init({
+    <!--<body id="body" onload="app.init({
             type:'C',
             nodeId:'C₀',
             userId:'M',
             wsUrl:'ws://' + document.location.hostname + ':' + config.server.wsport,
             onInit:onInit
-        })">
+        })"> -->
+    <body id="body" onload="app.initC({
+
+        builtInTypes:{
+            'Folder':Folder,
+            'Folder<Mod>':ModuleFolder,
+            'File<Mod>':FileMod,
+            'Set<View>':ViewSet,
+            'Network':wsBrowser,
+        },
+
+        structure:{
+            type:'C',
+            //userId:'M',
+            //host:'Browser',
+            //nodeId:'C₀',
+            '+1 client': j=> {
+                window.open('./view.html', '_blank')
+                j.ret('ok', 'window.open(...) called')
+            },
+            registry:{
+                config:config,
+                views:{
+                    primitiveBound:{
+                        type:'Folder<Mod>',
+                        directory:'./modules/views/html/primitive/'
+                    }
+                }
+            },
+            network:{
+                type: 'Network',
+                endpoint:'ws://' + document.location.hostname + ':' + config.server.wsport,
+                '+4 worker': j=> app.model.mods.lib['🖥 Start workers']['▸'](j),
+                '☠ worker': j=> app.model.mods.lib['☠ Kill all']['▸'](j, {}, { nodeType:['Worker']}),
+                '☠ all': j=> app.model.mods.lib['☠ Kill all']['▸'](j, {}, { nodeType:['Server', 'Overlord', 'Worker']}),
+                '↻ clients': j=> {
+                    var reloadmsg = messages.reloadMsg()
+                    var channelMsg = messages.channelMsg('Ws', reloadmsg)
+                    app.network[0].send(channelMsg)
+                    j.ret('ok', 'reload message sent')
+                },
+                msgHandlers:{
+                    onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
+                    onReload:      (c, parsed)=> location.reload(true),
+                    onServerHallo: (c, parsed)=> {
+                        app.merge(parsed.diff)  // pull
+                        app.commit('got my id') // für logging
+
+                        var mynodeInfo = {
+                            type:'Client',
+                            id:app.workerId(),
+                            capabilitys:['JS'],
+                            osType:'Browser',
+                            hostname:''
+                        }
+
+                        app.network.merge({ [app.clientId]:mynodeInfo })
+                        app.network.connections[0].send({
+                            type:'Ws',
+                            payload:{
+                                type:'NetworkInfo',
+                                path:'network.' + app.clientId,
+                                diff:mynodeInfo
+                            }
+                        })
+
+                        app.commit('network += my properties')
+                        c.connectJob.ret('ok', 'got serverhallo and sent my nodeinfo')
+                    }
+                }
+            }
+        },
+
+        onInit:j=> j.delegate(
+            ()=> jf.job({
+                icon:'≟',
+                desc:'prepare client',
+                params:{},
+                onCall:j1=> {
+                    $('#modelTabPaper').append(tab('modelTab'))
+                    $('#jobTabPaper').append(tab('jobTab'))
+                    app.clientId.on('change', changes=> {
+                        //app.workerId = 'C' + Number(app.clientId).toSubscript()
+                        jf.host = 'Browser'
+                        document.title = app.workerId()
+                        $('#thisId').text(app.workerId())
+                    })
+                    j1.ret('ok', 'ui loaded')
+                }
+            }),
+            ()=> jf.job({
+                icon:'≟',
+                desc:'connect',
+                params:{},
+                onCall:j1=> app.network['⛓'](j1)
+            }),
+            ()=> jf.job({
+                icon:'≟',
+                desc:'load views',
+                params:{},
+                output:app.registry.views.primitiveBound,
+                onCall:j1=> app.registry.views.primitiveBound['↻'](j1),
+            }),
+            ()=> jf.job({
+                icon:'≟',
+                desc:'showui',
+                params:{},
+                onCall:j1=>{
+                    var projectsDiv = document.createElement('div')
+                    projectsDiv.appendChild(a3View(app.model.mods))
+                    projectsDiv.appendChild(a3View(app.network))
+                    $('#modelTab')[0].add('☍', { content:a3View(app) })
+                    $('#modelTab')[0].add('🌐', { content:projectsDiv }, 'inBg')
+                    $('#modelTab')[0].add('⥂', { content:a3View(app.model.jobs) }, 'inBg')
+
+                    $('#jobTab')[0].add(j.id, { content:a3View(j) })
+                    j1.ret('ok', 'ui loaded')
+                }
+            })
+        )
+    })">
+
         <div id="workspace">
             <div id="modelTabPaper" class="paper" style="float:left;"></div>            
             <div id="jobTabPaper" class="paper" style="float:left;"></div>            

@@ -14,29 +14,30 @@ var sim      = require('./src/sim.js')
 var tools    = require('./src/tools.js')
 var pSet          = require('./modules/types/pSet.js')
 var projectFolder = require('./modules/types/projectFolder.js')
-var network       = require('./src/network/nodeWs').network
+var network       = require('./modules/types/nodeWsNetwork.js').network
+
+var osDir = os.type() == 'Linux' ? 'posix64' : 'dotnet'
 
 var jf = jff.jm()
 eval(fs.readFileSync('src/app.js')+'')
 
-app.init({     
-     host:os.hostname(),
-     wsUrl:'ws://' + config.server.wshost + ':' + config.server.wsport,
-     onInit:function(){
-         var osDir = os.type() == 'Linux' ? 'posix64' : 'dotnet'
+app.initC({
+    builtInTypes:{
+         'Network':network,
+    },
+    structure:{
+        type:'O',
+        clientId: 0,
+        binDir: 'bin/' + osDir + '/',
+        network:{
+            type:'Network',
+            endpoint:'ws://' + config.server.wshost + ':' + config.server.wsport,
+            msgHandlers:clientMessageHandlerFactory('O', 'Overlord', [], ()=>{}),
 
-         app.merge({
-            type:'O',
-            clientId: 0,
-            binDir: 'bin/' + osDir + '/',
-            network:{
-                msgHandlers:clientMessageHandlerFactory('O', 'Overlord', [], ()=>{}),
-            },
-            networkStateChangeHandlers:consoleLogNetworkStateChangeHandler
-         })
+        },
+        stateChangeHandlers:consoleLogNetworkStateChangeHandler
+    },
+    onInit:j=> app.network['⛓'](j)
 
-         network.sim = sim
-         network.connect(this.wsUrl.valueOf())
-    }
 })
 

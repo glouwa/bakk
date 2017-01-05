@@ -4,7 +4,7 @@ function runWorkers(j, diff)
         icon: '4w+',
         desc: 'delegating to server',
         args: j.params,
-        node: app.network[0],
+        node: app.network.connections[0],
         realJob: js=> {
 
             var nodes = app.getNodesByType(['Overlord'], 'emptyResultIsOk')

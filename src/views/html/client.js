@@ -53,7 +53,7 @@ function onInit() {
             // todo:
         }*/
     }
-
+/*
     // Daten
     app.merge({
         type:'C',
@@ -62,7 +62,7 @@ function onInit() {
             j.ret('ok', "window.open(...) called")
         },
         registry:{
-            config:config,
+         //   config:config,
             types:{
                 'Folder':Folder,
                 'Folder<Mod>':ModuleFolder,
@@ -76,14 +76,7 @@ function onInit() {
     // min views
     app.merge({
         registry:{
-            config:config,
-            types:{
-                'Folder':Folder,
-                'Folder<Mod>':ModuleFolder,
-                'File<Mod>':FileMod,
-                'Set<View>':ViewSet,
-                'Network':networkType(),
-            },
+            config:config,            
             views:{
                 primitiveBound:{
                     type:'Folder<Mod>',
@@ -97,7 +90,7 @@ function onInit() {
     })
 
     $('#modelTabPaper').append(tab('modelTab'))
-    $('#jobTabPaper').append(tab('jobTab'))
+    $('#jobTabPaper').append(tab('jobTab'))*/
 
 /*
     app.callUiJob({
@@ -108,7 +101,7 @@ function onInit() {
         onCall:j=> app.network['⛓'](j),
     })
 */
-
+/*
     app.callUiJob({
         desc:'app.init',
         params:{},
@@ -145,6 +138,6 @@ function onInit() {
                 }
             })
         )
-    })
+    })*/
 }
 

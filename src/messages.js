@@ -11,15 +11,7 @@
 
 //-------------------------------------------------------------------------------------------
 
-    exports.serverHalloMsg = function(cid, networkInfo)
-    {
-        var msg = {}
-        msg.type = 'ServerHallo'
-        msg.diff = {}
-        msg.diff.clientId = cid        
-        msg.diff.network = networkInfo
-        return msg
-    }
+
 
     exports.reloadMsg = function()
     {
