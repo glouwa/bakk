@@ -29,38 +29,26 @@ var receiveMsg=(c, msg)=>
 
 var cleanUpConnection =(network, connection, url)=>
 {
-    network.connections.merge({
-        ['0']:'deadbeef'
+    network.merge({
+        [cid]:'deadbeef',
+        connections: { [cid]:'deadbeef' }
     })
 
     if (url) setTimeout(()=> this['⛓'](j), config.client.reconnectIntervall)
 }
-
 
 var wsBrowser = {
     type:'Network',
     connections:{},
     select:function(p) { return this.connections.filter(p) },
     '⛓':function(j) {
-        var network = this
-        var cid = '0'
-        network.merge({ [cid]:{ id:cid, state:'connecting' }})
-        var connection = network[cid]
-        var ws = new WebSocket(this.endpoint)
-        ws.onmessage = ev=> receiveMsg(connection, ev.data)
-        ws.onclose = ev=> cleanUpConnection(this, connection, this.endpoint)
-        ws.onopen = ()=>
-        {
-            connection.connectJob = j
-            connection.merge({
-                state:'connected',
-                close:j=> connection.ws.close(),
-                send:msg=> sendMsg(connection, msg)
-            })
-            network.connections.merge({ [cid]:connection })
-        }
-
-        Object.defineProperty(connection, 'ws', { writable:true, value:ws })
-        Object.defineProperty(connection, 'connectJob', { writable:true, value:null })
+        var n = this
+        var c = { ws:null, node:null, connectJob:j }
+            c.send = msg=> sendMsg(c, msg)
+            c.close = j=> ws.close()
+            c.ws = new WebSocket(this.endpoint)
+            c.ws.onmessage = ev=> receiveMsg(c, ev.data)
+            c.ws.onclose = ev=> cleanUpConnection(this, c)
+            c.ws.onopen = ()=> {}
     }
 }

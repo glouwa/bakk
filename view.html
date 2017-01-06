@@ -89,8 +89,8 @@
 
         structure:{
             type:'C',
-            //userId:'M',
-            //host:'Browser',
+            host:'Browser',
+            //userId:'M',            
             //nodeId:'C₀',
             '+1 client': j=> {
                 window.open('./view.html', '_blank')
@@ -112,39 +112,16 @@
                 '☠ worker': j=> app.model.mods.lib['☠ Kill all']['▸'](j, {}, { nodeType:['Worker']}),
                 '☠ all': j=> app.model.mods.lib['☠ Kill all']['▸'](j, {}, { nodeType:['Server', 'Overlord', 'Worker']}),
                 '↻ clients': j=> {
-                    var reloadmsg = messages.reloadMsg()
-                    var channelMsg = messages.channelMsg('Ws', reloadmsg)
-                    app.network[0].send(channelMsg)
+                    app.network['S₀'].send({
+                        type:'Ws',
+                        payload:messages.reloadMsg()
+                    })
                     j.ret('ok', 'reload message sent')
                 },
                 msgHandlers:{
                     onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
                     onReload:      (c, parsed)=> location.reload(true),
-                    onServerHallo: (c, parsed)=> {
-                        app.merge(parsed.diff)  // pull
-                        app.commit('got my id') // für logging
-
-                        var mynodeInfo = {
-                            type:'Client',
-                            id:app.workerId(),
-                            capabilitys:['JS'],
-                            osType:'Browser',
-                            hostname:''
-                        }
-
-                        app.network.merge({ [app.clientId]:mynodeInfo })
-                        app.network.connections[0].send({
-                            type:'Ws',
-                            payload:{
-                                type:'NetworkInfo',
-                                path:'network.' + app.clientId,
-                                diff:mynodeInfo
-                            }
-                        })
-
-                        app.commit('network += my properties')
-                        c.connectJob.ret('ok', 'got serverhallo and sent my nodeinfo')
-                    }
+                    onServerHallo: (c, parsed)=> onServerHallo(null, 'Client', ['JS'], c, parsed, 'Browser', '')
                 }
             }
         },
@@ -157,8 +134,7 @@
                 onCall:j1=> {
                     $('#modelTabPaper').append(tab('modelTab'))
                     $('#jobTabPaper').append(tab('jobTab'))
-                    app.clientId.on('change', changes=> {
-                        //app.workerId = 'C' + Number(app.clientId).toSubscript()
+                    app.clientId.on('change', changes=> {                        
                         jf.host = 'Browser'
                         document.title = app.workerId()
                         $('#thisId').text(app.workerId())
@@ -190,7 +166,6 @@
                     $('#modelTab')[0].add('☍', { content:a3View(app) })
                     $('#modelTab')[0].add('🌐', { content:projectsDiv }, 'inBg')
                     $('#modelTab')[0].add('⥂', { content:a3View(app.model.jobs) }, 'inBg')
-
                     $('#jobTab')[0].add(j.id, { content:a3View(j) })
                     j1.ret('ok', 'ui loaded')
                 }

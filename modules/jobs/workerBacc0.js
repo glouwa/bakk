@@ -9,7 +9,7 @@ function getCmdSet(j, diff)
     j.delegate(()=> jf.remoteProxyJob({
         icon: 'Ⓟ',
         desc: 'delegating to server',
-        node: app.network.connections[0],
+        node: app.network['S₀'],
         args: j.params,
         realJob: js=> {
 
@@ -58,7 +58,7 @@ function getCmdSet(j, diff)
                     node:node,
                     args:{ command:output.commands[idx], idx:idx, timeout:js.params.workerTimeout },
                     realJob: jw=> tj.spawn(jw, {
-                    cmd: 'shuf -i 1-3 -n 1 | xargs sleep && echo echo',
+                    cmd: 'shuf -i 1-2 -n 1 | xargs sleep && echo echo',
                     //cmd: jw.params.command.cmd.valueOf(),
                         options:{ cwd:jw.params.command.dir.valueOf(), env:Object.assign({ OMP_NUM_THREADS:4 }, process.env) },
                         onStdOut: (jw, data)=> jw.commitJob(

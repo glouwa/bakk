@@ -56,7 +56,7 @@
                         },
                         [j.isRemote?'debugRemote':'debug']:{
                             node:app.workerId(),
-                            host:jm.host,
+                            host:app.host.valueOf(),
                             callTime:Date.now(),                            
                             updateTime: Date.now()
                         },
@@ -329,21 +329,28 @@
 
         jm.job = function(diff)
         {
-            var ljnr = jm.nextFreeId++
+            var ljnr =
 
             diff.type = 'Job'
-            if (!diff.id) diff.id = app.workerId() + '\u208B' + ljnr.toSubscript()
-            if (!diff.state) diff.state = {
-                progress: 0,
-                type: 'idle',   // idle, running, canceling, returned
-                detail: 'idle', // (idle), (userdefined), (canceling), (recoverable, fatal, timeout)
-                log: 'created'
-            }
-            if (!diff.debug) diff.debug = {
-                node:app.workerId().valueOf(),
-                host:jm.host,
-                updateTime:Date.now()
-            }
+
+            if (!diff.id)
+                diff.id = 'J' + app.clientId.valueOf().substr(1) + '\u208B' + (jm.nextFreeId++).toSubscript()
+
+            if (!diff.state)
+                diff.state = {
+                    progress: 0,
+                    type: 'idle',   // idle, running, canceling, returned
+                    detail: 'idle', // (idle), (userdefined), (canceling), (recoverable, fatal, timeout)
+                    log: 'created'
+                }
+
+            if (!diff.debug)
+                diff.debug = {
+                    node:app.workerId().valueOf(),
+                    host:app.host.valueOf(),
+                    updateTime:Date.now()
+                }
+
             diff.debug.createTime = Date.now()
 
             if (!diff.onCancel) diff.onCancel = j=> j.ret('canceled', 'default cancel')

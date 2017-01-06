@@ -42,10 +42,10 @@ function onInit() {
     })
 
     mvj.onCommit = function(path, diff) {
-        /*if (network.connections[0]) {
+        /*if (network['S₀']) {
             var msg = messages.networkInfoMsg(path, diff)
             var channelMsg = messages.channelMsg('Ws', msg)
-            node: network.connections[0].send(channelMsg)
+            node: network['S₀'].send(channelMsg)
 
             sim.log('app', 'log', '⟶', msg)
         }

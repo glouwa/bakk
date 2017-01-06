@@ -28,13 +28,13 @@ app.initC({
     },
     structure:{
         type:'S',
-        clientId:0,
-        binDir: 'bin/' + osDir + '/',
         host:os.hostname(),
+        clientId:serverId,
+        binDir: 'bin/' + osDir + '/',        
         network:{
             type:'Network',
             port:config.server.wsport,
-            '0': {
+            [serverId]: {
                 type: 'Server',
                 id: serverId, // damed
                 clientcount: 0,
@@ -42,55 +42,70 @@ app.initC({
                 osType: os.type(),
                 hostname: os.hostname()
             },
+            stateChangeHandlers:{
+                onConnected: function(c){
+                    c.send({
+                        type:'Ws',
+                        payload:{
+                            type: 'ServerHallo',                    
+                            nr:c.idx,
+                            iam:serverId,
+                            network: app.selectAll()
+                        }
+                    })
+                },
+                onDisconnected: function(c){
+                    var networkDiff = {
+                        [c.node.id]:'deadbeef',
+                        connections:{ [c.node.id]:'deadbeef' }
+                    }
+                    app.network.merge(networkDiff)
+                    app.network.sendBroadcast({
+                        type:'Ws',
+                        payload:{
+                            type:'NetworkInfo',
+                            path:'network',
+                            diff:networkDiff
+                        }
+                    })                    
+                }
+            },
             msgHandlers:{
                 onReload: function(c, parsed){
-                    network.sendBroadcast({
-                       type:'Ws',
-                       payload:parsed
+                    app.network.sendBroadcast({
+                        type:'Ws',
+                        payload:parsed
                     })
                 },
                 onNetworkInfo: function(c, parsed){
                     app.mergePath(parsed.path, parsed.diff)
-                    console.log('app.network.connection')
-                    console.log(app.network.connections)
-                    console.log(c.id)
-                    var r = Object.keys(app.network.connections).without([c.id.toString()])
-                    console.log(r)
-                    network.sendMulticast(r, {
-                       type:'Ws',
-                       payload:parsed
+                    var r = Object.keys(app.network.connections).without([c.node.id.toString()])
+                    app.network.sendMulticast(r, {
+                        type:'Ws',
+                        payload:parsed
                     })
-                }
-            }
-        },
-        stateChangeHandlers:{
-            onConnected: function(connection){
-                console.log('+ connection ' + connection.id)
-                connection.send({
-                    type:'Ws',
-                    payload:{
-                        type: 'ServerHallo',
-                        diff: {
-                            clientId: connection.id,
-                            network: app.selectAll()
+                },
+                onClientHallo: (c, parsed)=> {
+                    var clientnid = parsed.iam
+
+                    parsed.network[clientnid].send = msg=> c.send(msg)
+                    parsed.network[clientnid].close = j=> c.close(j)
+                    app.network.merge(parsed.network)
+                    app.network.connections.merge({ [clientnid]:app.network[clientnid] })
+                    app.commit('got my id')
+
+                    app.network.sendBroadcast({
+                        type:'Ws',
+                        payload:{
+                            type:'NetworkInfo',
+                            path:'network.'+clientnid,
+                            diff:app.network[clientnid]
                         }
-                    }
-                })
-            },
-            onDisconnected: function(connection){
-                console.log('- connection ' + connection.id)
-                var path = 'network.'+connection.id
+                    })
 
-                try { app.mergePath(path, 'deadbeef') } catch(e) {}
-
-                network.sendBroadcast({
-                    type:'Ws',
-                    payload:{
-                        type:'NetworkInfo',
-                        path:path,
-                        diff:'deadbeef'
-                    }
-                })
+                    c.node = app.network[clientnid]
+                    c.connectJob.ret('ok', 'got serverhallo and sent my nodeinfo')
+                }
             }
         }
     },

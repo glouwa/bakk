@@ -9,7 +9,7 @@ function getCmdSet(j, diff)
     j.delegate(()=> jf.remoteProxyJob({
         icon: 'Ⓟ',
         desc: 'delegating to server',
-        node: app.network.connections[0],
+        node: app.network['S₀'],
         args: j.params,
         realJob: js=> {
             var workers = app.getNodesByCapability('POSIX64')

@@ -20,18 +20,22 @@ var osDir = os.type() == 'Linux' ? 'posix64' : 'dotnet'
 var jf = jff.jm()
 eval(fs.readFileSync('src/app.js')+'')
 
+var givenIdx = process.argv[2]
+var givenId = 'W'+Number(givenIdx).toSubscript()
+
 app.initC({
     builtInTypes:{
          'Network':network,
     },
     structure:{
-        type:'O',
-        clientId: 0,
+        type:'W',
+        host:os.hostname(),
+        clientId:givenId,
         binDir: 'bin/' + osDir + '/',
         network:{
             type:'Network',
             endpoint:'ws://' + config.server.wshost + ':' + config.server.wsport,
-            msgHandlers:clientMessageHandlerFactory('W', 'Worker', ['JS', 'POSIX64', 'Matlab'], ()=>{}),
+            msgHandlers:clientMessageHandlerFactory(givenId, 'Worker', ['JS', 'POSIX64', 'Matlab'], ()=>{}),
 
         },
         stateChangeHandlers:consoleLogNetworkStateChangeHandler

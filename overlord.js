@@ -27,12 +27,13 @@ app.initC({
     },
     structure:{
         type:'O',
-        clientId: 0,
+        host:os.hostname(),
+        clientId:'O₀',
         binDir: 'bin/' + osDir + '/',
         network:{
             type:'Network',
             endpoint:'ws://' + config.server.wshost + ':' + config.server.wsport,
-            msgHandlers:clientMessageHandlerFactory('O', 'Overlord', [], ()=>{}),
+            msgHandlers:clientMessageHandlerFactory('O₀', 'Overlord', [], ()=>{}),
 
         },
         stateChangeHandlers:consoleLogNetworkStateChangeHandler

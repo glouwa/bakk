@@ -13,7 +13,7 @@ app = mvj.model('', {
 
 app.merge({    
     clientId: 'unknown',
-    workerId:function() { return this.type.toString()+Number(app.clientId).toSubscript() },
+    workerId:function() { return this.clientId.valueOf() },
     registry: {
         //type:'Registry',
         views:{
@@ -89,15 +89,49 @@ app.merge({
                 onJobMessage: (c, p, s)=> jf.onReceive(c, p, code=> eval(code), app, s)
             })['on'+parsed.type+'Message'](c, parsed.payload, pduSize)
         })
-    },
-    onNetworkStateChange:function(state, connection){
-        q.addRoot('Network state changed ' + connection.id + ' ('+state+')', ()=>{
-            app.stateChangeHandlers['on'+state](connection)
-        })
     }
 })
 
 // called by Net --------------------------------------------------------------------------
+
+function onServerHallo(fixedId, type, cap, c, parsed, ostype, oshostname)
+{
+    var cidx = parsed.nr
+    var servernid = parsed.iam
+    var nid = fixedId ? fixedId : ('C' + Number(cidx).toSubscript())
+
+    parsed.network[servernid].send = msg=> c.send(msg)
+    parsed.network[servernid].close = j=> c.close(j)
+    app.network.merge(parsed.network)
+    app.network.connections.merge({ [servernid]:app.network[servernid] })
+    app.commit('got my id')
+
+    app.merge({ clientId:nid })
+    app.network.merge({
+        [nid]:{
+            type: type,
+            id: nid,
+            capabilitys: cap,
+            osType: ostype,
+            hostname: oshostname
+        }
+    })
+
+    app.network[servernid].send({
+        type:'Ws',
+        payload:{
+            type:'ClientHallo',
+            iam:nid,
+            network:{
+                [nid]:app.network[nid]
+            }
+        }
+    })
+
+    app.commit('network += my properties')
+    c.node = app.network[nid]
+    c.connectJob.ret('ok', 'got serverhallo and sent my nodeinfo')
+}
 
 var consoleLogNetworkStateChangeHandler = {
     onConnecting:   connection=> console.info('...'),
@@ -105,34 +139,8 @@ var consoleLogNetworkStateChangeHandler = {
     onDisconnected: connection=> console.info('- disconnected')
 }
 
-var clientMessageHandlerFactory = (shortType, type, cap, onConnected)=> ({
-    onServerHallo: (c, parsed)=> {
-        app.merge(parsed.diff)  // pull
-        app.commit('got my id') // für logging
-
-        var mynodeInfo = {
-            type: type,
-            id: jf.workerId,
-            capabilitys: cap,            
-            osType: os.type(),
-            hostname: os.hostname()
-        }
-
-        app.network.merge({ [app.clientId]:mynodeInfo })
-        c.send({
-            type:'Ws',
-            payload:{
-                type:'NetworkInfo',
-                path:'network.' + app.clientId,
-                diff:mynodeInfo
-            }
-        })
-
-        app.commit('network += my properties')
-        c.connectJob.ret('ok', 'got serverhallo and sent my nodeinfo')
-        onConnected()
-    },
-
+var clientMessageHandlerFactory = (fixedId, type, cap)=> ({
+    onServerHallo: (c, parsed)=> onServerHallo(fixedId, type, cap, c, parsed, os.type(), os.hostname()),
     onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
     onReload:      (c, parsed)=> {}
 })

@@ -1,10 +1,10 @@
 function runWorkers(j, diff)
 {
     j.delegate(()=> jf.remoteProxyJob({
-        icon: '4w+',
+        icon: '8w+',
         desc: 'delegating to server',
         args: j.params,
-        node: app.network.connections[0],
+        node: app.network['S₀'],
         realJob: js=> {
 
             var nodes = app.getNodesByType(['Overlord'], 'emptyResultIsOk')
@@ -21,22 +21,23 @@ function runWorkers(j, diff)
                 end: idx=> idx < devCount /*+ 1*/,
                 job: idx=> {
 
-                    if (idx < nodes.length) return jf.remoteProxyJob({
-                        icon: '⚙w*',
-                        desc:'spawing workers',
-                        node: nodes[idx],
-                        args: js.params,
-                        realJob: jw=> jw.delegate({
-                            type: 'parallel',
-                            end: idx=> idx < jw.params.workerCount,
-                            job: idx=> tj.spawnJob({
-                                icon: '⚙w',
-                                path:'node',
-                                args:['worker.js'],
-                                justStart:jw.params.justStart
+                    if (idx < nodes.length)
+                            return jf.remoteProxyJob({
+                            icon: '⚙w*',
+                            desc:'spawing workers',
+                            node: nodes[idx],
+                            args: js.params,
+                            realJob: jw=> jw.delegate({
+                                type: 'parallel',
+                                end: idx=> idx < jw.params.workerCount,
+                                job: idx=> tj.spawnJob({
+                                    icon: '⚙w',
+                                    path:'node',
+                                    args:['worker.js', idx],
+                                    justStart:jw.params.justStart
+                                })
                             })
                         })
-                    })
 
                     /*else return jf.job({ desc:'spawing workers', onCall:ssj=> // server füllt auf
                         ssj.delegateToFactory({
@@ -62,7 +63,7 @@ new Object({
         icon: '🖥',
         desc: 'Run some workers on server',
         onCall: runWorkers,
-        args: { workerCount: 3, justStart:true },
+        args: { workerCount:8, justStart:true },
     },
     tests: []
 })
