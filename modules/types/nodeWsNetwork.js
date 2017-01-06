@@ -1,5 +1,4 @@
 var config       = require('../../src/config.js')
-var messages     = require('../../src/messages.js')
 var ClientSocket = require('ws')
 var ServerSocket = require('ws').Server
 
@@ -9,7 +8,7 @@ function sendMsg(connection, msg)
 {
     try
     {
-        var data = messages.stringify(msg) // sollte nicht dem try sein
+        var data = JSON.stringify(msg, null, 4) // sollte nicht dem try sein
         connection.ws.send(data)
         return data.length
     }
@@ -24,7 +23,7 @@ function receiveMsg(connection, msg)
 {
     try
     {
-        var parsed = messages.parse(msg)
+        var parsed = JSON.parse(msg)
         app.onMessage(connection, parsed, msg.length)
     }
     catch(e)

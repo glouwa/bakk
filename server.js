@@ -5,11 +5,9 @@ var os       = require('os')
 var jff      = require('./src/job/job.js')
 var jl       = require('./src/job/workflows.js')
 var tj       = require('./src/job/toolJobs.js')
-var messages = require('./src/messages.js')
 var mvj      = require('./src/mvj.js')
 q            = require('./src/q.js')
 var config   = require('./src/config.js')
-var sim      = require('./src/sim.js')
 var tools    = require('./src/tools.js')
 var pSet          = require('./modules/types/pSet.js')
 projectFolder     = require('./modules/types/projectFolder.js')
@@ -34,13 +32,13 @@ app.init({
         network:{
             type:'Network',
             port:config.server.wsport,
-            [serverId]: {
-                type: 'Server',
-                id: serverId, // damed
-                clientcount: 0,
-                capabilitys: [],
-                osType: os.type(),
-                hostname: os.hostname()
+            [serverId]:{
+                type:'Server',
+                id:serverId, // damed
+                clientcount:0,
+                capabilitys:[],
+                osType:os.type(),
+                hostname:os.hostname()
             },
             stateChangeHandlers:serverProtocol.stateChangeHandlers,
             msgHandlers:serverProtocol.msgHandlers

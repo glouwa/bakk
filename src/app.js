@@ -6,10 +6,13 @@
 
 app = mvj.model('', {    
     clientId: 'x',
+    host:'unknown',
     registry: {
         types:{}
     }
 })
+
+var jf = null
 
 app.merge({
     workerId:function() { return this.clientId.valueOf() },
@@ -33,9 +36,9 @@ app.merge({
         log: { type:'Set<Job>' },
         store: { type:'Store' },
     },
-    network:{
+    network:{        
+        connections:{},
         reconnectIntervall: 100,
-        connections:{}
     },
 
     rootJob:function(args){
@@ -54,11 +57,10 @@ app.merge({
 /*
 */
     init:function(args){
+        jf = jff.jm()
         q.addRoot('App init', ()=> {
 
-            // seitn wos schenas gschriem
-            jf.host = args.host
-            jf.nextFreeId = 0
+            // seitn wos schenas gschriem           
 
             jf.jl = jl
             tj.jm = jf
@@ -99,7 +101,7 @@ function cleanUpAllConnections(c){
     n.merge(networkDiff)
 }
 
-function onServerHallo(fixedId, type, cap, c, parsed, ostype, oshostname)
+function onServerHallo(fixedId, type, cap, c, parsed, ostype)
 {
     var cidx = parsed.nr
     var servernid = parsed.iam
@@ -118,7 +120,7 @@ function onServerHallo(fixedId, type, cap, c, parsed, ostype, oshostname)
             id: nid,
             capabilitys: cap,
             osType: ostype,
-            hostname: oshostname
+            hostname:app.host.valueOf()
         }
     })
 
@@ -181,7 +183,7 @@ var serverProtocol = {
         }
     },
     msgHandlers:{
-        onClientHallo: (c, parsed)=> {
+        onClientHallo: function(c, parsed) {
             var clientnid = parsed.iam
 
             parsed.network[clientnid].send = msg=> c.send(msg)

@@ -6,7 +6,6 @@
     exports.server.wsport          = 1336
     exports.server.httpport        = 1337
     exports.client = {}
-    exports.client.reconnectIntervall = 300
     exports.colors = {}
     exports.colors.disabledIcon    = 'lightgray'
     exports.colors.enabledIcon     = '#00CC66'

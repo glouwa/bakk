@@ -6,11 +6,9 @@ var os       = require('os')
 var jff      = require('./src/job/job.js')
 var jl       = require('./src/job/workflows.js')
 var tj       = require('./src/job/toolJobs.js')
-var messages = require('./src/messages.js')
 var mvj      = require('./src/mvj.js')
 q            = require('./src/q.js')
 var config   = require('./src/config.js')
-var sim      = require('./src/sim.js')
 var tools    = require('./src/tools.js')
 var pSet          = require('./modules/types/pSet.js')
 var projectFolder = require('./modules/types/projectFolder.js')
@@ -38,7 +36,7 @@ app.init({
                 onDisconnected: c=> cleanUpAllConnections(c)
             },
             msgHandlers:{
-                onServerHallo: (c, parsed)=> onServerHallo('O₀', 'Overlord', [], c, parsed, os.type(), os.hostname()),
+                onServerHallo: (c, parsed)=> onServerHallo('O₀', 'Overlord', [], c, parsed, os.type()),
                 onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
                 onReload:      (c, parsed)=> {}
             }

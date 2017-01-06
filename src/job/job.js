@@ -3,8 +3,7 @@
     exports.jm = function()
     {
         var jm = {}
-        jm.nextFreeId = 0        
-        jm.host = undefined
+        jm.nextFreeId = 0
         jm.jl = undefined
 
         function jobProto()
@@ -384,7 +383,7 @@
                         onCall: args.realJob,
                         output: pj.output
                     }
-                    //sim.log('job', 'log', '⟶', realJob)
+                    //console.log('job', 'log', '⟶', realJob)
                     console.info('%cjob', 'text-decoration:underline;', realJob.id, '⟶', JSON.stringify(realJob))
                     c.send(jobMsg('call', realJob.id, realJob.pack(true)))
                 },
@@ -394,7 +393,7 @@
                         onCall: args.realJob,
                         // todo: onacncel wär interessanter oder?
                     }
-                    //sim.log('job', 'log', '⟶', realJob)
+                    //console.log('job', 'log', '⟶', realJob)
                     console.info('job', '⟶', JSON.stringify(realJob))
                     c.send(jobMsg('cancel', realJob.id, realJob.pack()))
                 }

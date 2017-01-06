@@ -2,9 +2,9 @@ function sendMsg(connection, msg)
 {
     try
     {
-        var data = messages.stringify(msg) // sollte nicht dem try sein
+        var data = JSON.stringify(msg, null, 4) // sollte nicht dem try sein
         connection.ws.send(data)
-        sim.log('net', 'log', '⟶', connection.id, msg)
+        console.log('net', 'log', '⟶', connection.id, msg)
         return data.length
     }
     catch(e)
@@ -18,7 +18,7 @@ function receiveMsg(c, msg)
 {
     try
     {
-        var parsed = messages.parse(msg)
+        var parsed = JSON.parse(msg)
         app.onMessage(c, parsed, msg.length)
     }
     catch(e)

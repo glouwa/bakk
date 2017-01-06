@@ -1,7 +1,8 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <script src="https://d3js.org/d3.v4.js"></script>        
+        <script src="https://d3js.org/d3.v4.js"></script>
+
         <!--<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>-->
         <link  href="modules/views/html/lib/vis/dist/vis.css" rel="stylesheet">
         <script src="modules/views/html/lib/HackTimer.js"></script>
@@ -10,6 +11,7 @@
         <script src="modules/views/html/lib/ace/ace.js"></script>
         <script src="modules/views/html/lib/vis/dist/vis.js"></script>
 
+        <link  href="modules/views/html/view.css" rel="stylesheet">
         <link  href="modules/views/html/htmlBasics.css" rel="stylesheet">
         <script src="modules/views/html/htmlBasics.js"></script>
 
@@ -55,9 +57,8 @@
         <script src="src/q.js"></script>
         <script src="src/config.js"></script>
         <script src="src/tools.js"></script>
-        <script src="src/messages.js"></script>
-        <script src="src/sim.js"></script>
         <script src="src/app.js"></script>
+        <script src="src/views/view.js"></script>
 
         <!--<script src="src/network/browserWs.js"></script>-->
 
@@ -65,18 +66,7 @@
         <script src="src/job/workflows.js"></script>
         <script src="src/job/toolJobs.js"></script>
 
-        <script src="src/views/view.js"></script>
-        <link  href="src/views/html/view.css" rel="stylesheet">
-        <script src="src/views/html/client.js"></script>
-
     </head>
-    <!--<body id="body" onload="app.init({
-            type:'C',
-            nodeId:'C₀',
-            userId:'M',
-            wsUrl:'ws://' + document.location.hostname + ':' + config.server.wsport,
-            onInit:onInit
-        })"> -->
     <body id="body" onload="app.init({
 
         builtInTypes:{
@@ -114,7 +104,7 @@
                 '↻ clients': j=> {
                     app.network['S₀'].send({
                         type:'Ws',
-                        payload:messages.reloadMsg()
+                        payload:{ type:'Reload' }
                     })
                     j.ret('ok', 'reload message sent')
                 },
@@ -125,7 +115,7 @@
                 msgHandlers:{
                     onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
                     onReload:      (c, parsed)=> location.reload(true),
-                    onServerHallo: (c, parsed)=> onServerHallo(null, 'Client', ['JS'], c, parsed, 'Browser', '')
+                    onServerHallo: (c, parsed)=> onServerHallo(null, 'Client', ['JS'], c, parsed, 'Browser')
                 }
             }
         },
@@ -138,11 +128,11 @@
                 onCall:j1=> {
                     $('#modelTabPaper').append(tab('modelTab'))
                     $('#jobTabPaper').append(tab('jobTab'))
-                    app.clientId.on('change', changes=> {                        
-                        jf.host = 'Browser'
+                    app.clientId.on('change', changes=> {
                         document.title = app.workerId()
                         $('#thisId').text(app.workerId())
                     })
+                    mvj.onCommit = function(path, diff) { /*TODO*/ }
                     j1.ret('ok', 'ui loaded')
                 }
             }),

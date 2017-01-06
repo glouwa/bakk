@@ -97,9 +97,6 @@
         {
             var set = this
 
-            if(sim.config && sim.config.stopWork.active && sim.config.stopWork.pof === 'beforeWork')
-                return
-
             sim.delayedLoop(vj, 0, set.size()-1, function(x)
             {
                 //if (vj.canceled)
