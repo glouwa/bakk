@@ -33,12 +33,32 @@ function receiveMsg(connection, msg)
     }
 }
 
-function cleanUpConnection(n, c, url)
+function onConnectionOpen(n, c)
 {
-    onNetworkStateChange(n, c, 'Disconnected')
+    n.merge({ reconnectIntervall:100 })
+    onNetworkStateChange(n, c, 'Connected')
+}
 
-    //var url = n.endpoint.valueOf()
-  //  if (url) setTimeout(()=> network.connect(url), config.client.reconnectIntervall)    
+function cleanUpConnection(n, c, reconnect, m)
+{
+    if (!c.node) {
+        c.connectJob.ret('failed', 'cant connect')
+        if (n.reconnectIntervall.valueOf() < 3000)
+            n.merge({ reconnectIntervall:n.reconnectIntervall*2 })
+    }
+    else
+        onNetworkStateChange(n, c, 'Disconnected')
+
+    if (reconnect)
+        setTimeout(()=> {
+            console.log('init reconnect '+m)
+            app.callUiJob({
+                desc:'reconnect',
+                params:{},
+                output:{},
+                onCall:j=> n['⛓'](j)
+            })},
+            n.reconnectIntervall.valueOf())
 }
 
 function onNetworkStateChange(n, c, state){
@@ -50,8 +70,7 @@ function onNetworkStateChange(n, c, state){
 
 // ------------------------------------------------------------------------------------------
 
-exports.network = {
-    connections: {},
+exports.network = {    
     nextFreeIdx: 1,
     allConnectionIds:function() { return Object.keys(this.connections) },
     connectionCount:function()  { return Object.keys(this.connections).length },
@@ -69,9 +88,9 @@ exports.network = {
             c.close = j=> ws.close()
             c.ws = new ClientSocket(n.endpoint.valueOf())
             c.ws.on('message', msg=> receiveMsg(c, msg))
-            c.ws.on('close', code=> cleanUpConnection(n, c))
-            c.ws.on('error', err=> cleanUpConnection(n, c))
-            c.ws.on('open', ()=> onNetworkStateChange(n, c, 'Connected'))
+            c.ws.on('close', code=> cleanUpConnection(n, c, true, 'close'))
+            c.ws.on('error', err=> cleanUpConnection(n, c, false, 'err'))
+            c.ws.on('open', ()=> onConnectionOpen(n, c, 'Connected'))
     },
     listen:function(j)
     {

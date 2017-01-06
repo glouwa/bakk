@@ -22,7 +22,7 @@ eval(fs.readFileSync('src/app.js')+'')
 
 var serverId = 'S₀'
 
-app.initC({
+app.init({
     builtInTypes:{
         'Network':network,
     },

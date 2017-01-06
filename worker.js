@@ -23,7 +23,7 @@ eval(fs.readFileSync('src/app.js')+'')
 var givenIdx = process.argv[2]
 var givenId = 'W'+Number(givenIdx).toSubscript()
 
-app.initC({
+app.init({
     builtInTypes:{
         'Network':network,
     },

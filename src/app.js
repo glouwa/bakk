@@ -34,6 +34,7 @@ app.merge({
         store: { type:'Store' },
     },
     network:{
+        reconnectIntervall: 100,
         connections:{}
     },
 
@@ -52,7 +53,7 @@ app.merge({
     },
 /*
 */
-    initC:function(args){
+    init:function(args){
         q.addRoot('App init', ()=> {
 
             // seitn wos schenas gschriem

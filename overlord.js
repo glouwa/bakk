@@ -21,7 +21,7 @@ var osDir = os.type() == 'Linux' ? 'posix64' : 'dotnet'
 var jf = jff.jm()
 eval(fs.readFileSync('src/app.js')+'')
 
-app.initC({
+app.init({
     builtInTypes:{
         'Network':network,
     },
@@ -45,6 +45,5 @@ app.initC({
         }
     },
     onInit:j=> app.network['⛓'](j)
-
 })
 

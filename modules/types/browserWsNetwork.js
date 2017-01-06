@@ -14,7 +14,7 @@ function sendMsg(connection, msg)
     }
 }
 
-var receiveMsg=(c, msg)=>
+function receiveMsg(c, msg)
 {
     try
     {
@@ -27,10 +27,31 @@ var receiveMsg=(c, msg)=>
     }
 }
 
-var cleanUpConnection =(n, c, url)=>
+function onConnectionOpen(n, c)
 {
-    onNetworkStateChange(n, c, 'Disconnected')
-    if (url) setTimeout(()=> this['⛓'](j), config.client.reconnectIntervall)
+    n.merge({ reconnectIntervall:100 })
+    onNetworkStateChange(n, c, 'Connected')
+}
+
+function cleanUpConnection(n, c, reconnect)
+{
+    if (!c.node) {
+        c.connectJob.ret('failed', 'cant connect')
+        if (n.reconnectIntervall.valueOf() < 3000)
+            n.merge({ reconnectIntervall:n.reconnectIntervall*2 })
+    }
+    else
+        onNetworkStateChange(n, c, 'Disconnected')
+
+    if (reconnect)
+        setTimeout(()=> {
+            app.callUiJob({
+                desc:'reconnect',
+                params:{},
+                output:{},
+                onCall:j=> n['⛓'](j)
+            })},
+            n.reconnectIntervall.valueOf())
 }
 
 function onNetworkStateChange(n, c, state){
@@ -42,7 +63,6 @@ function onNetworkStateChange(n, c, state){
 
 var wsBrowser = {
     type:'Network',
-    connections:{},
     '⛓':function(j) {
         var n = this
         var c = { ws:null, node:null, connectJob:j }
@@ -50,8 +70,8 @@ var wsBrowser = {
             c.close = j=> ws.close()
             c.ws = new WebSocket(this.endpoint)
             c.ws.onmessage = ev=> receiveMsg(c, ev.data)
-            c.ws.onclose = ev=> cleanUpConnection(this, c)
-            c.ws.onopen = ()=> onNetworkStateChange(n, c, 'Connected')
+            c.ws.onclose = ev=> cleanUpConnection(this, c, true)
+            c.ws.onopen = ()=> onConnectionOpen(n, c)
     },
     selectAll:function()
     {
