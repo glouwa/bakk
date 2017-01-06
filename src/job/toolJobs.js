@@ -47,7 +47,7 @@
                         }
 
                         else
-                            j.ret('fatal', 'error at xhr sdf-' + xmlhttp.status)
+                            j.ret('fatal', 'error at xhr ' + xmlhttp.status)
                     }
                 })
                 var prefix = inBrowser

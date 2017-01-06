@@ -433,7 +433,7 @@ transform: perspective(10px) rotateX(3deg);
 .networkNode .nodeHeaderName{
     float:left;
     line-height: 23px;
-    min-width: 30;    
+    min-width: 40;
     text-align: left;
 }
 

@@ -97,14 +97,10 @@
         {
             var set = this
 
-            for (var i=0; i < set.size() && vj.state.detail!='canceled'; i++) {
-                if (vj.state.detail == 'canceled')
-                    return
+            for (var i=0; i < set.size() && vj.state.detail!='canceled'; i++)
+                visitor(vj, set.data[set.begin + i], set.begin + i, (i+1) / set.size() * 0.95)
 
-                visitor(vj,
-                        set.data[set.begin + i],
-                        set.begin + i, (i+1) / set.size() * 0.95)
-            }
+            vj.ret('ok', 'all vistited')
         }
 
         set.shrink = function(idx, partsCount)

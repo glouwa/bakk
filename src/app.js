@@ -19,6 +19,7 @@ app.merge({
             workflows:{ type:'Set<Workflow>' },
             io:{ type:'Set<ObjIo>' }, // typ von index? oder nur r/w
         },
+        config:config
     },
     model:{        
         mods: projectFolder.create(),

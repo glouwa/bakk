@@ -12,7 +12,7 @@ function find3dModel(j, diff)
         args: j.params,
         realJob: (js, diff)=> {
             //var nodes = app.network.getNodesByCapability('POSIX64') // eigentlich js, aber der client ist überfordert
-            var nodes = app.network.getNodesByCapability('JS') // eigentlich js, aber der client ist überfordert
+            var nodes = app.network.getNodesByCapability('POSIX64') // eigentlich js, aber der client ist überfordert
             js.delegate({
                 type: 'parallel',
                 desc: 'process partition on worker',
@@ -178,7 +178,7 @@ new Object({
             type: 'Model3dArgs',
             threshold: 16,
             selected: 2,
-            set: pSet.lazySet(0, 5, idx=> ({
+            set: pSet.lazySet(0, 10, idx=> ({
                     idx: idx,
                     url: 'data/3dModel/vectorfiles/m' + idx + '.json',
                     tUrl: 'data/3dModel/thumbnails/m' + idx + '_thumb.png',
