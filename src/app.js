@@ -5,34 +5,29 @@
 */
 
 app = mvj.model('', {    
-    clientId: 'unknown',
+    clientId: 'x',
     registry: {
         types:{}
     }
 })
 
-app.merge({    
-    clientId: 'unknown',
+app.merge({
     workerId:function() { return this.clientId.valueOf() },
     registry: {
-        //type:'Registry',
         views:{
             primitiveBound:{ index:{} },
             line:{},
             d3:{},
             a5:{},
             a4:{},
-            //a3:{},
         },
-        types:{
-            //type:'Set<Type>',
+        types:{            
             jobs:{ type:'Set<JobPrototype>' },
             workflows:{ type:'Set<Workflow>' },
             io:{ type:'Set<ObjIo>' }, // typ von index? oder nur r/w
         },
     },
-    model:{
-        //type: 'Model',
+    model:{        
         mods: projectFolder.create(),
         jobs:{},
         log: { type:'Set<Job>' },
@@ -94,6 +89,15 @@ app.merge({
 
 // called by Net --------------------------------------------------------------------------
 
+function cleanUpAllConnections(c){
+
+    var n = app.network
+    var connectionId = Object.keys(n.connections)[0]
+    var networkDiff = { connections:{ [connectionId]:'deadbeef' } }
+    n.selectAll().forEach((v, k, idx)=> networkDiff[k]='deadbeef')
+    n.merge(networkDiff)
+}
+
 function onServerHallo(fixedId, type, cap, c, parsed, ostype, oshostname)
 {
     var cidx = parsed.nr
@@ -133,16 +137,83 @@ function onServerHallo(fixedId, type, cap, c, parsed, ostype, oshostname)
     c.connectJob.ret('ok', 'got serverhallo and sent my nodeinfo')
 }
 
-var consoleLogNetworkStateChangeHandler = {
-    onConnecting:   connection=> console.info('...'),
-    onConnected:    connection=> console.info('+ connected'),
-    onDisconnected: connection=> console.info('- disconnected')
+// ----------------------------------------------------------------------------------------
+
+var clientProtocol = { // wird zur zeit im client selbst zusammengebaut
+    stateChangeHandlers:{
+        onConnected:function(c){},
+        onDisconnected:function(c){}
+    },
+    msgHandlers:{
+        onReload: function(c, parsed){},
+        onNetworkInfo: function(c, parsed){},
+        onClientHallo: (c, parsed)=> {}
+    }
 }
 
-var clientMessageHandlerFactory = (fixedId, type, cap)=> ({
-    onServerHallo: (c, parsed)=> onServerHallo(fixedId, type, cap, c, parsed, os.type(), os.hostname()),
-    onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
-    onReload:      (c, parsed)=> {}
-})
+var serverProtocol = {
+    stateChangeHandlers:{
+        onConnected: function(c){
+            c.send({
+                type:'Ws',
+                payload:{
+                    type: 'ServerHallo',
+                    nr:c.idx,
+                    iam:serverId,
+                    network: app.network.selectAll()
+                }
+            })
+        },
+        onDisconnected: function(c){
+            app.network.merge({
+                [c.node.id]:'deadbeef',
+                connections:{ [c.node.id]:'deadbeef' }
+            })
+            app.network.sendBroadcast({
+                type:'Ws',
+                payload:{
+                    type:'NetworkInfo',
+                    path:'network',
+                    diff:{ [c.node.id]:'deadbeef' }
+                }
+            })
+        }
+    },
+    msgHandlers:{
+        onClientHallo: (c, parsed)=> {
+            var clientnid = parsed.iam
 
+            parsed.network[clientnid].send = msg=> c.send(msg)
+            parsed.network[clientnid].close = j=> c.close(j)
+            app.network.merge(parsed.network)
+            app.network.connections.merge({ [clientnid]:app.network[clientnid] })
+            app.commit('got my id')
 
+            app.network.sendBroadcast({
+                type:'Ws',
+                payload:{
+                    type:'NetworkInfo',
+                    path:'network.'+clientnid,
+                    diff:app.network[clientnid]
+                }
+            })
+
+            c.node = app.network[clientnid]
+            c.connectJob.ret('ok', 'got serverhallo and sent my nodeinfo')
+        },
+        onNetworkInfo: function(c, parsed){
+            app.mergePath(parsed.path, parsed.diff)
+            var r = Object.keys(app.network.connections).without([c.node.id.toString()])
+            app.network.sendMulticast(r, {
+                type:'Ws',
+                payload:parsed
+            })
+        },
+        onReload: function(c, parsed){
+            app.network.sendBroadcast({
+                type:'Ws',
+                payload:parsed
+            })
+        }
+    }
+}

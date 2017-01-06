@@ -23,7 +23,7 @@ eval(fs.readFileSync('src/app.js')+'')
 
 app.initC({
     builtInTypes:{
-         'Network':network,
+        'Network':network,
     },
     structure:{
         type:'O',
@@ -33,10 +33,16 @@ app.initC({
         network:{
             type:'Network',
             endpoint:'ws://' + config.server.wshost + ':' + config.server.wsport,
-            msgHandlers:clientMessageHandlerFactory('O₀', 'Overlord', [], ()=>{}),
-
-        },
-        stateChangeHandlers:consoleLogNetworkStateChangeHandler
+            stateChangeHandlers:{
+                onConnected:    c=> {},
+                onDisconnected: c=> cleanUpAllConnections(c)
+            },
+            msgHandlers:{
+                onServerHallo: (c, parsed)=> onServerHallo('O₀', 'Overlord', [], c, parsed, os.type(), os.hostname()),
+                onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
+                onReload:      (c, parsed)=> {}
+            }
+        }
     },
     onInit:j=> app.network['⛓'](j)
 

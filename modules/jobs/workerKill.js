@@ -10,7 +10,7 @@ function killServerOverlordsAndWorkers(j)
                 icon: '☠w*',
                 desc:'send kill signal to workers',
                 onCall: kwj=> {
-                    var nodes = app.getNodesByType(js.params.nodeType, 'emptyResultIsOk')
+                    var nodes = app.network.getNodesByType(js.params.nodeType, 'emptyResultIsOk')
                     if (nodes.length == 0)
                         kwj.ret('ok', 'no workers to kill')
                     else

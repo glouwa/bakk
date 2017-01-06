@@ -7,7 +7,7 @@ function runWorkers(j, diff)
         node: app.network['S₀'],
         realJob: js=> {
 
-            var nodes = app.getNodesByType(['Overlord'], 'emptyResultIsOk')
+            var nodes = app.network.getNodesByType(['Overlord'], 'emptyResultIsOk')
             var devCount = js.params.devCount
                          ? Number(js.params.devCount.valueOf())
                          : nodes.length

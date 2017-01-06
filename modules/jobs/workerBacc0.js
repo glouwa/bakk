@@ -36,7 +36,7 @@ function getCmdSet(j, diff)
                 }
                 return accu
             }
-            var workers = app.getNodesByCapability('POSIX64')
+            var workers = app.network.getNodesByCapability('POSIX64')
             var output = addCommandsOfFolder(js.params.directory.valueOf())
             output.workerCount = workers.length
             /*js.updateJob({

@@ -27,20 +27,22 @@ var receiveMsg=(c, msg)=>
     }
 }
 
-var cleanUpConnection =(network, connection, url)=>
+var cleanUpConnection =(n, c, url)=>
 {
-    network.merge({
-        [cid]:'deadbeef',
-        connections: { [cid]:'deadbeef' }
-    })
-
+    onNetworkStateChange(n, c, 'Disconnected')
     if (url) setTimeout(()=> this['⛓'](j), config.client.reconnectIntervall)
+}
+
+function onNetworkStateChange(n, c, state){
+    if (n.stateChangeHandlers)
+        q.addRoot('Network state changed ' + c.id + ' ('+state+')', ()=>{
+            n.stateChangeHandlers['on'+state](c)
+        })
 }
 
 var wsBrowser = {
     type:'Network',
     connections:{},
-    select:function(p) { return this.connections.filter(p) },
     '⛓':function(j) {
         var n = this
         var c = { ws:null, node:null, connectJob:j }
@@ -49,6 +51,20 @@ var wsBrowser = {
             c.ws = new WebSocket(this.endpoint)
             c.ws.onmessage = ev=> receiveMsg(c, ev.data)
             c.ws.onclose = ev=> cleanUpConnection(this, c)
-            c.ws.onopen = ()=> {}
-    }
+            c.ws.onopen = ()=> onNetworkStateChange(n, c, 'Connected')
+    },
+    selectAll:function()
+    {
+        var nodes = {}
+        app.network.forEach(function(node, nkey, nidx)
+        {
+            if (node.type && (
+                node.type == 'Worker'
+             || node.type == 'Server'
+             || node.type == 'Client'
+             || node.type == 'Overlord'))
+                nodes[nkey] = app.network[nkey]
+        })
+        return nodes
+    },
 }

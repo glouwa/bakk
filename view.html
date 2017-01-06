@@ -118,6 +118,10 @@
                     })
                     j.ret('ok', 'reload message sent')
                 },
+                stateChangeHandlers:{
+                    onConnected:    c=> {},
+                    onDisconnected: c=> cleanUpAllConnections(c)
+                },
                 msgHandlers:{
                     onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
                     onReload:      (c, parsed)=> location.reload(true),

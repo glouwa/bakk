@@ -19,6 +19,7 @@ var pSet          = require('./modules/types/pSet.js')
 var projectFolder = require('./modules/types/projectFolder.js')
 var network       = require('./modules/types/nodeWsNetwork.js').network
 
+var osDir = os.type() == 'Linux' ? 'posix64' : 'dotnet'
 var jf = jff.jm()
 eval(fs.readFileSync('src/app.js')+'')
 eval(fs.readFileSync('./modules/types/project.js')+'')
@@ -29,15 +30,19 @@ app.init({
      host:os.hostname(),
      wsUrl:'ws://' + config.server.wshost + ':' + config.server.wsport,
      onInit:function(){
-         var osDir = os.type() == 'Linux' ? 'posix64' : 'dotnet'
-
          app.merge({
             binDir: 'bin/' + osDir + '/',
-            wsMessageHandlers:clientMessageHandlerFactory('C', 'Client', [], ()=> aProjectJob().call()),
-            stateChangeHandlers:consoleLogNetworkStateChangeHandler
+            stateChangeHandlers:{
+                onConnected:    c=> {},
+                onDisconnected: c=> cleanUpAllConnections(c)
+            },
+            msgHandlers:{
+                onServerHallo: (c, parsed)=> onServerHallo('C', 'Client', [], c, parsed, os.type(), os.hostname()),
+                onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
+                onReload:      (c, parsed)=> {}
+            }
          })
 
-         network.sim = sim
          network.connect(this.wsUrl.valueOf())
     }
 })

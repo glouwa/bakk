@@ -11,8 +11,8 @@ function find3dModel(j, diff)
         desc:'delegate to server',
         args: j.params,
         realJob: (js, diff)=> {
-            //var nodes = app.getNodesByCapability('POSIX64') // eigentlich js, aber der client ist überfordert
-            var nodes = app.getNodesByCapability('JS') // eigentlich js, aber der client ist überfordert
+            //var nodes = app.network.getNodesByCapability('POSIX64') // eigentlich js, aber der client ist überfordert
+            var nodes = app.network.getNodesByCapability('JS') // eigentlich js, aber der client ist überfordert
             js.delegate({
                 type: 'parallel',
                 desc: 'process partition on worker',
