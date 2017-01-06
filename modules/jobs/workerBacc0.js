@@ -13,7 +13,6 @@ function getCmdSet(j, diff)
         args: j.params,
         realJob: js=> {
 
-            var fs = require('fs'), path = require('path')
             function addCommandsOfFolder(dir, accu) {
                 accu = accu || { commands:[], outputs:{} }
                 var cmdArgs = ''

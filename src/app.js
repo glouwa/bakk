@@ -4,19 +4,9 @@
   man kann beim ersten zb. kein registry oder model verwenden
 */
 
-app = mvj.model('', {    
-    clientId: 'x',
-    host:'unknown',
-    registry: {
-        types:{}
-    }
-})
-
-var jf = null
-
+app = mvj.model('', { clientId: 'X', host:'unknown', core: { types:{} }})
 app.merge({
-    workerId:function() { return this.clientId.valueOf() },
-    registry: {
+    core: {
         views:{
             primitiveBound:{ index:{} },
             line:{},
@@ -41,6 +31,8 @@ app.merge({
         reconnectIntervall: 100,
     },
 
+
+
     rootJob:function(args){
         var jd = jf.job(args)
         app.mergePath('model.jobs.'+jd.id, jd)
@@ -54,20 +46,9 @@ app.merge({
             this.rootJob(args).call()
         })
     },
-/*
-*/
-    init:function(args){
-        jf = jff.jm()
+    init:function(args){        
         q.addRoot('App init', ()=> {
-
-            // seitn wos schenas gschriem           
-
-            jf.jl = jl
-            tj.jm = jf
-            tj.config = config
-            mvj.jm = jf
-
-            app.registry.types.merge(args.builtInTypes)
+            app.core.types.merge(args.builtInTypes)
             app.merge(args.structure)
             app.callUiJob({
                 desc:'app.init',
@@ -78,7 +59,9 @@ app.merge({
             })
         })
     },
-              // TODO remove (to network)
+
+
+    // TODO remove (to network)
     onMessage:function(c, parsed, pduSize){
         q.addRoot('app on "' + parsed.type + '" message ' + c.id + ' ('+pduSize+'b)', ()=>{
             console.info('job', '⟵', pduSize, JSON.stringify(parsed, 0, 4));
@@ -90,67 +73,62 @@ app.merge({
     }
 })
 
-// called by Net --------------------------------------------------------------------------
-
-function cleanUpAllConnections(c){
-
-    var n = app.network
-    var connectionId = Object.keys(n.connections)[0]
-    var networkDiff = { connections:{ [connectionId]:'deadbeef' } }
-    n.selectAll().forEach((v, k, idx)=> networkDiff[k]='deadbeef')
-    n.merge(networkDiff)
-}
-
-function onServerHallo(fixedId, type, cap, c, parsed, ostype)
-{
-    var cidx = parsed.nr
-    var servernid = parsed.iam
-    var nid = fixedId ? fixedId : ('C' + Number(cidx).toSubscript())
-
-    parsed.network[servernid].send = msg=> c.send(msg)
-    parsed.network[servernid].close = j=> c.close(j)
-    app.network.merge(parsed.network)
-    app.network.connections.merge({ [servernid]:app.network[servernid] })
-    app.commit('got my id')
-
-    app.merge({ clientId:nid })
-    app.network.merge({
-        [nid]:{
-            type: type,
-            id: nid,
-            capabilitys: cap,
-            osType: ostype,
-            hostname:app.host.valueOf()
-        }
-    })
-
-    app.network[servernid].send({
-        type:'Ws',
-        payload:{
-            type:'ClientHallo',
-            iam:nid,
-            network:{
-                [nid]:app.network[nid]
-            }
-        }
-    })
-
-    app.commit('network += my properties')
-    c.node = app.network[nid]
-    c.connectJob.ret('ok', 'got serverhallo and sent my nodeinfo')
-}
-
 // ----------------------------------------------------------------------------------------
 
 var clientProtocol = { // wird zur zeit im client selbst zusammengebaut
     stateChangeHandlers:{
-        onConnected:function(c){},
-        onDisconnected:function(c){}
+        onConnected: undefined,
+        onDisconnected: function cleanUpAllConnections(c){
+
+            var n = app.network
+            var connectionId = Object.keys(n.connections)[0]
+            var networkDiff = { connections:{ [connectionId]:'deadbeef' } }
+            n.selectAll().forEach((v, k, idx)=> networkDiff[k]='deadbeef')
+            n.merge(networkDiff)
+        }
     },
     msgHandlers:{
-        onReload: function(c, parsed){},
-        onNetworkInfo: function(c, parsed){},
-        onClientHallo: (c, parsed)=> {}
+        onClientHallo: undefined,
+        onServerHallo: function onServerHallo(fixedId, type, cap, c, parsed, ostype)
+        {
+            var cidx = parsed.nr
+            var servernid = parsed.iam
+            var nid = fixedId ? fixedId : (type.charAt(0) + Number(cidx).toSubscript())
+
+            parsed.network[servernid].send = msg=> c.send(msg)
+            parsed.network[servernid].close = j=> c.close(j)
+            app.network.merge(parsed.network)
+            app.network.connections.merge({ [servernid]:app.network[servernid] })
+            app.commit('got my id')
+
+            app.merge({ clientId:nid })
+            app.network.merge({
+                [nid]:{
+                    type: type,
+                    id: nid,
+                    capabilitys: cap,
+                    osType: ostype,
+                    hostname:app.host.valueOf()
+                }
+            })
+
+            app.network[servernid].send({
+                type:'Ws',
+                payload:{
+                    type:'ClientHallo',
+                    iam:nid,
+                    network:{
+                        [nid]:app.network[nid]
+                    }
+                }
+            })
+
+            app.commit('network += my properties')
+            c.node = app.network[nid]
+            c.connectJob.ret('ok', 'got serverhallo and sent my nodeinfo')
+        },
+        onNetworkInfo: undefined,
+        onReload: undefined
     }
 }
 
@@ -183,6 +161,7 @@ var serverProtocol = {
         }
     },
     msgHandlers:{
+        onServerHallo: undefined,
         onClientHallo: function(c, parsed) {
             var clientnid = parsed.iam
 

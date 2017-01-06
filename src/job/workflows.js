@@ -1,6 +1,5 @@
 (function(exports)
 {
-
     function every(o, p) {
         for (k in o)
             if (!p(o[k]))
@@ -187,4 +186,4 @@
         newSj.call()
     }
 })
-(typeof exports === 'undefined' ? this['jl']={} : exports)
+(typeof exports === 'undefined' ? this['workflows']={} : exports)

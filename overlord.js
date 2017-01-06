@@ -1,10 +1,11 @@
 require( 'console-group' ).install()
 console.debug = ()=> {}
 
-var fs       = require('fs')
-var os       = require('os')
-var jff      = require('./src/job/job.js')
-var jl       = require('./src/job/workflows.js')
+fs       = require('fs')
+os       = require('os')
+path     = require('path')
+jf      = require('./src/job/job.js')
+workflows       = require('./src/job/workflows.js')
 var tj       = require('./src/job/toolJobs.js')
 var mvj      = require('./src/mvj.js')
 q            = require('./src/q.js')
@@ -16,7 +17,6 @@ var network       = require('./modules/types/nodeWsNetwork.js').network
 
 var osDir = os.type() == 'Linux' ? 'posix64' : 'dotnet'
 
-var jf = jff.jm()
 eval(fs.readFileSync('src/app.js')+'')
 
 app.init({
@@ -25,18 +25,17 @@ app.init({
     },
     structure:{
         type:'O',
-        host:os.hostname(),
-        clientId:'O₀',
+        host:os.hostname(),        
         binDir: 'bin/' + osDir + '/',
         network:{
             type:'Network',
             endpoint:'ws://' + config.server.wshost + ':' + config.server.wsport,
             stateChangeHandlers:{
                 onConnected:    c=> {},
-                onDisconnected: c=> cleanUpAllConnections(c)
+                onDisconnected: c=> clientProtocol.stateChangeHandlers.onDisconnected(c)
             },
             msgHandlers:{
-                onServerHallo: (c, parsed)=> onServerHallo('O₀', 'Overlord', [], c, parsed, os.type()),
+                onServerHallo: (c, parsed)=> clientProtocol.msgHandlers.onServerHallo(null, 'Overlord', [], c, parsed, os.type()),
                 onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
                 onReload:      (c, parsed)=> {}
             }

@@ -29,10 +29,10 @@ function project(url, noView)
                 var projectDiff = eval(d)
 
                 if (projectDiff.types)
-                    app.registry.types.merge(projectDiff.types)
+                    app.core.types.merge(projectDiff.types)
 
                 if (projectDiff.views && !noView)
-                    app.registry.views.merge(projectDiff.views)
+                    app.core.views.merge(projectDiff.views)
 
                 project.merge(Object.assign(projectDiff, {
                     '↻':'deadbeef',

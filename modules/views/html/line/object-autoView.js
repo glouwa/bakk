@@ -4,13 +4,13 @@ function addStandardLine(view, name, model)
 
     appendObjInfo(view, model)
 
-    var autoButtons =  app.registry.views.primitiveBound.query('object-buttons')(model)
+    var autoButtons =  app.core.views.primitiveBound.query('object-buttons')(model)
         autoButtons.style.paddingRight = 4
         autoButtons.style.margin = '-1 0 -1 0'
     view.appendChild(autoButtons)
 
     var type = modelType(model)
-    var primitive = app.registry.views.primitiveBound.query(type)(model)
+    var primitive = app.core.views.primitiveBound.query(type)(model)
     if (primitive)
         view.appendChild(primitive)
 }
@@ -70,7 +70,7 @@ function autoViewLine(model)
         filter: (v, k)=> model.viewfilter(v, k),
         itemDelegate:(v, k)=> {
 
-            //console.log(modelType(v), app.registry.views.primitive?true:false)
+            //console.log(modelType(v), app.core.views.primitive?true:false)
 
             var t = modelType(v)
             if (   t=='number'
@@ -88,7 +88,7 @@ function autoViewLine(model)
                 //console.log('object')
                 return lineObjectView(k.toString(), v) // recirsion (maybe delayed)
             }
-            //var viewFactory = app.registry.views.line[modelType(v) + 'View']
+            //var viewFactory = app.core.views.line[modelType(v) + 'View']
             //               || lineObjectView
             //return viewFactory(k.toString(), v)
         }

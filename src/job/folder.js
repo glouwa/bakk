@@ -17,7 +17,7 @@ var FileMod = {
             var boxed = this.obj
 
             // addto index
-            app.registry.views.primitiveBound.index.merge({[view.modelTypes]:boxed})
+            app.core.views.primitiveBound.index.merge({[view.modelTypes]:boxed})
         }
     }))}
 }
@@ -31,8 +31,6 @@ var remoteFolderListToThisOutput = function(j, d) {
         args: j.params,
         realJob: js=> {
 
-            var fs = require('fs')
-            var path = require('path')
             var dir = js.params.directory.valueOf()
 
             fs.readdir(dir, (err, files)=> js.exception2localError('Message from FS', ()=> {
@@ -124,8 +122,6 @@ var Folder = {
             args: j.params,
             realJob: js=> {
 
-                var fs = require('fs')
-                var path = require('path')
                 var dir = js.params.directory.valueOf()
 
                 fs.readdir(dir, (err, files)=> js.exception2localError('Message from FS', ()=> {

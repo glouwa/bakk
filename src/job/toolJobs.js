@@ -3,8 +3,7 @@
     if (!inBrowser)
         XMLHttpRequest = require('xhr2')
 
-    exports.jm = undefined
-    exports.config = undefined
+   //exports.jm = undefined
 
     //-----------------------------------------------------------------------------------------
 
@@ -13,7 +12,7 @@
         var xmlhttp = new XMLHttpRequest()
         var canceled = false
 
-        return exports.jm.job({
+        return jf.job({
             icon: '🔁', //⇌🔃🔄
             desc: 'xhr: ' + args.url,
             params: args,
@@ -51,7 +50,10 @@
                             j.ret('fatal', 'error at xhr sdf-' + xmlhttp.status)
                     }
                 })
-                var prefix = inBrowser?'':'http://'+exports.config.server.wshost+':'+exports.config.server.httpport+'/'
+                var prefix = inBrowser
+                           ?''
+                           :'http://'+app.core.config.server.wshost+':'
+                                     +app.core.config.server.httpport+'/'
                 xmlhttp.open("GET",prefix+args.url, true)
                 xmlhttp.send()
             }
@@ -69,7 +71,7 @@
 
     exports.spawnJob = function(args)
     {
-        return exports.jm.job({
+        return jf.job({
             icon: '⚙',
             desc: args.path?args.path.valueOf() + args.args:args.cmd.valueOf(),
             onCall:j=> exports.spawn(j, args)

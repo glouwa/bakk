@@ -33,7 +33,8 @@ function runWorkers(j, diff)
                                 job: idx=> tj.spawnJob({
                                     icon: '⚙w',
                                     path:'node',
-                                    args:['worker.js', idx],
+                                    args:['worker.js', 'W'+app.clientId.valueOf().charAt(1)
+                                                          +'\u208B'+Number(idx).toSubscript()],
                                     justStart:jw.params.justStart
                                 })
                             })

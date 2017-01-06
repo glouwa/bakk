@@ -23,7 +23,7 @@ function killServerOverlordsAndWorkers(j)
                                 node: nodes[idx],
                                 args: js.params,
                                 realJob: jw=> {
-                                    jw.ret('ok', app.workerId().valueOf() + ' will exit in ½s')
+                                    jw.ret('ok', app.clientId.valueOf() + ' will exit in ½s')
                                     setTimeout(()=>process.exit(0), 500)
                                 }
                             })

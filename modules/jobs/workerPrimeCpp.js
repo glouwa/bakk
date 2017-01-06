@@ -27,7 +27,7 @@ function findPrimes(j, diff)
                         args:[jw.params.begin.valueOf(), jw.params.end.valueOf()],
                         onJsonStdOut:(jw, data)=> {
                             arguments.callee.count = arguments.callee.count || 1
-                            jw.commitJob(data.state, { [app.workerId()]:arguments.callee.count++ })
+                            jw.commitJob(data.state, { [app.clientId]:arguments.callee.count++ })
                         }
                     })
                 })

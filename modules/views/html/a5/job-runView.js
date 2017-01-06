@@ -4,7 +4,7 @@ function jobHeaderView(jobModel)
         view.className = 'autoJobButtonView'        
         view.style.width = '100%'
 
-    var defaultAction = app.registry.views.primitiveBound.query('Job')(jobModel)
+    var defaultAction = app.core.views.primitiveBound.query('Job')(jobModel)
     view.appendChild(defaultAction)
     return view
 }

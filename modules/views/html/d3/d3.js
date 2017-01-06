@@ -6,7 +6,7 @@ var graphConfigMap =
     'Model':        { value:12, mass:175, color:'#97C2FC', fixed:true, x:0, y:0 }, // 00CC66
     'User':         { value:9,  mass:50, color:'#97C2FC' },
 
-    'Registry':     { value:9,  mass:50, color:'#97C2FC', fixed:true, x:0, y:-1050 },
+    'Core':     { value:9,  mass:50, color:'#97C2FC', fixed:true, x:0, y:-1050 },
     'Set<Config>':  { value:5,  mass:7, color:'#97C2FC' },
     'Set<View>':    { value:5,  mass:7, color:'#97C2FC' },
     'Set<Type>':    { value:5,  mass:7, color:'#97C2FC' },
@@ -72,7 +72,7 @@ function getInitPos(path)
     var r = 1.3
 
     if (parts.length > 1)
-        if (parts[1] === 'registry') return { x:    0*r, y:-1050*r }
+        if (parts[1] === 'core')     return { x:    0*r, y:-1050*r }
         if (parts[1] === 'projects') return { x: 1100*r, y: -250*r }
         if (parts[1] === 'jobs')     return { x:  700*r, y:  950*r }
         if (parts[1] === 'store')    return { x: -700*r, y:  950*r }

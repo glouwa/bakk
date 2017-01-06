@@ -37,7 +37,7 @@
                 state.style.float = 'right'
                 state.style.textAlign = 'right'
                 state.style.minWidth = 40
-            var jobControlingButton = app.registry.views.primitiveBound.query('jobfunctions')(model)
+            var jobControlingButton = app.core.views.primitiveBound.query('jobfunctions')(model)
             jobControlingButton.style.height = 15
             jobControlingButton.style.margin = '-1 0 -1 10'
             view.appendChild(jobControlingButton)

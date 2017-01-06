@@ -15,8 +15,7 @@ function fragmentFolderSet()
                 node: app.network['S₀'],
                 args: j.params,
                 realJob: js=> {
-                    var fs = require('fs')
-                    var path = require('path')
+
                     var dir = js.params.dir.valueOf()
 
                     fs.readdir(dir, (err, files)=> js.exception2localError('Message from FS', ()=> {
@@ -63,8 +62,7 @@ function fragmentFolder()
                 node: app.network['S₀'],
                 args: j.params,
                 realJob: js=> {
-                    var fs = require('fs')
-                    var path = require('path')
+
                     var dir = js.params.dir.valueOf()
 
                     fs.readdir(dir, (err, files)=> js.exception2localError('Message from FS', ()=> {

@@ -1,6 +1,6 @@
 (function(exports, inNode)
 {
-    exports.jm = undefined    
+    //exports.jm = undefined
     exports.onCommit = function() {}    
 
     var Emitter = {
@@ -90,17 +90,11 @@
         if (!app)
             console.log('app is unedf and requesting type ' + type + box.path)
 
-        if (app.registry.types[type] == box)
+        if (app.core.types[type] == box)
             return
 
-        if (app.registry.types[type])
-            box.__proto__ = app.registry.types[type] // protoy sind auch beboxed
-
-        /*if (type == 'Set<FragmentFolder>' && app.registry.types.FragmentFolderSet)
-            box.__proto__ = app.registry.types.FragmentFolderSet
-
-        if (type == 'FragmentFolder' && app.registry.types.FragmentFolder)
-            box.__proto__ = app.registry.types.FragmentFolder*/
+        if (app.core.types[type])
+            box.__proto__ = app.core.types[type] // protoy sind auch beboxed
     }
 
     function box(content, path)
@@ -109,9 +103,7 @@
 
         if (isPrimitive(content)) {
             var box = typeof content === 'function'
-                    ? function() {
-                        return box.value.apply(this, arguments)
-                    }
+                    ? function() { return box.value.apply(this, arguments) }
                     : {}
 
             Object.defineProperty(box, 'isLeafType',{ writable:true, value:true })
@@ -121,14 +113,10 @@
                      ? this.value.valueOf()
                      : undefined
             }})
-            Object.defineProperty(box, 'toJSON', { writable:true, value:function() {
-                /*if (this.isLink) {
-                    console.log('skipping JSON ' + this.path)
-                    return
-                }*/
+            Object.defineProperty(box, 'toJSON', { writable:true, value:function() {             
                 if (this.value === undefined)
                     return
-                return this.value//.valueOf()
+                return this.value
             }})
             Object.defineProperty(box, 'toString', { writable:true, value:function() {
                 if (this.value === undefined)
@@ -141,18 +129,11 @@
             var box = content instanceof Array ? [] : {}
 
             if (content.type == 'Job') {
-                box.__proto__ = exports.jm.jobPrototype
+                box.__proto__ = jf.jobPrototype
 
                 if(content.isProxy && !path.startsWith('tmp'))
-                    exports.jm.remoteJobs[content.id.valueOf()] = box
+                    jf.remoteJobs[content.id.valueOf()] = box
             }
-
-            /*if (content.type == 'Folder') {
-                box.__proto__ = exports.jm.jobPrototype
-
-                if(content.isProxy && !path.startsWith('tmp'))
-                        exports.jm.remoteJobs[content.id.valueOf()] = box
-            }*/
 
             updateJsProto(content.type, box)
             return box

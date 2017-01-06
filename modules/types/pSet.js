@@ -97,14 +97,14 @@
         {
             var set = this
 
-            sim.delayedLoop(vj, 0, set.size()-1, function(x)
-            {
-                //if (vj.canceled)
-                //    return            
+            for (var i=0; i < set.size() && vj.state.detail!='canceled'; i++) {
+                if (vj.state.detail == 'canceled')
+                    return
+
                 visitor(vj,
-                        set.data[set.begin + x],
-                        set.begin + x, (x+1) / set.size() * 0.95)
-            })
+                        set.data[set.begin + i],
+                        set.begin + i, (i+1) / set.size() * 0.95)
+            }
         }
 
         set.shrink = function(idx, partsCount)

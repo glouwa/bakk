@@ -97,7 +97,7 @@ function networkNodeHeader(nodeModel)
                 nodeModel.freeMemPercent.on('change', updateFree)
             }
             //nodeModel.freeMemPercent.on('change', updateFree)
-        var headerActions = app.registry.views.primitiveBound.query('object-buttons')(nodeModel)//autoJobButtonView(nodeModel)
+        var headerActions = app.core.views.primitiveBound.query('object-buttons')(nodeModel)//autoJobButtonView(nodeModel)
             headerActions.style.float = 'right'
         var headerBar = document.createElement('div')
             headerBar.className = 'headerBar'
@@ -195,7 +195,7 @@ function networkNodeView(nodeModel)
             contentFactory:()=> networkNodeSimConfig(nodeModel)
         })
         view.className = 'networkNode'
-        if (nodeModel.id == app.workerId())
+        if (nodeModel.id == app.clientId.valueOf())
             view.style.backgroundColor = '#FFFFD0'
 
     return view

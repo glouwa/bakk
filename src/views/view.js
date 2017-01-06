@@ -88,6 +88,5 @@ function itemGridView(psetModel, delegate)
     }
     update({ newMembers:psetModel })
     psetModel.on('change', update)
-
     return view
 }

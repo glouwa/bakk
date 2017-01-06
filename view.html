@@ -86,7 +86,7 @@
                 window.open('./view.html', '_blank')
                 j.ret('ok', 'window.open(...) called')
             },
-            registry:{
+            core:{
                 config:config,
                 views:{
                     primitiveBound:{
@@ -110,12 +110,12 @@
                 },
                 stateChangeHandlers:{
                     onConnected:    c=> {},
-                    onDisconnected: c=> cleanUpAllConnections(c)
+                    onDisconnected: c=> clientProtocol.stateChangeHandlers.onDisconnected(c)
                 },
                 msgHandlers:{
                     onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
                     onReload:      (c, parsed)=> location.reload(true),
-                    onServerHallo: (c, parsed)=> onServerHallo(null, 'Client', ['JS'], c, parsed, 'Browser')
+                    onServerHallo: (c, parsed)=> clientProtocol.msgHandlers.onServerHallo(null, 'Client', ['JS'], c, parsed, 'Browser')
                 }
             }
         },
@@ -129,8 +129,8 @@
                     $('#modelTabPaper').append(tab('modelTab'))
                     $('#jobTabPaper').append(tab('jobTab'))
                     app.clientId.on('change', changes=> {
-                        document.title = app.workerId()
-                        $('#thisId').text(app.workerId())
+                        document.title = app.clientId
+                        $('#thisId').text(app.clientId)
                     })
                     mvj.onCommit = function(path, diff) { /*TODO*/ }
                     j1.ret('ok', 'ui loaded')
@@ -146,8 +146,8 @@
                 icon:'≟',
                 desc:'load views',
                 params:{},
-                output:app.registry.views.primitiveBound,
-                onCall:j1=> app.registry.views.primitiveBound['↻'](j1),
+                output:app.core.views.primitiveBound,
+                onCall:j1=> app.core.views.primitiveBound['↻'](j1),
             }),
             ()=> jf.job({
                 icon:'≟',
