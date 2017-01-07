@@ -8,7 +8,7 @@ app = mvj.model('', { clientId: 'X', host:'unknown', core: { types:{} }})
 app.merge({
     core: {
         views:{
-            primitiveBound:{ index:{} },
+            primitive:{ index:{} },
             line:{},
             d3:{},
             a5:{},

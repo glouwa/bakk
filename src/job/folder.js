@@ -17,7 +17,7 @@ var FileMod = {
             var boxed = this.obj
 
             // addto index
-            app.core.views.primitiveBound.index.merge({[view.modelTypes]:boxed})
+            app.core.views.primitive.index.merge({[view.modelTypes]:boxed})
         }
     }))}
 }

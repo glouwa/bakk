@@ -4,13 +4,13 @@ function addStandardLine(view, name, model)
 
     appendObjInfo(view, model)
 
-    var autoButtons =  app.core.views.primitiveBound.query('object-buttons')(model)
+    var autoButtons =  app.core.views.primitive.query('object-buttons')(model)
         autoButtons.style.paddingRight = 4
         autoButtons.style.margin = '-1 0 -1 0'
     view.appendChild(autoButtons)
 
     var type = modelType(model)
-    var primitive = app.core.views.primitiveBound.query(type)(model)
+    var primitive = app.core.views.primitive.query(type)(model)
     if (primitive)
         view.appendChild(primitive)
 }
