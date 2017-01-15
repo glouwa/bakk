@@ -8,17 +8,12 @@ app = mvj.model('', { clientId: 'X', host:'unknown', core: { types:{} }})
 app.merge({
     core: {
         views:{
-            primitive:{ index:{} },
-            line:{},
-            d3:{},
-            a5:{},
-            a4:{},
-        },
-        types:{            
-            jobs:{ type:'Set<JobPrototype>' },
-            workflows:{ type:'Set<Workflow>' },
-            io:{ type:'Set<ObjIo>' }, // typ von index? oder nur r/w
-        },
+            'primitive':{ index:{} },
+            'line':{},
+            'd3':{},
+            'a5-h':{},
+            'a4-v':{},
+        },        
         config:config
     },
     model:{        
@@ -52,6 +47,7 @@ app.merge({
             app.core.types.merge(args.builtInTypes)
             app.merge(args.structure)
             app.callUiJob({
+                icon:'🗝',
                 desc:'app.init',
                 params:{},
                 show:false,

@@ -13,21 +13,22 @@
 
         <link  href="modules/views/html/view.css" rel="stylesheet">
         <link  href="modules/views/html/htmlBasics.css" rel="stylesheet">
+        <link  href="modules/views/html/primitive/primitive.css" rel="stylesheet">
+        <link  href="modules/views/html/line/line.css" rel="stylesheet">
+        <link  href="modules/views/html/d3/d3.css" rel="stylesheet">
+        <link  href="modules/views/html/a5/a5.css" rel="stylesheet">
+        <link  href="modules/jobs/workerModel3d.css" rel="stylesheet">
+
         <script src="modules/views/html/htmlBasics.js"></script>
 
-        <link  href="modules/views/html/primitive/primitive.css" rel="stylesheet">
-
-        <link  href="modules/views/html/line/line.css" rel="stylesheet">
         <script src="modules/views/html/line/decorators.js"></script>
         <script src="modules/views/html/line/object-autoView.js"></script>
         <script src="modules/views/html/line/object-appendView.js"></script>
         <script src="modules/views/html/line/job-lineView.js"></script>
         <script src="modules/views/html/line/file-lineView.js"></script>
 
-        <link  href="modules/views/html/d3/d3.css" rel="stylesheet">
         <script src="modules/views/html/d3/d3.js"></script>
 
-        <link  href="modules/views/html/a5/a5.css" rel="stylesheet">
         <script src="modules/views/html/a5/decorators.js"></script>        
         <script src="modules/views/html/a5/job-d3gantView.js"></script>
         <script src="modules/views/html/a5/job-progressLineView.js"></script>
@@ -44,8 +45,6 @@
         <script src="modules/views/html/a5/object-d3graphView.js"></script>
         <script src="modules/views/html/a5/project-editView.js"></script>
 
-        <link  href="modules/jobs/workerModel3d.css" rel="stylesheet">
-
         <script src="modules/types/browserWsNetwork.js"></script>
         <script src="modules/types/project.js"></script>
         <script src="modules/types/projectFolder.js"></script>
@@ -53,14 +52,12 @@
 
         <script src="src/job/folder.js"></script>
 
-        <script src="src/mvj.js"></script>
         <script src="src/q.js"></script>
         <script src="src/config.js"></script>
         <script src="src/tools.js"></script>
+        <script src="src/mvj.js"></script>
         <script src="src/app.js"></script>
         <script src="src/views/view.js"></script>
-
-        <!--<script src="src/network/browserWs.js"></script>-->
 
         <script src="src/job/job.js"></script>
         <script src="src/job/workflows.js"></script>
@@ -121,7 +118,7 @@
 
         onInit:j=> j.delegate(
             ()=> jf.job({
-                icon:'≟',
+                icon:'🗖',
                 desc:'prepare client',
                 params:{},
                 onCall:j1=> {
@@ -136,20 +133,20 @@
                 }
             }),
             ()=> jf.job({
-                icon:'≟',
+                icon:'⛓',
                 desc:'connect',
                 params:{},
                 onCall:j1=> app.network['⛓'](j1)
             }),
             ()=> jf.job({
-                icon:'≟',
+                icon:'↻',
                 desc:'load views',
                 params:{},
                 output:app.core.views.primitive,
                 onCall:j1=> app.core.views.primitive['↻'](j1),
             }),
             ()=> jf.job({
-                icon:'≟',
+                icon:'🗗',
                 desc:'showui',
                 params:{},
                 onCall:j1=>{
