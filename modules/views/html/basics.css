@@ -1,0 +1,8 @@
+.varName {
+    float: left;
+    color: #00AB56;
+}
+
+.varName:hover {
+    text-decoration: underline;
+}

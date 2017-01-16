@@ -1,8 +1,9 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <script src="https://d3js.org/d3.v4.js"></script>
+        <script src="https://d3js.org/d3.v4.js"></script>         
 
+        <!-- 3rd party -->
         <!--<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>-->
         <link  href="modules/views/html/lib/vis/dist/vis.css" rel="stylesheet">
         <script src="modules/views/html/lib/HackTimer.js"></script>
@@ -11,31 +12,29 @@
         <script src="modules/views/html/lib/ace/ace.js"></script>
         <script src="modules/views/html/lib/vis/dist/vis.js"></script>
 
+        <!-- css -->
         <link  href="modules/views/html/view.css" rel="stylesheet">
-        <link  href="modules/views/html/htmlBasics.css" rel="stylesheet">
+        <link  href="modules/views/html/basics.css" rel="stylesheet">
         <link  href="modules/views/html/primitive/primitive.css" rel="stylesheet">
         <link  href="modules/views/html/line/line.css" rel="stylesheet">
         <link  href="modules/views/html/d3/d3.css" rel="stylesheet">
         <link  href="modules/views/html/a5/a5.css" rel="stylesheet">
         <link  href="modules/jobs/workerModel3d.css" rel="stylesheet">
 
-        <script src="modules/views/html/htmlBasics.js"></script>
+        <!-- basics -->
+        <script src="modules/views/html/basics-a5.js"></script>
+        <script src="modules/views/html/basics-line.js"></script>
+        <script src="modules/views/html/basics.js"></script>
 
-        <script src="modules/views/html/line/decorators.js"></script>
-        <script src="modules/views/html/line/object-autoView.js"></script>
-        <script src="modules/views/html/line/object-appendView.js"></script>
-        <script src="modules/views/html/line/job-lineView.js"></script>
-        <script src="modules/views/html/line/file-lineView.js"></script>
+        <!-- view pligins -->
+        <script src="modules/views/html/a4/job-d3gantView.js"></script>
+        <script src="modules/views/html/a4/job-runView.js"></script>
+        <script src="modules/views/html/a4/job-visGantView.js"></script>
+        <script src="modules/views/html/a4/job-visGraphView.js"></script>
+        <script src="modules/views/html/a4/project-editView.js"></script>
 
-        <script src="modules/views/html/d3/d3.js"></script>
-
-        <script src="modules/views/html/a5/decorators.js"></script>        
-        <script src="modules/views/html/a5/job-d3gantView.js"></script>
         <script src="modules/views/html/a5/job-progressLineView.js"></script>
-        <script src="modules/views/html/a5/job-progressTreeView.js"></script>
-        <script src="modules/views/html/a5/job-runView.js"></script>
-        <script src="modules/views/html/a5/job-visGantView.js"></script>
-        <script src="modules/views/html/a5/job-visGraphView.js"></script>
+        <script src="modules/views/html/a5/job-progressTreeView.js"></script>        
         <script src="modules/views/html/a5/network-listView.js"></script>
         <script src="modules/views/html/a5/node-panelView.js"></script>
         <script src="modules/views/html/a5/object-a5lazyExpanderView.js"></script>
@@ -43,14 +42,19 @@
         <script src="modules/views/html/a5/object-visGraphView.js"></script>
         <script src="modules/views/html/a5/object-d3treeView.js"></script>
         <script src="modules/views/html/a5/object-d3graphView.js"></script>
-        <script src="modules/views/html/a5/project-editView.js"></script>
 
+        <script src="modules/views/html/d3/d3.js"></script>
+
+        <script src="modules/views/html/line/object-autoView.js"></script>
+        <script src="modules/views/html/line/object-appendView.js"></script>
+        <script src="modules/views/html/line/object-expandableView.js"></script>
+        <script src="modules/views/html/line/object-leafView.js"></script>
+
+        <!-- core -->
         <script src="modules/types/browserWsNetwork.js"></script>
         <script src="modules/types/project.js"></script>
         <script src="modules/types/projectFolder.js"></script>
         <script src="modules/types/pSet.js"></script>
-
-        <script src="src/job/folder.js"></script>
 
         <script src="src/q.js"></script>
         <script src="src/config.js"></script>
@@ -59,6 +63,7 @@
         <script src="src/app.js"></script>
         <script src="src/views/view.js"></script>
 
+        <script src="src/job/modFolder.js"></script>
         <script src="src/job/job.js"></script>
         <script src="src/job/workflows.js"></script>
         <script src="src/job/toolJobs.js"></script>
@@ -66,8 +71,7 @@
     </head>
     <body id="body" onload="app.init({
 
-        builtInTypes:{
-            'Folder':Folder,
+        builtInTypes:{            
             'Folder<Mod>':ModuleFolder,
             'File<Mod>':FileMod,
             'Set<View>':ViewSet,

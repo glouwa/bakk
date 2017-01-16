@@ -1,3 +1,10 @@
+/*
+@font-face {
+    font-family: 'NotoEmojiColor';
+    src: url('modules/views/html/NotoEmojiColor.ttf')  format('truetype'),
+}
+*/
+
 html {
     overflow-y:scroll;
 }
