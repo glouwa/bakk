@@ -1,6 +1,6 @@
 {
     type: 'View',
-    modelTypes: 'undefined',
+    modelTypes: ['undefined'],
     ctor: function(model)
     {
         var view = document.createElement('input')

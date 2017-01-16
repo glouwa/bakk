@@ -1,6 +1,6 @@
 {
     type: 'View',
-    modelTypes: 'object-buttons',
+    modelTypes: ['object-buttons'],
     ctor: function(model)
     {
         var isHidden = k=> k!='onCall' && k!='onCancel' && k!='onUpdate' && k!='onReturn'

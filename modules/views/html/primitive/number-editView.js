@@ -1,6 +1,6 @@
 {
     type: 'View',
-    modelTypes: 'number',
+    modelTypes: ['number'],
     ctor: function(model)
     {
         var view = document.createElement('input')

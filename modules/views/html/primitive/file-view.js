@@ -1,6 +1,6 @@
 {
     type: 'View',
-    modelTypes: 'File',
+    modelTypes: ['File'],
     ctor: function(model)
     {
         var view = document.createElement('div')

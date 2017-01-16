@@ -1,6 +1,6 @@
 {
     type: 'View',
-    modelTypes: 'jobfunctions',
+    modelTypes: ['jobfunctions'],
     ctor: function(jobModel) // der bekommt ein model
     {
         var view = button('▸')

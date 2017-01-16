@@ -1,6 +1,6 @@
 {
     type: 'View',
-    modelTypes: 'object',
+    modelTypes: ['object'],
     ctor: function(model)
     {
         return document.createElement('div')

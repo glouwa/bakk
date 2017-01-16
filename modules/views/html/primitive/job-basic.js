@@ -1,6 +1,6 @@
 {
     type: 'View',
-    modelTypes: 'Job',
+    modelTypes: ['Job'],
     ctor: function(model)
     {
         var view = document.createElement('div')

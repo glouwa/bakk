@@ -1,6 +1,6 @@
 {
     type: 'View',
-    modelTypes: 'Text',
+    modelTypes: ['Text'],
     ctor: function(model)
     {
         var view = document.createElement('span')

@@ -1,6 +1,6 @@
 {
     type: 'View',
-    modelTypes: 'Folder',
+    modelTypes: ['Folder'],
     ctor: function(model)
     {
         var view = document.createElement('div')

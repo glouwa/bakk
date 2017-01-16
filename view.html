@@ -45,11 +45,6 @@
 
         <script src="modules/views/html/d3/d3.js"></script>
 
-        <script src="modules/views/html/line/object-autoView.js"></script>
-        <script src="modules/views/html/line/object-appendView.js"></script>
-        <script src="modules/views/html/line/object-expandableView.js"></script>
-        <script src="modules/views/html/line/object-leafView.js"></script>
-
         <!-- core -->
         <script src="modules/types/browserWsNetwork.js"></script>
         <script src="modules/types/project.js"></script>
@@ -73,8 +68,7 @@
 
         builtInTypes:{            
             'Folder<Mod>':ModuleFolder,
-            'File<Mod>':FileMod,
-            'Set<View>':ViewSet,
+            'File<Mod>':FileMod,            
             'Network':wsBrowser,
         },
 
@@ -92,6 +86,10 @@
                     primitive:{
                         type:'Folder<Mod>',
                         directory:'./modules/views/html/primitive/'
+                    },
+                    line:{
+                        type:'Folder<Mod>',
+                        directory:'./modules/views/html/line/'
                     }
                 }
             },
@@ -148,6 +146,13 @@
                 params:{},
                 output:app.core.views.primitive,
                 onCall:j1=> app.core.views.primitive['↻'](j1),
+            }),
+            ()=> jf.job({
+                icon:'↻2',
+                desc:'load views2',
+                params:{},
+                output:app.core.views.line,
+                onCall:j1=> app.core.views.line['↻'](j1),
             }),
             ()=> jf.job({
                 icon:'🗗',

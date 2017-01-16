@@ -1,11 +1,3 @@
-var ViewSet = {
-    type:'ViewSet',
-    //index:{},//ViewIndex(Folder('./modules/views/html/primitive/'))
-    query:function(type){
-        return index[type].ctor
-    }
-}
-
 var FileMod = {
     type:'File<Mod>',
     '↻':function(j){ j.delegate(()=> tj.ajaxJob({     // delegate to ajax
@@ -13,54 +5,17 @@ var FileMod = {
         onData: (j, s, d)=> {                         // eval ajaxdata and add to model
             var view = eval('('+d+')')
             this.merge({ obj:view })
-
             var boxed = this.obj
-            // addto index
-            app.core.views.primitive.index.merge({[view.modelTypes]:boxed})
+            var parent = this.path.slice(0, this.path.lastIndexOf('.'))
+            view.modelTypes.forEach((v, k, idx)=>{
+                app.mergePath(parent+'.index', { [v]:boxed })
+            })
         }
     }))}
 }
 
-var remoteFolderListToThisOutput = function(j, d) {
-    j.params.directory = d//this.directory
-    j.delegate(()=> jf.remoteProxyJob({            // delegate to remote
-        icon: '📂',
-        desc: 'delegate to server and list files',
-        node: app.network['S₀'],
-        args: j.params,
-        realJob: js=> {
-
-            var dir = js.params.directory.valueOf()
-
-            fs.readdir(dir, (err, files)=> js.exception2localError('Message from FS', ()=> {
-                if (err) throw new Error(err)
-                var folderDiff = {}, fileDiff = {}
-                files.forEach((v, k, idx)=> {
-                    var directory = path.join(dir, v)
-                    var internFileName = v.replace('.',':')
-                    var internFilePath = path.join(dir, internFileName)
-
-                    if (fs.statSync(directory).isDirectory())
-                        folderDiff[internFileName] = { type:'Folder', directory:directory }
-
-                    else if (path.extname(directory) == '.js')
-                        fileDiff[internFileName] = { type:'File<Mod>', fileName:directory }
-
-                    else
-                        fileDiff[internFileName] = { type:'File', fileName:internFilePath }
-                })
-                js.updateJob({ state:{ log:'dir', progress:0.33 }, output:folderDiff})
-                js.updateJob({ state:{ log:'dir', progress:0.66 }, output:fileDiff})
-                js.updateJob({ state:{ log:'dir', progress:0.95 }, output:{'↻':'deadbeef'}})
-                js.ret('ok', 'listed ' + dir)
-            }))
-        }
-    })
-)}
-
 var ModuleFolder = {
-    type:'Folder<Mod>',
-    index:{},
+    type:'Folder<Mod>',    
     query:function(type){
         if (!this.index[type])
             return this.index['object'].ctor
@@ -71,7 +26,41 @@ var ModuleFolder = {
             icon:'☰',
             desc:'load file list',
             params:{},
-            onCall:j1=>remoteFolderListToThisOutput(j1, this.directory)
+            onCall:j1=>{
+                j1.params.directory = this.directory
+                j1.delegate(()=> jf.remoteProxyJob({            // delegate to remote
+                    icon: '📂',
+                    desc: 'delegate to server and list files',
+                    node: app.network['S₀'],
+                    args: j1.params,
+                    realJob: js=> {
+
+                        var dir = js.params.directory.valueOf()
+                        fs.readdir(dir, (err, files)=> js.exception2localError('Message from FS', ()=> {
+                            if (err) throw new Error(err)
+                            var folderDiff = {}, fileDiff = {}
+                            files.forEach((v, k, idx)=> {
+                                var directory = path.join(dir, v)
+                                var internFileName = v.replace('.',':')
+                                var internFilePath = path.join(dir, internFileName)
+
+                                if (fs.statSync(directory).isDirectory())
+                                    folderDiff[internFileName] = { type:'Folder', directory:directory }
+
+                                else if (path.extname(directory) == '.js')
+                                    fileDiff[internFileName] = { type:'File<Mod>', fileName:directory }
+
+                                else
+                                    fileDiff[internFileName] = { type:'File', fileName:internFilePath }
+                            })
+                            js.updateJob({ state:{ log:'dir', progress:0.33 }, output:folderDiff})
+                            js.updateJob({ state:{ log:'dir', progress:0.66 }, output:fileDiff})
+                            js.updateJob({ state:{ log:'dir', progress:0.95 }, output:{'↻':'deadbeef'}})
+                            js.ret('ok', 'listed ' + dir)
+                        }))
+                    }
+                })
+            )}
         }),
         ()=> jf.job({
             icon:'📄',

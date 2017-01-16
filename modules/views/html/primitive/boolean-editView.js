@@ -1,6 +1,6 @@
 {
     type: 'View',
-    modelTypes: 'boolean',
+    modelTypes: ['boolean'],
     ctor: function(model)
     {
         var view = document.createElement('input')

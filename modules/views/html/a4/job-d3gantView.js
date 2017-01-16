@@ -3,7 +3,7 @@ var toSmallTimeSpan = date=> '' + date.getHours() +':'+
                                 date.getSeconds() +'.'+
                                 date.getMilliseconds()
 
-var jobToDomain  = j=> j.icon ? j.icon.valueOf() + ' ' +  j.id.valueOf() : j.id.valueOf()
+var jobToDomain  = j=> j.icon ? j.id.valueOf() + ' ' + j.icon.valueOf() : j.id.valueOf()
 var buildDomain  = data=> ['commits'].concat(data.jobs.map(d=> jobToDomain(d)))
 
 //var getDebug     = function(j) { return j.debugRemote ? j.debugRemote : j.debug }
