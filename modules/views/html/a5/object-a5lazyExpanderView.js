@@ -1,7 +1,7 @@
 function a3Frame(model, headerFactory)
 {
     var origHf = headerFactory
-    headerFactory = headerFactory || app.core.views.primitive.query('object-buttons')
+    headerFactory = headerFactory || app.core.views.primitive.query('object',1)
 
     var n = model.path.valueOf().charAt(0).toUpperCase() + model.path.valueOf().slice(1)
 

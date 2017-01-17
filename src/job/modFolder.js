@@ -7,8 +7,9 @@ var FileMod = {
             this.merge({ obj:view })
             var boxed = this.obj
             var parent = this.path.slice(0, this.path.lastIndexOf('.'))
-            view.modelTypes.forEach((v, k, idx)=>{
-                app.mergePath(parent+'.index', { [v]:boxed })
+            view.modelTypes.forEach((v, k, idx)=> {
+                var idx = boxed.idx | 0
+                app.mergePath(parent+'.index', { [v]: { [idx]:boxed } })
             })
         }
     }))}
@@ -16,10 +17,12 @@ var FileMod = {
 
 var ModuleFolder = {
     type:'Folder<Mod>',    
-    query:function(type){
+    query:function(type, idx){
+
         if (!this.index[type])
-            return this.index['object'].ctor
-        return this.index[type].ctor
+            type = 'object'
+
+        return this.index[type][idx|0].ctor
     },
     '↻':function(j) { j.delegate(
         ()=> jf.job({
