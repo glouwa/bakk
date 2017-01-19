@@ -27,11 +27,6 @@
         <script src="modules/views/html/basics.js"></script>
 
         <!-- view pligins -->
-        <script src="modules/views/html/a4/job-d3gantView.js"></script>
-        <script src="modules/views/html/a4/job-runView.js"></script>
-        <script src="modules/views/html/a4/job-visGantView.js"></script>
-        <script src="modules/views/html/a4/job-visGraphView.js"></script>
-        <script src="modules/views/html/a4/project-editView.js"></script>
 
         <script src="modules/views/html/a5/job-progressLineView.js"></script>
         <script src="modules/views/html/a5/job-progressTreeView.js"></script>        
@@ -90,6 +85,10 @@
                     line:{
                         type:'Folder<Mod>',
                         directory:'./modules/views/html/line/'
+                    },
+                    a4v:{
+                        type:'Folder<Mod>',
+                        directory:'./modules/views/html/a4/'
                     }
                 }
             },
@@ -155,6 +154,13 @@
                 onCall:j1=> app.core.views.line['↻'](j1),
             }),
             ()=> jf.job({
+                icon:'↻3',
+                desc:'load views3',
+                params:{},
+                output:app.core.views.a4v,
+                onCall:j1=> app.core.views.a4v['↻'](j1),
+            }),
+            ()=> jf.job({
                 icon:'🗗',
                 desc:'showui',
                 params:{},
@@ -162,10 +168,10 @@
                     var projectsDiv = document.createElement('div')
                     projectsDiv.appendChild(a3View(app.model.mods))
                     projectsDiv.appendChild(a3View(app.network))
-                    $('#modelTab')[0].add('☍', { content:a3View(app) })
+                    $('#modelTab')[0].add('☍', { content:app.core.views.a4v.query('object')(app) })
                     $('#modelTab')[0].add('🌐', { content:projectsDiv }, 'inBg')
-                    $('#modelTab')[0].add('⥂', { content:a3View(app.model.jobs) }, 'inBg')
-                    $('#jobTab')[0].add(j.id, { content:a3View(j) })
+                    $('#modelTab')[0].add('⥂', { content:app.core.views.a4v.query('object')(app.model.jobs) }, 'inBg')
+                    $('#jobTab')[0].add(j.id, { content:app.core.views.a4v.query('object')(j) })
                     j1.ret('ok', 'ui loaded')
                 }
             })

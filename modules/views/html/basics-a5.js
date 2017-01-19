@@ -12,7 +12,7 @@ function tab(id)
                 ev.preventDefault()
                 ev.stopPropagation()
                 var m = mvj.traverse(ev.dataTransfer.getData("text"), app)
-                view.add('dnd', { content:a3View(m) })
+                view.add('dnd', { content:app.core.views.a4v.query('object')(m) })
             }
         var content = document.createElement('div')
         view.active = undefined

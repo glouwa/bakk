@@ -11,8 +11,9 @@ app.merge({
             'primitive':{ index:{} },
             'line':{},
             'd3':{},
-            'a5-h':{},
-            'a4-v':{},
+            'a5h':{},
+            'a4v':{},
+            'a3h':{},
         },        
         config:config
     },
@@ -34,7 +35,7 @@ app.merge({
         app.mergePath('model.jobs.'+jd.id, jd)
         var j = app.model.jobs[jd.id.valueOf()]
         if (args.show)
-            $('#jobTab')[0].add(j.id, { content:jobAllView(j) })
+            $('#jobTab')[0].add(j.id, { content:app.core.views.a4v.query('object')(j) })
         return j
     },
     callUiJob:function(args){

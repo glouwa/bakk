@@ -49,7 +49,9 @@ function project(url, noView)
                         j.ret('ok', '+1 idle job, +1 view')         // done
                     },
                     '⋯': function(j) {
-                        $('#modelTab')[0].add(project.jobPrototype.icon, { content:a3View(project) }/*, 'inBg'*/)
+                        $('#modelTab')[0].add(project.jobPrototype.icon, {
+                            content:app.core.views.a4v.query('object')(project)
+                        }/*, 'inBg'*/)
                         j.ret('ok', '+1 project view')
                     }
                 }))
@@ -94,7 +96,7 @@ exports.create = function projectFolder() { return {
                 // TODO: lazy(project(...))  : lazy wrapet alle members von project
                 '🐼 Process fracturing folder on workers':    project('modules/jobs/workerBacc0.js'),
                 '🐁 Process empty jobs on worker':            project('modules/jobs/workerBacc1.js'),
-                '❄ Find similar 3d models on worker':        project('modules/jobs/workerModel3d.js'),
+                '🦁 Find similar 3d models on worker':        project('modules/jobs/workerModel3d.js'),
                 'ℙ Find prime numbers with C++ on workers':  project('modules/jobs/workerPrimeCpp.js'),
                 '💢 server fragment folder':                  project('modules/jobs/serverFragmentFolder.js'),
                 '💻 server cmd':                              project('modules/jobs/serverCmd.js'),
@@ -119,7 +121,7 @@ exports.create = function projectFolder() { return {
                         this['🗩 local output'],
                         this['🐼 Process fracturing folder on workers'],
                         this['🐁 Process empty jobs on worker'],
-                        this['❄ Find similar 3d models on worker'],
+                        this['🦁 Find similar 3d models on worker'],
                         this['ℙ Find prime numbers with C++ on workers'],
                     ]
 

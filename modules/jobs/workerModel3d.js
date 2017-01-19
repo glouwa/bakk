@@ -6,7 +6,7 @@ function find3dModel(j, diff)
     })
 
     j.delegate(()=> jf.remoteProxyJob({
-        icon: '❄',
+        icon: '🦁',
         node: app.network['S₀'],
         desc:'delegate to server',
         args: j.params,
@@ -171,7 +171,7 @@ new Object({
     type:'Project',    
     jobPrototype: {
         type: 'JobPrototype',
-        icon: '⤑❄',
+        icon: '🦁',
         desc: 'Find similar 3d models',
         onCall: find3dModel,
         args: {

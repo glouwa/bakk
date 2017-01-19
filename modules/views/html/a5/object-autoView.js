@@ -46,54 +46,47 @@ function a3View(model)
 
 */
 
-    var contentDelegate = ()=> autoMultiView(model, [objectd3treeView, /*objectd3graphView,*/ autoView])
+    var viewSet = [objectd3treeView, /*objectd3graphView,*/ autoView]
 
     if (model.type == 'Model')
         //contentDelegate = ()=> systemGraphView(model)
-        contentDelegate = ()=> autoMultiView(model, [autoView, systemGraphView])
+        viewSet = [autoView, systemGraphView]
 
+    /*
     if (model.type == 'Project')
-        contentDelegate = ()=> autoMultiView(model, [autoView, projectEdit])
+        viewSet = [autoView, projectEdit]*/
 
-    if (model.type == 'Job')
-        contentDelegate = ()=> autoMultiView(model,
-            [autoView, jobStateTreeView, jobStateGraphView /*, jobStateGantViewWithProgress*/, jobPlot])
 
     if (model.type == 'Network')
-        contentDelegate = ()=> autoMultiView(model, [autoView, systemView])
+        viewSet = [autoView, systemView]
 
     if (modelType(model) == 'function')
-        contentDelegate = ()=> autoMultiView(model, [autoView, codeEdit])
+        viewSet = [autoView, codeEdit]
 
     if (model.type == 'Worker' ||
         model.type == 'Client' ||
         model.type == 'Server')
-        contentDelegate = ()=> autoMultiView(model, [autoView, networkNodeView])
+        viewSet = [autoView, networkNodeView]
 
     if (model.type == 'PrimeArgs')
-        contentDelegate = ()=>
-            autoMultiView(model, [autoView, app.core.views.a5['primeParameterView'].ctor])
+        viewSet = [autoView, app.core.views.a5['primeParameterView'].ctor]
 
     if (model.type == 'PrimeResult')
-        contentDelegate = ()=>
-            autoMultiView(model, [autoView, app.core.views.a5['primeResultView'].ctor])
+        viewSet = [autoView, app.core.views.a5['primeResultView'].ctor]
 
     if (model.type == 'Model3dArgs')
-        contentDelegate = ()=>
-            autoMultiView(model, [autoView, app.core.views.a5['model3dParameter'].ctor])
+        viewSet = [autoView, app.core.views.a5['model3dParameter'].ctor]
 
     if (model.type == 'model3dResultSet')
-        contentDelegate = ()=>
-            autoMultiView(model, [autoView, app.core.views.a5['model3dResultSet'].ctor])
+        viewSet = [autoView, app.core.views.a5['model3dResultSet'].ctor]
 
     if (model.type == 'CmdResult')
-        contentDelegate = ()=>
-            autoMultiView(model, [autoView, app.core.views.a5['cmdResult'].ctor])
+        viewSet = [autoView, app.core.views.a5['cmdResult'].ctor]
 
     return a3expander({
         model:model,
         expanded:true,
         header:a3Frame(model),
-        contentFactory:contentDelegate
+        contentFactory:()=> autoMultiView(model, viewSet)
     })
 }
