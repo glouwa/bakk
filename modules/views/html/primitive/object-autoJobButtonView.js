@@ -1,8 +1,8 @@
 {
-    type: 'View',
-    modelTypes: ['object'],
-    idx: 1,
-    ctor: function(model)
+    type:'View',
+    modelTypes:['object'],
+    idx:1,
+    ctor:function(model)
     {
         var isHidden = k=> k!='onCall' && k!='onCancel' && k!='onUpdate' && k!='onReturn'
         var view = document.createElement('div')

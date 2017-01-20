@@ -2,7 +2,7 @@
     type:'View',
     icon:'⛁',
     modelTypes:['Job'],
-    idx:0,
+    idx:2,
     ctor:function jobPlot(jobModel)
     {
         var view = document.createElement('div')

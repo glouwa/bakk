@@ -64,6 +64,7 @@ function tab(id)
     return view
 }
 
+/*
 function splitter(v1, v2)
 {
     var view = document.createElement('div')
@@ -88,7 +89,7 @@ function splitter(v1, v2)
     view.appendChild(p2)
     view.appendChild(c)
     return view
-}
+}*/
 
 function btab()
 {

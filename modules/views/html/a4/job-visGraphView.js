@@ -2,7 +2,7 @@
     type:'View',
     icon:'⛁',
     modelTypes:['Job'],
-    idx:2,
+    idx:1,
     ctor: function jobStateGraphView(jobModel)
     {
         var jobStateGraphConfig = {
@@ -19,7 +19,6 @@
                     edgeMinimization: false,
                     levelSeparation:150
                     //nodeSpacing:500
-
                 }
             },
             physics: false,

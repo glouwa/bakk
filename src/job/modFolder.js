@@ -19,10 +19,10 @@ var ModuleFolder = {
     type:'Folder<Mod>',
     queryAll:function(type, idx){
 
-        if (!this.index[type] || type == 'object')
-            return
-
         result = []
+        if (!this.index[type] || type == 'object')
+            return result
+
         this.index[type].forEach((v,k,i)=> result.push(v.ctor))
         return result
     },

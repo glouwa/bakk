@@ -5,7 +5,6 @@
     idx:3,
     ctor:function jobStateGantD3View(jobModel)
     {
-
         function jobPlotGant(view, jobModel)
         {
             var toSmallTimeSpan = date=> '' + date.getHours() +':'+

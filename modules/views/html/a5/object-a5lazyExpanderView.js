@@ -1,15 +1,11 @@
-function a3Frame(model, headerFactory)
+function a3Frame(model)
 {
-    var origHf = headerFactory
-    headerFactory = headerFactory || app.core.views.primitive.query('object',1)
-
-    var n = model.path.valueOf().charAt(0).toUpperCase() + model.path.valueOf().slice(1)
-
     var view = document.createElement('div')
         view.className = 'a3Frame'
         view.style.backgroundColor = config.colors.paperBorder
         //view.draggable = true
         //view.ondragstart = ev=> onDragStart(ev, model)
+        var n = model.path.valueOf().charAt(0).toUpperCase() + model.path.valueOf().slice(1)
         var name = document.createElement('div')
             name.innerText = n
             name.style.float = 'left'
@@ -37,8 +33,17 @@ function a3Frame(model, headerFactory)
             desc.style.fontStyle = 'italic'
             desc.style.fontWeight = '800'
             desc.style.color = '#1FBF6F'
-        var header = headerFactory(model)            
-            //buttonHeader.style.marginBottom = 20
+        var header = null
+            if (modelType(model) == 'Job'){
+                header = document.createElement('div')
+                header.className = 'autoJobButtonView'
+
+                header.style.width = '100%'
+                header.appendChild(app.core.views.primitive.query('Job')(model))
+            }
+            else
+                header = app.core.views.primitive.query('object',1)(model)
+
         view.appendChild(name)
         view.appendChild(type)       
         view.appendChild(header)

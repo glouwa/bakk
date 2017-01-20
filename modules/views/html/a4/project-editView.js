@@ -1,8 +1,8 @@
 {
-    type: 'View',
+    type:'View',
     icon:'⛁',
-    modelTypes: ['Project'],
-    ctor: function projectEdit(model)
+    modelTypes:['Project'],
+    ctor:function projectEdit(model)
     {
         var view = document.createElement('div')
             view.className = 'projectEdit'

@@ -15,37 +15,6 @@ function autoMultiView(model, viewsf)
 
 function a3View(model)
 {
-    /*
-    var typeViewMap = {
-        'default':        [objectd3treeView, objectd3graphView, autoView],
-        'function':       [autoView, codeEdit],
-        Model:            [autoView, systemGraphView],
-        Project:          [autoView, projectEdit],
-        Job:              [jobStateTreeView, jobStateGraphView,
-                            //jobStateGantViewWithProgress,
-                            jobPlot],
-        Network:          [autoView, systemView],
-        Worker:           [autoView, networkNodeView],
-        Client:           [autoView, networkNodeView],
-        Server:           [autoView, networkNodeView],
-        PrimeArgs:        [autoView, app.core.views['primeParameterView'].ctor],
-        PrimeResult:      [autoView, app.core.views['primeResultView'].ctor],
-        Model3dArgs:      [autoView, app.core.views['model3dParameter'].ctor],
-        model3dResultSet: [autoView, app.core.views['model3dResultSet'].ctor],
-        CmdResult:        [autoView, app.core.views['cmdResult'].ctor],
-    }
-
-    var viewSet = typeViewMap[model.type] ? typeViewMap[model.type] : typeViewMap['default']
-
-    return a3expander({
-        model:model,
-        expanded:true,
-        header:a3Frame(model),
-        contentFactory:()=> autoMultiView(model, viewSet)
-    })
-
-*/
-
     var viewSet = [objectd3treeView, /*objectd3graphView,*/ autoView]
 
     if (model.type == 'Model')
