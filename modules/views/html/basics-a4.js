@@ -1,10 +1,10 @@
-function btabLazy(model, viewsf)
+function btabLazy(model, viewPrototypeSet)
 {
     function setActive(p)
     {
         p.flap.className = 'btab-active'
         if (!p.content) {
-            p.content = p.contentf(model)
+            p.content = p.viewPrototype.ctor(model)
             content.appendChild(p.content)
         }
         p.content.style.display = 'block'
@@ -42,7 +42,6 @@ function btabLazy(model, viewsf)
             p.flap.innerText = p.name
             p.flap.onclick = ()=> view.activate(p)
             header.appendChild(p.flap)
-            //content.appendChild(p.contentf)
             view.active = view.active || p
             if (header.childNodes.length === 1)
                 setActive(p)
@@ -59,9 +58,9 @@ function btabLazy(model, viewsf)
         view.appendChild(content)
         view.appendChild(header)
 
-    viewsf.forEach((v, k, idx)=> view.add({
-        name:k,
-        contentf:viewsf[k]
+    viewPrototypeSet.forEach((v, k, idx)=> view.add({
+        name:viewPrototypeSet[k].icon + Number(k).toSubscript(),
+        viewPrototype:viewPrototypeSet[k]
     }))
     return view
 }

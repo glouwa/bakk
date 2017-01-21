@@ -313,6 +313,10 @@ function codeEdit(model)
 {
     if (typeof codeEdit.counter == 'undefined' ) codeEdit.counter = 0
 
+    var val = typeof model == 'function'
+            ? model.toString()
+            : JSON.stringify(model, 0, 4)
+
     var code = document.createElement('pre')
         code.id = 'aceEdit' + codeEdit.counter++
         code.style.clear = 'both'
@@ -320,21 +324,21 @@ function codeEdit(model)
     var editor = ace.edit(code)
         editor.session.setMode("ace/mode/javascript")
         editor.setTheme("ace/theme/tomorrow")
-        editor.setValue(model.toString(), -1)
+        editor.setValue(val, -1)
         editor.setOptions({
-            maxLines: 55,
+            maxLines: 5000,
             fontFamily: "Monospace",
             fontSize: "8pt"
         })
 
     editor.getSession().on('change', function(e)
-    {
+    {/*
         var functionCode = editor.getSession().getValue()
         var func = eval('('+functionCode+')')
         console.log(func.toString())
 
         if (func)
-            model.merge(func)
+            model.merge(func)*/
     })
 
     return code

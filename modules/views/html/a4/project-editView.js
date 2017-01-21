@@ -1,6 +1,6 @@
 {
     type:'View',
-    icon:'⛁',
+    icon:'{}',
     modelTypes:['Project'],
     ctor:function projectEdit(model)
     {
@@ -13,7 +13,7 @@
                 if (changes.newMembers.jobPrototype)
                 {
                     view.appendChild(
-                        a3View(model.jobPrototype.args)
+                        app.core.views.a5h.query('object',4)(model.jobPrototype.args)
                     )
                     view.appendChild(
                         a3expander({

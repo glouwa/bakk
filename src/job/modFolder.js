@@ -23,8 +23,15 @@ var ModuleFolder = {
         if (!this.index[type] || type == 'object')
             return result
 
-        this.index[type].forEach((v,k,i)=> result.push(v.ctor))
+        this.index[type].forEach((v,k,i)=> result.push(v))
         return result
+    },
+    queryByType:function(type, idx){
+
+        if (!this.index[type])
+            type = 'object'
+
+        return this.index[type][idx|0]
     },
     query:function(type, idx){
 

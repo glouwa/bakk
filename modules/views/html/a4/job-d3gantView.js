@@ -1,6 +1,6 @@
 {
     type:'View',
-    icon:'⛁',
+    icon:'📈',
     modelTypes:['Job'],
     idx:3,
     ctor:function jobStateGantD3View(jobModel)
@@ -24,7 +24,7 @@
             function handleMouseOver() { }
             function handleMouseOut() { }
 
-            var w = 800
+            var w = 820
             var h = 400
             var m = { top:30, right:10, bottom:30, left:80 }
             var data = { jobs:[] }

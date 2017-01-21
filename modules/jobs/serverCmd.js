@@ -55,8 +55,8 @@ new Object({
     },
     tests: [],
     views: {
-        a5: {
-            cmdResult: {
+        a5h: {
+            CmdResult: {
                 type: 'View',
                 demoViewModel: {},
                 ctor: m=> cmdResultView(m)

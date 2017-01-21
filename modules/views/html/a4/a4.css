@@ -1,1 +1,131 @@
- 
+.paper{
+    background-color:#ffffff;
+    border-style:solid;
+    border-color:#C4E8D6; // #d5d5d5; //#e0e0e0;
+    border-width:1px;
+    border-radius:4px;
+    width:100%;
+    height: calc(100% - 50px);
+    margin: 20 1% auto 1%;
+    padding-bottom: 1;
+    box-shadow: 0.5px 0.5px 3px #e0e0e0;
+}
+
+@media (min-width: 900px) {
+    .paper{
+        width: 47%;
+    }
+}
+
+@media (min-width: 1350px) {
+    .paper{
+        width: 47%;
+    }
+}
+
+.paper .pheader{
+    background-color: #00CC66;
+    color: #ffffff;
+    border-radius: 3px 3px 0 0;
+    text-align: center;
+    padding: 0 11 0 11;
+    height: 25;
+    overflow: hidden;
+}
+
+.paper .pheader .close{
+    position: absolute;
+    top: 1;
+    right: 3;
+    color: lightgrey;
+}
+
+.paper .pheader .close:hover{
+    color: #D02424;
+}
+
+/*-------------------------------------------------------------------------------------------*/
+
+.tab{
+    float: left;
+    margin: 4 1 -2 1;
+    padding: 1 20 0 20;
+    cursor: hand;
+    border-style:solid;
+    border-color: transparent;
+    border-width:0 0 3 0;
+    border-radius: 2pt;
+}
+
+.tab:hover{
+    background-color: #10E079;
+}
+
+.tab-active{
+transform: perspective(10px) rotateX(3deg);
+    float: left;
+    margin: 2 1 -2 1;
+    padding: 1 30 0 6;
+    cursor: hand;
+    font-weight: normal;
+    background-color: #FDFDFD;
+    border-radius: 2pt;
+    color: #00CC66;
+    height: 24;
+    position: relative;
+}
+
+.tab-add{
+    float: left;
+    margin: 4 0 -2 0;
+    padding: 1 20 0 20;
+    cursor: hand;
+}
+.tab-add:hover{
+    font-weight: bold;
+}
+
+/*-------------------------------------------------------------------------------------------*/
+
+.btab-header{
+    border-style: solid none none;
+    border-width: 1;
+    border-color: #F0F0F0;
+    border-radius: 0 0 3px 3px;
+    text-align: center;
+    padding: 0 11 0 2;
+    height: 25;
+}
+
+.btab{
+    float: right;
+    padding: 1 10 5 10;
+    margin: 2 3 1 3;
+    cursor: hand;
+    border-style: solid;
+    border-color: transparent;
+    border-width: 0 0 3 0;
+    color: #CCCCCC;
+    border-radius: 3px;
+    height: 8;
+}
+
+.btab:hover{
+    background-color: #fff;
+}
+
+.btab-active{
+    float: right;
+    margin: -1 0 3 0;
+    padding: 4 20 0 20;
+    cursor: hand;
+    font-weight: normal;
+    background-color: #fff;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    color: #000000;
+    border-style: none solid solid solid;
+    border-width: 1;
+    border-color: #FAFAFA #F5F5F5 #F5F5F5 #FAFAFA;
+    height: 18px;
+}

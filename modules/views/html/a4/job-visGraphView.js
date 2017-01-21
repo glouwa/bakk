@@ -1,6 +1,6 @@
 {
     type:'View',
-    icon:'⛁',
+    icon:'🌳',
     modelTypes:['Job'],
     idx:1,
     ctor: function jobStateGraphView(jobModel)

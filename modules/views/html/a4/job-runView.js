@@ -1,6 +1,6 @@
 {
     type:'View',
-    icon:'⛁',
+    icon:'J',
     modelTypes:['Job'],
     idx:0,
     ctor:function jobAllView(model)

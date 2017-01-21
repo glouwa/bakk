@@ -1,11 +1,11 @@
 {
-    type: 'View',
-    icon:'⛁',
-    modelTypes: ['object'],
-    idx:0,
+    type:'View',
+    icon:'*',
+    modelTypes:['object'],
+    idx:4,
     ctor: function(model)
     {
-        var viewSet = app.core.views.a4v.queryAll(modelType(model))
+        var viewSet = app.core.views.a5h.queryAll(modelType(model))
                     .concat([
                         app.core.views.a5h.queryByType('object', 0),
                         app.core.views.a5h.queryByType('object', 1),

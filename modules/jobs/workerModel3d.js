@@ -209,7 +209,7 @@ new Object({
     },
     tests: [],
     views: {
-        a5: {
+        a5h: {
             model3dEntity: {
                 type: 'View',
                 demoViewModel: {},
@@ -220,7 +220,7 @@ new Object({
                 demoViewModel: {},
                 ctor: m=> initialSetView(m)
             },
-            model3dParameter: {
+            Model3dArgs: {
                 type: 'View',
                 demoViewModel: {},
                 ctor: m=> parameterView(m)

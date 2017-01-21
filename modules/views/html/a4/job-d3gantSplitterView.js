@@ -1,6 +1,6 @@
 {
     type:'View',
-    icon:'⛁',
+    icon:'÷',
     modelTypes:['Job'],
     idx:2,
     ctor:function jobPlot(jobModel)
@@ -10,7 +10,8 @@
             var pv = jobStateWithLogView(jobModel, jpViewFactory({ caption:false, log:true, width:'100%' }))
                 pv.style.width = '100%'
                 pv.style.margin = '-1 0 0 0'
-            var gv = app.core.views.a4v.query('Job', 3)(jobModel)
+            //var gv = app.core.views.a4v.query('Job', 3)(jobModel)
+            var gv = app.core.views.a4v['job-d3gantView:js'].obj.ctor(jobModel)
             var aView = undefined
             view.appendChild(pv)
             view.appendChild(gv)
@@ -22,7 +23,7 @@
             }
             if (e) {
                 //aView = autoView(e.__data__)
-                aView = objectd3treeView(e.__data__)
+                aView = app.core.views.a5h.query('object', 2)(e.__data__)
                 aView.style.borderStyle = 'dashed none none none'
                 aView.style.borderWidth = 1
                 aView.style.borderColor = '#B0B0B0'

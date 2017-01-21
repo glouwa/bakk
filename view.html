@@ -18,6 +18,8 @@
         <link  href="modules/views/html/primitive/primitive.css" rel="stylesheet">
         <link  href="modules/views/html/line/line.css" rel="stylesheet">
         <link  href="modules/views/html/d3/d3.css" rel="stylesheet">
+        <link  href="modules/views/html/a3/a3.css" rel="stylesheet">
+        <link  href="modules/views/html/a4/a4.css" rel="stylesheet">
         <link  href="modules/views/html/a5/a5.css" rel="stylesheet">
         <link  href="modules/jobs/workerModel3d.css" rel="stylesheet">
 
@@ -26,17 +28,6 @@
         <script src="modules/views/html/basics-a4.js"></script>
         <script src="modules/views/html/basics-a5.js"></script>
         <script src="modules/views/html/basics-line.js"></script>        
-
-        <!-- view pligins -->
-        <script src="modules/views/html/a5/job-progressLineView.js"></script>
-        <script src="modules/views/html/a5/job-progressTreeView.js"></script>        
-        <script src="modules/views/html/a5/network-listView.js"></script>
-        <script src="modules/views/html/a5/node-panelView.js"></script>
-        <script src="modules/views/html/a5/object-a5lazyExpanderView.js"></script>
-        <script src="modules/views/html/a5/object-autoView.js"></script>
-        <script src="modules/views/html/a5/object-visGraphView.js"></script>
-        <script src="modules/views/html/a5/object-d3treeView.js"></script>
-        <script src="modules/views/html/a5/object-d3graphView.js"></script>
 
         <script src="modules/views/html/d3/d3.js"></script>
 
@@ -60,134 +51,125 @@
 
     </head>
     <body id="body" onload="app.init({
-
-        builtInTypes:{            
-            'Folder<Mod>':ModuleFolder,
-            'File<Mod>':FileMod,            
-            'Network':wsBrowser,
-        },
-
-        structure:{
-            type:'C',
-            host:'Browser',
-            //userId:'M',            
-            //nodeId:'C₀',
-            '+1 client': j=> {
-                window.open('./view.html', '_blank')
-                j.ret('ok', 'window.open(...) called')
+            builtInTypes:{
+                'Folder<Mod>':ModuleFolder,
+                'File<Mod>':FileMod,
+                'Network':wsBrowser,
             },
-            core:{                
-                views:{
-                    primitive:{
-                        type:'Folder<Mod>',
-                        directory:'./modules/views/html/primitive/'
+
+            structure:{
+                type:'C',
+                host:'Browser',
+                //userId:'M',
+                //nodeId:'C₀',
+                '+1 client': j=> {
+                    window.open('./view.html', '_blank')
+                    j.ret('ok', 'window.open(...) called')
+                },
+                core:{
+                    views:{
+                        primitive:{ type:'Folder<Mod>', directory:'./modules/views/html/primitive/' },
+                        line:     { type:'Folder<Mod>', directory:'./modules/views/html/line/' },
+                        a3h:      { type:'Folder<Mod>', directory:'./modules/views/html/a3/'   },
+                        a4v:      { type:'Folder<Mod>', directory:'./modules/views/html/a4/'   },
+                        a5h:      { type:'Folder<Mod>', directory:'./modules/views/html/a5/' }
+                    }
+                },
+                network:{
+                    type: 'Network',
+                    endpoint:'ws://' + document.location.hostname + ':' + config.server.wsport,
+                    '+4 worker': j=> app.model.mods.lib['🖥 Start workers']['▸'](j),
+                    '☠ worker': j=> app.model.mods.lib['☠ Kill all']['▸'](j, {}, { nodeType:['Worker']}),
+                    '☠ all': j=> app.model.mods.lib['☠ Kill all']['▸'](j, {}, { nodeType:['Server', 'Overlord', 'Worker']}),
+                    '↻ clients': j=> {
+                        app.network['S₀'].send({
+                            type:'Ws',
+                            payload:{ type:'Reload' }
+                        })
+                        j.ret('ok', 'reload message sent')
                     },
-                    line:{
-                        type:'Folder<Mod>',
-                        directory:'./modules/views/html/line/'
+                    stateChangeHandlers:{
+                        onConnected:    c=> {},
+                        onDisconnected: c=> clientProtocol.stateChangeHandlers.onDisconnected(c)
                     },
-                    a4v:{
-                        type:'Folder<Mod>',
-                        directory:'./modules/views/html/a4/'
+                    msgHandlers:{
+                        onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
+                        onReload:      (c, parsed)=> location.reload(true),
+                        onServerHallo: (c, parsed)=> clientProtocol.msgHandlers.onServerHallo(null, 'Client', ['JS'], c, parsed, 'Browser')
                     }
                 }
             },
-            network:{
-                type: 'Network',
-                endpoint:'ws://' + document.location.hostname + ':' + config.server.wsport,
-                '+4 worker': j=> app.model.mods.lib['🖥 Start workers']['▸'](j),
-                '☠ worker': j=> app.model.mods.lib['☠ Kill all']['▸'](j, {}, { nodeType:['Worker']}),
-                '☠ all': j=> app.model.mods.lib['☠ Kill all']['▸'](j, {}, { nodeType:['Server', 'Overlord', 'Worker']}),
-                '↻ clients': j=> {
-                    app.network['S₀'].send({
-                        type:'Ws',
-                        payload:{ type:'Reload' }
-                    })
-                    j.ret('ok', 'reload message sent')
-                },
-                stateChangeHandlers:{
-                    onConnected:    c=> {},
-                    onDisconnected: c=> clientProtocol.stateChangeHandlers.onDisconnected(c)
-                },
-                msgHandlers:{
-                    onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
-                    onReload:      (c, parsed)=> location.reload(true),
-                    onServerHallo: (c, parsed)=> clientProtocol.msgHandlers.onServerHallo(null, 'Client', ['JS'], c, parsed, 'Browser')
-                }
-            }
-        },
 
-        onInit:j=> j.delegate(
-            ()=> jf.job({
-                icon:'🗖',
-                desc:'prepare client',
-                params:{},
-                onCall:j1=> {
-                    $('#modelTabPaper').append(tab('modelTab'))
-                    $('#jobTabPaper').append(tab('jobTab'))
-                    app.clientId.on('change', changes=> {
-                        document.title = app.clientId
-                        $('#thisId').text(app.clientId)
-                    })
-                    mvj.onCommit = function(path, diff) { /*TODO*/ }
-                    j1.ret('ok', 'ui loaded')
-                }
-            }),
-            ()=> jf.job({
-                icon:'⛓',
-                desc:'connect',
-                params:{},
-                onCall:j1=> app.network['⛓'](j1)
-            }),
-            ()=> jf.job({
-                icon:'↻',
-                desc:'load views',
-                params:{},
-                output:app.core.views.primitive,
-                onCall:j1=> app.core.views.primitive['↻'](j1),
-            }),
-            ()=> jf.job({
-                icon:'↻2',
-                desc:'load views2',
-                params:{},
-                output:app.core.views.line,
-                onCall:j1=> app.core.views.line['↻'](j1),
-            }),
-            ()=> jf.job({
-                icon:'↻3',
-                desc:'load views3',
-                params:{},
-                output:app.core.views.a4v,
-                onCall:j1=> app.core.views.a4v['↻'](j1),
-            }),
-            ()=> jf.job({
-                icon:'🗗',
-                desc:'showui',
-                params:{},
-                onCall:j1=>{
-                    var projectsDiv = document.createElement('div')
-                    projectsDiv.appendChild(a3View(app.model.mods))
-                    projectsDiv.appendChild(a3View(app.network))
-                    $('#modelTab')[0].add('☍', { content:app.core.views.a4v.query('object')(app) })
-                    $('#modelTab')[0].add('🌐', { content:projectsDiv }, 'inBg')
-                    $('#modelTab')[0].add('⥂', { content:app.core.views.a4v.query('object')(app.model.jobs) }, 'inBg')
-                    $('#jobTab')[0].add(j.id, { content:app.core.views.a4v.query('object')(j) })
-                    j1.ret('ok', 'ui loaded')
-                }
-            })
-        )
-    })">
-
+            onInit:j=> j.delegate(
+                ()=> jf.job({
+                    icon:'🗖',
+                    desc:'prepare client',
+                    params:{},
+                    onCall:j1=> {
+                        $('#modelTabPaper').append(tab('modelTab'))
+                        $('#jobTabPaper').append(tab('jobTab'))
+                        app.clientId.on('change', changes=> {
+                            document.title = app.clientId
+                            $('#thisId').text(app.clientId)
+                        })
+                        mvj.onCommit = function(path, diff) { /*TODO*/ }
+                        j1.ret('ok', 'ui loaded')
+                    }
+                }),
+                ()=> jf.job({
+                    icon:'⛓',
+                    desc:'connect',
+                    params:{},
+                    onCall:j1=> app.network['⛓'](j1)
+                }),
+                ()=> jf.job({
+                    icon:'↻',
+                    desc:'load views',
+                    params:{},
+                    output:app.core.views.primitive,
+                    onCall:j1=> app.core.views.primitive['↻'](j1),
+                }),
+                ()=> jf.job({
+                    icon:'↻2',
+                    desc:'load views2',
+                    params:{},
+                    output:app.core.views.line,
+                    onCall:j1=> app.core.views.line['↻'](j1),
+                }),
+                ()=> jf.job({
+                    icon:'↻3',
+                    desc:'load views3',
+                    params:{},
+                    output:app.core.views.a4v,
+                    onCall:j1=> app.core.views.a4v['↻'](j1),
+                }),
+                ()=> jf.job({
+                    icon:'↻3',
+                    desc:'load views3',
+                    params:{},
+                    output:app.core.views.a5h,
+                    onCall:j1=> app.core.views.a5h['↻'](j1),
+                }),
+                ()=> jf.job({
+                    icon:'🗗',
+                    desc:'showui',
+                    params:{},
+                    onCall:j1=>{
+                        var projectsDiv = document.createElement('div')
+                        projectsDiv.appendChild(app.core.views.a5h.query('object',4)(app.model.mods))
+                        projectsDiv.appendChild(app.core.views.a5h.query('object',4)(app.network))
+                        $('#modelTab')[0].add('☍', { content:app.core.views.a4v.query('object')(app) })
+                        $('#modelTab')[0].add('🌐', { content:projectsDiv }, 'inBg')
+                        $('#modelTab')[0].add('⥂', { content:app.core.views.a4v.query('object')(app.model.jobs) }, 'inBg')
+                        $('#jobTab')[0].add(j.id, { content:app.core.views.a4v.query('object')(j) })
+                        j1.ret('ok', 'ui loaded')
+                    }
+                })
+            )
+        })">
         <div id="workspace">
             <div id="modelTabPaper" class="paper" style="float:left;"></div>            
             <div id="jobTabPaper" class="paper" style="float:left;"></div>            
-        </div>
-        <div id="footer">
-            <div id="thisId"></div>
-            <a href="doc/bsc/Abschlussarbeit.pdf">
-                <div id="connectionState"></div>
-                <div id="connectionDate"></div>
-            </a>
-        </div>
+        </div>        
     </body>
 </html>

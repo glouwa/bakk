@@ -117,7 +117,7 @@ new Object({
             type: 'PrimeArgs',
             set: pSet.lazySet(
                 1*10e5,
-                2*10e5,
+                10*10e5,
                 (j, idx)=> { mid: idx }
             ),            
             timeout: 3*60000
@@ -125,18 +125,18 @@ new Object({
     },
     tests: [],
     views: {
-        a5: {
-            primeNummberView: {
+        a5h: {
+            PrimeNummber: {
                 type: 'View',
                 demoViewModel: { mid:1 },
                 ctor: function(m) { return primeNummberView(m) }
             },
-            primeParameterView: {
+            PrimeArgs: {
                 type: 'View',
                 demoViewModel: {},//project.args,
                 ctor: function(m) { return primeRangeView(m) }
             },
-            primeResultView: {
+            PrimeResult: {
                 type: 'View',
                 demoViewModel: [],
                 ctor: function(m) { return primeStatsView(m) }
