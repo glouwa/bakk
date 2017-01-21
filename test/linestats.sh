@@ -5,6 +5,77 @@ find ../src/          -name '*.js' -not \( -path "./src/node_modules/*" -o -path
 
 echo "
 
+    21.01.17
+
+242 ../modules/jobs/workerModel3d.js
+   47 ../modules/jobs/serverOutput2.js
+   70 ../modules/jobs/overlordWorkers.js
+   88 ../modules/jobs/workerBacc0.js
+  109 ../modules/jobs/serverFolder.js
+   67 ../modules/jobs/serverCmd.js
+   58 ../modules/jobs/workerKill.js
+   44 ../modules/jobs/serverOutput.js
+   48 ../modules/jobs/workerBacc1.js
+   71 ../modules/jobs/localSetIteration.js
+   53 ../modules/jobs/localOutput.js
+  147 ../modules/jobs/workerPrimeCpp.js
+  131 ../modules/jobs/serverFragmentFolder.js
+   35 ../modules/jobs/localAjax.js
+ 1210 total
+   170 ../modules/views/html/basics-line.js
+   120 ../modules/views/html/a5/object-d3treeView.js
+    20 ../modules/views/html/a5/network-listView.js
+     1 ../modules/views/html/a5/string-textEditView.js
+   171 ../modules/views/html/a5/object-d3graphView.js
+   133 ../modules/views/html/a5/object-visGraphView.js
+    41 ../modules/views/html/a5/job-progressTreeView.js
+     1 ../modules/views/html/a5/code-editView.js
+   104 ../modules/views/html/a5/object-a5lazyExpanderView.js
+   202 ../modules/views/html/a5/node-panelView.js
+   215 ../modules/views/html/a5/job-progressLineView.js
+    61 ../modules/views/html/a5/object-autoView.js
+    67 ../modules/views/html/basics-a4.js
+   139 ../modules/views/html/basics-a5.js
+   418 ../modules/views/html/basics.js
+    22 ../modules/views/html/a4/job-runView.js
+   150 ../modules/views/html/a4/job-visGraphView.js
+   334 ../modules/views/html/a4/job-d3gantView.js
+    32 ../modules/views/html/a4/object-expanderMultiView.js
+    35 ../modules/views/html/a4/job-d3gantSplitterView.js
+    32 ../modules/views/html/a4/project-editView.js
+   127 ../modules/views/html/d3/d3.js
+    14 ../modules/views/html/primitive/folder-view.js
+    28 ../modules/views/html/primitive/object-autoJobButtonView.js
+    18 ../modules/views/html/primitive/boolean-editView.js
+     8 ../modules/views/html/primitive/object-emptyView.js
+    13 ../modules/views/html/primitive/null-editView.js
+     9 ../modules/views/html/primitive/selectable-comboBoxView.js
+    19 ../modules/views/html/primitive/string-editView.js
+    20 ../modules/views/html/primitive/number-editView.js
+    14 ../modules/views/html/primitive/file-view.js
+    76 ../modules/views/html/primitive/job-basic.js
+    33 ../modules/views/html/primitive/job-buttonView.js
+    17 ../modules/views/html/primitive/text-editView.js
+    13 ../modules/views/html/primitive/undefined-editView.js
+    27 ../modules/views/html/line/object-leafView.js
+    25 ../modules/views/html/line/object-expandableView.js
+    57 ../modules/views/html/line/object-appendView.js
+    32 ../modules/views/html/line/object-autoView.js
+  3018 total
+  357 ../src/mvj.js
+  108 ../src/config.js
+   68 ../src/q.js
+  198 ../src/tools.js
+   92 ../src/views/view.js
+  199 ../src/app.js
+  110 ../src/job/modFolder.js
+  455 ../src/job/job.js
+  189 ../src/job/workflows.js
+  168 ../src/job/toolJobs.js
+ 1944 total
+
+
+
     12.09.16
 
   237 ../modules/jobs/workerModel3d.js
