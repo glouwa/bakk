@@ -109,7 +109,8 @@ function lineExpander(args)
 
         if (args.model && args.model['↻'])
             app.callUiJob({
-                desc:'lexpander',
+                icon:'↻',
+                desc:'expand line',
                 onCall:j=> args.model['↻'](j),
                 params:{},
                 output:args.model

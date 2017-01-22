@@ -1,114 +1,3 @@
-function tab(id)
-{
-    var view = document.createElement('div')
-        view.id = id
-        var header = document.createElement('div')
-            header.className = 'pheader'
-            header.style.backgroundColor = '#00CC66'
-            header.style.color = 'white'
-            header.ondragover = ev=> ev.preventDefault()
-            header.ondrop = ev=>
-            {
-                ev.preventDefault()
-                ev.stopPropagation()
-                var m = mvj.traverse(ev.dataTransfer.getData("text"), app)
-                view.add('dnd', { content:app.core.views.a4v.query('object')(m) })
-            }
-        var content = document.createElement('div')
-        view.active = undefined
-        view.style.clear = 'both'
-        view.add = function(n, p, inBg)
-        {
-            p.flap = document.createElement('div')
-            p.flap.innerText = n.valueOf()
-            p.flap.onclick = function() { view.activate(p) }
-            p.flap.content = p.content
-            p.flap.p = p
-            p.flap.close = document.createElement('div')
-            p.flap.close.className = 'close'
-            p.flap.close.innerText = '✕' //ⓧ
-            p.flap.close.onclick = (e)=>
-            {
-                event.stopPropagation()
-                view.activate((p.flap.nextSibling || p.flap.previousSibling).p)
-                header.removeChild(p.flap)
-                content.removeChild(p.content)
-            }
-            p.flap.appendChild(p.flap.close)
-            p.content.flap = p.flap
-
-            p.flap.className = 'tab'
-            p.content.style.display = 'none'
-            p.content.style.borderWidth = 0
-            p.content.style.width = '100%'
-            p.content.style.height = 'calc(100% - 25px)'
-
-            header.appendChild(p.flap)
-            content.appendChild(p.content)
-            if (!inBg) view.activate(p)
-            return p
-        }
-        view.activate = function(p)
-        {
-            if (view.active) view.active.flap.className = 'tab'
-            if (view.active) view.active.content.style.display = 'none'
-            view.active = p
-            view.active.flap.className = 'tab-active'
-            //view.active.content.style.display = 'block'
-            view.active.content.style.display = 'flex'
-            view.active.content.style.flexDirection = 'column'
-        }
-
-        view.appendChild(header)
-        view.appendChild(content)
-    return view
-}
-/*
-function btab()
-{
-    var view = document.createElement('div')
-        view.className = 'btab-container'
-        view.style.display = 'flex'
-        view.style.flexDirection = 'column'
-        view.style.flexGrow = 1
-
-        view.style.marginBottom = -1
-        var header = document.createElement('div')
-            header.className = 'btab-header'
-            header.style.backgroundColor = '#FDFDFD' // config.colors.paperBorder
-            header.style.color = 'gray'
-            header.style.clear = 'both'
-        var content = document.createElement('div')
-            content.className = 'btab-content'
-            content.style.flexGrow = 1
-            content.style.overflowY = 'auto'
-            //content.style.paddingTop = 20
-            //content.style.paddingBottom = 20
-        view.active = undefined
-        view.style.clear = 'both'
-        view.add = function(n, p)
-        {
-            p.flap = document.createElement('div')
-            p.flap.innerText = n
-            p.flap.onclick = ()=> view.activate(p)
-            header.appendChild(p.flap)
-            content.appendChild(p.content)
-            view.activate(p)
-            return p
-        }
-        view.activate = function(p)
-        {
-            if (view.active) view.active.flap.className = 'btab'
-            if (view.active) view.active.content.style.display = 'none'
-            view.active = p
-            view.active.flap.className = 'btab-active'
-            view.active.content.style.display = 'block'
-        }
-        view.appendChild(content)
-        view.appendChild(header)
-    return view
-}
-*/
 function autoView(model)
 {
     var view = document.createElement('div')
@@ -185,8 +74,12 @@ function a3expander(args) // { header, conetentFactory, model, expanded } : onhe
         content.appendChild(c)
 
         if (args.model && args.model['↻'])
-            app.callUiJob({ desc:'expander ↻', onCall:j=> args.model['↻'](j), params:{} })
-
+            app.callUiJob({
+                icon:'↻',
+                desc:'expand a3-6',
+                onCall:j=> args.model['↻'](j),
+                params:{}
+        })
         return c
     }
 
@@ -231,6 +124,59 @@ function a3expander(args) // { header, conetentFactory, model, expanded } : onhe
 // der content erhält dann change event mit model und den neuen daten ~
 function jobStateWithLogView(jobModel, contentFactory)
 {
+    function jobLogView(jobModel, originChain)
+    {
+        var jobLog = document.createElement('ul')
+            jobLog.className = 'jobLog'
+            jobLog.openTime = new Date()
+
+        jobLog.addEvent = function(jobModel, originChain)
+        {
+           var li = document.createElement('li')
+            function insertHop(hj)
+            {
+                var head = document.createElement('div')
+                head.innerText = hj.id.valueOf()
+                head.className = 'head'
+                head.title = hj.id.valueOf() + ':\n' + JSON.stringify(hj.state, null, 4)
+                head.style.borderLeftColor = config.getColor(hj.state)
+                li.appendChild(head)
+            }
+
+            for (var k in originChain)
+                insertHop(originChain[k].model)
+
+            var originJob = originChain[originChain.length-1].model
+
+            var logText = document.createElement('div')
+
+            logText.innerText = (originJob.state.lastWorker||'-')  + ' ' + originJob.state.log
+            logText.className = 'logText'
+
+            var logState = document.createElement('div')
+            logState.innerText = config.getIcon(originJob.state)
+            logState.className = 'logText'
+            logState.style.float = 'right'
+
+            var logProgress = document.createElement('div')
+            logProgress.innerText = jobModel.state.progress.valueOf().toFixed(2)
+            logProgress.className = 'logText'
+            logProgress.style.float = 'right'
+
+            var logTime = document.createElement('div')
+            logTime.innerText = new Date() - jobLog.openTime
+            logTime.className = 'logText'
+            logTime.style.float = 'right'
+
+            li.appendChild(logTime)
+            li.appendChild(logProgress)
+            li.appendChild(logText)
+            li.appendChild(logState)
+            jobLog.appendChild(li)
+        }
+        return jobLog
+    }
+
     var view = document.createElement('div')
         view.className = 'jobStateWithLog'
         var jobState = contentFactory()
@@ -385,55 +331,3 @@ function jpViewFactory(args)
     }
 }
 
-function jobLogView(jobModel, originChain)
-{
-    var jobLog = document.createElement('ul')
-        jobLog.className = 'jobLog'
-        jobLog.openTime = new Date()
-
-    jobLog.addEvent = function(jobModel, originChain)
-    {
-       var li = document.createElement('li')
-        function insertHop(hj)
-        {
-            var head = document.createElement('div')
-            head.innerText = hj.id.valueOf()
-            head.className = 'head'
-            head.title = hj.id.valueOf() + ':\n' + JSON.stringify(hj.state, null, 4)
-            head.style.borderLeftColor = config.getColor(hj.state)
-            li.appendChild(head)
-        }
-
-        for (var k in originChain)
-            insertHop(originChain[k].model)
-
-        var originJob = originChain[originChain.length-1].model
-
-        var logText = document.createElement('div')
-
-        logText.innerText = (originJob.state.lastWorker||'-')  + ' ' + originJob.state.log
-        logText.className = 'logText'
-
-        var logState = document.createElement('div')
-        logState.innerText = config.getIcon(originJob.state)
-        logState.className = 'logText'
-        logState.style.float = 'right'
-
-        var logProgress = document.createElement('div')
-        logProgress.innerText = jobModel.state.progress.valueOf().toFixed(2)
-        logProgress.className = 'logText'
-        logProgress.style.float = 'right'
-
-        var logTime = document.createElement('div')
-        logTime.innerText = new Date() - jobLog.openTime
-        logTime.className = 'logText'
-        logTime.style.float = 'right'
-
-        li.appendChild(logTime)
-        li.appendChild(logProgress)
-        li.appendChild(logText)
-        li.appendChild(logState)
-        jobLog.appendChild(li)
-    }
-    return jobLog
-}
