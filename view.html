@@ -58,7 +58,6 @@
             },
 
             structure:{
-                type:'C',
                 host:'Browser',
                 //userId:'M',
                 //nodeId:'C₀',
@@ -73,6 +72,22 @@
                         a3h:      { type:'Folder<Mod>', directory:'./modules/views/html/a3/'   },
                         a4v:      { type:'Folder<Mod>', directory:'./modules/views/html/a4/'   },
                         a5h:      { type:'Folder<Mod>', directory:'./modules/views/html/a5/' }
+                    }
+                },
+                model:{
+                    viewModel:{
+                        left:{
+                            //'🌐':app,
+                            'J':app.model.jobs,
+                            'U':{
+                                demos:{},
+                                lib:{},
+                                services:{},
+                                tests:{}
+                            },
+                        },
+                        right:{
+                        }
                     }
                 },
                 network:{
@@ -105,14 +120,11 @@
                     icon:'🗖',
                     desc:'prepare client',
                     params:{},
-                    onCall:j1=> {
-                        $('#modelTabPaper').append(tab('modelTab'))
+                    onCall:j1=> {                        
+                        var left = paperStack('modelTab', app.model.viewModel)
+                        $('#modelTabPaper').append(left)
                         $('#jobTabPaper').append(tab('jobTab'))
-                        app.clientId.on('change', changes=> {
-                            document.title = app.clientId
-                            $('#thisId').text(app.clientId)
-                        })
-                        mvj.onCommit = function(path, diff) { /*TODO*/ }
+                        app.clientId.on('change', changes=> document.title = app.clientId)
                         j1.ret('ok', 'ui loaded')
                     }
                 }),
@@ -158,10 +170,29 @@
                         var projectsDiv = document.createElement('div')
                         projectsDiv.appendChild(app.core.views.a5h.query('object',4)(app.model.mods))
                         projectsDiv.appendChild(app.core.views.a5h.query('object',4)(app.network))
-                        $('#modelTab')[0].add('☍', { content:app.core.views.a4v.query('object')(app) })
-                        $('#modelTab')[0].add('🌐', { content:projectsDiv }, 'inBg')
-                        $('#modelTab')[0].add('⥂', { content:app.core.views.a4v.query('object')(app.model.jobs) }, 'inBg')
-                        $('#jobTab')[0].add(j.id, { content:app.core.views.a4v.query('object')(j) })
+
+                        $('#modelTab')[0].add({
+                            icon:'☍',
+                            model:app
+                        })
+
+                        /*$('#modelTab')[0].add({
+                            icon:'🌐',
+                            inBg:true,
+                            model:content:projectsDiv
+                        })*/
+
+                        $('#modelTab')[0].add({
+                            icon:'⥂',
+                            inBg:true,
+                            model:app.model.jobs
+                        })
+
+                        $('#jobTab')[0].add(j.id, {
+                            icon:j.id,
+                            content:app.core.views.a4v.query('object')(j)
+                        })
+
                         j1.ret('ok', 'ui loaded')
                     }
                 })

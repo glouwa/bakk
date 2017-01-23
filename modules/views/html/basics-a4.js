@@ -1,3 +1,81 @@
+function paperStack(id, model)
+{
+    function setActive()
+    {
+        this.flap.className = 'tab-active'
+        this.content.style.display = 'flex'
+        this.content.style.flexDirection = 'column'
+    }
+
+    function setInactive()
+    {
+        this.flap.className = 'tab'
+        this.content.style.display = 'none'
+    }
+
+    function makePaper(p, paperStack)
+    {
+        p.flap = document.createElement('div')
+        p.flap.className = 'tab'
+        p.flap.innerText = p.icon.valueOf()
+        p.flap.onclick = ()=> paperStack.activate(p)
+        p.flap.content = p.content
+        p.flap.p = p
+        p.content = app.core.views.a4v.query(modelType(p.model))(p.model)
+        p.content.flap = p.flap
+        p.content.style.display = 'none'
+        p.content.style.borderWidth = 0
+        p.content.style.width = '100%'
+        p.content.style.height = 'calc(100% - 25px)'
+        p.setActive = setActive
+        p.setInactive = setInactive
+        p.paperStack = paperStack
+
+        if (paperStack.header.childNodes.length === 0 || !p.inBg) {
+            paperStack.active = p
+            p.setActive()
+        }
+        else
+            p.setInactive()
+
+        view.header.appendChild(p.flap)
+        view.content.appendChild(p.content)
+        return p
+    }
+
+    var view = document.createElement('div')
+        view.id = id
+        view.style.clear = 'both'
+        view.header = document.createElement('div')
+        view.header.className = 'pheader'
+        view.header.style.backgroundColor = '#00CC66'
+        view.header.style.color = 'white'
+        view.header.ondragover = ev=> ev.preventDefault()
+        view.header.ondrop = ev=>
+        {
+            ev.preventDefault()
+            ev.stopPropagation()
+            var m = mvj.traverse(ev.dataTransfer.getData("text"), app)
+            view.add('dnd', { content:app.core.views.a4v.query('object')(m) })
+        }
+        view.content = document.createElement('div')
+        view.active = undefined
+        view.add = function(p)
+        {
+            return makePaper(p, view)
+        }
+        view.activate = function(p)
+        {
+            view.active.setInactive()
+            view.active = p
+            view.active.setActive()
+        }
+
+        view.appendChild(view.header)
+        view.appendChild(view.content)
+    return view
+}
+
 function tab(id)
 {
     var view = document.createElement('div')
@@ -66,21 +144,40 @@ function tab(id)
 
 function btabLazy(model, viewPrototypeSet)
 {
-    function setActive(p)
-    {
-        p.flap.className = 'btab-active'
-        if (!p.content) {
-            p.content = p.viewPrototype.ctor(model)
-            content.appendChild(p.content)
+    function setActive()
+    {        
+        if (!this.content) {
+            this.content = this.viewPrototype.ctor(model)
+            this.paperStack.content.appendChild(this.content)
         }
-        p.content.style.display = 'block'
+        this.flap.className = 'btab-active'
+        this.content.style.display = 'block'
     }
 
-    function setInactive(p)
+    function setInactive()
     {
-        p.flap.className = 'btab'
-        if (p.content)
-            p.content.style.display = 'none'
+        this.flap.className = 'btab'
+        if (this.content)
+            this.content.style.display = 'none'
+    }
+
+    function makePaper(p, paperStack)
+    {
+        p.flap = document.createElement('div')
+        p.flap.innerText = p.name
+        p.flap.onclick = ()=> paperStack.activate(p)
+        p.setActive = setActive
+        p.setInactive = setInactive
+        p.paperStack = paperStack
+
+        paperStack.header.appendChild(p.flap)
+        paperStack.active = paperStack.active || p
+
+        if (paperStack.header.childNodes.length === 1)
+            p.setActive()
+        else
+            p.setInactive()
+        return p
     }
 
     var view = document.createElement('div')
@@ -89,40 +186,30 @@ function btabLazy(model, viewPrototypeSet)
         view.style.flexDirection = 'column'
         view.style.flexGrow = 1
         view.style.marginBottom = -1
-        var header = document.createElement('div')
-            header.className = 'btab-header'
-            header.style.backgroundColor = '#FDFDFD' // config.colors.paperBorder
-            header.style.color = 'gray'
-            header.style.clear = 'both'
-        var content = document.createElement('div')
-            content.className = 'btab-content'
-            content.style.flexGrow = 1
-            content.style.overflowY = 'auto'
-            //content.style.paddingTop = 20
-            //content.style.paddingBottom = 20
-        view.active = undefined
         view.style.clear = 'both'
+        view.header = document.createElement('div')
+        view.header.className = 'btab-header'
+        view.header.style.backgroundColor = '#FDFDFD' // config.colors.paperBorder
+        view.header.style.color = 'gray'
+        view.header.style.clear = 'both'
+        view.content = document.createElement('div')
+        view.content.className = 'btab-content'
+        view.content.style.flexGrow = 1
+        view.content.style.overflowY = 'auto'
+
+        view.active = undefined
         view.add = function(p)
         {
-            p.flap = document.createElement('div')
-            p.flap.innerText = p.name
-            p.flap.onclick = ()=> view.activate(p)
-            header.appendChild(p.flap)
-            view.active = view.active || p
-            if (header.childNodes.length === 1)
-                setActive(p)
-            else
-                setInactive(p)
-            return p
+            return makePaper(p, view)
         }
         view.activate = function(p)
         {
-            setInactive(view.active)
+            view.active.setInactive()
             view.active = p
-            setActive(view.active)
+            view.active.setActive()
         }
-        view.appendChild(content)
-        view.appendChild(header)
+        view.appendChild(view.content)
+        view.appendChild(view.header)
 
     viewPrototypeSet.forEach((v, k, idx)=> view.add({
         name:viewPrototypeSet[k].icon + Number(k).toSubscript(),
