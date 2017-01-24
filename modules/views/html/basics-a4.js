@@ -2,6 +2,16 @@ function paperStack(id, model)
 {
     function setActive()
     {
+        if (!this.content) {
+            this.content = this.contentViewFactory(this.model)
+            this.content.flap = this.flap
+            this.content.flap.content = this.content
+            this.content.style.display = 'none'
+            this.content.style.borderWidth = 0
+            this.content.style.width = '100%'
+            this.content.style.height = 'calc(100% - 25px)'
+            this.paperStack.content.appendChild(this.content)
+        }
         this.flap.className = 'tab-active'
         this.content.style.display = 'flex'
         this.content.style.flexDirection = 'column'
@@ -10,7 +20,8 @@ function paperStack(id, model)
     function setInactive()
     {
         this.flap.className = 'tab'
-        this.content.style.display = 'none'
+        if (this.content)
+            this.content.style.display = 'none'
     }
 
     function makePaper(p, paperStack)
@@ -19,14 +30,7 @@ function paperStack(id, model)
         p.flap.className = 'tab'
         p.flap.innerText = p.icon.valueOf()
         p.flap.onclick = ()=> paperStack.activate(p)
-        p.flap.content = p.content
         p.flap.p = p
-        p.content = app.core.views.a4v.query(modelType(p.model))(p.model)
-        p.content.flap = p.flap
-        p.content.style.display = 'none'
-        p.content.style.borderWidth = 0
-        p.content.style.width = '100%'
-        p.content.style.height = 'calc(100% - 25px)'
         p.setActive = setActive
         p.setInactive = setInactive
         p.paperStack = paperStack
@@ -39,7 +43,7 @@ function paperStack(id, model)
             p.setInactive()
 
         view.header.appendChild(p.flap)
-        view.content.appendChild(p.content)
+        //view.content.appendChild(p.content)
         return p
     }
 
@@ -56,7 +60,12 @@ function paperStack(id, model)
             ev.preventDefault()
             ev.stopPropagation()
             var m = mvj.traverse(ev.dataTransfer.getData("text"), app)
-            view.add('dnd', { content:app.core.views.a4v.query('object')(m) })
+            view.add({
+                icon:m.icon||'?',
+                model:m,
+                inBg:true,
+                contentViewFactory:m=> app.core.views.a4v.query(modelType(m))(m)
+            })
         }
         view.content = document.createElement('div')
         view.active = undefined
@@ -147,7 +156,7 @@ function btabLazy(model, viewPrototypeSet)
     function setActive()
     {        
         if (!this.content) {
-            this.content = this.viewPrototype.ctor(model)
+            this.content = this.viewPrototype.ctor(this.model)
             this.paperStack.content.appendChild(this.content)
         }
         this.flap.className = 'btab-active'
@@ -213,6 +222,7 @@ function btabLazy(model, viewPrototypeSet)
 
     viewPrototypeSet.forEach((v, k, idx)=> view.add({
         name:viewPrototypeSet[k].icon + Number(k).toSubscript(),
+        model:model,
         viewPrototype:viewPrototypeSet[k]
     }))
     return view

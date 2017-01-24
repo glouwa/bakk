@@ -173,7 +173,8 @@
 
                         $('#modelTab')[0].add({
                             icon:'☍',
-                            model:app
+                            model:app,
+                            contentViewFactory:m=> app.core.views.a4v.query(modelType(m))(m)
                         })
 
                         /*$('#modelTab')[0].add({
@@ -185,7 +186,8 @@
                         $('#modelTab')[0].add({
                             icon:'⥂',
                             inBg:true,
-                            model:app.model.jobs
+                            model:app.model.jobs,
+                            contentViewFactory:m=> app.core.views.a4v.query(modelType(m))(m)
                         })
 
                         $('#jobTab')[0].add(j.id, {
