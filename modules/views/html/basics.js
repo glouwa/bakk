@@ -26,6 +26,15 @@ function hexToRgba(hex, a)
     return 'rgba(' + [r, g, b, (a||0.4)].join() + ')'
 }
 
+
+function varName(name)
+{
+    var view = document.createElement('div')
+    view.className = 'varName'
+    view.innerText = name.charAt(0).toUpperCase() + name.slice(1)
+    return view
+}
+
 function onDragStart(ev, model)
 {
     ev.stopPropagation()
@@ -153,12 +162,14 @@ function jobRootButon(args)// name, args, src, noIcons, obj)   // der erstellt e
                     else          args.onCall(j)              // project service?
                 }
             })
+
             right.add({
                 highlight:true,
                 icon:job.id,
                 model:job,
                 contentViewFactory: m=>app.core.views.a4v.query('object')(m)
             })
+
             updateView()
             job.state.on('change', updateView)
             view.onclick = e=> {
@@ -331,7 +342,7 @@ function codeEdit(model)
         editor.setTheme("ace/theme/tomorrow")
         editor.setValue(val, -1)
         editor.setOptions({
-            maxLines: 5000,
+            maxLines: 55,
             fontFamily: "Monospace",
             fontSize: "8pt"
         })
@@ -402,26 +413,5 @@ function diffBar(maxDiffWidth, matchItem)
     return result
 }
 
-function varName(name)
-{
-    var view = document.createElement('div')
-    view.className = 'varName'
-    view.innerText = name.charAt(0).toUpperCase() + name.slice(1)    
-    return view
-}
 
-function preView(factoryFunction)
-{
-    var html
-    try
-    {
-        html = factoryFunction(factoryFunction.demoViewModel)
-    }
-    catch(e)
-    {
-        html = document.createElement('div')
-        html.innerText = e.stack
-        html.style.background = '#FFEFEF'
-    }
-    return html
-}
+

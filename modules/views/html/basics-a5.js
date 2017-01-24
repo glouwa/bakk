@@ -78,7 +78,8 @@ function a3expander(args) // { header, conetentFactory, model, expanded } : onhe
                 icon:'↻',
                 desc:'expand a3-6',
                 onCall:j=> args.model['↻'](j),
-                params:{}
+                params:{},
+                output:{}
         })
         return c
     }

@@ -6,7 +6,7 @@ function modelType(m)
     return result // fuction und view sollte hier unterschieden werden
 }
 
-function compositeUpdate(args)
+function compositeUpdate(args) // { view, filter, itemDelegate }
 {
     var childViews = {}
     return function(changes)
@@ -32,13 +32,28 @@ function compositeUpdate(args)
     }
 }
 
+function compositeBinding(args) // { model, view, filter?, itemDelegate }
+{
+    args.view.update = compositeUpdate({
+        view:args.view,
+        itemDelegate:args.itemDelegate,
+        filter:args.filter
+    })
+    args.view.update({ newMembers:args.model })
+    args.model.on('change', args.view.update)
+}
+
 function listView(model, delegate, className, f)
 {
     var view = document.createElement('div')
     if (className)
         view.className = className
 
-    view.update = compositeUpdate({ view:view, itemDelegate:delegate, filter:f })
+    view.update = compositeUpdate({
+        view:view,
+        itemDelegate:delegate,
+        filter:f
+    })
     view.update({ newMembers:model })
     model.on('change', view.update)
     return view

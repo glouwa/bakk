@@ -54,6 +54,12 @@ function paperStack(model)
         view.add = p=> view.header.appendChild(makePaper(p, view).flap)
         view.appendChild(view.header)
         view.appendChild(view.content)
+
+    /*compositeBinding({
+        model:model,
+        view:view,
+        itemDelegate:(v,k,idx)=>app.core.views.a4v.query(modelType(v))(v)
+    })*/
     return view
 }
 
@@ -75,6 +81,7 @@ function btabLazy(model, viewPrototypeSet)
     return view
 }
 
+/*
 function tab(id)
 {
     var view = document.createElement('div')
@@ -139,4 +146,4 @@ function tab(id)
         view.appendChild(header)
         view.appendChild(content)
     return view
-}
+}*/

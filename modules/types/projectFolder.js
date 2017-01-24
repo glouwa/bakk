@@ -43,16 +43,14 @@ function project(url, noView)
                     '↕': function(j) { //⥯…
                         j.ret('failed', 'not imlpemented')
                     },
-                    '⎇': function(j) { //…
-                        //new job = projectJob(project)
-                        //$('#jobTab')[0].add(project.icon, { content:a3View(newJob) }/*, 'inBg'*/)
+                    '⎇': function(j) {
                         j.ret('ok', '+1 idle job, +1 view')         // done
                     },
                     '⋯': function(j) {
-                        $('#modelTab')[0].add(project.jobPrototype.icon, {
+                        left.add({
                             icon:project.jobPrototype.icon,
                             model:project,
-                            content:app.core.views.a4v.query('object')(project)
+                            contentViewFactory:m=> app.core.views.a4v.query('object')(m)
                         })
                         j.ret('ok', '+1 project view')
                     }
@@ -112,8 +110,6 @@ exports.create = function projectFolder() { return {
                 '▸': function run(j) {
                     // this =  tests
                     //var projectMembers = this.filter(i=> i.type == 'project')
-
-                    //$('#jobTab')[0].add(j.id, { content:jobAllView(j) } )
 
                     var projectMembers = [
                         this['💻 server cmd'],

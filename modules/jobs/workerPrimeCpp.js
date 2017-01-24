@@ -101,9 +101,8 @@ function primeStatsView(outputModel)
         view.add('auto', { content:autoView(statModel) })
     return view*/
 
-    var view = btab()
-        view.add('auto', { content:autoView(outputModel) })
-    return view
+
+    return null
 }
 
 new Object({

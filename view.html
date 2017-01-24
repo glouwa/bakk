@@ -121,11 +121,7 @@
                     icon:'🗖',
                     desc:'prepare client',
                     params:{},
-                    onCall:j1=> {                        
-                        left = paperStack(app.model.viewModel)
-                        right = paperStack(app.model.jobs)
-                        $('#modelTabPaper').append(left)
-                        $('#jobTabPaper').append(right)
+                    onCall:j1=> {                                                
                         app.clientId.on('change', changes=> document.title = app.clientId)
                         j1.ret('ok', 'ui loaded')
                     }
@@ -169,6 +165,11 @@
                     desc:'showui',
                     params:{},
                     onCall:j1=>{
+
+                        left = paperStack(app.model.viewModel)
+                        right = paperStack(app.model.jobs)
+                        $('#modelTabPaper').append(left)
+                        $('#jobTabPaper').append(right)
 
                         var projectsDiv = document.createElement('div')
                         projectsDiv.appendChild(app.core.views.a5h.query('object',4)(app.model.mods))

@@ -31,7 +31,7 @@
             var t = 500//750
             var mergeDotR = 5
             var uiUpdateDotR = 6
-            var jobBarHeight = 7
+            var jobBarHeight = 5
             var beginTime = getStartTime(jobModel)
             var lastCommitEnd = 0
 
