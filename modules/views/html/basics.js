@@ -153,8 +153,11 @@ function jobRootButon(args)// name, args, src, noIcons, obj)   // der erstellt e
                     else          args.onCall(j)              // project service?
                 }
             })
-            $('#jobTab')[0].add(job.id, {
-                content:app.core.views.a4v.query('object')(job)
+            right.add({
+                highlight:true,
+                icon:job.id,
+                model:job,
+                contentViewFactory: m=>app.core.views.a4v.query('object')(m)
             })
             updateView()
             job.state.on('change', updateView)

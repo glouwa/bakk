@@ -4,6 +4,9 @@
   man kann beim ersten zb. kein registry oder model verwenden
 */
 
+var left;
+var right;
+
 app = mvj.model('', { clientId: 'X', host:'unknown', core: { types:{} }})
 app.merge({
     core: {

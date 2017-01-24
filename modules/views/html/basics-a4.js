@@ -1,6 +1,10 @@
 function makePaper(p, paperStack)
 {
-    function setActive()
+    p.flap = htmlElement('div', p.model, 'flap')
+    p.flap.innerText = p.icon.valueOf()
+    p.flap.onclick = ()=> p.setActive()
+    p.flap.p = p
+    p.setActive = function setActive()
     {
         if (this.paperStack.active)
             this.paperStack.active.setInactive()
@@ -18,27 +22,19 @@ function makePaper(p, paperStack)
         this.content.classList.remove('cm')
         this.content.classList.add('cm-active')
     }
-
-    function setInactive()
+    p.setInactive = function setInactive()
     {
         this.flap.className = 'flap'
         this.content.classList.remove('cm-active')
         this.content.classList.add('cm')
     }
-
-    p.flap = htmlElement('div', p.model, 'flap')
-    p.flap.innerText = p.icon.valueOf()
-    p.flap.onclick = ()=> p.setActive()
-    p.flap.p = p
-    p.setActive = setActive
-    p.setInactive = setInactive
     p.paperStack = paperStack
     if (paperStack.header.childNodes.length === 0 || p.highlight)
         p.setActive()
     return p
 }
 
-function paperStack(id, model)
+function paperStack(model)
 {
     var view = htmlElement('div', model, 'paperstack-top')
         view.header = htmlElement('div', model, 'header')
@@ -50,7 +46,6 @@ function paperStack(id, model)
             view.add({
                 icon:m.icon||'?',
                 model:m,
-                inBg:true,
                 contentViewFactory:m=> app.core.views.a4v.query(modelType(m))(m)
             })
         }

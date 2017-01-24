@@ -50,7 +50,8 @@
         <script src="src/job/toolJobs.js"></script>
 
     </head>
-    <body id="body" onload="var left; app.init({
+    <body id="body" onload="        
+        app.init({
             builtInTypes:{
                 'Folder<Mod>':ModuleFolder,
                 'File<Mod>':FileMod,
@@ -121,9 +122,10 @@
                     desc:'prepare client',
                     params:{},
                     onCall:j1=> {                        
-                        left = paperStack('modelTab', app.model.viewModel)
+                        left = paperStack(app.model.viewModel)
+                        right = paperStack(app.model.jobs)
                         $('#modelTabPaper').append(left)
-                        $('#jobTabPaper').append(tab('jobTab'))
+                        $('#jobTabPaper').append(right)
                         app.clientId.on('change', changes=> document.title = app.clientId)
                         j1.ret('ok', 'ui loaded')
                     }
@@ -167,6 +169,7 @@
                     desc:'showui',
                     params:{},
                     onCall:j1=>{
+
                         var projectsDiv = document.createElement('div')
                         projectsDiv.appendChild(app.core.views.a5h.query('object',4)(app.model.mods))
                         projectsDiv.appendChild(app.core.views.a5h.query('object',4)(app.network))
@@ -177,9 +180,10 @@
                             contentViewFactory:m=> app.core.views.a4v.query(modelType(m))(m)
                         })
 
-                        /*$('#modelTab')[0].add({
+                        /*left.add({
                             icon:'🌐',                            
-                            model:content:projectsDiv
+                            model:content:projectsDiv,
+                            contentViewFactory:m=> app.core.views.a4v.query(modelType(m))(m)
                         })*/
 
                         left.add({
@@ -188,9 +192,10 @@
                             contentViewFactory:m=> app.core.views.a4v.query(modelType(m))(m)
                         })
 
-                        $('#jobTab')[0].add(j.id, {
+                        right.add({
                             icon:j.id,
-                            content:app.core.views.a4v.query('object')(j)
+                            model:j,
+                            contentViewFactory:m=> app.core.views.a4v.query('object')(m)
                         })
 
                         j1.ret('ok', 'ui loaded')
