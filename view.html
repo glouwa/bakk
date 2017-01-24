@@ -50,7 +50,7 @@
         <script src="src/job/toolJobs.js"></script>
 
     </head>
-    <body id="body" onload="app.init({
+    <body id="body" onload="var left; app.init({
             builtInTypes:{
                 'Folder<Mod>':ModuleFolder,
                 'File<Mod>':FileMod,
@@ -121,7 +121,7 @@
                     desc:'prepare client',
                     params:{},
                     onCall:j1=> {                        
-                        var left = paperStack('modelTab', app.model.viewModel)
+                        left = paperStack('modelTab', app.model.viewModel)
                         $('#modelTabPaper').append(left)
                         $('#jobTabPaper').append(tab('jobTab'))
                         app.clientId.on('change', changes=> document.title = app.clientId)
@@ -171,21 +171,19 @@
                         projectsDiv.appendChild(app.core.views.a5h.query('object',4)(app.model.mods))
                         projectsDiv.appendChild(app.core.views.a5h.query('object',4)(app.network))
 
-                        $('#modelTab')[0].add({
+                        left.add({
                             icon:'☍',
                             model:app,
                             contentViewFactory:m=> app.core.views.a4v.query(modelType(m))(m)
                         })
 
                         /*$('#modelTab')[0].add({
-                            icon:'🌐',
-                            inBg:true,
+                            icon:'🌐',                            
                             model:content:projectsDiv
                         })*/
 
-                        $('#modelTab')[0].add({
-                            icon:'⥂',
-                            inBg:true,
+                        left.add({
+                            icon:'⥂',                            
                             model:app.model.jobs,
                             contentViewFactory:m=> app.core.views.a4v.query(modelType(m))(m)
                         })

@@ -53,7 +53,7 @@ function project(url, noView)
                             icon:project.jobPrototype.icon,
                             model:project,
                             content:app.core.views.a4v.query('object')(project)
-                        }/*, 'inBg'*/)
+                        })
                         j.ret('ok', '+1 project view')
                     }
                 }))

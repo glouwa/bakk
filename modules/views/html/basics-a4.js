@@ -1,62 +1,49 @@
-function paperStack(id, model)
+function makePaper(p, paperStack)
 {
     function setActive()
     {
+        if (this.paperStack.active)
+            this.paperStack.active.setInactive()
+
+        this.paperStack.active = this
+
+        this.flap.className = 'flap-active'
         if (!this.content) {
             this.content = this.contentViewFactory(this.model)
             this.content.flap = this.flap
             this.content.flap.content = this.content
-            this.content.style.display = 'none'
-            this.content.style.borderWidth = 0
-            this.content.style.width = '100%'
-            this.content.style.height = 'calc(100% - 25px)'
+            this.content.classList.add('ps-content')
             this.paperStack.content.appendChild(this.content)
         }
-        this.flap.className = 'tab-active'
-        this.content.style.display = 'flex'
-        this.content.style.flexDirection = 'column'
+        this.content.classList.remove('cm')
+        this.content.classList.add('cm-active')
     }
 
     function setInactive()
     {
-        this.flap.className = 'tab'
-        if (this.content)
-            this.content.style.display = 'none'
+        this.flap.className = 'flap'
+        this.content.classList.remove('cm-active')
+        this.content.classList.add('cm')
     }
 
-    function makePaper(p, paperStack)
-    {
-        p.flap = document.createElement('div')
-        p.flap.className = 'tab'
-        p.flap.innerText = p.icon.valueOf()
-        p.flap.onclick = ()=> paperStack.activate(p)
-        p.flap.p = p
-        p.setActive = setActive
-        p.setInactive = setInactive
-        p.paperStack = paperStack
+    p.flap = htmlElement('div', p.model, 'flap')
+    p.flap.innerText = p.icon.valueOf()
+    p.flap.onclick = ()=> p.setActive()
+    p.flap.p = p
+    p.setActive = setActive
+    p.setInactive = setInactive
+    p.paperStack = paperStack
+    if (paperStack.header.childNodes.length === 0 || p.highlight)
+        p.setActive()
+    return p
+}
 
-        if (paperStack.header.childNodes.length === 0 || !p.inBg) {
-            paperStack.active = p
-            p.setActive()
-        }
-        else
-            p.setInactive()
-
-        view.header.appendChild(p.flap)
-        //view.content.appendChild(p.content)
-        return p
-    }
-
-    var view = document.createElement('div')
-        view.id = id
-        view.style.clear = 'both'
-        view.header = document.createElement('div')
-        view.header.className = 'pheader'
-        view.header.style.backgroundColor = '#00CC66'
-        view.header.style.color = 'white'
+function paperStack(id, model)
+{
+    var view = htmlElement('div', model, 'paperstack-top')
+        view.header = htmlElement('div', model, 'header')
         view.header.ondragover = ev=> ev.preventDefault()
-        view.header.ondrop = ev=>
-        {
+        view.header.ondrop = ev=>{
             ev.preventDefault()
             ev.stopPropagation()
             var m = mvj.traverse(ev.dataTransfer.getData("text"), app)
@@ -67,21 +54,29 @@ function paperStack(id, model)
                 contentViewFactory:m=> app.core.views.a4v.query(modelType(m))(m)
             })
         }
-        view.content = document.createElement('div')
+        view.content = htmlElement('div', model, 'ps-content')
         view.active = undefined
-        view.add = function(p)
-        {
-            return makePaper(p, view)
-        }
-        view.activate = function(p)
-        {
-            view.active.setInactive()
-            view.active = p
-            view.active.setActive()
-        }
-
+        view.add = p=> view.header.appendChild(makePaper(p, view).flap)
         view.appendChild(view.header)
         view.appendChild(view.content)
+    return view
+}
+
+function btabLazy(model, viewPrototypeSet)
+{    
+    var view = htmlElement('div', model, 'paperstack-bottom')
+        view.header = htmlElement('div', model, 'header')
+        view.content = htmlElement('div', model, 'ps-content')
+        view.active = undefined
+        view.add = p=> view.header.appendChild(makePaper(p, view).flap)
+        view.appendChild(view.content)
+        view.appendChild(view.header)
+
+    viewPrototypeSet.forEach((v, k, idx)=> view.add({
+        icon:viewPrototypeSet[k].icon + Number(k).toSubscript(),
+        model:model,
+        contentViewFactory:viewPrototypeSet[k].ctor
+    }))
     return view
 }
 
@@ -148,82 +143,5 @@ function tab(id)
 
         view.appendChild(header)
         view.appendChild(content)
-    return view
-}
-
-function btabLazy(model, viewPrototypeSet)
-{
-    function setActive()
-    {        
-        if (!this.content) {
-            this.content = this.viewPrototype.ctor(this.model)
-            this.paperStack.content.appendChild(this.content)
-        }
-        this.flap.className = 'btab-active'
-        this.content.style.display = 'block'
-    }
-
-    function setInactive()
-    {
-        this.flap.className = 'btab'
-        if (this.content)
-            this.content.style.display = 'none'
-    }
-
-    function makePaper(p, paperStack)
-    {
-        p.flap = document.createElement('div')
-        p.flap.innerText = p.name
-        p.flap.onclick = ()=> paperStack.activate(p)
-        p.setActive = setActive
-        p.setInactive = setInactive
-        p.paperStack = paperStack
-
-        paperStack.header.appendChild(p.flap)
-        paperStack.active = paperStack.active || p
-
-        if (paperStack.header.childNodes.length === 1)
-            p.setActive()
-        else
-            p.setInactive()
-        return p
-    }
-
-    var view = document.createElement('div')
-        view.className = 'btab-container'
-        view.style.display = 'flex'
-        view.style.flexDirection = 'column'
-        view.style.flexGrow = 1
-        view.style.marginBottom = -1
-        view.style.clear = 'both'
-        view.header = document.createElement('div')
-        view.header.className = 'btab-header'
-        view.header.style.backgroundColor = '#FDFDFD' // config.colors.paperBorder
-        view.header.style.color = 'gray'
-        view.header.style.clear = 'both'
-        view.content = document.createElement('div')
-        view.content.className = 'btab-content'
-        view.content.style.flexGrow = 1
-        view.content.style.overflowY = 'auto'
-
-        view.active = undefined
-        view.add = function(p)
-        {
-            return makePaper(p, view)
-        }
-        view.activate = function(p)
-        {
-            view.active.setInactive()
-            view.active = p
-            view.active.setActive()
-        }
-        view.appendChild(view.content)
-        view.appendChild(view.header)
-
-    viewPrototypeSet.forEach((v, k, idx)=> view.add({
-        name:viewPrototypeSet[k].icon + Number(k).toSubscript(),
-        model:model,
-        viewPrototype:viewPrototypeSet[k]
-    }))
     return view
 }

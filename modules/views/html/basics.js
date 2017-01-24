@@ -1,3 +1,11 @@
+function htmlElement(type, model, className)
+{
+    var view = document.createElement(type)
+        view.id = model.path.valueOf()
+        view.className = className
+    return view
+}
+
 function hexToRgb(hex)
 {
     hex = hex.valueOf().replace(/[^0-9A-F]/gi, '')
@@ -24,14 +32,6 @@ function onDragStart(ev, model)
     ev.dataTransfer.effectAllowed = 'link'
     ev.dataTransfer.setData("text", model.path)
     console.log('ondragstart ' + model.path)
-}
-
-function div(className, caption)
-{
-    var view = document.createElement('div')
-        if (className) view.className = className
-        if (caption) view.innerText = caption
-    return view
 }
 
 function button(caption, useReset, className)
@@ -153,7 +153,9 @@ function jobRootButon(args)// name, args, src, noIcons, obj)   // der erstellt e
                     else          args.onCall(j)              // project service?
                 }
             })
-            $('#jobTab')[0].add(job.id, { content:app.core.views.a4v.query('object')(job) }/*, 'inBg'*/)
+            $('#jobTab')[0].add(job.id, {
+                content:app.core.views.a4v.query('object')(job)
+            })
             updateView()
             job.state.on('change', updateView)
             view.onclick = e=> {
