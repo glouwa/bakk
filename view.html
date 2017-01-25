@@ -59,9 +59,7 @@
             },
 
             structure:{
-                host:'Browser',
-                //userId:'M',
-                //nodeId:'C₀',
+                host:'Browser',                
                 '+1 client': j=> {
                     window.open('./view.html', '_blank')
                     j.ret('ok', 'window.open(...) called')
@@ -77,7 +75,7 @@
                 },
                 model:{
                     viewModel:{
-                        left:{                            
+                        left:{
                             '☍':{
                                 demos:{},
                                 mods:app.model.mods,
