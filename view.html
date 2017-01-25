@@ -77,18 +77,18 @@
                 },
                 model:{
                     viewModel:{
-                        left:{
-                            //'🌐':app,
-                            'J':app.model.jobs,
-                            'U':{
+                        left:{                            
+                            '☍':{
                                 demos:{},
                                 lib:{},
                                 services:{},
-                                tests:{}
+                                tests:{},
+                                io:app.network
                             },
+                            'J…':app.model.jobs,
+                            '🌐':{}, // app
                         },
-                        right:{
-                        }
+                        right:app.model.jobs
                     }
                 },
                 network:{
@@ -166,7 +166,7 @@
                     params:{},
                     onCall:j1=>{
 
-                        left = paperStack(app.model.viewModel)
+                        left = paperStack(app.model.viewModel.left)
                         right = paperStack(app.model.jobs)
                         $('#modelTabPaper').append(left)
                         $('#jobTabPaper').append(right)
@@ -187,11 +187,11 @@
                             contentViewFactory:m=> app.core.views.a4v.query(modelType(m))(m)
                         })*/
 
-                        left.add({
+                        /*left.add({
                             icon:'⥂',                            
                             model:app.model.jobs,
                             contentViewFactory:m=> app.core.views.a4v.query(modelType(m))(m)
-                        })
+                        })*/
 
                         right.add({
                             icon:j.id,

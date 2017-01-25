@@ -10,7 +10,7 @@ html {
 }
 
 #body{
-    background-color:#fafafa;
+    background-color:#f9fbfd; //#fafafa;
     font-family:calibri, arial;
     font-size:10pt;
     padding: 0;
@@ -385,12 +385,12 @@ input[type=range]:focus::-webkit-slider-runnable-track {
 }
 
 ::-webkit-scrollbar-thumb:vertical:hover {
-    background: rgba(0,0,0,0.2);
+    background: rgba(0,204,102,0.2);
     border-left-width: 0px;    
 }
 
 ::-webkit-scrollbar-thumb:vertical:active {
-    background: rgba(0,0,0,0.3);
+    background: rgba(200,200,200,0.2);
 }
 
 

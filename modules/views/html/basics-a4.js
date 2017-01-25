@@ -55,11 +55,16 @@ function paperStack(model)
         view.appendChild(view.header)
         view.appendChild(view.content)
 
-    /*compositeBinding({
+    compositeBinding({
         model:model,
-        view:view,
-        itemDelegate:(v,k,idx)=>app.core.views.a4v.query(modelType(v))(v)
-    })*/
+        view:view.header,
+        itemDelegate:(v,k,idx)=> makePaper({
+                icon:k,
+                model:v,
+                contentViewFactory:m=> app.core.views.a4v.query(/*modelType(m)*/'object')(m)
+            },
+            view).flap
+    })
     return view
 }
 
