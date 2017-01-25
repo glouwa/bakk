@@ -79,6 +79,7 @@
                     viewModel:{
                         left:{                            
                             '☍':{
+                                demos:{},
                                 mods:app.model.mods,
                                 runs:app.model.jobs,
                                 io:app.network
@@ -110,7 +111,8 @@
                         onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
                         onReload:      (c, parsed)=> location.reload(true),
                         onServerHallo: (c, parsed)=> clientProtocol.msgHandlers.onServerHallo(null, 'Client', ['JS'], c, parsed, 'Browser')
-                    }
+                    },
+                    connections:{},
                 }
             },
 
@@ -174,7 +176,7 @@
                         projectsDiv.appendChild(app.core.views.a5h.query('object',4)(app.network))
 
                         left.add({
-                            icon:'☍',
+                            icon:'🌐',
                             model:app,
                             contentViewFactory:m=> app.core.views.a4v.query(modelType(m))(m)
                         })

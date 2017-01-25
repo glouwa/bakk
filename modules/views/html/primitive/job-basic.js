@@ -14,10 +14,10 @@
                 icon.style.maxWidth = 100
                 icon.style.whiteSpace = 'nowrap'
                 icon.style.overflow = 'hidden'
-                icon.innerText = model.icon?model.icon.toString():'undef'
+                icon.innerText = model.icon?model.icon.toString():'?'
             var desc = document.createElement('div')
                 desc.className = 'textView'
-                desc.style.float = 'right'
+                desc.style.float = 'left'
                 desc.style.marginLeft = 10
                 desc.style.maxWidth = 100
                 desc.style.whiteSpace = 'nowrap'
@@ -25,7 +25,7 @@
             var sig = document.createElement('div')
                 sig.className = 'textView'
                 sig.style.float = 'right'
-                sig.style.minWidth = 220
+                sig.style.minWidth = 'calc(50% - 50pt)'//250
                 sig.style.marginLeft = 15
             var time = document.createElement('div')
                 time.className = 'textView'
@@ -44,8 +44,9 @@
             view.appendChild(state)
             view.appendChild(time)
             view.appendChild(sig)
-            view.appendChild(desc)
             view.appendChild(icon)
+            view.appendChild(desc)
+
 
             view.update = ()=>
             {

@@ -42,7 +42,8 @@ app.init({
                 hostname:os.hostname()
             },
             stateChangeHandlers:serverProtocol.stateChangeHandlers,
-            msgHandlers:serverProtocol.msgHandlers
+            msgHandlers:serverProtocol.msgHandlers,
+            connections:{}
         }
     },
     onInit:j=> app.network.listen(j)

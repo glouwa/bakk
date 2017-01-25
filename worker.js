@@ -43,7 +43,8 @@ app.init({
                 onServerHallo: (c, parsed)=> clientProtocol.msgHandlers.onServerHallo(givenId, 'Worker', ['JS', 'POSIX64', 'Matlab'], c, parsed, os.type()),
                 onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
                 onReload:      (c, parsed)=> {}
-            }
+            },
+            connections:{}
         }
     },
     onInit:j=> app.network['⛓'](j)

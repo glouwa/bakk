@@ -26,8 +26,8 @@ app.merge({
         log: { type:'Set<Job>' },
         store: { type:'Store' },
     },
-    network:{        
-        connections:{},
+    network:{
+        //connections:{},
         reconnectIntervall: 100,
     },
 
