@@ -163,12 +163,13 @@ function jobRootButon(args)// name, args, src, noIcons, obj)   // der erstellt e
                 }
             })
 
+                      /*
             right.add({
                 highlight:true,
                 icon:job.id,
                 model:job,
                 contentViewFactory: m=>app.core.views.a4v.query('object')(m)
-            })
+            })*/
 
             updateView()
             job.state.on('change', updateView)

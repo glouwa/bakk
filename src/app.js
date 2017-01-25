@@ -37,8 +37,8 @@ app.merge({
         var jd = jf.job(args)
         app.mergePath('model.jobs.'+jd.id, jd)
         var j = app.model.jobs[jd.id.valueOf()]
-        if (args.show)
-            $('#jobTab')[0].add(j.id, { content:app.core.views.a4v.query('object')(j) })
+        //if (args.show)
+        //    $('#jobTab')[0].add(j.id, { content:app.core.views.a4v.query('object')(j) })
         return j
     },
     callUiJob:function(args){

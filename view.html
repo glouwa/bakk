@@ -77,10 +77,24 @@
                     viewModel:{
                         left:{
                             '☍':{
-                                demos:{},
-                                mods:app.model.mods,
-                                runs:app.model.jobs,
-                                io:app.network
+                                demos:app.model.mods,
+                                mods:{
+                                    types:{},
+                                    views:{},
+                                    obj:{},
+                                    tests:{}
+                                },
+                                io:{
+                                    cs:{},
+                                    hcsw:app.network,
+                                    ws:{},
+                                    http:{},
+                                    tcp:{},
+                                    file:{},
+                                    sql:{},
+                                    mongo:{},
+                                },
+                                runs:app.model.jobs,                                
                             },
                             'J…':app.model.jobs,
                             '🌐':{}, // app
@@ -191,11 +205,12 @@
                             contentViewFactory:m=> app.core.views.a4v.query(modelType(m))(m)
                         })*/
 
+/*
                         right.add({
                             icon:j.id,
                             model:j,
                             contentViewFactory:m=> app.core.views.a4v.query('object')(m)
-                        })
+                        })*/
 
                         j1.ret('ok', 'ui loaded')
                     }

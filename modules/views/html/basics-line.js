@@ -55,6 +55,7 @@ function appendObjInfo(view, model)
         type.style.marginLeft = 5
         type.style.fontSize = 9
 
+    view.appendChild(type)
     if (model.isLink) {
         if (model.path == '') {
             var link = document.createElement('div')
@@ -76,7 +77,6 @@ function appendObjInfo(view, model)
         }
         view.appendChild(link)
     }
-    view.appendChild(type)
 }
 
 function addStandardLine(view, name, model)
