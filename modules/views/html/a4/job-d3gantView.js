@@ -123,14 +123,14 @@
 
             //----------------------------------------------------------------------------------------
 
-            d3g.appendCircle = function(v, m, r, c) {
+            d3g.appendCircle = function(v, m, r, c, l) {
                 v.append('circle')
                     .datum(m)
                     .attr("class", "dot")
                     .attr("r",  r)
                     .attr('fill', c)
                     .attr('stroke-width', 1.5)
-                    .attr('stroke', '#fff')
+                    .attr('stroke', l||'#fff')
                     .attr('cursor', 'pointer')
                     .on('click', d=> d3g.onFocus({ __data__:d.c } )) //handleMouseClick)
                     .attr("cx", d=> this.x(d.t))
@@ -158,7 +158,7 @@
                     //.attr('fill', '#ccc')
                     .attr('fill', d=> config.getColor(d.state))
                     .attr('stroke', '#fff')
-                    .attr('stroke-width', 1.5)
+                    .attr('stroke-width', 1)
                     .on('click', handleMouseClick)
                     .attr("x",     d=> this.x(getStartTime(d)))
                     .attr("width", d=> this.x(getEndTime(d))-this.x(getStartTime(d)))
@@ -183,7 +183,7 @@
                 var c = app.tmp[diffId]
                 //var c = diffCopy
 
-                this.appendCircle(v, { t:new Date(), c:c }, uiUpdateDotR, '#ccc')
+                this.appendCircle(v, { t:new Date(), c:c }, uiUpdateDotR, hexToRgba('cccccc',0.05), hexToRgba('555555',0.05))
                 this.appendCircle(v, { t:new Date(jm.debug.updateTime), c:c }, 4, config.getColor(jm.state))
 
                 this.updateDomain()

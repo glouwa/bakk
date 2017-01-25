@@ -61,7 +61,7 @@ function paperStack(model)
         itemDelegate:(v,k,idx)=> makePaper({
                 icon:k,
                 model:v,
-                contentViewFactory:m=> app.core.views.a4v.query(/*modelType(m)*/'object')(m)
+                contentViewFactory:app.core.views.a4v.query(/*modelType(m)*/'object')
             },
             view).flap
     })
