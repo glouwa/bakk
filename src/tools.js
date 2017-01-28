@@ -182,12 +182,12 @@
         enumerable: false
     })
 
-    exports.toggleVis = function(htmlElement)
+    /*exports.toggleVis = function(htmlElement)
     {
         htmlElement.style.display = htmlElement.style.display === 'none'
                                   ? 'block'
                                   : 'none'
-    }
+    }*/
 
     exports.toggle = function(va, v1, v2)
     {

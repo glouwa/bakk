@@ -38,7 +38,7 @@ function hoverDiv(model)
             element.style.borderColor = 'rgba(176,176,176,'+a+')'
         })
         view.style.backgroundColor = 'initial'
-        view.style.borderColor = 'transparent'
+        view.style.borderColor = 'transparent' //'rgba(176,176,176,'+0.2+')'//
 
     }
     return view

@@ -125,35 +125,6 @@ html {
    transition: all 400ms linear;
 }
 
-.a3expander{
-    clear: both;
-    border-style: dashed none none none;
-    border-color: #b0b0b0;
-    border-width: 1;
-
-    display: flex;
-    flex-direction: column;
-    /*content.style.flexGrow = 1*/
-}
-
-.a3expander:first-child{
-    clear: both;
-    border-style: none;
-    border-width: 0;
-}
-
-.a3expander:last-child{
-    flex-grow: 1;
-}
-
-.autoMultiView{
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-}
-
-
-
 /*-query--------------------------------------------------------------------------------------*/
 
 .buttonRight{
@@ -165,13 +136,6 @@ html {
     cursor: hand;
     -webkit-user-select: none;
 }
-
-/*-auto------------------------------------------------------------------------------------*/
-
-
-
-
-
 
 /*-status------------------------------------------------------------------------------------*/
 

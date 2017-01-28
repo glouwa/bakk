@@ -1,6 +1,6 @@
 function makePaper(p, paperStack)
 {
-    p.flap = htmlElement('div', p.model, 'flap')
+    p.flap = htmlElement('div', 'flap', p.model)
     p.flap.innerText = p.icon.valueOf()
     p.flap.onclick = ()=> p.setActive()
     p.flap.p = p
@@ -36,8 +36,8 @@ function makePaper(p, paperStack)
 
 function paperStack(model)
 {
-    var view = htmlElement('div', model, 'paperstack-top')
-        view.header = htmlElement('div', model, 'header')
+    var view = htmlElement('div', 'paperstack-top', model)
+        view.header = htmlElement('div', 'header', model)
         view.header.ondragover = ev=> ev.preventDefault()
         view.header.ondrop = ev=>{
             ev.preventDefault()
@@ -46,10 +46,11 @@ function paperStack(model)
             view.add({
                 icon:m.icon||'?',
                 model:m,
+                highlight:true,
                 contentViewFactory:m=> app.core.views.a4v.query(modelType(m))(m)
             })
         }
-        view.content = htmlElement('div', model, 'ps-content')
+        view.content = htmlElement('div', 'ps-content', model)
         view.active = undefined
         view.add = p=> view.header.appendChild(makePaper(p, view).flap)
         view.appendChild(view.header)
@@ -70,9 +71,9 @@ function paperStack(model)
 
 function btabLazy(model, viewPrototypeSet)
 {    
-    var view = htmlElement('div', model, 'paperstack-bottom')
-        view.header = htmlElement('div', model, 'header')
-        view.content = htmlElement('div', model, 'ps-content')
+    var view = htmlElement('div', 'paperstack-bottom', model)
+        view.header = htmlElement('div', 'header', model)
+        view.content = htmlElement('div', 'ps-content', model)
         view.active = undefined
         view.add = p=> view.header.appendChild(makePaper(p, view).flap)
         view.appendChild(view.content)
@@ -85,70 +86,3 @@ function btabLazy(model, viewPrototypeSet)
     }))
     return view
 }
-
-/*
-function tab(id)
-{
-    var view = document.createElement('div')
-        view.id = id
-        var header = document.createElement('div')
-            header.className = 'pheader'
-            header.style.backgroundColor = '#00CC66'
-            header.style.color = 'white'
-            header.ondragover = ev=> ev.preventDefault()
-            header.ondrop = ev=>
-            {
-                ev.preventDefault()
-                ev.stopPropagation()
-                var m = mvj.traverse(ev.dataTransfer.getData("text"), app)
-                view.add('dnd', { content:app.core.views.a4v.query('object')(m) })
-            }
-        var content = document.createElement('div')
-        view.active = undefined
-        view.style.clear = 'both'
-        view.add = function(n, p, inBg)
-        {
-            p.flap = document.createElement('div')
-            p.flap.innerText = n.valueOf()
-            p.flap.onclick = function() { view.activate(p) }
-            p.flap.content = p.content
-            p.flap.p = p
-            p.flap.close = document.createElement('div')
-            p.flap.close.className = 'close'
-            p.flap.close.innerText = '✕' //ⓧ
-            p.flap.close.onclick = (e)=>
-            {
-                event.stopPropagation()
-                view.activate((p.flap.nextSibling || p.flap.previousSibling).p)
-                header.removeChild(p.flap)
-                content.removeChild(p.content)
-            }
-            p.flap.appendChild(p.flap.close)
-            p.content.flap = p.flap
-
-            p.flap.className = 'tab'
-            p.content.style.display = 'none'
-            p.content.style.borderWidth = 0
-            p.content.style.width = '100%'
-            p.content.style.height = 'calc(100% - 25px)'
-
-            header.appendChild(p.flap)
-            content.appendChild(p.content)
-            if (!inBg) view.activate(p)
-            return p
-        }
-        view.activate = function(p)
-        {
-            if (view.active) view.active.flap.className = 'tab'
-            if (view.active) view.active.content.style.display = 'none'
-            view.active = p
-            view.active.flap.className = 'tab-active'
-            //view.active.content.style.display = 'block'
-            view.active.content.style.display = 'flex'
-            view.active.content.style.flexDirection = 'column'
-        }
-
-        view.appendChild(header)
-        view.appendChild(content)
-    return view
-}*/

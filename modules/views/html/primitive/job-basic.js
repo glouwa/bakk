@@ -62,7 +62,7 @@
                     time.innerText = workTimeMs + 'ms'
 
                 desc.innerText = model.desc + ':'//🠒🠆➞➡→
-                sig.innerText =  '(…) → ' + model.state.log
+                sig.innerText =  '(…) ⟶ ' + model.state.log
 
                 if (model.state.type == 'returned')
                     state.innerText = ''//config.getIcon(model.state)

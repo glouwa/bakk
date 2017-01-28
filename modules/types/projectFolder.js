@@ -73,11 +73,12 @@ function project(url, noView)
     }
 }
 
-exports.create = function projectFolder() { return {
+exports.stat = {
     //type:'Set<Project>',
-    '↻': function(j) {
-        this.merge({
-            '↻': 'deadbeef',
+    //'↻': function(j) {
+      //  this.merge(
+        //{
+        //    '↻': 'deadbeef',
             'demos': {
                 '🐼 Process fracturing folder on workers':    project('modules/jobs/workerBacc0.js'),
                 '❄ Find similar 3d models on worker':        project('modules/jobs/workerModel3d.js'),
@@ -137,11 +138,11 @@ exports.create = function projectFolder() { return {
                     j.delegate({ type:'sequence', job:pjobs })
                     //j.delegateToSequence(projectMembers.map(i=> new Job(i))
                 },
-            },
-        })
-        j.ret('ok', '+11 projects')
-    }
-}}
+            }//,
+        }//)
+    //    j.ret('ok', '+11 projects')
+  //  }
+//}
 
 
 })

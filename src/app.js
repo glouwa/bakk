@@ -21,7 +21,7 @@ app.merge({
         config:config
     },
     model:{        
-        mods: projectFolder.create(),
+        mods: projectFolder.stat,
         jobs:{},
         log: { type:'Set<Job>' },
         store: { type:'Store' },
@@ -30,6 +30,7 @@ app.merge({
         //connections:{},
         reconnectIntervall: 100,
     },
+    running:{ stack:{} },
 
 
 

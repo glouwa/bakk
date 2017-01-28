@@ -1,4 +1,4 @@
-function htmlElement(type, model, className)
+function htmlElement(type, className, model)
 {
     var view = document.createElement(type)
         view.id = model.path.valueOf()

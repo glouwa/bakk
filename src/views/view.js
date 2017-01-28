@@ -6,6 +6,32 @@ function modelType(m)
     return result // fuction und view sollte hier unterschieden werden
 }
 
+/*-------------------------------------------------------------------------------------------*/
+
+function htmlVoc2View(view)
+{
+    view.get =()=> view.value
+    view.set = v=> {
+        if (view.value != v)
+            view.value=v
+    }
+    view.onkeyup  = e=> {
+        if (e.keyCode >= 45 ||
+            e.keyCode == 8 ||
+            e.keyCode == 9 ||
+            e.keyCode == 13 ||
+            e.keyCode == 32) {
+            view.onChange(view.value)
+            console.log(e, e.keyCode, e.metaKey)
+        }
+    }
+    //view.onchange = e=> view.onChange(view.value)
+    view.onChange = v=> console.warn('unrgistered view onchange')
+    return view
+}
+
+/*-------------------------------------------------------------------------------------------*/
+
 function compositeUpdate(args) // { view, filter, itemDelegate }
 {
     var childViews = {}
@@ -34,6 +60,28 @@ function compositeUpdate(args) // { view, filter, itemDelegate }
     }
 }
 
+/*-------------------------------------------------------------------------------------------*/
+
+function existanceBinding()
+{}
+
+function typeBinding()
+{}
+
+function valueBinding(m, v) // model { view, updateView :nv=>, changeEvent :=> }
+{
+    v.set(m.value.valueOf())
+    v.onChange = v=> {
+        m.merge(v)
+        m.commit()
+        console.log('v-change', v)
+    }
+    m.on('change', ()=> {
+        v.set(m.valueOf())
+        console.log('m-change', m)
+    })
+}
+
 function compositeBinding(args) // { model, view, filter?, itemDelegate }
 {
     args.view.update = compositeUpdate({
@@ -44,6 +92,8 @@ function compositeBinding(args) // { model, view, filter?, itemDelegate }
     args.view.update({ newMembers:args.model })
     args.model.on('change', args.view.update)
 }
+
+/*-------------------------------------------------------------------------------------------*/
 
 function listView(model, delegate, className, f)
 {

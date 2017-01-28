@@ -76,14 +76,15 @@
                 model:{
                     viewModel:{
                         left:{
+                            comp:{ real:6, str:'hallo' },
                             '☍':{
-                                demos:app.model.mods,
+                                demos:app.model.mods.demos,
                                 mods:{
-                                    types:{},
-                                    views:{},
-                                    obj:{},
-                                    tests:{}
+                                    types:app.core.types,
+                                    viewTypes:app.core.views,                                    
+                                    jobTypes:app.model.mods.tests
                                 },
+                                views:{},
                                 io:{
                                     cs:{},
                                     hcsw:app.network,
@@ -94,9 +95,16 @@
                                     sql:{},
                                     mongo:{},
                                 },
-                                runs:app.model.jobs,                                
+                                running:app.running,
+                                log:{
+                                    runs:app.model.jobs,
+                                    io:{},
+                                    commits:{},
+                                    merges:{},
+                                    diffs:{},
+                                },                                
                             },
-                            'J…':app.model.jobs,
+                            'Jᵪ':app.model.jobs,
                             '🌐':{}, // app
                         },
                         right:app.model.jobs
@@ -191,26 +199,7 @@
                             icon:'🌐',
                             model:app,
                             contentViewFactory:m=> app.core.views.a4v.query(modelType(m))(m)
-                        })
-
-                        /*left.add({
-                            icon:'🌐',                            
-                            model:content:projectsDiv,
-                            contentViewFactory:m=> app.core.views.a4v.query(modelType(m))(m)
-                        })*/
-
-                        /*left.add({
-                            icon:'⥂',                            
-                            model:app.model.jobs,
-                            contentViewFactory:m=> app.core.views.a4v.query(modelType(m))(m)
-                        })*/
-
-/*
-                        right.add({
-                            icon:j.id,
-                            model:j,
-                            contentViewFactory:m=> app.core.views.a4v.query('object')(m)
-                        })*/
+                        })                    
 
                         j1.ret('ok', 'ui loaded')
                     }

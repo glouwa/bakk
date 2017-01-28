@@ -98,7 +98,7 @@ new Object({
         desc: 'Show folder',
         onCall: createAndLoadFolder,
         args: {
-            directory: './modules/views/html/primitive',
+            directory: './',
             timeout:500
         },
     },

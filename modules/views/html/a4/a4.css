@@ -131,35 +131,35 @@
 }
 
 .paperstack-bottom > .header > .flap{
-float: right;
-padding: 1 10 5 10;
-margin: 2 3 1 3;
-cursor: hand;
-border-style: solid;
-border-color: transparent;
-border-width: 0 0 3 0;
-color: #CCCCCC;
-border-radius: 3px;
-height: 8;
+    float: right;
+    padding: 1 10 5 10;
+    margin: 2 3 1 3;
+    cursor: hand;
+    border-style: solid;
+    border-color: transparent;
+    border-width: 0 0 3 0;
+    color: #CCCCCC;
+    border-radius: 3px;
+    height: 8;
 }
 .paperstack-bottom > .header > .flap:hover{
-background-color: #fff;
+    background-color: #fff;
 }
 
 .paperstack-bottom > .header > .flap-active{
-float: right;
-margin: -1 0 3 0;
-padding: 4 20 0 20;
-cursor: hand;
-font-weight: normal;
-background-color: #fff;
-border-bottom-left-radius: 3px;
-border-bottom-right-radius: 3px;
-color: #000000;
-border-style: none solid solid solid;
-border-width: 1;
-border-color: #FAFAFA #F5F5F5 #F5F5F5 #FAFAFA;
-height: 18px;
+    float: right;
+    margin: -1 0 3 0;
+    padding: 4 20 0 20;
+    cursor: hand;
+    font-weight: normal;
+    background-color: #fff;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    color: #000000;
+    border-style: none solid solid solid;
+    border-width: 1;
+    border-color: #FAFAFA #F5F5F5 #F5F5F5 #FAFAFA;
+    height: 18px;
 }
 
 .paperstack-bottom > .ps-content{
@@ -180,90 +180,30 @@ height: 18px;
 }
 
 /*-------------------------------------------------------------------------------------------*/
-/*-------------------------------------------------------------------------------------------*/
-/*-------------------------------------------------------------------------------------------*/
-/*-------------------------------------------------------------------------------------------*/
-/*
-.tab{
-    float: left;
-    margin: 4 1 -2 1;
-    padding: 1 20 0 20;
-    cursor: hand;
-    border-style:solid;
-    border-color: transparent;
-    border-width:0 0 3 0;
-    border-radius: 2pt;
-}
 
-.tab:hover{
-    background-color: #10E079;
-}
-
-.tab-active{
-    transform: perspective(10px) rotateX(3deg);
-    float: left;
-    margin: 2 1 -2 1;
-    padding: 1 30 0 6;
-    cursor: hand;
-    font-weight: normal;
-    background-color: #FDFDFD;
-    border-radius: 2pt;
-    color: #00CC66;
-    height: 24;
-    position: relative;
-}
-
-.tab-add{
-    float: left;
-    margin: 4 0 -2 0;
-    padding: 1 20 0 20;
-    cursor: hand;
-}
-.tab-add:hover{
-    font-weight: bold;
-}
-*/
-/*-------------------------------------------------------------------------------------------*/
-/*
-.btab-header{
-    border-style: solid none none;
+.a3expander{
+    clear: both;
+    border-style: dashed none none none;
+    border-color: #b0b0b0;
     border-width: 1;
-    border-color: #F0F0F0;
-    border-radius: 0 0 3px 3px;
-    text-align: center;
-    padding: 0 11 0 2;
-    height: 25;
+
+    display: flex;
+    flex-direction: column;
+    /*content.style.flexGrow = 1*/
 }
 
-.btab{
-    float: right;
-    padding: 1 10 5 10;
-    margin: 2 3 1 3;
-    cursor: hand;
-    border-style: solid;
-    border-color: transparent;
-    border-width: 0 0 3 0;
-    color: #CCCCCC;
-    border-radius: 3px;
-    height: 8;
+.a3expander:first-child{
+    clear: both;
+    border-style: none;
+    border-width: 0;
 }
 
-.btab:hover{
-    background-color: #fff;
+.a3expander:last-child{
+    flex-grow: 1;
 }
 
-.btab-active{
-    float: right;
-    margin: -1 0 3 0;
-    padding: 4 20 0 20;
-    cursor: hand;
-    font-weight: normal;
-    background-color: #fff;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
-    color: #000000;
-    border-style: none solid solid solid;
-    border-width: 1;
-    border-color: #FAFAFA #F5F5F5 #F5F5F5 #FAFAFA;
-    height: 18px;
-}*/
+.autoMultiView{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
