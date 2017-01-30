@@ -30,6 +30,16 @@ function htmlVoc2View(view)
     return view
 }
 
+function htmlIt2View(view)
+{
+    view.get =()=> view.innerText
+    view.set = v=> {
+        if (view.value != v)
+            view.innerText=v
+    }
+    return view
+}
+
 /*-------------------------------------------------------------------------------------------*/
 
 function compositeUpdate(args) // { view, filter, itemDelegate }
@@ -68,17 +78,31 @@ function existanceBinding()
 function typeBinding()
 {}
 
+function transformBinding(m, v, mvTransform, vmTransform) // model { view, updateView :nv=>, changeEvent :=> }
+{
+    v.set(mvTransform(m).valueOf())
+    v.onChange = v=> {
+        m.merge(vmTransform(v))
+        m.commit()
+        console.log('v-change')
+    }
+    m.on('change', ()=> {
+        v.set(mvTransform(m).valueOf())
+        console.log('m-change')
+    })
+}
+
 function valueBinding(m, v) // model { view, updateView :nv=>, changeEvent :=> }
 {
     v.set(m.value.valueOf())
     v.onChange = v=> {
         m.merge(v)
         m.commit()
-        console.log('v-change', v)
+        console.log('v-change')
     }
     m.on('change', ()=> {
         v.set(m.valueOf())
-        console.log('m-change', m)
+        console.log('m-change')
     })
 }
 

@@ -16,6 +16,7 @@
                     icon.style.width = 15
                     icon.style.color = 'gray'
                     icon.style.marginLeft = 6
+                    icon.style.marginTop = 2
 
             view.appendChild(icon)
             addStandardLine(view, name, model)

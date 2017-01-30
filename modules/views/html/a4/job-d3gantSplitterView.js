@@ -6,14 +6,10 @@
     ctor:function jobPlot(jobModel)
     {
         var view = document.createElement('div')
-            view.className = 'plot+split'
-            var pv = jobStateWithLogView(jobModel, jpViewFactory({ caption:false, log:true, width:'100%' }))
-                pv.style.width = '100%'
-                pv.style.margin = '-1 0 0 0'
+            view.className = 'plot+split'            
             //var gv = app.core.views.a4v.query('Job', 3)(jobModel)
             var gv = app.core.views.a4v['job-d3gantView:js'].obj.ctor(jobModel)
-            var aView = undefined
-            view.appendChild(pv)
+            var aView = undefined           
             view.appendChild(gv)
 
         gv.d3handler.onFocus= function(e) {

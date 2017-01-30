@@ -123,7 +123,7 @@ function a3expander(args) // { header, conetentFactory, model, expanded } : onhe
 // in dem fall wird der origin aus den subjobs abgeleitet
 //
 // der content erhält dann change event mit model und den neuen daten ~
-function jobStateWithLogView(jobModel, contentFactory)
+function jobProgressWithLogView(jobModel, contentFactory)
 {
     function jobLogView(jobModel, originChain)
     {
@@ -179,7 +179,7 @@ function jobStateWithLogView(jobModel, contentFactory)
     }
 
     var view = document.createElement('div')
-        view.className = 'jobStateWithLog'
+        view.className = 'jobProgressWithLog'
         var jobState = contentFactory()
         var jobLog = jobLogView()
             var jidOhneSubscript = String(jobModel.id).removeSubscript()
@@ -190,8 +190,8 @@ function jobStateWithLogView(jobModel, contentFactory)
 
     jobState.onclick = function()
     {
-        $('.jobLog:not(.'+jobLogid+')').hide()
-        $('.'+jobLogid).toggle()
+        //$('.jobLog:not(.'+jobLogid+')').hide()
+        //$('.'+jobLogid).toggle()
         //$('#'+jobLog.id)[0].style.display = 'block'
         //jobLog.style.display = 'block'
     }

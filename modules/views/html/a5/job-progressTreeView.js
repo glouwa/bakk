@@ -11,7 +11,7 @@
         {
             var view = document.createElement('div')
                 view.className = 'jobAndSubjobs'
-                var header = jobStateWithLogView(
+                var header = jobProgressWithLogView(
                     jobModel,
                     jpViewFactory({ caption:true, log:true, width:'130' /*, level:l*/ })
                 )

@@ -1,53 +1,14 @@
-.paper{
+.paperstack-top{
     background-color:#ffffff;
     border-style:solid;
     border-color:#C4E8D6; // #d5d5d5; //#e0e0e0;
     border-width:1px;
     border-radius:4px;
-    width:100%;
+    width: calc(50% - 2.5em);
     height: calc(100% - 50px);
-    margin: 20 1% auto 1%;
-    padding-bottom: 1;
-    box-shadow: 0.5px 0.5px 3px #e0e0e0;
-}
-
-@media (min-width: 900px) {
-    .paper{
-        width: 47%;
-    }
-}
-
-@media (min-width: 1350px) {
-    .paper{
-        width: 47%;
-    }
-}
-
-.paper .pheader{
-    background-color: #00CC66;
-    color: #ffffff;
-    border-radius: 3px 3px 0 0;
-    text-align: center;
-    padding: 0 11 0 11;
-    height: 25;
-    overflow: hidden;
-}
-
-.paper .pheader .close{
-    position: absolute;
-    top: 1;
-    right: 3;
-    color: lightgrey;
-}
-
-.paper .pheader .close:hover{
-    color: #D02424;
-}
-
-/*-------------------------------------------------------------------------------------------*/
-
-.paperstack-top{
-    clear:both;
+    margin:  1.5em 1em 1em 1em ;
+    float: left;
+    box-shadow: 0.5px 0.5px 3px #dadada;
 }
 
 .paperstack-top > .header{

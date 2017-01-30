@@ -13,7 +13,7 @@
                            && k != 'linkPath' && k != 'linkThatShit'
                            && k != 'id' && k != 'icon' && k != 'desc'
                            && k != 'debug' && k != 'debugRemote'
-                           && k != 'state' && k != 'workflow'
+                           //&& k != 'state' && k != 'workflow'
             },
             writable: true,
             configurable: true,

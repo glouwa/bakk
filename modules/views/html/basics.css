@@ -1,8 +1,9 @@
 .varName {
     float: left;
     color: #00AB56;
+    margin-top:1;
 }
 
-.varName:hover {
+.lineFrame:hover .varName {
     text-decoration: underline;
 }

@@ -3,10 +3,37 @@
     modelTypes: ['Job'],
     ctor: function(model)
     {
+        function progress(model)
+        {
+            function ms2str(ms)
+            {
+                if (ms > 1000*60*60)   return ~~(ms/(1000*60*60)) + 'h'
+                else if (ms > 1000*60) return ~~(ms/(1000*60)) + 'm'
+                else if (ms > 1000)    return ~~(ms/1000) + 's'
+                else                   return ms + 'ms'
+            }
+
+            var view = htmlElement('div', 'progress-ex', model)
+                var time = htmlElement('div', 'text', model)
+                var state = htmlElement('div', 'text', model)
+                var pv = jobProgressWithLogView(model, jpViewFactory({ caption:false, log:true, width:'100%' }))
+
+            view.append(time)
+            view.append(pv)
+            view.append(state)
+
+            transformBinding(model, htmlIt2View(time), m=> ms2str(jf.jobTime(m)))
+            transformBinding(model, htmlIt2View(state), m=> {
+                if (m.state.type == 'returned') return m.state.log
+                else return (m.state.progress.valueOf()*100).toFixed(0) + '%'
+            })
+            return view
+        }
+
         var view = document.createElement('div')
             view.className = 'jobLineView'
-            view.style.marginRight = '5'
-         //   view.style.float = 'right'
+            view.style.marginRight = 5
+            view.style.marginTop = 3
             var icon = document.createElement('div')
                 icon.className = 'textView'
                 icon.style.float = 'left'
@@ -27,51 +54,19 @@
                 sig.style.float = 'right'
                 sig.style.minWidth = 'calc(50% - 50pt)'//250
                 sig.style.marginLeft = 15
-            var time = document.createElement('div')
-                time.className = 'textView'
-                time.style.float = 'right'
-                time.style.textAlign = 'right'
-                time.style.minWidth = 50
-            var state = document.createElement('div')
-                state.className = 'textView'
-                state.style.float = 'right'
-                state.style.textAlign = 'right'
-                state.style.minWidth = 40
+            var p = progress(model)
             var jobControlingButton = app.core.views.primitive.query('Job', 1)(model)
-            jobControlingButton.style.height = 15
-            jobControlingButton.style.margin = '-1 0 -1 10'
-            view.appendChild(jobControlingButton)
-            view.appendChild(state)
-            view.appendChild(time)
+                jobControlingButton.style.height = 15
+                jobControlingButton.style.margin = '-3 0 -1 10'
+
+            view.appendChild(jobControlingButton)            
+            view.appendChild(p)
             view.appendChild(sig)
             view.appendChild(icon)
             view.appendChild(desc)
 
-
-            view.update = ()=>
-            {
-                var workTimeMs = jf.jobTime(model)
-
-                if (workTimeMs > 1000*60*60)
-                    time.innerText = ~~(workTimeMs/(1000*60*60)) + 'h'
-                else if (workTimeMs > 1000*60)
-                    time.innerText = ~~(workTimeMs/(1000*60)) + 'm'
-                else if (workTimeMs > 1000)
-                    time.innerText = ~~(workTimeMs/1000) + 's'
-                else
-                    time.innerText = workTimeMs + 'ms'
-
-                desc.innerText = model.desc + ':'//🠒🠆➞➡→
-                sig.innerText =  '(…) ⟶ ' + model.state.log
-
-                if (model.state.type == 'returned')
-                    state.innerText = ''//config.getIcon(model.state)
-                else
-                    state.innerText = (model.state.progress.valueOf()*100).toFixed(0) + '%'
-            }
-            view.update()
-
-        model.on('change', view.update)
+        transformBinding(model, htmlIt2View(desc), m=> m.desc + ':')
+        transformBinding(model, htmlIt2View(sig),  m=> '(…) ⟼ ' + m.output.type)
         return view
     }
 }

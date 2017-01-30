@@ -303,6 +303,7 @@
 
         function updateJob(changes, nodeId) {
 
+            //w = view.offsetWidth
             function updateSubjobs(changes) {
                 if (changes.newMembers)
                     changes.newMembers.forEach((v, k, idx)=> addJob(v))

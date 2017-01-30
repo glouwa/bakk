@@ -55,7 +55,7 @@ app.merge({
                 icon:'🗝',
                 desc:'app.init',
                 params:{},
-                show:false,
+                //show:false,
                 output:{},
                 onCall:j=> args.onInit(j)
             })
@@ -127,7 +127,7 @@ var clientProtocol = { // wird zur zeit im client selbst zusammengebaut
 
             app.commit('network += my properties')
             c.node = app.network[nid]
-            c.connectJob.ret('ok', 'got serverhallo and sent my nodeinfo')
+            c.connectJob.ret('ok', 'id = '+nid)
         },
         onNetworkInfo: undefined,
         onReload: undefined

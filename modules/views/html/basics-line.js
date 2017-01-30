@@ -38,7 +38,7 @@ function hoverDiv(model)
             element.style.borderColor = 'rgba(176,176,176,'+a+')'
         })
         view.style.backgroundColor = 'initial'
-        view.style.borderColor = 'transparent' //'rgba(176,176,176,'+0.2+')'//
+        view.style.borderColor = 'transparent'//'rgba(176,176,176,'+0.2+')'//
 
     }
     return view
@@ -51,7 +51,7 @@ function appendObjInfo(view, model)
         type.innerText = im[modelType(model)] || modelType(model)
         type.style.float = 'left'
         type.style.color = '#969696'
-        type.style.marginTop = 5
+        type.style.marginTop = 6
         type.style.marginLeft = 5
         type.style.fontSize = 9
 
@@ -62,7 +62,7 @@ function appendObjInfo(view, model)
                 link.innerText = model.isLink.length + '→ '+model.path
                 link.style.float = 'left'
                 link.style.color = 'red'
-                link.style.marginTop = 5
+                link.style.marginTop = 6
                 link.style.marginLeft = 5
                 link.style.fontSize = 9
         }
@@ -71,7 +71,7 @@ function appendObjInfo(view, model)
                 link.innerText = model.isLink.length + '→ '+model.path
                 link.style.float = 'left'
                 link.style.color = 'blue'
-                link.style.marginTop = 5
+                link.style.marginTop = 6
                 link.style.marginLeft = 5
                 link.style.fontSize = 9
         }
@@ -101,7 +101,8 @@ function lineExpander(args)
     var h = args.header
     var c = undefined
     function getContent() {
-        if (c) return c
+        if (c)
+            return c
         c = args.contentFactory()
         c.style.marginLeft = 15
         c.style.marginBottom = 12
@@ -133,7 +134,7 @@ function lineExpander(args)
             header.indicator = document.createElement('div')
             header.indicator.style.float = 'left'
             header.indicator.style.width = 15
-            header.indicator.style.marginTop = 0
+            header.indicator.style.marginTop = 2
             header.indicator.style.color = '#D0D0D0'
             header.indicator.style.marginLeft = 4
         var content = document.createElement('div')

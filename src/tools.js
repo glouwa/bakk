@@ -32,7 +32,12 @@
     Object.defineProperty(Object.prototype, 'viewfilter',
     {
         value: function(v, k) {
-            return typeof v !== 'function' && k != 'linkPath' && k != 'linkThatShit'
+            return typeof v !== 'function'
+                    && k != 'linkPath'
+                    && k != 'linkThatShit'
+                    //&& k != 'index'
+                    && k != 'directory'
+                    //&& k != ''
         },
         writable: true,
         configurable: true,

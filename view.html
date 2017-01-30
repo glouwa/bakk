@@ -76,7 +76,6 @@
                 model:{
                     viewModel:{
                         left:{
-                            comp:{ real:6, str:'hallo' },
                             '☍':{
                                 demos:app.model.mods.demos,
                                 mods:{
@@ -86,11 +85,7 @@
                                 },
                                 views:{},
                                 io:{
-                                    cs:{},
                                     hcsw:app.network,
-                                    ws:{},
-                                    http:{},
-                                    tcp:{},
                                     file:{},
                                     sql:{},
                                     mongo:{},
@@ -104,8 +99,8 @@
                                     diffs:{},
                                 },                                
                             },
-                            'Jᵪ':app.model.jobs,
-                            '🌐':{}, // app
+                            'Jᵪ':app.model.jobs,                            
+                            comp:{ real:6, str:'hallo' },
                         },
                         right:app.model.jobs
                     }
@@ -139,7 +134,7 @@
             onInit:j=> j.delegate(
                 ()=> jf.job({
                     icon:'🗖',
-                    desc:'prepare client',
+                    desc:'register id change',
                     params:{},
                     onCall:j1=> {                                                
                         app.clientId.on('change', changes=> document.title = app.clientId)
@@ -154,28 +149,35 @@
                 }),
                 ()=> jf.job({
                     icon:'↻',
-                    desc:'load views',
+                    desc:'load prim views',
                     params:{},
                     output:app.core.views.primitive,
                     onCall:j1=> app.core.views.primitive['↻'](j1),
                 }),
                 ()=> jf.job({
                     icon:'↻2',
-                    desc:'load views2',
+                    desc:'load line views',
                     params:{},
                     output:app.core.views.line,
                     onCall:j1=> app.core.views.line['↻'](j1),
                 }),
                 ()=> jf.job({
                     icon:'↻3',
-                    desc:'load views3',
+                    desc:'load a3 views',
+                    params:{},
+                    output:app.core.views.a3h,
+                    onCall:j1=> app.core.views.a3h['↻'](j1),
+                }),
+                ()=> jf.job({
+                    icon:'↻3',
+                    desc:'load a4 views',
                     params:{},
                     output:app.core.views.a4v,
                     onCall:j1=> app.core.views.a4v['↻'](j1),
                 }),
                 ()=> jf.job({
                     icon:'↻3',
-                    desc:'load views3',
+                    desc:'load a5 views',
                     params:{},
                     output:app.core.views.a5h,
                     onCall:j1=> app.core.views.a5h['↻'](j1),
@@ -185,30 +187,13 @@
                     desc:'showui',
                     params:{},
                     onCall:j1=>{
-
-                        left = paperStack(app.model.viewModel.left)
-                        right = paperStack(app.model.jobs)
-                        $('#modelTabPaper').append(left)
-                        $('#jobTabPaper').append(right)
-
-                        var projectsDiv = document.createElement('div')
-                        projectsDiv.appendChild(app.core.views.a5h.query('object',4)(app.model.mods))
-                        projectsDiv.appendChild(app.core.views.a5h.query('object',4)(app.network))
-
-                        left.add({
-                            icon:'🌐',
-                            model:app,
-                            contentViewFactory:m=> app.core.views.a4v.query(modelType(m))(m)
-                        })                    
-
+                        document.body.append(
+                            app.core.views.a3h.query('object')(app.model.viewModel)
+                        )
                         j1.ret('ok', 'ui loaded')
                     }
                 })
             )
         })">
-        <div id="workspace">
-            <div id="modelTabPaper" class="paper" style="float:left;"></div>            
-            <div id="jobTabPaper" class="paper" style="float:left;"></div>            
-        </div>        
     </body>
 </html>
