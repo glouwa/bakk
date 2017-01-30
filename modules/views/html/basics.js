@@ -29,9 +29,10 @@ function hexToRgba(hex, a)
 
 function varName(name)
 {
+    var nameStr = name.toString()
     var view = document.createElement('div')
-    view.className = 'varName'
-    view.innerText = name.charAt(0).toUpperCase() + name.slice(1)
+    view.className = 'varName'    
+    view.innerText = nameStr.charAt(0).toUpperCase() + nameStr.slice(1)
     return view
 }
 

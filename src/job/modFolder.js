@@ -1,10 +1,11 @@
 var FileMod = {
     type:'File<Mod>',
-    '↻':function(j){ j.delegate(()=> tj.ajaxJob({     // delegate to ajax
+    '↻':function(j) { j.delegate(()=> tj.ajaxJob({     // delegate to ajax
         url:this.fileName.valueOf(),
         onData: (j, s, d)=> {                         // eval ajaxdata and add to model
             var view = eval('('+d+')')
             this.merge({ obj:view })
+
             var boxed = this.obj
             var parent = this.path.slice(0, this.path.lastIndexOf('.'))
             view.modelTypes.forEach((v, k, idx)=> {
