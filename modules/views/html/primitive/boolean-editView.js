@@ -1,5 +1,6 @@
 {
-    type: 'View',
+    type:'View',
+    icon:'𝔹',
     modelTypes: ['boolean'],
     ctor: function(model)
     {

@@ -1,6 +1,6 @@
 {
     type:'View',
-    icon:'∇',
+    icon:'☰',
     modelTypes:['Network'],
     idx:0,
     ctor:function systemView(model)

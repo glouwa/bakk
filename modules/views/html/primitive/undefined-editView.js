@@ -1,5 +1,6 @@
 {
     type: 'View',
+    icon:'⌀',
     modelTypes: ['undefined'],
     ctor: function(model)
     {

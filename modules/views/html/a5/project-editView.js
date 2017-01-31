@@ -1,6 +1,6 @@
 {
     type:'View',
-    icon:'{}',
+    icon:'⌑',
     modelTypes:['Project'],
     ctor:function projectEdit(model)
     {

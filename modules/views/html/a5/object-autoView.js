@@ -1,6 +1,6 @@
 {
     type:'View',
-    icon:'📁',
+    icon:'{}',
     modelTypes:['object'],
     idx:0,
     ctor:function autoView(model)

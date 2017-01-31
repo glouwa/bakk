@@ -35,7 +35,7 @@
             return typeof v !== 'function'
                     && k != 'linkPath'
                     && k != 'linkThatShit'
-                    //&& k != 'index'
+                    && k != 'icon'
                     && k != 'directory'
                     //&& k != ''
         },

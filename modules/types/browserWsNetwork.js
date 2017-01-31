@@ -63,6 +63,7 @@ function onNetworkStateChange(n, c, state){
 
 var wsBrowser = {
     type:'Network',
+    icon:'⚪',
     '⛓':function(j) {
         var n = this
         var c = { ws:null, node:null, connectJob:j }

@@ -1,5 +1,6 @@
 {
     type: 'View',
+    icon:'📄',
     modelTypes: ['File'],
     ctor: function(model)
     {

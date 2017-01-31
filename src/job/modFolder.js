@@ -1,5 +1,6 @@
 var FileMod = {
     type:'File<Mod>',
+    icon:'📄',
     '↻':function(j) { j.delegate(()=> tj.ajaxJob({     // delegate to ajax
         url:this.fileName.valueOf(),
         onData: (j, s, d)=> {                         // eval ajaxdata and add to model
@@ -27,6 +28,7 @@ var FileMod = {
 
 var ModuleFolder = {
     type:'Folder<Mod>',
+    icon:'📂',
     queryAll:function(type, idx){
 
         result = []

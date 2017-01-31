@@ -81,11 +81,24 @@ function appendObjInfo(view, model)
 
 function addStandardLine(view, name, model)
 {
-    view.appendChild(varName(name))
+    var icon = document.createElement('div')
+        icon.className = 'icon'
+        icon.innerText = model.icon?model.icon.valueOf():'{}'
+        icon.style.float = 'left'
+        icon.style.margin = '1 6 0 0'
+        icon.style.color = '#00AB56'
+        icon.style.width = 12
+        view.appendChild(icon)
+
+    var varName = document.createElement('div')
+        varName.className = 'varName'
+        varName.innerText = firstCharUpper(name)
+    view.appendChild(varName)
 
     appendObjInfo(view, model)
 
-    var autoButtons =  app.core.views.primitive.query('object',1)(model)
+    //var autoButtons =  app.core.views.primitive.query('object',1)(model)
+    var autoButtons =  app.core.views.primitive.objectAutoJobButtonView.ctor(model)
         autoButtons.style.paddingRight = 4
         autoButtons.style.margin = '-1 0 -1 0'
     view.appendChild(autoButtons)

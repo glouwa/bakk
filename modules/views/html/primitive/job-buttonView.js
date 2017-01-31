@@ -1,5 +1,6 @@
 {
     type: 'View',
+    icon:'▸',
     modelTypes: ['Job'],
     idx: 1,
     ctor: function(jobModel) // der bekommt ein model

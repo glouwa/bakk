@@ -100,10 +100,10 @@ exports.stat = {
                 '💻 server cmd':                              project('modules/jobs/serverCmd.js'),
                 '📂 server folder':                           project('modules/jobs/serverFolder.js'),
                 '🗩 server output':                           project('modules/jobs/serverOutput.js'),
+                '🗩 serevr output 2':                         project('modules/jobs/serverOutput2.js'),
                 '❄ local find 3d models':                    project('modules/jobs/localSetIteration.js'),
                 '🔃 local paralell AJAX':                     project('modules/jobs/localAjax.js'),
-                '🗩 local output':                            project('modules/jobs/localOutput.js'),
-                '🗩 serevr output 2':                         project('modules/jobs/serverOutput2.js'),
+                '🗩 local output':                            project('modules/jobs/localOutput.js'),                
                 '✕': function free(j) {},
                 '▸': function run(j) {
                     // this =  tests

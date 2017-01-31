@@ -1,13 +1,13 @@
 {
     type: 'View',
-    icon:'⛁',
+    icon:'{}',
     modelTypes: ['object-auto'],
     ctor: function autoViewLine(model)
     {
         var view = document.createElement('div')
         view.className = 'autoLine'
         //view.appender = lineViewAppend(model)
-        view.appender = app.core.views.line.query('object-append')(model)
+        view.appender = app.core.views.line.objectAppendView.ctor(model)
         view.appendChild(view.appender)
 
         view.update = compositeUpdate({

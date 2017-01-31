@@ -1,6 +1,6 @@
 {
     type:'View',
-    icon:'🕷',
+    icon:'🕸️',
     modelTypes:['object'],
     idx:1,
     ctor:function objectd3graphView(model)

@@ -1,5 +1,6 @@
 {
     type: 'View',
+    icon:'?',
     modelTypes: ['selectable'],
     ctor: function(model)
     {

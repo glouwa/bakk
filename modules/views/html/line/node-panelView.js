@@ -1,6 +1,6 @@
 {
     type:'View',
-    icon:'☊',
+    icon:'⌬',
     modelTypes:['Client', 'Server', 'Overlord', 'Worker'],
     ctor:
     function networkNodeView(nodeModel)

@@ -1,5 +1,6 @@
 {
     type: 'View',
+    icon:'Jᵪ',
     modelTypes: ['Job'],
     ctor: function(model)
     {
@@ -33,15 +34,7 @@
         var view = document.createElement('div')
             view.className = 'jobLineView'
             view.style.marginRight = 5
-            view.style.marginTop = 3
-            var icon = document.createElement('div')
-                icon.className = 'textView'
-                icon.style.float = 'left'
-                icon.style.marginLeft = 16
-                icon.style.maxWidth = 100
-                icon.style.whiteSpace = 'nowrap'
-                icon.style.overflow = 'hidden'
-                icon.innerText = model.icon?model.icon.toString():'?'
+            view.style.marginTop = 3            
             var desc = document.createElement('div')
                 desc.className = 'textView'
                 desc.style.float = 'left'
@@ -61,8 +54,7 @@
 
             view.appendChild(jobControlingButton)            
             view.appendChild(p)
-            view.appendChild(sig)
-            view.appendChild(icon)
+            view.appendChild(sig)            
             view.appendChild(desc)
 
         transformBinding(model, htmlIt2View(desc), m=> m.desc + ':')

@@ -42,15 +42,6 @@ function firstCharUpper(name)
     return nameStr.charAt(0).toUpperCase() + nameStr.slice(1)
 }
 
-function varName(name)
-{
-
-    var view = document.createElement('div')
-    view.className = 'varName'    
-    view.innerText = firstCharUpper(name)
-    return view
-}
-
 function onDragStart(ev, model)
 {
     ev.stopPropagation()

@@ -1,5 +1,6 @@
 {
     type:'View',
+    icon:'{}',
     modelTypes:['object'],
     idx:1,
     ctor:function(model)

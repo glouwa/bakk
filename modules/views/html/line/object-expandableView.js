@@ -23,7 +23,7 @@
                       name == 'ios' ||
                       name == 'running',
             header: lineFrame(name, model),
-            contentFactory: ()=> app.core.views.line.query('object-auto')(model)
+            contentFactory: ()=> app.core.views.line.objectAutoView.ctor(model) //query('object-auto')(model)
         })
     }
 }
