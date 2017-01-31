@@ -1,6 +1,6 @@
 {
     type: 'View',
-    icon:'-',
+    icon:'―',
     modelTypes: ['object'],
     ctor: function(model)
     {

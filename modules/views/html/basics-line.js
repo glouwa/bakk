@@ -46,7 +46,7 @@ function hoverDiv(model)
 
 function appendObjInfo(view, model)
 {
-    var im = { 'null':'␀', 'undefined':'␥', 'string':'𝕊', 'number':'ℕ', 'number':'ℝ', 'boolean':'𝔹' }
+    var im = { 'null':'⌀', 'undefined':'␥', 'string':'𝕊', 'number':'ℕ', 'number':'ℝ', 'boolean':'𝔹' }
     var type = document.createElement('div')
         type.innerText = im[modelType(model)] || modelType(model)
         type.style.float = 'left'
@@ -85,9 +85,9 @@ function addStandardLine(view, name, model)
         icon.className = 'icon'
         icon.innerText = model.icon?model.icon.valueOf():'{}'
         icon.style.float = 'left'
-        icon.style.margin = '1 6 0 0'
-        icon.style.color = '#00AB56'
-        icon.style.width = 12
+        icon.style.margin = '1 6 0 5'
+        icon.style.color ='#969696'// '#00AB56'
+        icon.style.width = 15
         view.appendChild(icon)
 
     var varName = document.createElement('div')
@@ -117,7 +117,7 @@ function lineExpander(args)
         if (c)
             return c
         c = args.contentFactory()
-        c.style.marginLeft = 15
+        c.style.marginLeft = 14
         c.style.marginBottom = 12
         content.appendChild(c)
 
@@ -149,7 +149,7 @@ function lineExpander(args)
             header.indicator.style.width = 15
             header.indicator.style.marginTop = 2
             header.indicator.style.color = '#D0D0D0'
-            header.indicator.style.marginLeft = 4
+            header.indicator.style.marginLeft = 3
         var content = document.createElement('div')
             content.style.display = 'inline-block'
             content.style.width = '100%'

@@ -15,7 +15,7 @@
                     icon.style.float = 'left'
                     icon.style.width = 15
                     icon.style.color = 'gray'
-                    icon.style.marginLeft = 6
+                    icon.style.marginLeft = 3
                     icon.style.marginTop = 2
 
             view.appendChild(icon)
