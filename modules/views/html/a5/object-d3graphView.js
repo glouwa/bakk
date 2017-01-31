@@ -75,6 +75,7 @@
                 nodeEnter.append("circle")
                     .attr('r', 5)
                     .attr('fill', d=> color(d.group))
+                    .on('click', d=> d3g.onFocus({ __data__:d.model } ))
                     .append("title")
                         .text(d=> d.id)
 
@@ -126,7 +127,7 @@
                 if (pathNodeMap[nm.path])
                     return
 
-                var n = { id:nm.path, group:3 }
+                var n = { id:nm.path, model:nm, group:3 }
                 pathNodeMap[nm.path] = n
                 data.nodes.push(n)
 
@@ -152,6 +153,7 @@
             view.className = 'd3graph'
             view.style.margin = '10'
             view.d3handler = objectd3graph(view)
+            view.d3handler.onFocus = e=> bubbleUp(view, 'onFocus', e.__data__)
 
         function addNode(m, p) {
             view.d3handler.addNode(m, p)

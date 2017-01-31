@@ -2,7 +2,7 @@
     type:'View',
     icon:'∇',
     modelTypes:['Job'],
-    idx:0,
+    idx:2,
     ctor:function jobStateTreeView(jobModel)
     {
         //var jobAndSubjobsView2 =(l)=> jobAndSubjobsView(jobModel, l)

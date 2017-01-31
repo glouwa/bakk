@@ -77,8 +77,9 @@
                 node.append("path")
                   .style('stroke', 'grey')
                   .style("fill", 'lightgray')
+                  .on('click', d=> d3g.onFocus({ __data__:d.obj } ))
                   .attr("d", d3.symbol()
-                     .size(d=> 30)
+                     .size(d=> 50)
                      .type(d=> d3.symbolCircle))
 
                 // adds the text to the node
@@ -119,6 +120,7 @@
             view.className = 'd3tree'
             view.style.margin = '10'
             view.d3handler = objectd3tree(view, model)
+            view.d3handler.onFocus = e=> bubbleUp(view, 'onFocus', e.__data__)
 
         return view
     }

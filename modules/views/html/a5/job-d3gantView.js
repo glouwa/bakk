@@ -2,7 +2,7 @@
     type:'View',
     icon:'📈',
     modelTypes:['Job'],
-    idx:3,
+    idx:1,
     ctor:function jobStateGantD3View(jobModel)
     {
         function jobPlotGant(view, jobModel)
@@ -288,6 +288,7 @@
             view.className = 'plot'
             view.style.margin = '10'
             view.d3handler = jobPlotGant(view, jobModel)
+            view.d3handler.onFocus = e=> bubbleUp(view, 'onFocus', e.__data__)
 
         function addJob(jm) {
             view.d3handler.addJob(jm)

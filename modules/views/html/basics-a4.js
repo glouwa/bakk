@@ -47,7 +47,7 @@ function paperStack(model)
                 icon:m.icon||'?',
                 model:m,
                 highlight:true,
-                contentViewFactory:m=> app.core.views.a4v.query(modelType(m))(m)
+                contentViewFactory:m=> app.core.views.a4v.objectSplitterView.ctor(m)
             })
         }
         view.content = htmlElement('div', 'ps-content', model)
@@ -62,7 +62,7 @@ function paperStack(model)
         itemDelegate:(v,k,idx)=> makePaper({
                 icon:k,
                 model:v,
-                contentViewFactory:app.core.views.a4v.query(/*modelType(m)*/'object')
+                contentViewFactory:app.core.views.a4v.objectSplitterView.ctor
             },
             view).flap
     })

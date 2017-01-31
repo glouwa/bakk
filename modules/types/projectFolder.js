@@ -47,11 +47,8 @@ function project(url, noView)
                         j.ret('ok', '+1 idle job, +1 view')         // done
                     },
                     '⋯': function(j) {
-                        left.add({
-                            icon:project.jobPrototype.icon,
-                            model:project,
-                            contentViewFactory:m=> app.core.views.a4v.query('object')(m)
-                        })
+                        app.model.viewModel.left.merge({ [project.jobPrototype.icon]:project})
+                        //app.model.viewModel.left.active.merge(project)
                         j.ret('ok', '+1 project view')
                     }
                 }))

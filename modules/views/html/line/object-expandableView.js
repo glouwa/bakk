@@ -16,7 +16,12 @@
 
         return lineExpander({
             model: model,
-            expanded: name == 'subjobs',
+            expanded: name == 'subjobs' ||
+                      name == 'mods' ||
+                      name == 'types' ||
+                      name == 'viewTypes' ||
+                      name == 'ios' ||
+                      name == 'running',
             header: lineFrame(name, model),
             contentFactory: ()=> app.core.views.line.query('object-auto')(model)
         })

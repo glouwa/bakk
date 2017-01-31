@@ -26,13 +26,28 @@ function hexToRgba(hex, a)
     return 'rgba(' + [r, g, b, (a||0.4)].join() + ')'
 }
 
+function bubbleUp(view, eventName, e)
+{
+    while(view)
+    {
+        if (view[eventName])
+            view[eventName](e)
+        view = view.parentElement
+    }
+}
+
+function firstCharUpper(name)
+{
+    var nameStr = name.toString()
+    return nameStr.charAt(0).toUpperCase() + nameStr.slice(1)
+}
 
 function varName(name)
 {
-    var nameStr = name.toString()
+
     var view = document.createElement('div')
     view.className = 'varName'    
-    view.innerText = nameStr.charAt(0).toUpperCase() + nameStr.slice(1)
+    view.innerText = firstCharUpper(name)
     return view
 }
 

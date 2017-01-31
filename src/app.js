@@ -4,9 +4,6 @@
   man kann beim ersten zb. kein registry oder model verwenden
 */
 
-var left;
-var right;
-
 app = mvj.model('', { clientId: 'X', host:'unknown', core: { types:{} }})
 app.merge({
     core: {
@@ -37,9 +34,7 @@ app.merge({
     rootJob:function(args){
         var jd = jf.job(args)
         app.mergePath('model.jobs.'+jd.id, jd)
-        var j = app.model.jobs[jd.id.valueOf()]
-        //if (args.show)
-        //    $('#jobTab')[0].add(j.id, { content:app.core.views.a4v.query('object')(j) })
+        var j = app.model.jobs[jd.id.valueOf()]        
         return j
     },
     callUiJob:function(args){

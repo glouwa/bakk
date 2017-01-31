@@ -4,13 +4,22 @@ var FileMod = {
         url:this.fileName.valueOf(),
         onData: (j, s, d)=> {                         // eval ajaxdata and add to model
             var view = eval('('+d+')')
-            this.merge({ obj:view })
 
+            this.merge({ obj:view })
             var boxed = this.obj
+
+            var f = this.fileName.valueOf()
+            var ff = f.slice(f.lastIndexOf('/')+1, f.lastIndexOf('.'))
+            var viewName1 = ff.slice(0, ff.lastIndexOf('-'))
+            var viewName2 = ff.slice(ff.lastIndexOf('-')+1)
+            var viewName = viewName1 + firstCharUpper(viewName2)
+
             var parent = this.path.slice(0, this.path.lastIndexOf('.'))
+                parent = parent.slice(0, parent.lastIndexOf('.'))
             view.modelTypes.forEach((v, k, idx)=> {
                 var idx = boxed.idx | 0
                 app.mergePath(parent+'.index', { [v]: { [idx]:boxed } })
+                app.mergePath(parent+'.'+viewName, boxed)
             })
         }
     }))}
@@ -73,9 +82,9 @@ var ModuleFolder = {
                                 else
                                     fileDiff[internFileName] = { type:'File', fileName:internFilePath }
                             })
-                            js.updateJob({ state:{ log:'dir', progress:0.33 }, output:folderDiff})
-                            js.updateJob({ state:{ log:'dir', progress:0.66 }, output:fileDiff})
-                            js.updateJob({ state:{ log:'dir', progress:0.95 }, output:{'↻':'deadbeef'}})
+                            js.updateJob({ state:{ log:'dirs',  progress:0.33 }, output:{ io:folderDiff}})
+                            js.updateJob({ state:{ log:'files', progress:0.66 }, output:{ io:fileDiff}})
+                            js.updateJob({ state:{ log:'hmm',   progress:0.95 }, output:{'↻':'deadbeef'}})
                             js.ret('ok', 'listed ' + dir)
                         }))
                     }
@@ -90,13 +99,13 @@ var ModuleFolder = {
                 //console.log('BINGO', j.output, j1)//j=> fetchAndIndexAllMods()
                 var files = []
                 var names = []
-                j.output.forEach((v, k, idx)=> {
+                j.output.io.forEach((v, k, idx)=> {
                     if (k.endsWith(':js')) {
                         files.push(v)
                         names.push(k)
                     }
                 })
-                var fileCount = Object.keys(j.output).length
+                var fileCount = Object.keys(j.output.io).length
                 //console.log(files)
                 j1.delegate({
                     type: 'parallel',

@@ -2,7 +2,7 @@
     type:'View',
     icon:'🌳',
     modelTypes:['Job'],
-    idx:1,
+    idx:0,
     ctor: function jobStateGraphView(jobModel)
     {
         var jobStateGraphConfig = {
@@ -54,7 +54,7 @@
                     border:deviceColorMap[jobModel.state.lastWorker.valueOf().charAt(0)]
                 }*/
             })
-            gView.network.fit()
+            view.network.fit()
         })
 
         function updateSubjobs(changes)
@@ -92,7 +92,7 @@
                                 border:deviceColorMap[v.state.lastWorker.valueOf().charAt(0)]
                             }*/
                         })
-                        gView.network.fit()
+                        view.network.fit()
                     })
 
                     if (!v.isLeafType)
@@ -100,7 +100,7 @@
                         updateJob({ newMembers:v }, v.path)
                         v.on('change', updateJob)
                     }
-                    gView.network.fit()
+                    view.network.fit()
                 })
         }
 
@@ -114,32 +114,15 @@
                 }
         }
 
-        var view = document.createElement('div')
-            view.classList.add('graphView')
-            //var progressTree = jobStateTreeView(jobModel)
-            var gView = onlyGraphView(jobModel, data, jobStateGraphConfig)
-                gView.style.margin = '20 0'
-            var aView = undefined
+        var view = onlyGraphView(jobModel, data, jobStateGraphConfig)
+            view.style.margin = '20 0'
 
-        //view.appendChild(progressTree)
-        view.appendChild(gView)
-
-        gView.network.on("select", function (params)
+        view.network.on("select", function (params)
         {
-            if (aView)
-            {
-                view.removeChild(aView)
-                aView = undefined
-            }
-
             if (params.nodes[0])
-            {
-                aView = autoView(data.nodes.get(params.nodes[0]).model)
-                aView.style.borderStyle = 'dashed none none none'
-                aView.style.borderWidth = 1;
-                aView.style.borderColor = '#B0B0B0'
-                view.appendChild(aView)
-            }
+                bubbleUp(view, 'onFocus', data.nodes.get(params.nodes[0]).model)
+            else
+                bubbleUp(view, 'onFocus', undefined)
         })
 
         updateJob({ newMembers:jobModel }, jobModel.path)
