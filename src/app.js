@@ -8,7 +8,7 @@ app = mvj.model('', { clientId: 'X', host:'unknown', core: { types:{} }})
 app.merge({
     core: {
         views:{
-            'primitive':{ index:{} },
+            'primitive':{},
             'line':{},
             'd3':{},
             'a5h':{},
@@ -56,7 +56,6 @@ app.merge({
             })
         })
     },
-
 
     // TODO remove (to network)
     onMessage:function(c, parsed, pduSize){

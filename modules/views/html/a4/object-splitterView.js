@@ -15,7 +15,7 @@
                 aView = undefined
             }
             if (m) {
-                aView =app.core.views.a5h.objectExpanderMultiView.ctor(m)
+                aView =app.core.views.a5h.objectExpanderMultiView.ctor(m, 'objectAutoView')
                 view.appendChild(aView)
             }            
         }
