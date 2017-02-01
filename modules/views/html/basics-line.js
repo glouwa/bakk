@@ -1,6 +1,6 @@
 function hoverDiv(model)
 {    
-    var alphaSteps = [1, 0.2, 0.15, 0.1, 0.05]
+    var alphaSteps = [1, 0.25, 0.15, 0.1, 0.05]
 
     function parentHoverDiv(view) {
         var parent = view.parentElement

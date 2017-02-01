@@ -14,7 +14,10 @@ app.merge({
             'a5h':{},
             'a4v':{},
             'a3h':{},
-        },        
+        },
+        types:{
+            Project:project.projectType
+        },
         config:config
     },
     model:{        

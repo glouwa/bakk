@@ -161,7 +161,7 @@
     exports.traverse = function(path, obj)
     {
         var current = obj
-        var nodes = path.split('.')
+        var nodes = path.valueOf().split('.')
         for (var i = 0; i < nodes.length; i++)
             current = current[nodes[i]]
 
@@ -313,17 +313,18 @@
             try {
                 console.log('Initialize model by linkPath\nPath: ' + path + '\nlinkPath: ' + initDiff.linkPath.valueOf())
                 var targetObj = exports.traverse(initDiff.linkPath, app)
-
                 if (targetObj)
                     return targetObj
                 else
                     path = initDiff.linkPath
-            } catch(e) {
+            }
+            catch(e) {
                 path = initDiff.linkPath
             }
         }
 
         else if (initDiff.path)
+            // wärs nicht besser hier das model obj z suchen und zurück zu geben?
             return initDiff //console.trace('using boxedObj as initDiff\n' + initDiff.path +'\n'+ path)
 
         var model = box(initDiff, path)

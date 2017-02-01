@@ -13,6 +13,7 @@ config   = require('./src/config.js')
 var tools    = require('./src/tools.js')
 var pSet          = require('./modules/types/pSet.js')
 projectFolder     = require('./modules/types/projectFolder.js')
+project        = require('./modules/types/project.js')
 var network       = require('./modules/types/nodeWsNetwork.js').network
 
 eval(fs.readFileSync('src/app.js')+'')

@@ -1,16 +1,16 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <script src="modules/views/html/lib/d3.v4.js"></script>
 
         <!-- 3rd party -->
         <!--<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>-->
         <link  href="modules/views/html/lib/vis/dist/vis.css" rel="stylesheet">
+        <script src="modules/views/html/lib/vis/dist/vis.js"></script>
+        <script src="modules/views/html/lib/d3.v4.js"></script>
+        <script src="modules/views/html/lib/ace/ace.js"></script>
         <script src="modules/views/html/lib/HackTimer.js"></script>
       <!--  <script src="modules/views/html/lib/jquery-1.11.3.js"></script>
         <script src="modules/views/html/lib/jquery.color-2.1.0.js"></script> -->
-        <script src="modules/views/html/lib/ace/ace.js"></script>
-        <script src="modules/views/html/lib/vis/dist/vis.js"></script>
 
         <!-- css -->
         <link  href="modules/views/html/view.css" rel="stylesheet">
@@ -76,21 +76,21 @@
                 model:{
                     viewModel:{
                         left:{
-                            '☍':{
+                            '💢':{
                                 demos:app.model.mods.demos,
                                 mods:{
                                     types:app.core.types,
                                     viewTypes:app.core.views,                                    
                                     jobTypes:app.model.mods.tests
                                 },
-                                views:{},
+
                                 ios:{
                                     hcsw:app.network,
                                     file:{},
                                     sql:{},
                                     mongo:{},
                                 },
-                                running:app.running,
+                                views:{},
                                 log:{
                                     runs:app.model.jobs,
                                     io:{},
@@ -98,6 +98,7 @@
                                     merges:{},
                                     diffs:{},
                                 },                                
+                                running:app.running,
                             },
                             'Jᵪ':app.model.jobs,                            
                             comp:{ real:6, str:'hallo' },
@@ -187,6 +188,14 @@
                     desc:'showui',
                     params:{},
                     onCall:j1=>{
+                        //app.model.viewModel.left['☍'].merge({ views:app.model.viewModel })
+                        /*app.model.viewModel.left['💢'].merge({
+                            views:{
+                                linkPath:'model.viewModel',
+                                linkThatShit:true
+                            }
+                        })*/
+
                         document.body.append(
                             app.core.views.a3h.query('object')(app.model.viewModel)
                         )

@@ -23,12 +23,12 @@
 
 .paperstack-top > .header > .flap{
     float: left;
-    margin: 4 1 -2 1;
-    padding: 1 20 0 20;
+    margin: 3 1 -2 1;
+    padding: 3 20 1 20;
     cursor: hand;
     border-style:solid;
     border-color: transparent;
-    border-width:0 0 3 0;
+    border-width:0 0 0 0;
     border-radius: 2pt;
 }
 .paperstack-top > .header > .flap:hover{
@@ -38,14 +38,14 @@
 .paperstack-top > .header > .flap-active{
     transform: perspective(10px) rotateX(3deg);
     float: left;
-    margin: 2 1 -2 1;
-    padding: 1 30 0 6;
+    margin: 1 1 -2 1;
+    padding: 5 30 0 6;
     cursor: hand;
     font-weight: normal;
     background-color: #FDFDFD;
     border-radius: 2pt;
     color: #00CC66;
-    height: 24;
+    height: 23;
     position: relative;
 }
 

@@ -105,5 +105,8 @@ new Object({
     types: {
         Folder:Folder
     },
+    instances: {
+        serverFs:{ type:'Folder', directory:'./' }
+    },
     tests: []
 })

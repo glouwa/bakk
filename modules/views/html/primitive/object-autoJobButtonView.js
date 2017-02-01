@@ -5,7 +5,12 @@
     idx:1,
     ctor:function(model)
     {
-        var isHidden = k=> k!='onCall' && k!='onCancel' && k!='onUpdate' && k!='onReturn'
+        var isHidden = k=> k!='onCall'
+                        && k!='onCancel'
+                        && k!='onUpdate'
+                        && k!='onReturn'
+                        && k!='loadJob'
+                        && k!='runJob'
         var view = document.createElement('div')
             view.className = 'autoJobButtonView'
             view.style.paddingRight = 10            

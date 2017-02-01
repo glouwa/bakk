@@ -37,6 +37,16 @@
                     && k != 'linkThatShit'
                     && k != 'icon'
                     && k != 'directory'
+
+                    && k != 'bakk:config'
+                    && k != 'bakk:creator'
+                    && k != 'bakk:files'
+                    && k != 'bakk:includes'
+                    && k != 'bakk:njsproj'
+                    && k != 'bakk:sln'
+
+                    && k != 'node_modules'
+                    && !k.startsWith(':')
                     //&& k != ''
         },
         writable: true,
