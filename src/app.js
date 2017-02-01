@@ -15,13 +15,10 @@ app.merge({
             'a4v':{},
             'a3h':{},
         },
-        types:{
-            Project:project.projectType
-        },
         config:config
     },
     model:{        
-        mods: projectFolder.stat,
+        mods: { demos:{} },//projectFolder.stat,
         jobs:{},
         log: { type:'Set<Job>' },
         store: { type:'Store' },
@@ -48,6 +45,8 @@ app.merge({
     init:function(args){        
         q.addRoot('App init', ()=> {
             app.core.types.merge(args.builtInTypes)
+            app.model.mods.merge(projectFolder.stat)
+
             app.merge(args.structure)
             app.callUiJob({
                 icon:'🗝',

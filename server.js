@@ -12,8 +12,8 @@ q            = require('./src/q.js')
 config   = require('./src/config.js')
 var tools    = require('./src/tools.js')
 var pSet          = require('./modules/types/pSet.js')
-projectFolder     = require('./modules/types/projectFolder.js')
-project        = require('./modules/types/project.js')
+projectFolder     = require('./src/job/projectFolder.js')
+project        = require('./src/job/project.js')
 var network       = require('./modules/types/nodeWsNetwork.js').network
 
 eval(fs.readFileSync('src/app.js')+'')

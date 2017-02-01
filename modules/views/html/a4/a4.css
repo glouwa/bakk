@@ -39,7 +39,7 @@
     transform: perspective(10px) rotateX(3deg);
     float: left;
     margin: 1 1 -2 1;
-    padding: 5 30 0 6;
+    padding: 5 20 0 20;
     cursor: hand;
     font-weight: normal;
     background-color: #FDFDFD;
