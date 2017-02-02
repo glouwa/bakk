@@ -93,6 +93,14 @@ function addStandardLine(view, name, model)
     var varName = document.createElement('div')
         varName.className = 'varName'
         varName.innerText = firstCharUpper(name)
+        varName.onmouseup = e=> {
+            if (e.which == 2) {
+                app.model.viewModel.right.merge({ [name]:model })
+                //app.model.viewModel.right.active(model)
+                app.commit()
+            }
+        }
+
     view.appendChild(varName)
 
     appendObjInfo(view, model)

@@ -2,7 +2,7 @@
     type:'View',
     icon:'🕸️',
     modelTypes:['object'],
-    idx:1,
+    idx:3,
     ctor:function objectd3graphView(model)
     {
         function objectd3graph(view)

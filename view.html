@@ -55,12 +55,12 @@
     <body id="body" onload="        
         app.init({
             builtInTypes:{
-                'Folder<Mod>':ModuleFolder,
-                'File<Mod>':FileMod,
-                Network:wsBrowser,
-                Project:project.projectType,
                 Folder:Folder.type,
                 File:File.type,
+                'Folder<Mod>':ModuleFolder,
+                'File<Mod>':FileMod,
+                Project:project.projectType,
+                Network:wsBrowser,
             },
 
             structure:{
@@ -84,12 +84,9 @@
                             '💢':{
                                 serverFs:{ type:'Folder', directory:'./' },
                                 demos:app.model.mods.demos,
-                                mods:{
-                                    types:app.core.types,
-                                    viewTypes:app.core.views,                                    
-                                    jobTypes:app.model.mods.tests
-                                },
-
+                                types:app.core.types,
+                                viewTypes:app.core.views,
+                                jobTypes:app.model.mods.tests,
                                 ios:{
                                     hcsw:app.network,
                                     file:{},
@@ -107,7 +104,7 @@
                                 running:app.running,
                             },
                             'Jᵪ':app.model.jobs,                            
-                            comp:{ real:6, str:'hallo' },
+                            test:{ real:6, str:'hallo' },
                         },
                         right:app.model.jobs
                     }

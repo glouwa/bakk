@@ -20,10 +20,10 @@ function a3Frame(model)
         var name = document.createElement('div')
             name.innerText = n
             name.style.float = 'left'
-            name.style.color = 'lightgray'
+            name.style.color = '#00ab56'// 'lightgray'
             name.style.margin = '4 10 3 5'
             //name.style.color = 'rgba(0, 204, 102, 0.8)'
-            name.style.color = '#ddd'
+            //name.style.color = '#ddd'
             name.style.fontSize = 9
 
     //appendObjInfo(view, model)
@@ -31,7 +31,7 @@ function a3Frame(model)
         var type = document.createElement('div')
             type.innerText = modelType(model)
             type.style.float = 'right'
-            type.style.color = '#ddd'
+            type.style.color = '#969696'//'#ddd'
             type.style.margin = '4 12 3 2'
             type.style.fontSize = 9
         var desc = document.createElement('div')
@@ -79,7 +79,7 @@ function a3expander(args) // { header, conetentFactory, model, expanded } : onhe
                 desc:'expand a3-6',
                 onCall:j=> args.model['↻'](j),
                 params:{},
-                output:{}
+                output:args.model
         })
         return c
     }

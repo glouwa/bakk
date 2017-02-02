@@ -22,13 +22,24 @@
                             var internFilePath = path.join(dir, internFileName)
 
                             if (fs.statSync(directory).isDirectory())
-                                folderDiff[internFileName] = { type:'Folder', directory:directory }
+                                folderDiff[internFileName] = {
+                                    type:'Folder',
+                                    directory:directory
+                                }
 
                             else if (path.extname(directory) == '.js')
-                                fileDiff[internFileName] = { type:'File<Mod>', fileName:directory }
+                                fileDiff[internFileName] = {
+                                    type:'File<Mod>',
+                                    contentType:'Mod',
+                                    fileName:directory
+                                }
 
                             else
-                                fileDiff[internFileName] = { type:'File', fileName:internFilePath }
+                                fileDiff[internFileName] = {
+                                    type:'File',
+                                    contentType:path.extname(directory),
+                                    fileName:directory
+                                }
                         })
                         js.updateJob({ state:{ log:'dir', progress:0.33 }, output:folderDiff})
                         js.updateJob({ state:{ log:'dir', progress:0.66 }, output:fileDiff})

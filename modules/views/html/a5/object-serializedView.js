@@ -1,8 +1,8 @@
 {
     type:'View',
-    icon:'⛁',
+    icon:'𝕊',
     modelTypes:['object'],
-    idx:3,
+    idx:1,
     ctor:function(model)
     {
        return codeEdit(model)
