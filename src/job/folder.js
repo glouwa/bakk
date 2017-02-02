@@ -14,7 +14,8 @@
 
                     var dir = js.params.directory.valueOf()
                     fs.readdir(dir, (err, files)=> js.exception2localError('Message from FS', ()=> {
-                        if (err) throw new Error(err)
+                        if (err)
+                            throw new Error(err)
                         var folderDiff = {}, fileDiff = {}
                         files.forEach((v, k, idx)=> {
                             var directory = path.join(dir, v)
