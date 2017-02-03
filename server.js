@@ -16,7 +16,7 @@ var tools    = require('./src/tools.js')
 var pSet          = require('./modules/types/pSet.js')
 projectFolder     = require('./src/job/projectFolder.js')
 project        = require('./src/job/project.js')
-var network       = require('./modules/types/nodeWsNetwork.js').network
+
 
 eval(fs.readFileSync('src/app.js')+'')
 //eval(fs.readFileSync('src/types/project.js')+'')
@@ -26,7 +26,9 @@ var serverId = 'S₀'
 
 app.init({
     builtInTypes:{
-        'Network':network,
+        'IO<Folder>':require('./src/job/folder.js').io,
+        'IO<Ajax>':require('./src/job/file.js').io,
+        'Network':require('./modules/types/nodeWsNetwork.js').network,
     },
     structure:{
         type:'S',

@@ -337,9 +337,13 @@ function codeEdit(model)
 {
     if (typeof codeEdit.counter == 'undefined' ) codeEdit.counter = 0
 
-    var val = typeof model == 'function'
-            ? model.toString()
-            : JSON.stringify(model, 0, 4)
+
+    if (typeof model == 'function')
+        var val = model.toString()
+    else if (model.serialized)
+        var val = model.serialized.valueOf()
+    else
+        var val = JSON.stringify(model, 0, 4)
 
     var code = document.createElement('pre')
         code.id = 'aceEdit' + codeEdit.counter++
@@ -350,7 +354,7 @@ function codeEdit(model)
         editor.setTheme("ace/theme/tomorrow")
         editor.setValue(val, -1)
         editor.setOptions({
-            maxLines: 55,
+            maxLines: 73,
             fontFamily: "Monospace",
             fontSize: "8pt"
         })

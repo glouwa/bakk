@@ -45,6 +45,7 @@ function htmlIt2View(view)
 function compositeUpdate(args) // { view, filter, itemDelegate }
 {
     var childViews = {}
+    var filter = (v, k, idx)=> k != 'type' && (!args.filter || args.filter(v, k, idx))
     return function(changes)
     {
         if (changes.deletedMembers === 'all') {
@@ -54,14 +55,14 @@ function compositeUpdate(args) // { view, filter, itemDelegate }
 
         if (changes.deletedMembers)
             changes.deletedMembers.forEach((v, k, idx) => {
-                if (k != 'type' && (!args.filter || args.filter(v, k, idx)))
+                if (filter(v, k, idx))
                     if (args.view.contains(childViews[k]))
                         args.view.removeChild(childViews[k])
             })
 
         if (changes.newMembers)
             changes.newMembers.forEach((v, k, idx) => {
-                if (k != 'type' && (!args.filter || args.filter(v, k, idx)))
+                if (filter(v, k, idx))
                     args.view.insertBefore(
                         childViews[k] = args.itemDelegate(v, k, idx),
                         args.view.appender

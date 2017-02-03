@@ -56,12 +56,17 @@
     <body id="body" onload="        
         app.init({
             builtInTypes:{
+                'IO<Folder>':Folder.io,
+                'IO<Ajax>':File.io,
+
                 Folder:Folder.type,
                 File:File.type,
-                'Folder<Mod>':ModuleFolder,
-                'File<Mod>':FileMod,
-                Project:project.projectType,
+
+                ViewSet:ModuleFolder,
+                View:ViewMod,
                 Network:wsBrowser,
+
+                Project:project.projectType,
             },
 
             structure:{
@@ -72,18 +77,18 @@
                 },                
                 core:{
                     views:{
-                        primitive:{ type:'Folder<Mod>', directory:'./modules/views/html/primitive/' },
-                        line:     { type:'Folder<Mod>', directory:'./modules/views/html/line/' },
-                        a3h:      { type:'Folder<Mod>', directory:'./modules/views/html/a3/'   },
-                        a4v:      { type:'Folder<Mod>', directory:'./modules/views/html/a4/'   },
-                        a5h:      { type:'Folder<Mod>', directory:'./modules/views/html/a5/' }
+                        primitive:{ type:'ViewSet', io:{ type:'IO<Folder>', addr:'./modules/views/html/primitive/', contentType:'Mod' }},
+                        line:     { type:'ViewSet', io:{ type:'IO<Folder>', addr:'./modules/views/html/line/',      contentType:'Mod' }},
+                        a3h:      { type:'ViewSet', io:{ type:'IO<Folder>', addr:'./modules/views/html/a3/',        contentType:'Mod'   }},
+                        a4v:      { type:'ViewSet', io:{ type:'IO<Folder>', addr:'./modules/views/html/a4/',        contentType:'Mod'   }},
+                        a5h:      { type:'ViewSet', io:{ type:'IO<Folder>', addr:'./modules/views/html/a5/',        contentType:'Mod' }}
                     },
                 },
                 model:{
                     viewModel:{
                         left:{
                             '💢':{
-                                serverFs:{ type:'Folder', directory:'./' },
+                                serverFs:{ type:'Folder', io:{ type:'IO<Folder>', addr:'./' } },
                                 demos:app.model.mods.demos,
                                 types:app.core.types,
                                 viewTypes:app.core.views,
