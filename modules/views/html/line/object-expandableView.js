@@ -18,8 +18,9 @@
             model: model,
             expanded: name == 'subjobs' ||
                       name == 'mods' ||
-                      name == 'types' ||
-                      name == 'viewTypes' ||
+                      //name == 'types' ||
+                      //name == 'viewTypes' ||
+                      name == 'jobTypes' ||
                       name == 'ios' ||
                       name == 'running',
             header: lineFrame(name, model),

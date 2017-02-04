@@ -3,7 +3,7 @@ function getCmdSet(j, diff)
     app.mergePath('model.store.'+j.id, {})
     j.merge({
         state:{ progress:0.1, type:'running', log:'setting output reference' },
-        output: app.model.store[j.id.valueOf()]
+        //output: app.model.store[j.id.valueOf()]
     })
 
     j.delegate(()=> jf.remoteProxyJob({
@@ -36,7 +36,7 @@ new Object({
     type: 'Project',    
     jobPrototype: {
         type: 'JobPrototype',
-        icon: '🐁Ⓓ',
+        icon: '🐁',
         desc: 'Process empty jobs',
         onCall: getCmdSet,
         args: {           

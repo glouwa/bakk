@@ -35,7 +35,7 @@ new Object({
     jobPrototype:
     {
         type: 'JobPrototype',
-        icon: '⤑🗩',
+        icon: '🗩',
         desc: 'Generate some output at server',
         onCall: serverOuput,
         args: {

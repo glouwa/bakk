@@ -46,7 +46,7 @@
                     && k != 'bakk:sln'
 
                     && k != 'node_modules'
-                    && !k.startsWith(':')
+                    && !k.toString().startsWith(':')
                     //&& k != ''
         },
         writable: true,

@@ -14,9 +14,10 @@ q            = require('./src/q.js')
 config   = require('./src/config.js')
 var tools    = require('./src/tools.js')
 var pSet          = require('./modules/types/pSet.js')
-var projectFolder = require('./src/job/projectFolder.js')
-project        = require('./src/job/project.js')
-var network       = require('./modules/types/nodeWsNetwork.js').network
+
+Mod     = require('./src/job/mod.js')
+
+//project        = require('./src/job/project.js')
 
 eval(fs.readFileSync('src/app.js')+'')
 
@@ -27,7 +28,7 @@ var givenId = process.argv[2]
 
 app.init({
     builtInTypes:{
-        'Network':network,
+        'Network':require('./modules/types/nodeWsNetwork.js').network,
     },
     structure:{
         type:'W',

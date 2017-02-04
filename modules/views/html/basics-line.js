@@ -95,8 +95,8 @@ function addStandardLine(view, name, model)
         varName.innerText = firstCharUpper(name)
         varName.onmouseup = e=> {
             if (e.which == 2) {
-                app.model.viewModel.right.merge({ [name]:model })
-                //app.model.viewModel.right.active(model)
+                app.viewModel.right.merge({ [name]:model })
+                //app.viewModel.right.active(model)
                 app.commit()
             }
         }

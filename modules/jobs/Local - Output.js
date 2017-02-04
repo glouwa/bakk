@@ -2,7 +2,7 @@ function localOutput(j, diff)
 {    
     j.merge({
         state:{ progress: 0.1, type: 'running', log:'setting output reference' },
-        output: app.model.store[j.id.valueOf()]
+        //output: app.model.store[j.id.valueOf()]
     })
 
     j.updateJob({

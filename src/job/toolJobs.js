@@ -13,7 +13,7 @@
         var canceled = false
 
         return jf.job({
-            icon: '🔁', //⇌🔃🔄
+            icon: '🔃', //⇌🔃🔄🔁
             desc: 'xhr: ' + args.url,
             params: args,
             onCancel: function() {
@@ -157,7 +157,7 @@
                     .on('end',   ()=>  {})
             }
 
-            process.on('exit', (code, sig)=> exitHandler(code, sig))
+            process.on('exit', (code, sig)=> setTimeout(()=> exitHandler(code, sig), 50))
             process.on('error', err=> j.exception2localError('Message from Process', ()=> {
                 j.ret('fatal', 'spawn: ' + args.path + '(' + err.code + ') ' + err.errno)
             }))

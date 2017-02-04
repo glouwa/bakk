@@ -23,7 +23,7 @@ new Object({
     type: 'Project',
     jobPrototype: {
         type: 'Service',        
-        icon: '🔃*',
+        icon: '🔃',
         desc: 'Multiple AJAX calls',
         args: {
             amount: 5,            

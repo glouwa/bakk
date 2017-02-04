@@ -4,7 +4,7 @@
   man kann beim ersten zb. kein registry oder model verwenden
 */
 
-app = mvj.model('', { clientId: 'X', host:'unknown', core: { types:{} }})
+app = mvj.model('', { clientId: 'X', host:'unknown', types:{} })
 app.merge({
     core: {
         views:{
@@ -18,11 +18,15 @@ app.merge({
         config:config
     },
     model:{        
-        mods: { demos:{} },//projectFolder.stat,
+        //mods: { demos:{} },//projectFolder.stat,
         jobs:{},
-        log: { type:'Set<Job>' },
-        store: { type:'Store' },
+        //log: { type:'Set<Job>' },
+        //store: { type:'Store' },
     },
+
+    viewTypes:{},
+    jobTypes:{},
+
     network:{
         //connections:{},
         reconnectIntervall: 100,
@@ -44,8 +48,8 @@ app.merge({
     },
     init:function(args){        
         q.addRoot('App init', ()=> {
-            app.core.types.merge(args.builtInTypes)
-            app.model.mods.merge(projectFolder.stat)
+            app.types.merge(args.builtInTypes)
+            //app.model.mods.merge(Mod.stat)
 
             app.merge(args.structure)
             app.callUiJob({

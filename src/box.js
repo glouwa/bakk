@@ -91,11 +91,11 @@
         if (!app)
             console.log('app is unedf and requesting type ' + type + box.path)
 
-        if (app.core.types[type] == box)
+        if (app.types[type] == box)
             return
 
-        if (app.core.types[type])
-            box.__proto__ = app.core.types[type] // protoy sind auch beboxed
+        if (app.types[type])
+            box.__proto__ = app.types[type] // protoy sind auch beboxed
     }
 
     exports.box = function box(content, path)

@@ -14,8 +14,9 @@ config   = require('./src/config.js')
 var tools    = require('./src/tools.js')
 
 var pSet          = require('./modules/types/pSet.js')
-projectFolder     = require('./src/job/projectFolder.js')
-project        = require('./src/job/project.js')
+
+Mod     = require('./src/job/mod.js')
+//project        = require('./src/job/project.js')
 
 
 eval(fs.readFileSync('src/app.js')+'')
@@ -26,8 +27,8 @@ var serverId = 'S₀'
 
 app.init({
     builtInTypes:{
-        'IO<Folder>':require('./src/job/folder.js').io,
-        'IO<Ajax>':require('./src/job/file.js').io,
+        'IO<Folder>':require('./src/job/io.js').Folder,
+        'IO<Ajax>':require('./src/job/io.js').File,
         'Network':require('./modules/types/nodeWsNetwork.js').network,
     },
     structure:{

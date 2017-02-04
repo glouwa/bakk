@@ -13,11 +13,9 @@ var mvj      = require('./src/mvj.js')
 q            = require('./src/q.js')
 var config   = require('./src/config.js')
 var tools    = require('./src/tools.js')
-
 var pSet          = require('./modules/types/pSet.js')
-var projectFolder = require('./src/job/projectFolder.js')
-project        = require('./src/job/project.js')
-var network       = require('./modules/types/nodeWsNetwork.js').network
+
+Mod     = require('./src/job/mod.js')
 
 var osDir = os.type() == 'Linux' ? 'posix64' : 'dotnet'
 
@@ -25,7 +23,7 @@ eval(fs.readFileSync('src/app.js')+'')
 
 app.init({
     builtInTypes:{
-        'Network':network,
+        'Network':require('./modules/types/nodeWsNetwork.js').network,
     },
     structure:{
         type:'O',

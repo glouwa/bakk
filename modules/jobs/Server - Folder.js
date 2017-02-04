@@ -94,7 +94,7 @@ new Object({
     type: 'Project',    
     jobPrototype: {
         type: 'JobPrototype',
-        icon: '⤑📂',
+        icon: '📂',
         desc: 'Show folder',
         onCall: createAndLoadFolder,
         args: {
