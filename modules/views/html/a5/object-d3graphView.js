@@ -17,7 +17,7 @@
 
             var linkPanel, nodePanel
             var linkSvg, nodeSvg
-            var color = d3.scaleOrdinal(d3.schemeCategory20)
+            var color = d3.schemeCategory20
             var simulation = d3.forceSimulation()
 
             var d3g = {}
@@ -35,29 +35,34 @@
 
                 simulation
                     //.force('link', d3.forceLink().id(d=> d.id))
-                    .force("link", d3.forceLink().strength(2))
+                    .force("link", d3.forceLink().strength(3))
                     .force('charge', d3.forceManyBody().strength(-50).distanceMax(70)  )
                     .force('center', d3.forceCenter(w/2, h/2))
 
                 linkPanel = panel.append('g')
                 nodePanel = panel.append('g')
-                this.update()
+                simulation.on('end', ()=> this.update())
             }
 
             d3g.update = function()
             {
+                // links -----------
+
                 linkSvg = linkPanel.selectAll(".link")
                     .data(data.links)
 
                 linkSvg.exit().remove();
 
                 var linkEnter = linkSvg.enter()
-                    .append("line")
+                .append("line")
                     .attr("class", "link")
                     .attr('stroke-width', d=> Math.sqrt(d.value))
                     .attr('stroke', '#888')
 
+
                 linkSvg = linkEnter.merge(linkSvg)
+
+                // nodes -----------
 
                 nodeSvg = nodePanel.selectAll(".node")
                     .data(data.nodes)
@@ -73,24 +78,27 @@
                         .on("end", dragended))
 
                 nodeEnter.append("circle")
-                    .attr('r', 5)
-                    .attr('fill', d=> color(d.group))
+                    .attr('r', 10)
+                    .attr('fill', d=> color[d.level])
+                    .attr('opacity', 0.3)
                     .on('click', d=> d3g.onFocus({ __data__:d.model } ))
                     .append("title")
                         .text(d=> d.id)
 
-                /*nodeEnter.append("text")
+                nodeEnter.append("text")
                     .attr("dx", 12)
                     .attr("dy", ".35em")
-                    .text(d=> d.id)*/
+                    .text(d=> d.icon)
 
                 nodeSvg = nodeEnter.merge(nodeSvg)
+
+                // force -----------
 
                 simulation.nodes(data.nodes)
                     .on('tick', ticked)
 
                 simulation.force('link')
-                        .links(data.links)
+                    .links(data.links)
             }
 
             function ticked() {
@@ -123,11 +131,11 @@
 
             //----------------------------------------------------------------------------------------
 
-            d3g.addNode = function(nm, pm) {
+            d3g.addNode = function(nm, pm, level) {
                 if (pathNodeMap[nm.path])
                     return
 
-                var n = { id:nm.path, model:nm, group:3 }
+                var n = { id:nm.path, model:nm, level:level }
                 pathNodeMap[nm.path] = n
                 data.nodes.push(n)
 
@@ -155,24 +163,24 @@
             view.d3handler = objectd3graph(view)
             view.d3handler.onFocus = e=> bubbleUp(view, 'onFocus', e.__data__)
 
-        function addNode(m, p) {
-            view.d3handler.addNode(m, p)
+        function addNode(model, parentModel, level) {
+            view.d3handler.addNode(model, parentModel, level)
 
-            m.forEach((v, k, idx)=> {
-                if (!v.isLeafType && v.on)
-                    addNode(v, m)
+            model.forEach((v, k, idx)=> {
+                if (!v.isLeafType && v.on && model.viewfilter(v, k))
+                    addNode(v, model, level+1)
             })
 
-            m.on('change', changes=> {
+            model.on('change', changes=> {
                 if (changes.newMembers)
                     changes.newMembers.forEach((v, k, idx)=> {
                         if (!v.isLeafType && v.on)
-                            addNode(v, changes.sender)
+                            addNode(v, changes.sender, level+1)
                     })
             })
         }
 
-        addNode(model)
+        addNode(model, undefined, 0)
         return view
     }
 }

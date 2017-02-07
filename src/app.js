@@ -17,18 +17,12 @@ app.merge({
         },
         config:config
     },
-    model:{        
-        //mods: { demos:{} },//projectFolder.stat,
+    model:{
         jobs:{},
-        //log: { type:'Set<Job>' },
-        //store: { type:'Store' },
     },
-
     viewTypes:{},
     jobTypes:{},
-
-    network:{
-        //connections:{},
+    network:{        
         reconnectIntervall: 100,
     },
     running:{ stack:{} },
@@ -49,14 +43,12 @@ app.merge({
     init:function(args){        
         q.addRoot('App init', ()=> {
             app.types.merge(args.builtInTypes)
-            //app.model.mods.merge(Mod.stat)
 
             app.merge(args.structure)
             app.callUiJob({
                 icon:'🗝',
                 desc:'app.init',
                 params:{},
-                //show:false,
                 output:{},
                 onCall:j=> args.onInit(j)
             })
