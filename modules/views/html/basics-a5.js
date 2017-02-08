@@ -3,7 +3,7 @@ function autoView(model)
     var view = document.createElement('div')
         view.classList.add('auto')
         //var treeRoot = autoViewLine(model)
-        var treeRoot = app.core.views.line.query('object-auto')(model)
+        var treeRoot = app.viewTypes.line.query('object-auto')(model)
             treeRoot.style.padding = '20 0'
         view.appendChild(treeRoot)
     return view
@@ -50,10 +50,10 @@ function a3Frame(model)
                 header.className = 'autoJobButtonView'
 
                 header.style.width = '100%'
-                header.appendChild(app.core.views.primitive.query('Job')(model))
+                header.appendChild(app.viewTypes.primitive.query('Job')(model))
             }
             else
-                header = app.core.views.primitive.query('object',1)(model)
+                header = app.viewTypes.primitive.query('object',1)(model)
 
         view.appendChild(name)
         view.appendChild(type)

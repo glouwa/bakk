@@ -175,7 +175,7 @@ function jobRootButon(args)// name, args, src, noIcons, obj)   // der erstellt e
                 highlight:true,
                 icon:job.id,
                 model:job,
-                contentViewFactory: m=>app.core.views.a4v.query('object')(m)
+                contentViewFactory: m=>app.viewTypes.a4v.query('object')(m)
             })*/
 
             updateView()

@@ -5,7 +5,7 @@
     ctor:function jobPlot(model)
     {
         var view = htmlElement('div', 'objectSplitterV', model)
-            view.actual = app.core.views.a5h.objectExpanderMultiView.ctor(model)
+            view.actual = app.viewTypes.a5h.objectExpanderMultiView.ctor(model)
             view.appendChild(view.actual)
 
         var aView = undefined
@@ -15,7 +15,7 @@
                 aView = undefined
             }
             if (m) {
-                aView =app.core.views.a5h.objectExpanderMultiView.ctor(m, 'objectAutoView')
+                aView =app.viewTypes.a5h.objectExpanderMultiView.ctor(m, 'objectAutoView')
                 view.appendChild(aView)
             }            
         }

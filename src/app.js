@@ -5,34 +5,34 @@
 */
 
 app = mvj.model('', { clientId: 'X', host:'unknown', types:{} })
-app.merge({
-    core: {
-        views:{
-            'primitive':{},
-            'line':{},
-            'd3':{},
-            'a5h':{},
-            'a4v':{},
-            'a3h':{},
-        },
-        config:config
+app.merge({    
+    config:config,
+    viewTypes:{
+        'primitive':{},
+        'line':{},
+        'd3':{},
+        'a5h':{},
+        'a4v':{},
+        'a3h':{},
     },
-    model:{
-        jobs:{},
-    },
-    viewTypes:{},
     jobTypes:{},
-    network:{        
+    network:{
         reconnectIntervall: 100,
+    },
+    log:{
+        runs:{},
+        io:{},
+        commits:{},
+        merges:{},
+        diffs:{},
     },
     running:{ stack:{} },
 
 
-
     rootJob:function(args){
         var jd = jf.job(args)
-        app.mergePath('model.jobs.'+jd.id, jd)
-        var j = app.model.jobs[jd.id.valueOf()]        
+        app.mergePath('log.runs.'+jd.id, jd)
+        var j = app.log.runs[jd.id.valueOf()]
         return j
     },
     callUiJob:function(args){

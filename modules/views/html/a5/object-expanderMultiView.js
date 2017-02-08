@@ -6,12 +6,12 @@
     ctor: function(model, defView)
     {
         var objSet = [
-            app.core.views.a5h.queryByType('object', 0),
-            app.core.views.a5h.queryByType('object', 1),
-            app.core.views.a5h.queryByType('object', 2),
-            app.core.views.a5h.queryByType('object', 3)
+            app.viewTypes.a5h.queryByType('object', 0),
+            app.viewTypes.a5h.queryByType('object', 1),
+            app.viewTypes.a5h.queryByType('object', 2),
+            app.viewTypes.a5h.queryByType('object', 3)
         ]
-        var typeSet = app.core.views.a5h.queryAll(modelType(model))
+        var typeSet = app.viewTypes.a5h.queryAll(modelType(model))
         var viewSet = defView
                     ? objSet.concat(typeSet)
                     : typeSet.concat(objSet)

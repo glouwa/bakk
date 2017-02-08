@@ -6,21 +6,21 @@
     {
         var view = document.createElement('div')
         view.className = 'autoLine'        
-        view.appender = app.core.views.line.objectAppendView.ctor(model)
+        view.appender = app.viewTypes.line.objectAppendView.ctor(model)
         view.appendChild(view.appender)
 
         compositeBinding({
             model:model,
             view:view,
             filter:(v, k)=> model.viewfilter(v, k),
-            itemDelegate:(v, k)=> app.core.views.line.query(modelType(v))(v, k)
+            itemDelegate:(v, k)=> app.viewTypes.line.query(modelType(v))(v, k)
         })
 
         /*
         view.update = compositeUpdate({
             view:view,
             filter:(v, k)=> model.viewfilter(v, k),
-            itemDelegate:(v, k)=> app.core.views.line.query(modelType(v))(v, k)
+            itemDelegate:(v, k)=> app.viewTypes.line.query(modelType(v))(v, k)
         })
         view.update({ newMembers:model })
         model.on('change', view.update)

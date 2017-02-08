@@ -8,7 +8,7 @@
         var view = document.createElement('div')
             view.classList.add('auto')
             //var treeRoot = autoViewLine(model)
-            var treeRoot = app.core.views.line.query('object-auto')(model)
+            var treeRoot = app.viewTypes.line.query('object-auto')(model)
                 treeRoot.style.padding = '20 0'
             view.appendChild(treeRoot)
         return view

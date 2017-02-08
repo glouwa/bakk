@@ -406,7 +406,7 @@
 
     exports.onReceive = function(c, parsed, evalInAppContext, app, pduSize)
     {
-        var job = exports.remoteJobs[parsed.id] // exports.remoteJobs ?== app.model.jobs
+        var job = exports.remoteJobs[parsed.id] // exports.remoteJobs ?== app.log.runs
         if (!job)
         {
             var jd = exports.job(parsed.diff.unpack(evalInAppContext))
@@ -417,8 +417,8 @@
 
             jd.onUpdate = (j, diff, o)=> {}
 
-            app.mergePath('model.jobs.'+jd.id, jd)
-            job = app.model.jobs[jd.id]
+            app.mergePath('log.runs.'+jd.id, jd)
+            job = app.log.runs[jd.id]
 
             app.commit('flush workaround (dont send back)')
 

@@ -52,8 +52,8 @@
                 })
                 var prefix = inBrowser
                            ?''
-                           :'http://'+app.core.config.server.wshost+':'
-                                     +app.core.config.server.httpport+'/'
+                           :'http://'+app.config.server.wshost+':'
+                                     +app.config.server.httpport+'/'
                 xmlhttp.open("GET",prefix+args.url, true)
                 xmlhttp.send()
             }

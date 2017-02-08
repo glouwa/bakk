@@ -118,11 +118,9 @@ function aProjectJob() {
         projects: { // fileset(path, 'Set<Project>', (filename)=> project.ctor(filename))
             type:'Set<Project>',
             'cliProject':project('../../projects/' + projectName + '.js', 'noWiew')
-        },
-        core: {
-            config: config,
-            types: { type:'Set<Type>' }
-        },
+        },        
+        config: config,
+        types: { type:'Set<Type>' }
     })
 
     var pathPrefix = '../../log/'

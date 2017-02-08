@@ -8,7 +8,7 @@
             view.className = 'projectEdit'
 
         view.appendChild(
-            app.core.views.a5h.query('object',4)(model.jobPrototype.args)
+            app.viewTypes.a5h.query('object',4)(model.jobPrototype.args)
         )
         view.appendChild(
             a3expander({

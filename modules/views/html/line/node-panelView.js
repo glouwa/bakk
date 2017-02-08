@@ -104,7 +104,7 @@
                         nodeModel.freeMemPercent.on('change', updateFree)
                     }
                     //nodeModel.freeMemPercent.on('change', updateFree)
-                var headerActions = app.core.views.primitive.query('object',1)(nodeModel)//autoJobButtonView(nodeModel)
+                var headerActions = app.viewTypes.primitive.query('object',1)(nodeModel)//autoJobButtonView(nodeModel)
                     headerActions.style.float = 'right'
                 var headerBar = document.createElement('div')
                     headerBar.className = 'headerBar'

@@ -58,7 +58,7 @@
 
         parent.mergePath('subjobs.'+sj.id, sj)
         console.assert(parent.subjobs[sj.id])
-        var boxedsj = parent.subjobs[sj.id] || app.model.jobs[sj.id.valueOf()]
+        var boxedsj = parent.subjobs[sj.id] || app.log.runs[sj.id.valueOf()]
 
         console.assert(parent.output, parent.id+' has no output')
         boxedsj.merge({ output:parent.output })

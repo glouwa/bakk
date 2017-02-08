@@ -48,7 +48,7 @@
                 sig.style.minWidth = 'calc(50% - 50pt)'//250
                 sig.style.marginLeft = 15
             var p = progress(model)
-            var jobControlingButton = app.core.views.primitive.query('Job', 1)(model)
+            var jobControlingButton = app.viewTypes.primitive.query('Job', 1)(model)
                 jobControlingButton.style.height = 15
                 jobControlingButton.style.margin = '-3 0 -1 10'
 

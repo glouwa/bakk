@@ -54,7 +54,7 @@
                             app.types.merge(projectDiff.types)
 
                         if (projectDiff.views)
-                            app.core.views.merge(projectDiff.views)
+                            app.viewTypes.merge(projectDiff.views)
 
                         if (projectDiff.instances)
                             app.merge(projectDiff.instances)

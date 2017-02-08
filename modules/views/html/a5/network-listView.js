@@ -9,7 +9,7 @@
             system.classList.add('networkNodes')
             var nodes = listView(
                 model,
-                app.core.views.line.query('Client'),
+                app.viewTypes.line.query('Client'),
                 'networkView',
                 (v, k, idx)=> typeof v !== 'function'
                            &&  v.type

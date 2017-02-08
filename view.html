@@ -75,25 +75,22 @@
                 '+1 client': j=> {
                     window.open('./view.html', '_blank')
                     j.ret('ok', 'window.open(...) called')
-                },                
-                core:{
-                    views:{
-                        primitive:{ type:'ViewSet', io:{ type:'IO<Folder>', addr:'./modules/views/html/primitive/', contentType:'Mod' }},
-                        line:     { type:'ViewSet', io:{ type:'IO<Folder>', addr:'./modules/views/html/line/',      contentType:'Mod' }},
-                        a3h:      { type:'ViewSet', io:{ type:'IO<Folder>', addr:'./modules/views/html/a3/',        contentType:'Mod' }},
-                        a4v:      { type:'ViewSet', io:{ type:'IO<Folder>', addr:'./modules/views/html/a4/',        contentType:'Mod' }},
-                        a5h:      { type:'ViewSet', io:{ type:'IO<Folder>', addr:'./modules/views/html/a5/',        contentType:'Mod' }}
-                    },
+                },
+                viewTypes:{
+                    primitive:{ type:'ViewSet', io:{ type:'IO<Folder>', addr:'./modules/views/html/primitive/', contentType:'Mod' }},
+                    line:     { type:'ViewSet', io:{ type:'IO<Folder>', addr:'./modules/views/html/line/',      contentType:'Mod' }},
+                    a3h:      { type:'ViewSet', io:{ type:'IO<Folder>', addr:'./modules/views/html/a3/',        contentType:'Mod' }},
+                    a4v:      { type:'ViewSet', io:{ type:'IO<Folder>', addr:'./modules/views/html/a4/',        contentType:'Mod' }},
+                    a5h:      { type:'ViewSet', io:{ type:'IO<Folder>', addr:'./modules/views/html/a5/',        contentType:'Mod' }}
                 },
                 jobTypes:{ type:'ModSet', io:{ type:'IO<Folder>', addr:'./modules/jobs/', contentType:'JobMod' }},
                 viewModel:{
-                    left:{
-                        O:app,
+                    left:{                        
                         '💢':{
                             serverFs:{ type:'Folder', io:{ type:'IO<Folder>', addr:'./' } },
                             types:app.types,
                             jobTypes:app.jobTypes,
-                            viewTypes:app.core.views,
+                            viewTypes:app.viewTypes,
                             ios:{
                                 hcsw:app.network,
                                 file:{},
@@ -101,19 +98,13 @@
                                 mongo:{},
                             },
                             views:{},
-                            log:{
-                                runs:app.model.jobs,
-                                io:{},
-                                commits:{},
-                                merges:{},
-                                diffs:{},
-                            },
+                            log:app.log,
                             running:app.running,
                         },
-                        'Jᵪ':app.model.jobs,
+                        'Jᵪ':app.log.runs,
                         test:{ real:6, str:'hallo' },
                     },
-                    right:app.model.jobs
+                    right:app.log.runs
                 },
                 network:{
                     type: 'Network',
@@ -161,36 +152,36 @@
                     icon:'↻',
                     desc:'load prim views',
                     params:{},
-                    output:app.core.views.primitive,
-                    onCall:j1=> app.core.views.primitive['↻'](j1),
+                    output:app.viewTypes.primitive,
+                    onCall:j1=> app.viewTypes.primitive['↻'](j1),
                 }),
                 ()=> jf.job({
                     icon:'↻',
                     desc:'load line views',
                     params:{},
-                    output:app.core.views.line,
-                    onCall:j1=> app.core.views.line['↻'](j1),
+                    output:app.viewTypes.line,
+                    onCall:j1=> app.viewTypes.line['↻'](j1),
                 }),
                 ()=> jf.job({
                     icon:'↻',
                     desc:'load a3 views',
                     params:{},
-                    output:app.core.views.a3h,
-                    onCall:j1=> app.core.views.a3h['↻'](j1),
+                    output:app.viewTypes.a3h,
+                    onCall:j1=> app.viewTypes.a3h['↻'](j1),
                 }),
                 ()=> jf.job({
                     icon:'↻',
                     desc:'load a4 views',
                     params:{},
-                    output:app.core.views.a4v,
-                    onCall:j1=> app.core.views.a4v['↻'](j1),
+                    output:app.viewTypes.a4v,
+                    onCall:j1=> app.viewTypes.a4v['↻'](j1),
                 }),
                 ()=> jf.job({
                     icon:'↻',
                     desc:'load a5 views',
                     params:{},
-                    output:app.core.views.a5h,
-                    onCall:j1=> app.core.views.a5h['↻'](j1),
+                    output:app.viewTypes.a5h,
+                    onCall:j1=> app.viewTypes.a5h['↻'](j1),
                 }),
                 ()=> jf.job({
                     icon:'🗗',
@@ -206,7 +197,7 @@
                         })*/
 
                         document.body.append(
-                            app.core.views.a3h.query('object')(app.viewModel)
+                            app.viewTypes.a3h.query('object')(app.viewModel)
                         )
                         j1.ret('ok', 'ui loaded')
                     }
