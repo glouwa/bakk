@@ -1,127 +1,214 @@
-var graphConfigMap =
-{
-    'def':          { value:3,  mass:1,  color:'#97C2FC' },
-    'function':     { value:3,  mass:1,  color:'#FFA807' },
-
-    'Model':        { value:12, mass:175, color:'#97C2FC', fixed:true, x:0, y:0 }, // 00CC66
-    'User':         { value:9,  mass:50, color:'#97C2FC' },
-
-    'Core':     { value:9,  mass:50, color:'#97C2FC', fixed:true, x:0, y:-1050 },
-    'Set<Config>':  { value:5,  mass:7, color:'#97C2FC' },
-    'Set<View>':    { value:5,  mass:7, color:'#97C2FC' },
-    'Set<Type>':    { value:5,  mass:7, color:'#97C2FC' },
-
-    'Store':        { value:9,  mass:50, color:'#97C2FC', fixed:true, x:-700, y:950 },
-
-    'Set<Job>':     { value:9,  mass:50, color:'#97C2FC', fixed:true, x:700, y:950 },
-    'Job':          { value:4,  mass:5,  color:'#6E6EFD', showOnly:['params', 'output'] },
-    'remoteJob':    { value:4,  mass:5,  color:'#AF8373', showOnly:['params', 'output'] },
-    'rootJob':      { value:4,  mass:5,  color:'#ffffff', showOnly:['params', 'output'] },
-
-    'Set<Project>': { value:9,  mass:50, color:'#97C2FC', fixed:true, x:1100, y:-250 },
-    'Project':      { value:6,  mass:10, color:'#6E6EFD', fontSize:80 },
-
-    'Network':      { value:9,  mass:50, color:'#97C2FC', fixed:true, x:-1100, y:-250 },
-    'Server':       { value:6,  mass:10, color:'#5ABB23', fontSize:80 },
-    'Client':       { value:6,  mass:10, color:'#FFFF00', fontSize:80 },
-    'Worker':       { value:6,  mass:10, color:'#AF8373', fontSize:80 },
-    'Overlord':     { value:6,  mass:10, color:'#7BE141', fontSize:80 },
-
-    'SimConfig':    { value:3,  mass:1,  color:'#97C2FC', showOnly:[] },
-
-    'View':         { value:3,  mass:1,  color:'#FFFF00', showOnly:[] },
-    'Type':         { value:3,  mass:1,  color:'#6E6EFD', showOnly:[] },
-
-    'ParaSet':      { value:3,  mass:1,  color:'#FB7E81', showOnly:[] },
-    'DistSet':      { value:3,  mass:1,  color:'#FB7E81', showOnly:[] },
-
-    'graphConfig':  { value:3,  mass:1,  color:'#97C2FC', showOnly:[] }
-}
-
-function graphConfig(obj)
-{
-    var type = obj.type
-
-    if (typeof obj  === 'function')
-        type = 'function'
-
-    if (!type)
-        return graphConfigMap.def
-
-    //if (type instanceof mvj.PrimitiveModel) // todo: ???
-        //type = type.value
-
-    //if (!graphConfigMap[type])
-        //console.warn('no graphconfig fpr type ', type)
-
-    if (!graphConfigMap[type])
-        type = 'def'
-
-    if (type == 'Job' && obj.isRemote)
-        type = 'remoteJob'
-
-    if (type == 'Job')
-        type = 'rootJob'
-
-    return graphConfigMap[type]
-}
-
-function getInitPos(path)
-{
-    var parts = path.split('.')
-    var r = 1.3
-
-    if (parts.length > 1)
-        if (parts[1] === 'core')     return { x:    0*r, y:-1050*r }
-        if (parts[1] === 'projects') return { x: 1100*r, y: -250*r }
-        if (parts[1] === 'jobs')     return { x:  700*r, y:  950*r }
-        if (parts[1] === 'store')    return { x: -700*r, y:  950*r }
-        if (parts[1] === 'network')  return { x:-1100*r, y: -250*r }
-
-    return {}
-}
-
-function onlyGraphView(model, data, config, selectionDelegate)
+function d3View(className, d3, model)
 {
     var view = document.createElement('div')
-        var gView = document.createElement('div')
-        var progressOuter = document.createElement('div')
-            progressOuter.style.display = config.physics?'block':'none'
-            progressOuter.style.height = 7
-            progressOuter.style.marginTop = -200
-            progressOuter.style.marginBottom = 193
-            progressOuter.style.textAlign = '-webkit-center'
-            var progressInner = document.createElement('div')
-                progressInner.style.height = '100%'
-                progressInner.style.width = '40%'
-                progressInner.style.backgroundColor = '#e8e8e8'
-                progressInner.style.boxShadow = '0 1px 1px rgba(0, 0, 0, 0.15) inset'
-                progressInner.style.textAlign = 'left'
-                var progressValue = document.createElement('div')
-                    progressValue.style.height = '100%'
-                    progressValue.style.width = 0
-                    progressValue.style.backgroundColor = '#00CC66'
-
-        progressInner.appendChild(progressValue)
-    progressOuter.appendChild(progressInner)
-
-    view.appendChild(gView)
-    view.appendChild(progressOuter)
-
-    view.network = new vis.Network(gView, data, config)
-
-    view.network.on('stabilized', function() { view.network.fit({animation: { duration:750 } }) })
-    //network.on('hoverNode', function(e) { data.nodes.update({ id:e.node, font: { color: '#000' } }) })
-    //network.on('blurNode', function(e) { data.nodes.update({ id:e.node, font: { color: 'rgba(0, 0, 0, 0.1)' } }) })
-    view.network.on("stabilizationProgress", function(params)
-    {
-        var widthFactor = params.iterations/params.total
-        progressValue.style.width = widthFactor*100 + '%'        
-    })
-    view.network.once("stabilizationIterationsDone", function()
-    {
-        progressOuter.style.display = 'none'
-    })
+        view.className = className
+        view.style.position = 'absolute'
+        view.style.top = 0
+        view.style.bottom = 0
+        view.style.left = 0
+        view.style.right = 0
+        view.d3handler = d3(view, model)
+        view.d3handler.onFocus = e=> bubbleUp(view, 'onFocus', e.__data__)
     return view
 }
 
+function d3base(view)
+{
+    var w = 820
+    var h = 500
+    var d3view = {}
+        d3view.onFocus = ()=>{}
+        d3view.center = ()=> ({ x:w/2, y:h/2 })
+        d3view.layers = {}
+        d3view.layers.zoom = d3.select(view).append('svg')
+            .attr('width', '100%')
+            .attr('height', '100%')
+            .call(d3.zoom()
+                 .scaleExtent([1/100, 8])
+                 .on("zoom", ()=> d3view.layers.zoom.attr("transform", d3.event.transform)))
+            .append('g')
+    return d3view
+}
+
+function objectd3graph(view, model)
+{
+    var t = 500
+    var pathNodeMap = {}
+    var linkSvg, nodeSvg
+    var color = d3.schemeCategory20
+    var d3g = d3base(view)
+
+    var strengthMap = [-100, -75, -50, -10, -10]
+    var lstrengthMap = [-100, -75, -50, -10, -10]
+    var sizeMap = [12, 10, 8, 6, 4, 2]
+
+    d3g.data = { nodes:[], links:[] }
+    d3g.linkPanel = d3g.layers.zoom.append('g')
+    d3g.nodePanel = d3g.layers.zoom.append('g')
+    d3g.simulation = d3.forceSimulation()
+        .force("link",   d3.forceLink().strength(d=> d.strength))
+        .force('charge', d3.forceManyBody().strength(d=> strengthMap[d.level]).distanceMax(200))
+        .force("collide",d3.forceCollide(d=> 1.5*sizeMap[d.level]))
+        //.force('center', d3.forceCenter(d3g.center().x, d3g.center().y))
+        //.on('end', ()=> d3g.update())
+
+    d3g.update = function()
+    {
+        // links -----------
+
+        linkSvg = d3g.linkPanel.selectAll(".link")
+            .data(d3g.data.links)
+
+        linkSvg.exit().remove();
+
+        var linkEnter = linkSvg.enter()
+        .append("line")
+            .attr("class", "link")
+            .attr('stroke-width', d=> 1)
+            .attr('stroke', '#999')
+
+        linkSvg = linkEnter.merge(linkSvg)
+
+        // nodes -----------
+
+        nodeSvg = d3g.nodePanel.selectAll(".node")
+            .data(d3g.data.nodes)
+
+        nodeSvg.exit().remove();
+
+        var nodeEnter = nodeSvg.enter().append("g")
+            .attr("class", "node")
+           // .on("click", click)
+            .call(d3.drag()
+                .on("start", function dragstarted(d) {
+                    if (!d3.event.active)
+                        d3g.simulation.alphaTarget(0.3).restart()
+                    d.fx = d.x
+                    d.fy = d.y
+                })
+                .on("drag", function dragged(d) {
+                    d.fx = d3.event.x
+                    d.fy = d3.event.y
+                })
+                .on("end", function dragended(d) {
+                    if (!d3.event.active)
+                        d3g.simulation.alphaTarget(0)
+                    d.fx = null
+                    d.fy = null
+                }))
+
+        nodeEnter.append("circle")
+            .attr('r', d=> sizeMap[d.level])
+            .attr('fill', d=> color[d.level])
+            .attr('opacity', 0.3)
+            .on('click', d=> d3g.onFocus({ __data__:d.model } ))
+            .append("title")
+                .text(d=> d.id)
+
+
+        nodeEnter.append("text")
+            .attr("dx", '-0.35em')
+            .attr("dy", '0.3em')
+            .text(d=> d.model.icon)
+            .style('font-size', '10px')
+
+        nodeSvg = nodeEnter.merge(nodeSvg)
+
+        // force -----------
+
+        d3g.simulation
+            //.force('charge')
+            .nodes(d3g.data.nodes)
+            .on('tick', function ticked() {
+                linkSvg.attr('x1', d=> d.source.x)
+                    .attr('y1', d=> d.source.y)
+                    .attr('x2', d=> d.target.x)
+                    .attr('y2', d=> d.target.y)
+
+                nodeSvg.attr('transform', d=> 'translate('+d.x+','+d.y+')')
+            })
+
+        d3g.simulation
+            .force('link')
+            .links(d3g.data.links)
+    }
+
+    //----------------------------------------------------------------------------------------
+
+    d3g.addVertexAndEdge = function(nm, pm, level) {
+
+        if (pathNodeMap[nm.path])
+            return
+
+        // add vertex
+        var n = { id:nm.path, model:nm, level:level }
+
+        if (level == 0) {
+            n.fx = d3g.center().x
+            n.fy = d3g.center().y
+        }
+        if (level == 1) {
+            //n.fx = d3g.center().x + 100 * Math.cos(a)
+            //n.fy = d3g.center().y + 100 * Math.cos(a)
+        }
+
+        // add edge
+        pathNodeMap[nm.path] = n
+        d3g.data.nodes.push(n)
+
+        if (pm)
+            d3g.data.links.push({
+                source:pathNodeMap[pm.path],
+                target:n,
+                strength:1,//(level+0.001)/5,
+                value:1
+            })
+
+        d3g.update()
+    }
+
+    function filter(v, k, m) {
+        return !v.isLeafType
+             && v.on
+             && m.viewfilter(v, k)
+             && modelType(m) != 'Job'
+             && k != 'io'
+             && k != 'modelTypes'
+    }
+    /*
+    recursiveBinding({
+        filter:
+        onNew:
+        onDeleted:
+        onValueChange:
+        onBeginUpdate:
+        onEndUpdate:
+    })
+    */
+
+    d3g.addNode = function(model, parentModel, level) {
+
+        d3g.addVertexAndEdge(model, parentModel, level)
+
+        model.forEach((v, k, idx)=> {
+            if (filter(v, k, model))
+                d3g.addNode(v, model, level+1)
+        })
+
+        model.on('change', changes=> {
+            if (changes.newMembers)
+                changes.newMembers.forEach((v, k, idx)=> {
+                    if (filter(v, k, model))
+                        d3g.addNode(v, changes.sender, level+1)
+                })
+        })
+    }
+
+    d3g.addNode(model, undefined, 0)
+    return d3g
+}
+
+function recursiveBinding(args)
+{
+
+}
