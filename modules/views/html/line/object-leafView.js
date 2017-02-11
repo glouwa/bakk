@@ -6,14 +6,8 @@
     {
         var view = hoverDiv(model)
             view.className = 'line-leaf'
-
-            var icon = document.createElement('div')
-                icon.innerText = '•' //i
-                icon.style.float = 'left'
-                icon.style.width = 15
-                icon.style.color = 'gray'
-                icon.style.marginLeft = 3
-                icon.style.marginTop = 2
+            var icon = htmlElement('div', 'indicator', model)
+                icon.innerText = '•'
 
         view.appendChild(icon)
         addStandardLine(view, name, model)

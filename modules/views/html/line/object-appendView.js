@@ -14,9 +14,10 @@
                 var icon = document.createElement('div')
                     icon.innerText = '›' //i
                     icon.style.float = 'left'
-                    icon.style.width = 15
+                    icon.style.width = 17
                     icon.style.color = '#D0D0D0'
-                    icon.style.marginLeft = 5
+                    icon.style.marginLeft = 3
+                    icon.style.marginTop = 1
 
                 view.appendChild(icon)
             return view

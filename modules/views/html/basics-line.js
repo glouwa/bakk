@@ -124,7 +124,7 @@ function lineExpander(args)
     function getContent() {
         if (c)
             return c
-        c = args.contentFactory()
+        c = args.contentFactory()        
         c.style.marginLeft = 9
         c.style.marginBottom = 12
         content.appendChild(c)
@@ -146,21 +146,14 @@ function lineExpander(args)
     var view = hoverDiv(args.model)
         view.className = 'line-expander'
         view.expanded = args.expanded
-        var header = document.createElement('div')
-            header.className = 'line-expander-header'
+        var header = htmlElement('div', 'line-expander-header', args.model)
             header.onclick = function() {
                 view.expanded = !view.expanded
                 view.update()
             }
-            header.indicator = document.createElement('div')
-            header.indicator.style.float = 'left'
-            header.indicator.style.width = 15
-            header.indicator.style.marginTop = 2
-            header.indicator.style.color = '#D0D0D0'
-            header.indicator.style.marginLeft = 3
-        var content = document.createElement('div')
-            content.style.display = 'inline-block'
-            content.style.width = '100%'
+            header.indicator = htmlElement('div', 'indicator', args.model)
+        var content = htmlElement('div', 'content', args.model)
+
 
     view.update = function() {
         if (view.expanded)

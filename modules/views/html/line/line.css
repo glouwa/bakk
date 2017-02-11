@@ -10,6 +10,14 @@
     border-top-left-radius: 3px;
 }
 
+.line-leaf > .indicator{
+    float: left;
+    width: 15;
+    color: gray;
+    margin-left: 3;
+    margin-top: 2;
+}
+
 .line-expander{ /* hoverdiv */
     margin: -1 0 0 10;
     width: calc(100% - 11px);
@@ -40,27 +48,36 @@
     width: 100%;
     padding: 1 0 2 0;
     position: relative;
-    /*isplay: inline;*/
     display: block;
     height: 18;
     border-width: 1 0 1 1;
     border-style:none;
 }
 
+.line-expander > .content{
+    display: inline-block;
+    width: 100%;
+    /* todo padding: 0 0 9 12; hier, und aus lineexpander raus nemhen */
+}
+
+.line-expander-header > .indicator{
+    float:left;
+    width: 17;
+    margin-top: 2;
+    color: #D0D0D0;
+    margin-left: 3;
+}
+
 /*-------------------------------------------------------------------------------------------*/
 
 .networkNode{
-    margin: -1 10 0 5;
+    margin: -1 20 0 15;
     background-color: #fefefe;
     border-style: solid;
     border-color: #E3E9FF #C8D2F5 #C8D2F5 #E3E9FF;
     border-width: 1px;
     box-shadow: 0px -3px 10px rgba(0, 0, 0, 0.015) inset;
     position: relative;
-}
-
-.networkView .networkNode{
-    margin: -1 10 0 10;
 }
 
 .networkNode .header{
