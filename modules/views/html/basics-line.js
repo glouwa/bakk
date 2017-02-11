@@ -125,7 +125,7 @@ function lineExpander(args)
         if (c)
             return c
         c = args.contentFactory()
-        c.style.marginLeft = 14
+        c.style.marginLeft = 9
         c.style.marginBottom = 12
         content.appendChild(c)
 
@@ -144,10 +144,10 @@ function lineExpander(args)
     // args.treeLevel
 
     var view = hoverDiv(args.model)
-        view.className = 'expander'
+        view.className = 'line-expander'
         view.expanded = args.expanded
         var header = document.createElement('div')
-            header.className = 'expander-header'
+            header.className = 'line-expander-header'
             header.onclick = function() {
                 view.expanded = !view.expanded
                 view.update()

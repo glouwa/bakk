@@ -14,17 +14,7 @@
             view:view,
             filter:(v, k)=> model.viewfilter(v, k),
             itemDelegate:(v, k)=> app.viewTypes.line.query(modelType(v))(v, k)
-        })
-
-        /*
-        view.update = compositeUpdate({
-            view:view,
-            filter:(v, k)=> model.viewfilter(v, k),
-            itemDelegate:(v, k)=> app.viewTypes.line.query(modelType(v))(v, k)
-        })
-        view.update({ newMembers:model })
-        model.on('change', view.update)
-        */
+        })        
         return view
     }
 }

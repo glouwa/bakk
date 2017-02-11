@@ -5,7 +5,7 @@
     ctor:function lineViewLeaf(model, name)
     {
         var view = hoverDiv(model)
-            view.className = 'lineFramePrimitive'
+            view.className = 'line-leaf'
 
             var icon = document.createElement('div')
                 icon.innerText = '•' //i

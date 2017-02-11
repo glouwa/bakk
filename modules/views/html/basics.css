@@ -4,6 +4,6 @@
     margin-top:1;
 }
 
-.lineFrame:hover .varName {
+.line-expander-header-content:hover .varName {
     text-decoration: underline;
 }

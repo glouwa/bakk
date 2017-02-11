@@ -74,7 +74,7 @@ function objectd3graph(view, model)
         nodeSvg = d3g.nodePanel.selectAll(".node")
             .data(d3g.data.nodes)
 
-        nodeSvg.exit().remove();
+        nodeSvg.exit().remove()
 
         var nodeEnter = nodeSvg.enter().append("g")
             .attr("class", "node")
@@ -119,7 +119,7 @@ function objectd3graph(view, model)
         d3g.simulation
             //.force('charge')
             .nodes(d3g.data.nodes)
-            .on('tick', function ticked() {
+            .on('tick', function() {
                 linkSvg.attr('x1', d=> d.source.x)
                     .attr('y1', d=> d.source.y)
                     .attr('x2', d=> d.target.x)
@@ -175,15 +175,22 @@ function objectd3graph(view, model)
              && k != 'io'
              && k != 'modelTypes'
     }
+
     /*
-    recursiveBinding({
-        filter:
-        onNew:
-        onDeleted:
-        onValueChange:
-        onBeginUpdate:
-        onEndUpdate:
+    componentBinding({
+        filter:filter,
+        model:model
+        view:layer.vertices,
+        onNew: app.viewTypes.d3.byType[typeOf(model)].ctor
+        onDeleted:if (refcount--) delete
     })
+    componentBinding({
+        filter:filter
+        model:relation(model,v,k,idx)
+        view:layer.edges,
+        onNew:app.viewTypes.d3.edge.ctor
+    })
+
     */
 
     d3g.addNode = function(model, parentModel, level) {

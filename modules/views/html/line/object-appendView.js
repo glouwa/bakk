@@ -9,7 +9,7 @@
             im = { 'null':'␀', 'undefined':'␥', 'string':'𝕊', 'number':'ℕ', 'number':'ℝ', 'boolean':'𝔹' }
 
             var view = hoverDiv(model)
-                view.className = 'lineFramePrimitive'
+                view.className = 'line-leaf'
 
                 var icon = document.createElement('div')
                     icon.innerText = '›' //i

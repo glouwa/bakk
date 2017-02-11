@@ -1,14 +1,11 @@
 .primitiveValue{
-    float: right;
+    flex: 1 0;
     text-align: right;
-    border-width: 1;
-    //background-color: #FDFDFD;
+    border-width: 1;    
     border-color: #ffffff;
     border-style: solid;
-    border-radius: 2px;
-    padding: 0 2;
-    outline: none;
-    margin: 1 4 0 0;
+    border-radius: 2px;    
+    outline: none;    
 }
 
 .primitiveValue:hover{

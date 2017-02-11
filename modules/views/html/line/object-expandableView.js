@@ -6,10 +6,9 @@
     {
         // used for: lineObjectView/expanderheader,
         // has buttons
-        function lineFrame(name, model)
+        function lineExpanderHeader(name, model)
         {
-            var view = document.createElement('div')
-                view.className = 'lineFrame'
+            var view = htmlElement('div', 'line-expander-header-content', model)
             addStandardLine(view, name, model)
             return view
         }
@@ -23,7 +22,7 @@
                       name == 'jobTypes' ||
                       name == 'ios' ||
                       name == 'running',
-            header: lineFrame(name, model),
+            header: lineExpanderHeader(name, model),
             contentFactory: ()=> app.viewTypes.line.objectAutoView.ctor(model) //query('object-auto')(model)
         })
     }
