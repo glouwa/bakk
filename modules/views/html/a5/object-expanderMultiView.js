@@ -2,14 +2,15 @@
     type:'View',
     icon:'*',
     modelTypes:['object'],
-    idx:4,
+    idx:5,
     ctor: function(model, defView)
     {
         var objSet = [
             app.viewTypes.a5h.queryByType('object', 0),
             app.viewTypes.a5h.queryByType('object', 1),
             app.viewTypes.a5h.queryByType('object', 2),
-            app.viewTypes.a5h.queryByType('object', 3)
+            app.viewTypes.a5h.queryByType('object', 3),
+            app.viewTypes.a5h.queryByType('object', 4)
         ]
         var typeSet = app.viewTypes.a5h.queryAll(modelType(model))
         var viewSet = defView

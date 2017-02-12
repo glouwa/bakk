@@ -47,8 +47,8 @@ function objectd3graph(view, model)
     d3g.nodePanel = d3g.layers.zoom.append('g')
     d3g.simulation = d3.forceSimulation()
         .force("link",   d3.forceLink().strength(d=> d.strength))
-        .force('charge', d3.forceManyBody().strength(d=> strengthMap[d.level]).distanceMax(200))
-        .force("collide",d3.forceCollide(d=> 1.5*sizeMap[d.level]))
+        .force('charge', d3.forceManyBody().strength(d=> strengthMap[d.level]).distanceMax(150))
+        .force("collide",d3.forceCollide(d=> 1.7*sizeMap[d.level]))
         //.force('center', d3.forceCenter(d3g.center().x, d3g.center().y))
         //.on('end', ()=> d3g.update())
 
@@ -160,7 +160,7 @@ function objectd3graph(view, model)
             d3g.data.links.push({
                 source:pathNodeMap[pm.path],
                 target:n,
-                strength:1,//(level+0.001)/5,
+                strength:level>2?0.5:1,//(level+0.001)/5,
                 value:1
             })
 
@@ -215,7 +215,3 @@ function objectd3graph(view, model)
     return d3g
 }
 
-function recursiveBinding(args)
-{
-
-}

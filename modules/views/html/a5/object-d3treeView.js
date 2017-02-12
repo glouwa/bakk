@@ -30,7 +30,11 @@
                     return undefined
 
                 return Object.keys(d.obj)
-                    .map(k=> ({ name:k, obj:d.obj[k], depth:d.depth+1 }))
+                    .map(k=> ({
+                        name:k,
+                        obj:d.obj[k],
+                        depth:d.depth+1
+                    }))
                     //.filter(c=> !c.obj.isLeafType)
                     //.filter(c=> !c.obj.isLink)
                     .filter(c=> !c.obj.isLeafType
@@ -71,7 +75,7 @@
             node.append("path")
               .style('stroke', 'grey')
               .style("fill", 'lightgray')
-              .on('click', d=> d3g.onFocus({ __data__:d.obj } ))
+              .on('click', d=> d3g.onFocus({ __data__:d.data.obj } ))
               .attr("d", d3.symbol()
                  .size(d=> 50)
                  .type(d=> d3.symbolCircle))

@@ -74,8 +74,8 @@
 
                 this.vis = d3.select(view)
                     .append("svg")
-                    .attr("width", w)
-                    .attr("height", h+20)
+                    .attr("width", '100%')
+                    .attr("height", '100%')
                     .call(this.zoom)
 
                 this.x = this.xz0 = d3.scaleTime()
@@ -284,11 +284,7 @@
             return d3g
         }
 
-        var view = document.createElement('div')
-            view.className = 'plot'
-            view.style.margin = '10'
-            view.d3handler = jobPlotGant(view, jobModel)
-            view.d3handler.onFocus = e=> bubbleUp(view, 'onFocus', e.__data__)
+        var view = d3View('plot', jobPlotGant, jobModel)
 
         function addJob(jm) {
             view.d3handler.addJob(jm)
