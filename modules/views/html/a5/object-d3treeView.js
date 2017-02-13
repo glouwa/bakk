@@ -47,7 +47,8 @@
 
             // declares a tree layout and assigns the size
             var treemap = d3.tree()
-                .size([height, width-100]);
+                .size([height, width-100])
+                .separation(function(a, b) { return (a.parent == b.parent ? 1 : 2) / a.depth; });
 
             // maps the node data to the tree layout
             nodes = treemap(nodes);
