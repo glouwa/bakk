@@ -51,12 +51,12 @@ function radialTreeObject(model, view)
 
         var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
             circle.setAttribute('r', 5)
-            circle.onclick = e=> view.d3handler.onFocus({ __data__:model })
+            circle.onclick = e=> view.setFocus(model)
             circle.style.fill = 'lightgray'
             circle.style.stroke = 'gray'
 
         var text = document.createElementNS('http://www.w3.org/2000/svg', 'text')
-            text.onclick = e=> view.d3handler.onFocus({ __data__:model } )
+            text.onclick = e=> view.setFocus(model)
             text.setAttribute('dy', '.31em')
             text.setAttribute('transform', 'rotate(' + view.textAngle(d) + ')')
 
@@ -64,7 +64,7 @@ function radialTreeObject(model, view)
     svg.appendChild(circle)
 
     svg.relayoutD3 = function() {
-        var d = view.d3Objects2treeMap[model.path]
+        var d = view.d3Objects2treeMap[model.path]; if (!d) return
         var x = d.x
         var y = d.y
         d3.select(svg)
@@ -122,7 +122,7 @@ function radialTreeLink(model, view)
         svg.setAttribute('d', curveLine(d.parent, d.parent, view.project))
 
     svg.relayoutD3 = function() {
-        var d = view.d3Objects2treeMap[model.path]
+        var d = view.d3Objects2treeMap[model.path]; if (!d) return
         d3.select(svg)
             .transition()
             .duration(view.animationDuration)
@@ -132,12 +132,12 @@ function radialTreeLink(model, view)
     return svg
 }
 
-function objectd3tree(view, model)
+function objectd3tree(view, model, w, h)
 {
     var d3g = d3base(view)
         d3g.mw = { name:'root', obj:model, depth:0 }
         d3g.d3tree = d3.tree()
-            .size([360, 300])
+            .size([w||360, h||300])
             .separation((a, b)=> (a.parent == b.parent ? 0.7 : 2) / a.depth)
 
     return d3g
@@ -145,14 +145,16 @@ function objectd3tree(view, model)
 
 function d3radialTreeView(model)
 {
-    var view = d3View('d3tree', objectd3tree, model)
+    var view = d3View('d3tree', model)
+        view.d3handler = objectd3tree(view, model)
+
         view.update_Hierarchy_Tree = update_Hierarchy_Tree
         view.animationDuration = 1000
         view.textAngle = d=> d.x<180 ? d.x-90 : d.x+90
         view.project = (x, y)=>
         {
             var a = (x - 90) / 180 * Math.PI
-            return [y * Math.cos(a), y * Math.sin(a)];
+            return [470+y * Math.cos(a), 300+y * Math.sin(a)];
         }
 
     d3compositeBinding({
@@ -175,6 +177,8 @@ function d3radialTreeView(model)
 function d3treeView(model)
 {
     var view = d3View('d3tree', objectd3tree, model)
+        view.d3handler = objectd3tree(view, model, 750, 900)
+
         view.update_Hierarchy_Tree = update_Hierarchy_Tree
         view.animationDuration = 1000
         view.textAngle = d=> 90

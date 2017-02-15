@@ -55,12 +55,11 @@
                         .attr('stroke-dasharray', "3 2")
                         //.attr('r', 8)
                 }
-                d3g.onFocus(d3g.focus)
+                view.setFocus(d3g.focus.__data__)
             }
 
             var d3g = {}
-            d3g.focus = null
-            d3g.onFocus = ()=>{}
+            d3g.focus = null            
             d3g.init = function() {  // d3g.(vis x y xaxes yaxes )
                 this.zoom = d3.zoom()
                     .scaleExtent([0.8, 10])
@@ -132,7 +131,7 @@
                     .attr('stroke-width', 1.5)
                     .attr('stroke', l||'#fff')
                     .attr('cursor', 'pointer')
-                    .on('click', d=> d3g.onFocus({ __data__:d.c } )) //handleMouseClick)
+                    .on('click', d=> view.setFocus(d.c)) //handleMouseClick)
                     .attr("cx", d=> this.x(d.t))
             }
 
@@ -285,6 +284,7 @@
         }
 
         var view = d3View('plot', jobPlotGant, jobModel)
+            view.d3handler = jobPlotGant(view, jobModel)
 
         function addJob(jm) {
             view.d3handler.addJob(jm)

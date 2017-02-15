@@ -5,6 +5,8 @@
     idx:3,
     ctor:function(model)
     {
-        return d3View('d3graph', objectd3graph, model)
+        var view = d3View('d3graph', model)
+            view.d3handler = objectd3graph(view, model)
+        return view
     }
 }

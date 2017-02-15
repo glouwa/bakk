@@ -1,4 +1,4 @@
-function d3View(className, d3, model)
+function d3View(className, model)
 {
     var view = document.createElement('div')
         view.className = className
@@ -6,9 +6,8 @@ function d3View(className, d3, model)
         view.style.top = 0
         view.style.bottom = 0
         view.style.left = 0
-        view.style.right = 0
-        view.d3handler = d3(view, model)
-        view.d3handler.onFocus = e=> bubbleUp(view, 'onFocus', e.__data__)
+        view.style.right = 0        
+        view.setFocus = e=> bubbleUp(view, 'onFocus', e)
     return view
 }
 
@@ -16,17 +15,31 @@ function d3base(view)
 {
     var w = 820
     var h = 500
-    var d3view = {}
-        d3view.onFocus = ()=>{}
-        d3view.center = ()=> ({ x:w/2, y:h/2 })
+    var d3view = {}      
         d3view.layers = {}
-        d3view.layers.zoom = d3.select(view).append('svg')
-            .attr('width', '100%')
-            .attr('height', '100%')
-            .call(d3.zoom()
-                 .scaleExtent([1/100, 8])
-                 .on("zoom", ()=> d3view.layers.zoom.attr("transform", d3.event.transform)))
+        d3view.center = ()=> ({ x:w/2, y:h/2 })
+        d3view.zoom = d3.zoom()
+            .scaleExtent([1/100, 8])
+            .on("zoom", ()=> d3view.layers.zoom.attr("transform", d3.event.transform))
+
+        d3view.layers.svg = d3.select(view)
+            .append('svg')
+                .attr('width', '100%')
+                .attr('height', '100%')
+                .call(d3view.zoom)
+
+        d3view.layers.zoom = d3view.layers.svg
             .append('g')
+                .on("click", ()=> d3view.zoom.toObj(d3view.layers.zoom));
+
+        d3view.zoom.fit = function()
+        {
+            var content_bbox = d3view.layers.zoom.node().getBBox()
+            var scale = view.clientWidth / content_bbox.width * 0.95
+            var t = d3.zoomIdentity.translate(0,10).scale(scale)
+            d3view.layers.svg.call(d3view.zoom.transform, t)
+        }
+
     return d3view
 }
 
@@ -50,7 +63,7 @@ function objectd3graph(view, model)
         .force('charge', d3.forceManyBody().strength(d=> strengthMap[d.level]).distanceMax(150))
         .force("collide",d3.forceCollide(d=> 1.7*sizeMap[d.level]))
         //.force('center', d3.forceCenter(d3g.center().x, d3g.center().y))
-        //.on('end', ()=> d3g.update())
+        .on('end', ()=> d3g.zoom.fit())
 
     d3g.update = function()
     {
@@ -101,7 +114,7 @@ function objectd3graph(view, model)
             .attr('r', d=> sizeMap[d.level])
             .attr('fill', d=> color[d.level])
             .attr('opacity', 0.3)
-            .on('click', d=> d3g.onFocus({ __data__:d.model } ))
+            .on('click', d=> view.setFocus(d.model))
             .append("title")
                 .text(d=> d.id)
 
