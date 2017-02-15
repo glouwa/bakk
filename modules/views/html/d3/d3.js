@@ -36,12 +36,12 @@ function objectd3graph(view, model)
     var pathNodeMap = {}
     var linkSvg, nodeSvg
     var color = d3.schemeCategory20
-    var d3g = d3base(view)
 
     var strengthMap = [-100, -75, -50, -10, -10]
     var lstrengthMap = [-100, -75, -50, -10, -10]
     var sizeMap = [12, 10, 8, 6, 4, 2]
 
+    var d3g = d3base(view)
     d3g.data = { nodes:[], links:[] }
     d3g.linkPanel = d3g.layers.zoom.append('g')
     d3g.nodePanel = d3g.layers.zoom.append('g')
