@@ -252,6 +252,7 @@ function comboBox(psetModel, selectionModel, itemDelegate)
 
     //--------------------------------------------------------------------------
 
+    /*
     function updateSet(changes)
     {
         updateData = compositeUpdate({
@@ -279,6 +280,24 @@ function comboBox(psetModel, selectionModel, itemDelegate)
     }
     updateSet({ newMembers:psetModel })
     psetModel.on('change', updateSet)
+    */
+    compositeBinding({
+        model:'model.data',
+        view:comboDropDown,
+        itemDelegate:(v, k)=>
+        {
+            if (k == selectionModel.value)
+                combo.setValue(v, k)
+
+            var li = document.createElement('li')
+            var liDiv = itemDelegate(v)
+                liDiv.id = v.mid
+                liDiv.onclick = ()=> combo.setValue(v, k)
+            li.appendChild(liDiv)
+            return li
+        }
+    })
+
 
     function updateSelection()
     {

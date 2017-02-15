@@ -15,7 +15,8 @@
             view.className = 'autoJobButtonView'
             view.style.paddingRight = 10            
 
-        view.update = compositeUpdate({
+        compositeBinding({
+            model:model,
             view:view,
             filter:(v, k)=> typeof v === 'function' && isHidden(k),
             itemDelegate:(v, k)=> jobRootButon({
@@ -27,8 +28,6 @@
                 noIcons:true
             })
         })
-        view.update({ newMembers:model })
-        model.on('change', view.update)
         return view
     }
 }

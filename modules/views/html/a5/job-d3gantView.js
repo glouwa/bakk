@@ -270,7 +270,7 @@
                 d3commits.selectAll(".crect")
                     .duration(t)
                     .attr("x",      d=> this.x(d.s))
-                    .attr("width",  d=> this.x(d.e)-this.x(d.s))
+                    .attr("width",  d=> this.x(d.e) - this.x(d.s))
                     .attr("y",      d=> m.top)
                     .attr("height", d=> h-m.top)
 

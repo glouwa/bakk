@@ -27,41 +27,10 @@
 }
 
 
-/*
+.radial-tree-node{
+    -webkit-transition: transform 5s ease-in;
+    -moz-transition: transform 5s ease-in;
+    -o-transition: transform 5s ease-in;
+     transition: transform 5s ease-in;
 
-ctions.forEach(function (direction) {
-    var tip = d3.tip()
-        .attr('class', 'd3-tip')
-        .html(function(d) { return d.toFixed(2) })
-        .direction(direction)
-        .offset(function () {
-            if(direction=='n') { return [-10,0] }
-            else if(direction=='s') { return [10,0] }
-            else if(direction=='e') { return [0,10] }
-            else if(direction=='w') { return [0,-10] }
-        })
-
-    var vis = d3.select(document.body)
-        .append('svg')
-        .attr('class', direction)
-        .attr('width', w)
-        .attr('height', h)
-        .append('g')
-        .attr('transform', 'translate('+b+','+b+')')
-        .call(tip)
-
-    vis.append('text')
-        .attr('class', 'direction')
-        .attr('x', w/2)
-        .attr('y', -b)
-        .attr('dy', '1em')
-        .text('direction: ' + direction)
-
-    vis.selectAll('circle')
-        .data(data)
-        .enter().append('circle')
-        .attr('r', function(d, i) { return random2(i) * 10 })
-        .attr('cx', function(d, i) { return x(i) })
-        .attr('cy', y)
-        .on('mouseover', tip.show)
-*/
+}

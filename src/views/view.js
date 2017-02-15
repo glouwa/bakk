@@ -42,6 +42,43 @@ function htmlIt2View(view)
 
 /*-------------------------------------------------------------------------------------------*/
 
+function d3compositeBinding(args) // { model, view, filter?, itemDelegate }
+{
+    d3compositeBinding.updatesRunning = d3compositeBinding.updatesRunning || 0
+    var childViews = {}
+    var filter = (v, k, idx)=> k != 'type' && (!args.filter || args.filter(v, k, idx))
+    var update = function(changes)
+    {
+        if (d3compositeBinding.updatesRunning === 0)
+            if (args.onchangeBegin)
+                args.onchangeBegin()
+
+        d3compositeBinding.updatesRunning++
+
+        if (changes.deletedMembers === 'all') {
+            args.layer.innerText = ''
+            childViews = {}
+        }
+
+        if (changes.deletedMembers)
+            changes.deletedMembers.forEach((v, k, idx) => {
+                if (filter(v, k, idx))
+                    if (args.layer.contains(childViews[k]))
+                        args.layer.removeChild(childViews[k])
+            })
+
+        if (changes.newMembers)
+            changes.newMembers.forEach((v, k, idx) => {
+                if (filter(v, k, idx))
+                    args.layer.appendChild(childViews[k] = args.itemDelegate(v, k, idx))
+            })
+
+        d3compositeBinding.updatesRunning--
+    }
+    update({ newMembers:args.model })
+    args.model.on('change', update)
+}
+
 function compositeUpdate(args) // { view, filter, itemDelegate }
 {
     var childViews = {}
@@ -73,12 +110,19 @@ function compositeUpdate(args) // { view, filter, itemDelegate }
 
 /*-------------------------------------------------------------------------------------------*/
 
-function existanceBinding()
-{}
+function compositeBinding(args) // { model, view, filter?, itemDelegate }
+{
+    args.view.update = compositeUpdate({
+        view:args.view,
+        itemDelegate:args.itemDelegate,
+        filter:args.filter
+    })
+    args.view.update({ newMembers:args.model })
+    args.model.on('change', args.view.update)
+}
 
-function typeBinding()
-{}
-
+function existanceBinding(){}
+function typeBinding(){}
 function transformBinding(m, v, mvTransform, vmTransform) // model { view, updateView :nv=>, changeEvent :=> }
 {
     v.set(mvTransform(m).valueOf())
@@ -105,17 +149,6 @@ function valueBinding(m, v) // model { view, updateView :nv=>, changeEvent :=> }
         v.set(m.valueOf())
         console.log('m-change')
     })
-}
-
-function compositeBinding(args) // { model, view, filter?, itemDelegate }
-{
-    args.view.update = compositeUpdate({
-        view:args.view,
-        itemDelegate:args.itemDelegate,
-        filter:args.filter
-    })
-    args.view.update({ newMembers:args.model })
-    args.model.on('change', args.view.update)
 }
 
 /*-------------------------------------------------------------------------------------------*/
@@ -166,6 +199,15 @@ function itemGridView(psetModel, delegate)
         view.appendChild(entities)
 
     //--------------------------------------------------------------------------
+
+    // todo
+    /*
+    compositeBinding({
+        model:'model.data',
+        view:entities,
+        itemDelegate:delegate
+    })
+    */
 
     var updateData = compositeUpdate({ view:entities, itemDelegate:delegate })
 

@@ -4,6 +4,24 @@
     //exports.jm = undefined
     exports.onCommit = function() {}
 
+
+    /**
+    * known events:
+    *   - change     (in commit_)
+    *   - commit     (in commit_)
+    *   - endCommit  (in commit_)
+    *   - destroy
+    *
+    * commit_ wird recursive von commmit aufgerufen.
+    * parent bekommt nix mit das seine kinder events bekommen
+    *
+    *
+    * proposed event:
+    *   - onPathChange
+    *   - onTypeChange
+    *   - onChildChange
+    *   - onValueChange
+    */
     exports.Emitter = {
         on: function(event, fn)
         {
