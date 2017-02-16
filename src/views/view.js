@@ -46,7 +46,7 @@ function d3compositeBinding(args) // { model, view, filter?, itemDelegate }
 {
     d3compositeBinding.updatesRunning = d3compositeBinding.updatesRunning || 0
     var childViews = {}
-    var filter = (v, k, idx)=> k != 'type' && (!args.filter || args.filter(v, k, idx))
+    var filter = (v, k, idx)=> k != 'type' && (!args.filter || args.filter(v, k, idx, args.model))
     var update = function(changes)
     {
         if (d3compositeBinding.updatesRunning === 0)
