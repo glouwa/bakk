@@ -130,6 +130,10 @@
     position:relative;    
 }
 
+.objectSplitterV > .a3expander:last-child .paperstack-bottom > .ps-content{
+    flex-basis:61.8%;
+}
+
 .paperstack-bottom > .ps-content > .cm{
     border:none;
     display:none;

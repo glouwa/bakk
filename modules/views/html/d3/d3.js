@@ -26,7 +26,7 @@ function d3base(view)
             .append('svg')
                 .attr('width', '100%')
                 .attr('height', '100%')
-                .on("click", ()=> d3view.zoom.fit())
+                //.on("click", ()=> d3view.zoom.fit())
                 .call(d3view.zoom)
 
         d3view.layers.zoom = d3view.layers.svg
@@ -55,45 +55,51 @@ function filter(v, k, idx, m)
         && k != 'modelTypes'
 }
 
-function update_Hierarchy_Tree()
+function model2d3Hirarchy(d)
+{
+    if (d.depth>2 || !d.obj)
+        return undefined
+
+    return Object.keys(d.obj)
+        .map(k=> ({
+            name:k,
+            obj:d.obj[k],
+            model:d.obj[k],
+            depth:d.depth+1
+        }))
+        .filter(c=> filter(c.obj, c.name, 0, d.obj))
+}
+
+function update_Hierarchy_Tree(view)
 {
     console.log('update_Hierarchy_Tree')
 
-    function model2d3Hirarchy(d)
-    {
-        if (d.depth>2 || !d.obj)
-            return undefined
+    var d3hirarchy = d3.hierarchy(view.d3handler.mw, model2d3Hirarchy)
+    view.d3tree = view.d3handler.d3tree(d3hirarchy) // update layout (x, y)
 
-        return Object.keys(d.obj)
-            .map(k=> ({
-                name:k,
-                obj:d.obj[k],
-                model:d.obj[k],
-                depth:d.depth+1
-            }))
-            .filter(c=> filter(c.obj, c.name, 0, d.obj))
-    }
+    /*view.d3tree.descendants().forEach((v,k,idx)=> {
+        var x = v.x, y = v.y
+        var a = (x - 90) / 180 * Math.PI
+        v.x = y * Math.cos(a)
+        v.y = y * Math.sin(a)
+    })*/
 
-    var d3hirarchy = d3.hierarchy(this.d3handler.mw, model2d3Hirarchy)
-    this.d3tree = this.d3handler.d3tree(d3hirarchy) // update layout (x, y)
+    // wirklich hier?
 
-    this.d3Objects2treeMap = {}
-    this.d3tree.descendants().forEach((v,k,idx)=> {
-        this.d3Objects2treeMap[v.data.obj.path] = v
+    view.d3Objects2treeMap = {}
+    view.d3tree.descendants().forEach((v,k,idx)=> {
+        view.d3Objects2treeMap[v.data.obj.path] = v
     })
 
-    this.d3handler.layers.zoom.selectAll('path').each(function (d, i, nodes) {
-        this.relayoutD3()
+    view.d3handler.layers.zoom.selectAll('path').each(function (d, i, nodes) {
+        if (this.relayoutD3)
+            this.relayoutD3()
     })
 
-    this.d3handler.layers.zoom.selectAll('g').each(function (d, i, nodes) {
-        this.relayoutD3()
+    view.d3handler.layers.zoom.selectAll('g').each(function (d, i, nodes) {
+        if (this.relayoutD3)
+            this.relayoutD3()
     })
-}
-
-function update_Hierarchy_Nodes_Edges()
-{
-    console.log('update_Hierarchy_Nodes_Edges')
 }
 
 
@@ -147,8 +153,8 @@ function radialTreeObject(model, view)
         d3compositeBinding({
             model:model,
             view:view,
-            layer:view.d3handler.layers.zoom.node(),
-            onchangeBegin:()=> view.update_Hierarchy_Tree(),
+            layer:view.d3handler.layers.nodes.node(),
+            onchangeBegin:()=> view.updated3Layout(view),
             itemDelegate:(v, k)=> radialTreeObject(v, view),
             filter:filter
         })
@@ -156,7 +162,7 @@ function radialTreeObject(model, view)
         d3compositeBinding({
             model:model,
             view:view,
-            layer:view.d3handler.layers.zoom.node(),
+            layer:view.d3handler.layers.links.node(),
             itemDelegate:(v, k)=> radialTreeLink(v, view),
             filter:filter
         })
@@ -175,7 +181,7 @@ function radialTreeLink(model, view)
     var svg = document.createElementNS('http://www.w3.org/2000/svg', 'path')
         svg.setAttribute('class', 'link')
         svg.style.fill = 'none'
-        svg.style.stroke = 'lightgray'
+        svg.style.stroke = '#999'
         var d = view.d3Objects2treeMap[model.path]
         svg.setAttribute('d', curveLine(d.parent, d.parent, view.project))
 
@@ -190,4 +196,114 @@ function radialTreeLink(model, view)
     return svg
 }
 
+// --------------------------------------------------------------------------------------------
 
+function treeObject(model, view)
+{
+    var svgSel = d3.select(document.createElementNS('http://www.w3.org/2000/svg', 'g'))
+
+        .attr("class", "node")
+        .call(d3.drag()
+            .on("start", function dragstarted(d) {
+                if (!d3.event.active)
+                    view.d3handler.simulation.alphaTarget(0.3).restart()
+                var d = view.d3Objects2treeMap[model.path]; if (!d) return
+                d.fx = d.x
+                d.fy = d.y
+            })
+            .on("drag", function dragged(d) {
+                var d = view.d3Objects2treeMap[model.path]; if (!d) return
+                d.fx = d3.event.x
+                d.fy = d3.event.y
+            })
+            .on("end", function dragended(d) {
+                if (!d3.event.active)
+                    view.d3handler.simulation.alphaTarget(0)
+                var d = view.d3Objects2treeMap[model.path]; if (!d) return
+                d.fx = null
+                d.fy = null
+            }))
+
+    var sizeMap = [12, 10, 8, 6, 4, 2]
+    svgSel.append("circle")
+        .attr('r', sizeMap[view.d3Objects2treeMap[model.path].depth])
+        .attr('fill', '#00cc66')
+        .attr('opacity', 0.5)
+        .on('click', d=> view.setFocus(model))
+        .append("title")
+            .text(d=> model.path)
+
+    svgSel.append("text")
+        .attr("dx", '-0.35em')
+        .attr("dy", '0.3em')
+        .text(d=> model.icon)
+        .style('font-size', '10px')
+
+    var svg = svgSel.node()
+    svg.relayoutD3 = function() {
+        var d = view.d3Objects2treeMap[model.path]; if (!d) return
+        d3.select(svg)
+            .attr('transform', 'translate(' + view.project(d.x, d.y) + ')')
+    }
+
+    var d = view.d3Objects2treeMap[model.path]
+    if (d.depth < 3) {
+
+        d3compositeBinding({
+            model:model,
+            view:view,
+            layer:view.d3handler.layers.nodes.node(),
+            onchangeBegin:()=> view.updated3Layout(view),
+            itemDelegate:(v, k)=> treeObject(v, view),
+            filter:filter
+        })
+
+        d3compositeBinding({
+            model:model,
+            view:view,
+            layer:view.d3handler.layers.links.node(),
+            itemDelegate:(v, k)=> treeLink(v, view),
+            filter:filter
+        })
+    }
+    svg.relayoutD3()
+    return svg
+}
+
+function treeLink(model, view)
+{
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+        svg.style.stroke = 'lightgray'
+
+    svg.relayoutD3 = function() {
+        var d = view.d3Objects2treeMap[model.path]; if (!d) return
+        var p1 = view.project(d.x, d.y)
+        var p2 = view.project(d.parent.x, d.parent.y)
+        d3.select(svg)
+            .attr('x1', p1[0])
+            .attr('y1', p1[1])
+            .attr('x2', p2[0])
+            .attr('y2', p2[1])
+    }
+    svg.relayoutD3()
+    return svg
+}
+
+function voronoiCell(model, view)
+{
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+        svg.style.stroke = 'lightgray'
+
+    svg.relayoutD3 = function() {
+        var d = view.d3Objects2treeMap[model.path]; if (!d) return
+        var p1 = view.project(d.x, d.y)
+        var p2 = view.project(d.parent.x, d.parent.y)
+        d3.select(svg)
+            .attr('x1', p1[0])
+            .attr('y1', p1[1])
+            .attr('x2', p2[0])
+            .attr('y2', p2[1])
+    }
+    svg.relayoutD3()
+    return svg
+}
