@@ -125,14 +125,17 @@
 
 .paperstack-bottom > .ps-content{
     flex-grow:1;
-
+    flex-shrink:1;
     overflow-y:overlay;
     position:relative;    
 }
 
 .objectSplitterV > .a3expander:first-child .paperstack-bottom > .ps-content{
-    flex-basis:100%;
+    flex-basis:80%;
+}
 
+.objectSplitterV > .a3expander:only-child .paperstack-bottom > .ps-content{
+    flex-basis:100%;
 }
 
 .paperstack-bottom > .ps-content > .cm{

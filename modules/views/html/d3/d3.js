@@ -102,6 +102,29 @@ function update_Hierarchy_Tree(view)
     })
 }
 
+function updateCells(view)
+{
+    var nodes = view.d3tree.descendants()
+    var voroNodes = nodes.map(i=> view.project(i.x, i.y))
+    var idx_ = 0
+    view.d3handler.voronoiCells = view.d3handler.voronoi(voroNodes).polygons()
+    view.d3handler.layers.cells.selectAll('*').remove()
+    view.d3handler.voronoiCells.forEach((v, k, idx)=> {
+        //view.d3Objects2voronoiPath[v.data.obj.path] = v
+        var idx__ = idx_
+        var d = v
+
+        view.d3handler.layers.cells
+            .append("path")
+            .attr('class', 'voronoiCell')
+            .style('fill', d3.schemeCategory20[idx__%d3.schemeCategory20.length])
+            //.style('fill', 'rgba(0, 0, 0, '+Math.round(Math.random()*9)/9+')')
+            .on('click', ()=> view.setFocus(nodes[idx__].data.model))
+            .attr("d", "M" + d.join("L") + "Z")
+        idx_++
+    })
+}
+
 
 // --------------------------------------------------------------------------------------------
 
@@ -225,10 +248,13 @@ function treeObject(model, view)
             }))
 
     var sizeMap = [12, 10, 8, 6, 4, 2]
+    var nodeColor = 'lightgray' //'#00cc66'
     svgSel.append("circle")
         .attr('r', sizeMap[view.d3Objects2treeMap[model.path].depth])
-        .attr('fill', '#00cc66')
-        .attr('opacity', 0.5)
+        .attr('fill', nodeColor)
+        .attr('stroke', d3.color(nodeColor).darker())
+        .attr('stroke-width', 1.2)
+        .attr('opacity', 1)
         .on('click', d=> view.setFocus(model))
         .append("title")
             .text(d=> model.path)
@@ -273,7 +299,8 @@ function treeObject(model, view)
 function treeLink(model, view)
 {
     var svg = document.createElementNS('http://www.w3.org/2000/svg', 'line')
-        svg.style.stroke = 'lightgray'
+        svg.style.stroke = '#999'
+        svg.style.strokeWidth = 1.5
 
     svg.relayoutD3 = function() {
         var d = view.d3Objects2treeMap[model.path]; if (!d) return

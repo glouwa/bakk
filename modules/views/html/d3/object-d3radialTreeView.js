@@ -31,29 +31,7 @@ function d3radialTreeView(model)
         view.updated3Layout = ()=> {
 
             update_Hierarchy_Tree(view)
-
-            var voronoiBbox = view.d3handler.layers.nodes.node().getBBox()
-
-            var nodes = view.d3tree.descendants()
-            var voroNodes = nodes.map(i=> view.project(i.x, i.y))
-            var idx_ = 0
-            view.d3handler.voronoiCells = view.d3handler.voronoi(voroNodes).polygons()
-            view.d3handler.layers.cells.selectAll('*').remove()
-            view.d3handler.voronoiCells.forEach((v, k, idx)=> {
-                //view.d3Objects2voronoiPath[v.data.obj.path] = v
-                var idx__ = idx_
-                var d = v
-
-
-                view.d3handler.layers.cells
-                    .append("path")
-                    .attr('class', 'voronoiCell')
-                    .style('fill', d3.schemeCategory20[idx__%d3.schemeCategory20.length])
-                    //.style('fill', 'rgba(0, 0, 0, '+Math.round(Math.random()*9)/9+')')
-                    .on('click', ()=> view.setFocus(nodes[idx__].data.model))
-                    .attr("d", "M" + d.join("L") + "Z")
-                idx_++
-            })
+            updateCells(view)
         }
 
     d3compositeBinding({
@@ -81,7 +59,14 @@ function d3treeView(model)
         view.d3handler.layers.links = view.d3handler.layers.zoom.append('g').style('pointer-events', 'none')
         view.d3handler.layers.nodes = view.d3handler.layers.zoom.append('g').style('pointer-events', 'none')
 
-        view.updated3Layout = update_Hierarchy_Tree
+        view.d3handler.voronoi = d3.voronoi()
+            .extent([[-4000, -4000], [4000, 4000]])
+
+        view.updated3Layout = ()=> {
+
+            update_Hierarchy_Tree(view)
+            updateCells(view)
+        }
         view.animationDuration = 1000
         view.textAngle = d=> 90
         view.project = (x, y) => [x, y]
@@ -89,7 +74,7 @@ function d3treeView(model)
     d3compositeBinding({
         model:model,
         view:view,
-        layer:view.d3handler.layers.zoom.node(),
+        layer:view.d3handler.layers.nodes.node(),
         onchangeBegin:()=> view.updated3Layout(view),
         itemDelegate:(v, k)=> radialTreeObject(v, view)
     })
@@ -97,7 +82,7 @@ function d3treeView(model)
     d3compositeBinding({
         model:model,
         view:view,
-        layer:view.d3handler.layers.zoom.node(),
+        layer:view.d3handler.layers.links.node(),
         itemDelegate:(v, k)=> radialTreeLink(v, view)
     })
     return view
@@ -107,8 +92,9 @@ function d3graphView(model)
 {
     var view = d3View('d3graph', model)
         view.d3handler = objectd3tree(view, model)
-        view.d3handler.layers.links = view.d3handler.layers.zoom.append('g')
-        view.d3handler.layers.nodes = view.d3handler.layers.zoom.append('g')
+        view.d3handler.layers.cells = view.d3handler.layers.zoom.append('g')
+        view.d3handler.layers.links = view.d3handler.layers.zoom.append('g').style('pointer-events', 'none')
+        view.d3handler.layers.nodes = view.d3handler.layers.zoom.append('g')//.style('pointer-events', 'none')
         view.project = (x, y)=> [x, y]
         var strengthMap = [-200, -100, -100, -50, -10]
         var sizeMap = [12, 10, 8, 6, 4, 2]
@@ -116,7 +102,10 @@ function d3graphView(model)
             .force('link',   d3.forceLink().strength(d=> d.source.depth>2?0.5:1))
             .force('charge', d3.forceManyBody().strength(d=> strengthMap[d.depth]).distanceMax(200))
             .force('collide',d3.forceCollide(d=> 1.7*sizeMap[d.depth]))
-            .on('end', ()=> view.d3handler.zoom.fit())
+            //.on('end', ()=> view.d3handler.zoom.fit())
+
+        view.d3handler.voronoi = d3.voronoi()
+            .extent([[-4000, -4000], [4000, 4000]])
 
         view.updated3Layout = ()=> {
 
@@ -144,6 +133,9 @@ function d3graphView(model)
             view.d3handler.simulation
                 .nodes(nodes)
                 .on('tick', ()=> {
+
+                    var nodes = view.d3tree.descendants()
+                    updateCells(view)
 
                     view.d3handler.layers.zoom.selectAll('line').each(function (d, i, nodes) {
                         if (this.relayoutD3)
