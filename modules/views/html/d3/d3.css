@@ -36,7 +36,7 @@
 }
 
 .voronoiCell{    
-    opacity:0.07;
+    opacity:0.1;
     /*stroke:#f4f4f4;*/
     stroke:#fff;
     stroke-width:3;
@@ -45,5 +45,5 @@
 }
 
 .voronoiCell:hover{
-    opacity:0.18;
+    opacity:0.25;
 }

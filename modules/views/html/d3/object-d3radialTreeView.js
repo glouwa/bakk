@@ -25,21 +25,19 @@ function d3radialTreeView(model)
             var a = (x - 90) / 180 * Math.PI
             return [y * Math.cos(a), y * Math.sin(a)]
         }
-        //view.d3handler.voronoi = d3.voronoi()
-        //    .extent([[-1, -1], [width + 1, height + 1]]);
+        view.d3handler.voronoi = d3.voronoi()
+            .extent([[-4000, -4000], [4000, 4000]])
 
         view.updated3Layout = ()=> {
 
             update_Hierarchy_Tree(view)
 
             var voronoiBbox = view.d3handler.layers.nodes.node().getBBox()
-            var voronoi = d3.voronoi()
-                .extent([[-4000, -4000], [4000, 4000]])
 
             var nodes = view.d3tree.descendants()
             var voroNodes = nodes.map(i=> view.project(i.x, i.y))
             var idx_ = 0
-            view.d3handler.voronoiCells = voronoi(voroNodes).polygons()
+            view.d3handler.voronoiCells = view.d3handler.voronoi(voroNodes).polygons()
             view.d3handler.layers.cells.selectAll('*').remove()
             view.d3handler.voronoiCells.forEach((v, k, idx)=> {
                 //view.d3Objects2voronoiPath[v.data.obj.path] = v
@@ -51,6 +49,7 @@ function d3radialTreeView(model)
                     .append("path")
                     .attr('class', 'voronoiCell')
                     .style('fill', d3.schemeCategory20[idx__%d3.schemeCategory20.length])
+                    //.style('fill', 'rgba(0, 0, 0, '+Math.round(Math.random()*9)/9+')')
                     .on('click', ()=> view.setFocus(nodes[idx__].data.model))
                     .attr("d", "M" + d.join("L") + "Z")
                 idx_++

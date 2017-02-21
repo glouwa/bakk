@@ -77,15 +77,15 @@
             //var projectMembers = this.filter(i=> i.type == 'project')
 
             var projectMembers = [
-                this['Local - Ajax'],
-                this['Local - Output'],
-                this['Local - SetIteration'],
-                this['Server - Cmd'],
-                this['Server - Output'],
-                //this['Server - Output2'],
-                this['Worker - 3dModel Search'],
-                this['Worker - Paralell Processes'],
-                this['Worker - Pooled Processes'],
+                this['L - Ajax'],
+                this['L - Output'],
+                this['L - SetIteration'],
+                this['S - Cmd'],
+                this['S - Output'],
+                //this['S - Output2'],
+                this['W - 3dModel Search'],
+                this['W - Paralell Processes'],
+                this['W - Pooled Processes'],
             ]
 
             j.updateJob({ state:{}}, projectMembers)

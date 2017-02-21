@@ -21,7 +21,7 @@
         <link  href="modules/views/html/a3/a3.css" rel="stylesheet">
         <link  href="modules/views/html/a4/a4.css" rel="stylesheet">
         <link  href="modules/views/html/a5/a5.css" rel="stylesheet">
-        <link  href="modules/jobs/WorkerModel3d.css" rel="stylesheet">
+        <link  href="modules/jobs/more.css" rel="stylesheet">
 
         <!-- basics -->
         <script src="modules/views/html/basics.js"></script>
@@ -111,9 +111,9 @@
                 network:{
                     type: 'Network',
                     endpoint:'ws://' + document.location.hostname + ':' + config.server.wsport,
-                    '+4 worker': j=> app.jobTypes['Overlord - Start Workers']['▸'](j),
-                    '☠ worker': j=> app.jobTypes['Worker - Kill']['▸'](j, {}, { nodeType:['Worker']}),
-                    '☠ all': j=> app.jobTypes['Worker - Kill']['▸'](j, {}, { nodeType:['Server', 'Overlord', 'Worker']}),
+                    '+4 worker': j=> app.jobTypes['O - Start Workers']['▸'](j),
+                    '☠ worker': j=> app.jobTypes['W - Kill']['▸'](j, {}, { nodeType:['Worker']}),
+                    '☠ all': j=> app.jobTypes['W - Kill']['▸'](j, {}, { nodeType:['Server', 'Overlord', 'Worker']}),
                     '↻ clients': j=> {
                         app.network['S₀'].send({
                             type:'Ws',
