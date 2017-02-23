@@ -34,6 +34,12 @@ function d3radialTreeView(model)
             updateCells(view)
         }
 
+    /*view.updated3Layout()
+    model.on('commit', ()=> {
+                console.log('ONCOMMIT')
+                 view.updated3Layout()
+             })*/
+
     d3compositeBinding({
         model:model,
         view:view,

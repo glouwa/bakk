@@ -45,21 +45,38 @@
         //if (!path.startsWith('model.network'))
         q.logBigMsg('Merging ' + this.path.valueOf(), JSON.stringify(diff, 0, 4))
         var fullDiff = path2wrapper(this.path.valueOf(), diff)
-        app.merge_(fullDiff)
+
+        var merge = {
+            visitedObjects:{},
+            firstTouchedObject:null
+        }
+
+        app.merge_(fullDiff, merge)
+        return merge
     }
 
     function commit(msg)
     {
         q.logGroup('commit ' + this.path + ': ' + msg, 'white', ()=> {
+            var commitDS = {}
             app.commit_()
             exports.onCommit(this.path, 0)
         })
     }
 
-    function merge_(diff)
+    //-----------------------------------------------------------------------------------------
+
+    function merge_(diff, merge)
     {        
-        console.assert(this.path != '' || !this.path)
-        attachChanges(this, diff)
+        //console.assert(this.path != '' || !this.path)
+        console.assert(this.path || this.path === '')
+
+        if (merge.visitedObjects[this.path]) {
+            console.log('skipping' + this.path)
+            //console.log('  ' + JSON.stringify(Object.keys(merge.visitedObjects)))
+            return
+        }
+        attachChanges(this, diff, merge)
 
         if (this.isLeafType) {
             console.assert(box.isPrimitive(diff) || diff.isLeafType, 'Model is primitive but diff is not', this, diff)
@@ -104,7 +121,7 @@
 
                 else {                                                       // child changes (rekursion)
                     console.assert(this[id].merge_, id, this.path)
-                    this[id].merge_(v)                                       // RECURSION
+                    this[id].merge_(v, merge)                                       // RECURSION
 
                     this.changes.changedMembers[id] = this[id]
                     this.changes.diff[id] =           this[id].changes.diff
@@ -119,8 +136,12 @@
     function commit_()
     {
         if (this.changes) {
-            this.emit('commit', this.changes)
-            this.changes.diff.forEach((v, id, idx)=> {
+            //console.log('comitting ' + this.path)
+            var thischanges = this.changes
+            this.changes = undefined
+
+            this.emit('commit', thischanges)
+            thischanges.diff.forEach((v, id, idx)=> {
                 if(this[id])
                     if (this[id].commit_)
                         this[id].commit_()
@@ -132,10 +153,9 @@
                         if (id != 'onCancel')
                             console.warn(this.path + '.' + id + ': diff but no member')
             })
-            this.emit('change', this.changes)
-            this.emit('endCommit', this.changes)
-            this.commitlog_.push(this.changes)
-            this.changes = undefined
+            this.emit('change', thischanges)
+            this.emit('endCommit', thischanges)
+            this.commitlog_.push(thischanges)
         }
         //else
         //    console.warn(this.path + ' should not be in chaged list (has no changes but is in diff of parent)')
@@ -154,9 +174,11 @@
         this.emit('destroy', changes)
     }
 
-    function attachChanges(m, diff) {
+    function attachChanges(m, diff, merge) {
         console.assert(typeof diff !== 'undefined')
-        m.changes = m.changes || {
+        console.assert(!merge.visitedObjects[m.path])
+
+        merge.visitedObjects[m.path] = m.changes = m.changes || {
             sender:m,
             diff:{}, // special tactics
             newMembers:{},
@@ -186,7 +208,7 @@
             }
         }
 
-        else if (initDiff.path)
+        else if (initDiff.path != undefined)
             // wärs nicht besser hier das model obj z suchen und zurück zu geben?
             return initDiff //console.trace('using boxedObj as initDiff\n' + initDiff.path +'\n'+ path)
 
@@ -214,7 +236,12 @@
         Object.defineProperty(model, 'commit_',          { writable:false, value:commit_ })
         Object.defineProperty(model, 'destroyRecursive', { writable:true, value:destroyRecursive })
 
-        model.merge_(initDiff)
+        var mergeDS = {
+            visitedObjects:{},
+            firstTouchedObject:null
+        }
+
+        model.merge_(initDiff, mergeDS)
         return model
     }
 })
