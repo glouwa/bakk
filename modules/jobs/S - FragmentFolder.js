@@ -12,7 +12,7 @@ function fragmentFolderSet()
 
             j.delegate(()=> jf.remoteProxyJob({
                 icon: '💢',
-                node: app.network['S₀'],
+                node: app.ios.hcsw['S₀'],
                 args: j.params,
                 realJob: js=> {
 
@@ -59,7 +59,7 @@ function fragmentFolder()
             j.params.dir = this.dir
 
             j.delegate(()=> jf.remoteProxyJob({                
-                node: app.network['S₀'],
+                node: app.ios.hcsw['S₀'],
                 args: j.params,
                 realJob: js=> {
 

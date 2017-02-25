@@ -77,14 +77,14 @@ var wsBrowser = {
     selectAll:function()
     {
         var nodes = {}
-        app.network.forEach(function(node, nkey, nidx)
+        app.ios.hcsw.forEach(function(node, nkey, nidx)
         {
             if (node.type && (
                 node.type == 'Worker'
              || node.type == 'Server'
              || node.type == 'Client'
              || node.type == 'Overlord'))
-                nodes[nkey] = app.network[nkey]
+                nodes[nkey] = app.ios.hcsw[nkey]
         })
         return nodes
     },

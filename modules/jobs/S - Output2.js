@@ -7,7 +7,7 @@ function serverOuput(j, diff)
 
     j.delegate(() => jf.remoteProxyJob({
         icon: '🗩',
-        node: app.network['S₀'],
+        node: app.ios.hcsw['S₀'],
         args: j.params,
         desc: 'Generate output',
         realJob: js=> js.delegate(()=> jf.job({

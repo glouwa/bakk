@@ -90,7 +90,7 @@
             j.delegate(()=> jf.remoteProxyJob({            // delegate to remote
                 icon: '📂',
                 desc: 'delegate to server and list files',
-                node: app.network['S₀'],
+                node: app.ios.hcsw['S₀'],
                 args: j.params,
                 realJob: js=> {
 

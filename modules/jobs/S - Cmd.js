@@ -9,7 +9,7 @@ function spawnCmd(j)
         icon: '⌘',
         desc: 'delegate to server',
         args: j.params,
-        node: app.network['S₀'],
+        node: app.ios.hcsw['S₀'],
         realJob: js=> tj.spawn(js, {
             desc: js.params.cmd,
             cmd: js.params.cmd,

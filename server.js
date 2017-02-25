@@ -36,23 +36,25 @@ app.init({
         host:os.hostname(),
         clientId:serverId,
         binDir: 'bin/' + osDir + '/',        
-        network:{
-            type:'Network',
-            port:config.server.wsport,
-            [serverId]:{
-                type:'Server',
-                id:serverId, // damed
-                clientcount:0,
-                capabilitys:[],
-                osType:os.type(),
-                hostname:os.hostname()
-            },
-            stateChangeHandlers:serverProtocol.stateChangeHandlers,
-            msgHandlers:serverProtocol.msgHandlers,
-            connections:{}
+        ios:{
+            hcsw:{
+                type:'Network',
+                port:config.server.wsport,
+                [serverId]:{
+                    type:'Server',
+                    id:serverId, // damed
+                    clientcount:0,
+                    capabilitys:[],
+                    osType:os.type(),
+                    hostname:os.hostname()
+                },
+                stateChangeHandlers:serverProtocol.stateChangeHandlers,
+                msgHandlers:serverProtocol.msgHandlers,
+                connections:{}
+            }
         }
     },
-    onInit:j=> app.network.listen(j)
+    onInit:j=> app.ios.hcsw.listen(j)
 })
 
 //-------------------------------------------------------------------------------------------

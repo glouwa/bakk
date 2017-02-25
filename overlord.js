@@ -29,21 +29,23 @@ app.init({
         type:'O',
         host:os.hostname(),        
         binDir: 'bin/' + osDir + '/',
-        network:{
-            type:'Network',
-            endpoint:'ws://' + config.server.wshost + ':' + config.server.wsport,
-            stateChangeHandlers:{
-                onConnected:    c=> {},
-                onDisconnected: c=> clientProtocol.stateChangeHandlers.onDisconnected(c)
-            },
-            msgHandlers:{
-                onServerHallo: (c, parsed)=> clientProtocol.msgHandlers.onServerHallo(null, 'Overlord', [], c, parsed, os.type()),
-                onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
-                onReload:      (c, parsed)=> {}
-            },
-            connections:{}
+        ios:{
+            hcsw:{
+                type:'Network',
+                endpoint:'ws://' + config.server.wshost + ':' + config.server.wsport,
+                stateChangeHandlers:{
+                    onConnected:    c=> {},
+                    onDisconnected: c=> clientProtocol.stateChangeHandlers.onDisconnected(c)
+                },
+                msgHandlers:{
+                    onServerHallo: (c, parsed)=> clientProtocol.msgHandlers.onServerHallo(null, 'Overlord', [], c, parsed, os.type()),
+                    onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
+                    onReload:      (c, parsed)=> {}
+                },
+                connections:{}
+            }
         }
     },
-    onInit:j=> app.network['⛓'](j)
+    onInit:j=> app.ios.hcsw['⛓'](j)
 })
 

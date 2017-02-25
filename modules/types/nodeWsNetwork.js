@@ -113,14 +113,14 @@ exports.network = {
     selectAll:function()
     {
         var nodes = {}
-        app.network.forEach(function(node, nkey, nidx)
+        app.ios.hcsw.forEach(function(node, nkey, nidx)
         {
             if (node.type && (
                 node.type == 'Worker'
              || node.type == 'Server'
              || node.type == 'Client'
              || node.type == 'Overlord'))
-                nodes[nkey] = app.network[nkey]
+                nodes[nkey] = app.ios.hcsw[nkey]
         })
         return nodes
     },
@@ -128,12 +128,12 @@ exports.network = {
     {
         console.log('getNodesByCapability(' + criteria + ')')
         var nodes = []
-        app.network.connections.forEach(function(node, nkey, nidx)
+        app.ios.hcsw.connections.forEach(function(node, nkey, nidx)
         {
             node.capabilitys.forEach(function(cval, ckey, cidx)
             {
                 if (cval.valueOf() == criteria)
-                    nodes.push(app.network[nkey])
+                    nodes.push(app.ios.hcsw[nkey])
             })
 
         })
@@ -147,14 +147,14 @@ exports.network = {
     {
         console.log('getNodesByType(' + criteria + ')')
         var nodes = []
-        app.network.connections.forEach(function(nval, nkey, nidx)
+        app.ios.hcsw.connections.forEach(function(nval, nkey, nidx)
         {
             criteria.forEach(function(cval, ckey, cidx)
             {
                 if (nval.type && nval.type.valueOf() == cval && cval != 'Server')
                 {
                     console.log(' + ' + nkey)
-                    nodes.push(app.network[nkey])
+                    nodes.push(app.ios.hcsw[nkey])
                 }
             })
         })

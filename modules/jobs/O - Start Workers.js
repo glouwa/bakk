@@ -4,10 +4,10 @@ function runWorkers(j, diff)
         icon: '8w+',
         desc: 'delegating to server',
         args: j.params,
-        node: app.network['S₀'],
+        node: app.ios.hcsw['S₀'],
         realJob: js=> {
 
-            var nodes = app.network.getNodesByType(['Overlord'], 'emptyResultIsOk')
+            var nodes = app.ios.hcsw.getNodesByType(['Overlord'], 'emptyResultIsOk')
             var devCount = js.params.devCount
                          ? Number(js.params.devCount.valueOf())
                          : nodes.length

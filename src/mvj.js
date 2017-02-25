@@ -72,7 +72,7 @@
         console.assert(this.path || this.path === '')
 
         if (merge.visitedObjects[this.path]) {
-            console.log('skipping' + this.path)
+            console.log('skipping ' + this.path)
             //console.log('  ' + JSON.stringify(Object.keys(merge.visitedObjects)))
             return
         }
@@ -196,7 +196,7 @@
 
         else if (initDiff.linkPath && initDiff.linkThatShit) {
             try {
-                console.log('Initialize model by linkPath\nPath: ' + path + '\nlinkPath: ' + initDiff.linkPath.valueOf())
+                //console.log('Initialize model by linkPath\nPath: ' + path + '\nlinkPath: ' + initDiff.linkPath.valueOf())
                 var targetObj = exports.traverse(initDiff.linkPath, app)
                 if (targetObj)
                     return targetObj

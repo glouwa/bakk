@@ -7,12 +7,12 @@ function find3dModel(j, diff)
 
     j.delegate(()=> jf.remoteProxyJob({
         icon: '🦁',
-        node: app.network['S₀'],
+        node: app.ios.hcsw['S₀'],
         desc:'delegate to server',
         args: j.params,
         realJob: (js, diff)=> {
-            //var nodes = app.network.getNodesByCapability('POSIX64') // eigentlich js, aber der client ist überfordert
-            var nodes = app.network.getNodesByCapability('POSIX64') // eigentlich js, aber der client ist überfordert
+            //var nodes = app.ios.hcsw.getNodesByCapability('POSIX64') // eigentlich js, aber der client ist überfordert
+            var nodes = app.ios.hcsw.getNodesByCapability('POSIX64') // eigentlich js, aber der client ist überfordert
             js.delegate({
                 type: 'parallel',
                 desc: 'process partition on worker',

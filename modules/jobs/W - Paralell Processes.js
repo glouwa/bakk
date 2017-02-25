@@ -9,10 +9,10 @@ function getCmdSet(j, diff)
     j.delegate(()=> jf.remoteProxyJob({
         icon: 'Ⓟ',
         desc: 'delegating to server',
-        node: app.network['S₀'],
+        node: app.ios.hcsw['S₀'],
         args: j.params,
         realJob: js=> {
-            var workers = app.network.getNodesByCapability('POSIX64')
+            var workers = app.ios.hcsw.getNodesByCapability('POSIX64')
             var elements = 10
             js.updateJob({ state:{ type:'running' }, output:{ workerCount:workers.length }})
             js.delegate({

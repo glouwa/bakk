@@ -49,9 +49,9 @@ function d3compositeBinding(args) // { model, view, filter?, itemDelegate }
     var filter = (v, k, idx)=> k != 'type' && (!args.filter || args.filter(v, k, idx, args.model))
     var update = function(changes)
     {
-        if (d3compositeBinding.updatesRunning === 0)
+        /*if (d3compositeBinding.updatesRunning === 0)
             if (args.onchangeBegin)
-                args.onchangeBegin()
+                args.onchangeBegin()*/
 
         d3compositeBinding.updatesRunning++
 
@@ -75,6 +75,10 @@ function d3compositeBinding(args) // { model, view, filter?, itemDelegate }
 
         d3compositeBinding.updatesRunning--
     }
+    /*if (args.onchangeBegin) {
+        args.onchangeBegin()
+        args.model.on('commit', () => args.onchangeBegin())
+    }*/
     update({ newMembers:args.model })
     args.model.on('change', update)
 }

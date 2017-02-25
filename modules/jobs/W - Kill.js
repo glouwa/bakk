@@ -4,13 +4,13 @@ function killServerOverlordsAndWorkers(j)
         icon: '☠',
         desc: 'delegating to server',
         args: j.params,
-        node: app.network['S₀'],
+        node: app.ios.hcsw['S₀'],
         realJob: js=> js.delegate(
             ()=> jf.job({
                 icon: '☠w*',
                 desc:'send kill signal to workers',
                 onCall: kwj=> {
-                    var nodes = app.network.getNodesByType(js.params.nodeType, 'emptyResultIsOk')
+                    var nodes = app.ios.hcsw.getNodesByType(js.params.nodeType, 'emptyResultIsOk')
                     if (nodes.length == 0)
                         kwj.ret('ok', 'no workers to kill')
                     else

@@ -10,9 +10,9 @@ function findPrimes(j, diff)
         icon: 'ⓟ',
         desc: 'delegating to server',
         args: j.params,
-        node: app.network['S₀'],
+        node: app.ios.hcsw['S₀'],
         realJob: js=> {
-            var nodes = app.network.getNodesByCapability('POSIX64')
+            var nodes = app.ios.hcsw.getNodesByCapability('POSIX64')
             js.updateJob({ state:{ type:'running' }, output:{ workerCount:nodes.length }})
             js.delegate({
                 type: 'parallel',

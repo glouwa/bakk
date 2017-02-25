@@ -28,9 +28,9 @@
         <script src="modules/views/html/basics-a4.js"></script>
         <script src="modules/views/html/basics-a5.js"></script>
         <script src="modules/views/html/basics-line.js"></script>        
+        <script src="modules/views/html/basics-d3.js"></script>
+        <script src="modules/views/html/basics-vis.js"></script>
 
-        <script src="modules/views/html/d3/d3.js"></script>
-        <script src="modules/views/html/d3/vis.js"></script>
         <script src="modules/views/html/d3/object-d3radialTreeView.js"></script>
 
         <!-- core -->
@@ -78,6 +78,7 @@
                     window.open('./view.html', '_blank')
                     j.ret('ok', 'window.open(...) called')
                 },
+                serverFs:{ type:'Folder', io:{ type:'IO<Folder>', addr:'./' } },
                 viewTypes:{
                     primitive:{ type:'ViewSet', io:{ type:'IO<Folder>', addr:'./modules/views/html/primitive/', contentType:'Mod' }},
                     line:     { type:'ViewSet', io:{ type:'IO<Folder>', addr:'./modules/views/html/line/',      contentType:'Mod' }},
@@ -88,49 +89,37 @@
                 jobTypes:{ type:'ModSet', io:{ type:'IO<Folder>', addr:'./modules/jobs/', contentType:'JobMod' }},
                 viewModel:{
                     left:{                        
-                        '💢':{
-                            serverFs:{ type:'Folder', io:{ type:'IO<Folder>', addr:'./' } },
-                            types:app.types,
-                            jobTypes:app.jobTypes,
-                            viewTypes:app.viewTypes,
-                            ios:{
-                                hcsw:app.network,
-                                file:{},
-                                sql:{},
-                                mongo:{},
-                            },
-                            views:{},
-                            log:app.log,
-                            running:app.running,
-                        },
+                        '💢':app,
                         'Jᵪ':app.log.runs,
                         test:{ real:6, str:'hallo' },
                     },
                     right:app.log.runs
                 },
-                network:{
-                    type: 'Network',
-                    endpoint:'ws://' + document.location.hostname + ':' + config.server.wsport,
-                    '+4 worker': j=> app.jobTypes['O - Start Workers']['▸'](j),
-                    '☠ worker': j=> app.jobTypes['W - Kill']['▸'](j, {}, { nodeType:['Worker']}),
-                    '☠ all': j=> app.jobTypes['W - Kill']['▸'](j, {}, { nodeType:['Server', 'Overlord', 'Worker']}),
-                    '↻ clients': j=> {
-                        app.network['S₀'].send({
-                            type:'Ws',
-                            payload:{ type:'Reload' }
-                        })
-                        j.ret('ok', 'reload message sent')
-                    },
-                    stateChangeHandlers:{
-                        onConnected:    c=> {},
-                        onDisconnected: c=> clientProtocol.stateChangeHandlers.onDisconnected(c)
-                    },
-                    msgHandlers:{
-                        onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
-                        onReload:      (c, parsed)=> location.reload(true),
-                        onServerHallo: (c, parsed)=> clientProtocol.msgHandlers.onServerHallo(null, 'Client', ['JS'], c, parsed, 'Browser')
-                    },
-                    connections:{},
+                ios: {
+                    hcsw:{
+                        type: 'Network',
+                        endpoint:'ws://' + document.location.hostname + ':' + config.server.wsport,
+                        '+4 worker': j=> app.jobTypes['O - Start Workers']['▸'](j),
+                        '☠ worker': j=> app.jobTypes['W - Kill']['▸'](j, {}, { nodeType:['Worker']}),
+                        '☠ all': j=> app.jobTypes['W - Kill']['▸'](j, {}, { nodeType:['Server', 'Overlord', 'Worker']}),
+                        '↻ clients': j=> {
+                            app.ios.hcsw['S₀'].send({
+                                type:'Ws',
+                                payload:{ type:'Reload' }
+                            })
+                            j.ret('ok', 'reload message sent')
+                        },
+                        stateChangeHandlers:{
+                            onConnected:    c=> {},
+                            onDisconnected: c=> clientProtocol.stateChangeHandlers.onDisconnected(c)
+                        },
+                        msgHandlers:{
+                            onNetworkInfo: (c, parsed)=> app.mergePath(parsed.path, parsed.diff),
+                            onReload:      (c, parsed)=> location.reload(true),
+                            onServerHallo: (c, parsed)=> clientProtocol.msgHandlers.onServerHallo(null, 'Client', ['JS'], c, parsed, 'Browser')
+                        },
+                        connections:{},
+                    }
                 }
             },
 
@@ -141,6 +130,7 @@
                     params:{},
                     onCall:j1=> {                                                
                         app.clientId.on('change', changes=> document.title = app.clientId)
+                        //document.body.append(app.viewTypes.a3h.query('object')(app.viewModel))
                         j1.ret('ok', 'ui loaded')
                     }
                 }),
@@ -148,7 +138,7 @@
                     icon:'⛓',
                     desc:'connect',
                     params:{},
-                    onCall:j1=> app.network['⛓'](j1)
+                    onCall:j1=> app.ios.hcsw['⛓'](j1)
                 }),
                 ()=> jf.job({
                     icon:'↻',
@@ -198,9 +188,7 @@
                             }
                         })*/
 
-                        document.body.append(
-                            app.viewTypes.a3h.query('object')(app.viewModel)
-                        )
+                        document.body.append(app.viewTypes.a3h.query('object')(app.viewModel))
                         j1.ret('ok', 'ui loaded')
                     }
                 })

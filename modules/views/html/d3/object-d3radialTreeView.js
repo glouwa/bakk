@@ -1,173 +1,194 @@
-function objectd3tree(view, model, w, h)
-{
-    var d3g = d3base(view)
-        d3g.mw = { name:'root', obj:model, depth:0 }
-        d3g.d3tree = d3.tree()
-            .size([w||360, h||300])
-            .separation((a, b)=> (a.parent == b.parent ? 0.7 : 2) / a.depth)
 
-    return d3g
+
+
+function radialTreeObject(model, view)
+{
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+        svg.setAttribute('class', 'radial-tree-node')
+        var d = view.d3Objects2treeMap[model.path]
+        svg.setAttribute('transform', 'translate(' + view.project(d.parent.x, d.parent.y) + ')')
+
+        var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+            circle.setAttribute('r', 5)
+            circle.onclick = e=> view.setFocus(model)
+            circle.style.fill = 'lightgray'
+            circle.style.stroke = 'gray'
+
+        var text = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+            text.onclick = e=> view.setFocus(model)
+            text.setAttribute('dy', '.31em')
+            text.setAttribute('transform', 'rotate(' + view.textAngle(d) + ')')
+            text.setAttribute('clip-path', 'url(#clip-'+path2html(model.path)+')')
+
+    svg.appendChild(text)
+    svg.appendChild(circle)
+
+    svg.relayoutD3 = function() {
+        var d = view.d3Objects2treeMap[model.path]; if (!d) return
+        var x = d.x
+        var y = d.y
+        d3.select(svg)
+            .transition()
+            .duration(view.animationDuration)
+            .attr('transform', 'translate(' + view.project(x, y) + ')')
+
+        d3.select(text)
+            .transition()
+            .duration(view.animationDuration)
+            .attr('transform',    'rotate(' + view.textAngle(d) + ')')
+            .attr('x',            d.x < 180 === !d.children ? 9:-9)
+            .style('text-anchor', d.x < 180 === !d.children ? 'start' : 'end')
+            .text(                d.x < 180 === !d.children
+                               ? (d.data.obj.icon?d.data.obj.icon+' ':'') + (d.data.name)
+                               : (d.data.name) + (d.data.obj.icon?' '+d.data.obj.icon:''))
+    }
+
+    var d = view.d3Objects2treeMap[model.path]
+    if (d.depth < 3) {
+
+        d3compositeBinding({
+            model:model,
+            view:view,
+            layer:view.d3handler.layers.nodes.node(),
+            onchangeBegin:()=> view.updated3Layout(view),
+            itemDelegate:(v, k)=> radialTreeObject(v, view),
+            filter:filter
+        })
+
+        d3compositeBinding({
+            model:model,
+            view:view,
+            layer:view.d3handler.layers.links.node(),
+            itemDelegate:(v, k)=> radialTreeLink(v, view),
+            filter:filter
+        })
+    }
+    svg.relayoutD3()
+    return svg
 }
 
-function d3radialTreeView(model)
+function radialTreeLink(model, view)
 {
-    var view = d3View('d3tree', model)
-        view.d3handler = objectd3tree(view, model)
+    var curveLine = (s, e, p)=> 'M' + p(s.x, s.y)
+                              + 'C' + p(s.x, (s.y + e.y) / 2)
+                              + ' ' + p(e.x, (s.y + e.y) / 2)
+                              + ' ' + p(e.x, e.y)
 
-        view.d3handler.layers.cells = view.d3handler.layers.zoom.append('g')
-        view.d3handler.layers.links = view.d3handler.layers.zoom.append('g').style('pointer-events', 'none')
-        view.d3handler.layers.nodes = view.d3handler.layers.zoom.append('g').style('pointer-events', 'none')
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+        svg.setAttribute('class', 'link')
+        svg.style.fill = 'none'
+        svg.style.stroke = '#999'
+        var d = view.d3Objects2treeMap[model.path]
+        svg.setAttribute('d', curveLine(d.parent, d.parent, view.project))
 
-        view.animationDuration = 1000
-        view.textAngle = d=> d.x<180 ? d.x-90 : d.x+90
-        view.project = (x, y)=>
-        {
-            var a = (x - 90) / 180 * Math.PI
-            return [y * Math.cos(a), y * Math.sin(a)]
-        }
-        view.d3handler.voronoi = d3.voronoi()
-            .extent([[-4000, -4000], [4000, 4000]])
-
-        view.updated3Layout = ()=> {
-
-            update_Hierarchy_Tree(view)
-            updateCells(view)
-        }
-
-    /*view.updated3Layout()
-    model.on('commit', ()=> {
-                console.log('ONCOMMIT')
-                 view.updated3Layout()
-             })*/
-
-    d3compositeBinding({
-        model:model,
-        view:view,
-        layer:view.d3handler.layers.nodes.node(),
-        onchangeBegin:()=> view.updated3Layout(view),
-        itemDelegate:(v, k)=> radialTreeObject(v, view)
-    })
-
-    d3compositeBinding({
-        model:model,
-        view:view,
-        layer:view.d3handler.layers.links.node(),
-        itemDelegate:(v, k)=> radialTreeLink(v, view)
-    })
-    return view
+    svg.relayoutD3 = function() {
+        var d = view.d3Objects2treeMap[model.path]; if (!d) return
+        d3.select(svg)
+            .transition()
+            .duration(view.animationDuration)
+            .attr('d', curveLine(d, d.parent, view.project))
+    }
+    svg.relayoutD3()
+    return svg
 }
 
-function d3treeView(model)
+// --------------------------------------------------------------------------------------------
+
+function graphObject(model, view)
 {
-    var view = d3View('d3tree', model)
-        view.d3handler = objectd3tree(view, model, 750, 900)
-        view.d3handler.layers.cells = view.d3handler.layers.zoom.append('g')
-        view.d3handler.layers.links = view.d3handler.layers.zoom.append('g').style('pointer-events', 'none')
-        view.d3handler.layers.nodes = view.d3handler.layers.zoom.append('g').style('pointer-events', 'none')
+    var svgSel = d3.select(document.createElementNS('http://www.w3.org/2000/svg', 'g'))
 
-        view.d3handler.voronoi = d3.voronoi()
-            .extent([[-4000, -4000], [4000, 4000]])
-
-        view.updated3Layout = ()=> {
-
-            update_Hierarchy_Tree(view)
-            updateCells(view)
-        }
-        view.animationDuration = 1000
-        view.textAngle = d=> 90
-        view.project = (x, y) => [x, y]
-
-    d3compositeBinding({
-        model:model,
-        view:view,
-        layer:view.d3handler.layers.nodes.node(),
-        onchangeBegin:()=> view.updated3Layout(view),
-        itemDelegate:(v, k)=> radialTreeObject(v, view)
-    })
-
-    d3compositeBinding({
-        model:model,
-        view:view,
-        layer:view.d3handler.layers.links.node(),
-        itemDelegate:(v, k)=> radialTreeLink(v, view)
-    })
-    return view
-}
-
-function d3graphView(model)
-{
-    var view = d3View('d3graph', model)
-        view.d3handler = objectd3tree(view, model)
-        view.d3handler.layers.cells = view.d3handler.layers.zoom.append('g')
-        view.d3handler.layers.links = view.d3handler.layers.zoom.append('g').style('pointer-events', 'none')
-        view.d3handler.layers.nodes = view.d3handler.layers.zoom.append('g')//.style('pointer-events', 'none')
-        view.project = (x, y)=> [x, y]
-        var strengthMap = [-200, -100, -100, -50, -10]
-        var sizeMap = [12, 10, 8, 6, 4, 2]
-        view.d3handler.simulation = d3.forceSimulation()
-            .force('link',   d3.forceLink().strength(d=> d.source.depth>2?0.5:1))
-            .force('charge', d3.forceManyBody().strength(d=> strengthMap[d.depth]).distanceMax(200))
-            .force('collide',d3.forceCollide(d=> 1.7*sizeMap[d.depth]))
-            //.on('end', ()=> view.d3handler.zoom.fit())
-
-        view.d3handler.voronoi = d3.voronoi()
-            .extent([[-4000, -4000], [4000, 4000]])
-
-        view.updated3Layout = ()=> {
-
-            update_Hierarchy_Tree(view)
-
-            var nodes = view.d3tree.descendants()
-            nodes.forEach((v, k, idx)=> {
-                v.data.strength = 1
-
-                var x = v.x, y = v.y
-                var a = (x - 90) / 180 * Math.PI
-                v.x = y * Math.cos(a)
-                v.y = y * Math.sin(a)
-
-                if (v.depth < 2) {
-                    v.fx = y * Math.cos(a)
-                    v.fy = y * Math.sin(a)
-                }
+        .attr("class", "node")
+        .call(d3.drag()
+            .on("start", function dragstarted(d) {
+                if (!d3.event.active)
+                    view.d3handler.simulation.alphaTarget(0.3).restart()
+                var d = view.d3Objects2treeMap[model.path]; if (!d) return
+                d.fx = d.x
+                d.fy = d.y
             })
+            .on("drag", function dragged(d) {
+                var d = view.d3Objects2treeMap[model.path]; if (!d) return
+                d.fx = d3.event.x
+                d.fy = d3.event.y
+            })
+            .on("end", function dragended(d) {
+                if (!d3.event.active)
+                    view.d3handler.simulation.alphaTarget(0)
+                var d = view.d3Objects2treeMap[model.path]; if (!d) return
+                d.fx = null
+                d.fy = null
+            }))
 
-            view.d3handler.simulation
-                .force('link')
-                .links(view.d3tree.links())
+    var sizeMap = [12, 10, 8, 6, 4, 2]
+    var nodeColor = 'lightgray' //'#00cc66'
+    svgSel.append("circle")
+        .attr('r', sizeMap[view.d3Objects2treeMap[model.path].depth])
+        .attr('fill', nodeColor)
+        .attr('stroke', d3.color(nodeColor).darker())
+        .attr('stroke-width', 1.2)
+        .attr('opacity', 1)
+        .on('click', d=> view.setFocus(model))
+        .append("title")
+            .text(d=> model.path)
 
-            view.d3handler.simulation
-                .nodes(nodes)
-                .on('tick', ()=> {
+    svgSel.append("text")
+        .attr("dx", '-0.35em')
+        .attr("dy", '0.3em')
+        .text(d=> model.icon)
+        .style('font-size', '10px')
 
-                    var nodes = view.d3tree.descendants()
-                    updateCells(view)
+    var svg = svgSel.node()
+    svg.relayoutD3 = function() {
+        var d = view.d3Objects2treeMap[model.path]; if (!d) return
+        d3.select(svg)
+            .attr('transform', 'translate(' + view.project(d.x, d.y) + ')')
+    }
 
-                    view.d3handler.layers.zoom.selectAll('line').each(function (d, i, nodes) {
-                        if (this.relayoutD3)
-                            this.relayoutD3()
-                    })
+    var d = view.d3Objects2treeMap[model.path]
+    if (d.depth < 3) {
 
-                    view.d3handler.layers.zoom.selectAll('g').each(function (d, i, nodes) {
-                        if (this.relayoutD3)
-                            this.relayoutD3()
-                    })
-                })
-        }
+        d3compositeBinding({
+            model:model,
+            view:view,
+            layer:view.d3handler.layers.nodes.node(),
+            onchangeBegin:()=> view.updated3Layout(view),
+            itemDelegate:(v, k)=> graphObject(v, view),
+            filter:filter
+        })
 
-    d3compositeBinding({
-        model:model,
-        view:view,
-        layer:view.d3handler.layers.nodes.node(),
-        onchangeBegin:()=> view.updated3Layout(view),
-        itemDelegate:(v, k)=> treeObject(v, view)
-    })
-
-    d3compositeBinding({
-        model:model,
-        view:view,
-        layer:view.d3handler.layers.links.node(),
-        itemDelegate:(v, k)=> treeLink(v, view)
-    })
-    return view
+        d3compositeBinding({
+            model:model,
+            view:view,
+            layer:view.d3handler.layers.links.node(),
+            itemDelegate:(v, k)=> graphLink(v, view),
+            filter:filter
+        })
+    }
+    svg.relayoutD3()
+    return svg
 }
+
+function graphLink(model, view)
+{
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+        svg.style.stroke = '#999'
+        svg.style.strokeWidth = 1.5
+
+    svg.relayoutD3 = function() {
+        var d = view.d3Objects2treeMap[model.path]; if (!d) return
+        var p1 = view.project(d.x, d.y)
+        var p2 = view.project(d.parent.x, d.parent.y)
+        d3.select(svg)
+            .attr('x1', p1[0])
+            .attr('y1', p1[1])
+            .attr('x2', p2[0])
+            .attr('y2', p2[1])
+    }
+    svg.relayoutD3()
+    return svg
+}
+
+
+
+
