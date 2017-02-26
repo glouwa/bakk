@@ -1,6 +1,3 @@
-
-
-
 function radialTreeObject(model, view)
 {
     var svg = document.createElementNS('http://www.w3.org/2000/svg', 'g')
@@ -133,8 +130,8 @@ function graphObject(model, view)
             .text(d=> model.path)
 
     svgSel.append("text")
-        .attr("dx", '-0.35em')
-        .attr("dy", '0.3em')
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'central')
         .text(d=> model.icon)
         .style('font-size', '10px')
 

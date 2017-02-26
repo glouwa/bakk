@@ -81,7 +81,10 @@
         if (this.isLeafType) {
             console.assert(box.isPrimitive(diff) || diff.isLeafType, 'Model is primitive but diff is not', this, diff)
 
-            this.value = box.isPrimitive(diff)&&!diff.path ? diff : diff.value
+            this.value = box.isPrimitive(diff)&&!diff.path
+                       ? diff
+                       : diff.value
+
             this.changes.diff = this
 
             console.assert(!this.value.path, 'assigning value to box: ' + this.path)
@@ -205,6 +208,7 @@
             }
             catch(e) {
                 path = initDiff.linkPath
+                console.warn('initDiff.linkPath does not exist ' + path)
             }
         }
 

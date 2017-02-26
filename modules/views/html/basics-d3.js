@@ -90,15 +90,11 @@ function update_Hierarchy_Tree(view)
     var d3hirarchy = d3.hierarchy(view.d3handler.mw, model2d3Hirarchy)
     view.d3tree = view.d3handler.d3tree(d3hirarchy) // update layout (x, y)
 
-    /*view.d3tree.descendants().forEach((v,k,idx)=> {
-        var x = v.x, y = v.y
-        var a = (x - 90) / 180 * Math.PI
-        v.x = y * Math.cos(a)
-        v.y = y * Math.sin(a)
-    })*/
+    update_Tree_Layout(view)
+}
 
-    // wirklich hier?
-
+function update_Tree_Layout(view)
+{
     view.d3Objects2treeMap = {}
     view.d3tree.descendants().forEach((v,k,idx)=> {
         view.d3Objects2treeMap[v.data.obj.path] = v
@@ -115,11 +111,6 @@ function update_Hierarchy_Tree(view)
     })
 }
 
-function path2html(p)
-{
-    return p.split('.').join('-')
-}
-
 function updateCells(view)
 {
     var nodes = view.d3tree.descendants()
@@ -132,8 +123,7 @@ function updateCells(view)
         var idx__ = idx_
         var d = v
 
-                                            /*
-        view.d3handler.layers.nodes
+        /*view.d3handler.layers.nodes
             .append('clipPath')
             .attr('id', 'clip-'+path2html(nodes[idx__].data.obj.path))
                 .append("path")
@@ -151,6 +141,10 @@ function updateCells(view)
     })
 }
 
+function path2html(p)
+{
+    return p.split('.').join('-')
+}
 
 // --------------------------------------------------------------------------------------------
 
