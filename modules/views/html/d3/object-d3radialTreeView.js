@@ -49,7 +49,7 @@ function radialTreeObject(model, view)
             layer:view.d3handler.layers.nodes.node(),
             onchangeBegin:()=> view.updated3Layout(view),
             itemDelegate:(v, k)=> radialTreeObject(v, view),
-            filter:filter
+            filter:d3objFilter
         })
 
         d3compositeBinding({
@@ -57,7 +57,7 @@ function radialTreeObject(model, view)
             view:view,
             layer:view.d3handler.layers.links.node(),
             itemDelegate:(v, k)=> radialTreeLink(v, view),
-            filter:filter
+            filter:d3objFilter
         })
     }
     svg.relayoutD3()
@@ -151,7 +151,7 @@ function graphObject(model, view)
             layer:view.d3handler.layers.nodes.node(),
             onchangeBegin:()=> view.updated3Layout(view),
             itemDelegate:(v, k)=> graphObject(v, view),
-            filter:filter
+            filter:d3objFilter
         })
 
         d3compositeBinding({
@@ -159,7 +159,7 @@ function graphObject(model, view)
             view:view,
             layer:view.d3handler.layers.links.node(),
             itemDelegate:(v, k)=> graphLink(v, view),
-            filter:filter
+            filter:d3objFilter
         })
     }
     svg.relayoutD3()

@@ -57,15 +57,24 @@ function objectd3tree(view, model, w, h)
 }
 
 
-function filter(v, k, idx, m)
+function d3objFilter(obj, objCtxName, objCtxIdx, parentObj)
 {
-    return !v.isLeafType
-        && v.on
-        && m.viewfilter(v, k)
+    if (!parentObj)
+        console.log('filter parent null' + obj.path)
+    if (obj.ownedBy !== parentObj)
+        console.log('skipping link '
+                    + obj.path + ' > '
+                    + parentObj.path + '--'
+                    + (obj.ownedBy?obj.ownedBy.path:''))
 
-        && modelType(m) != 'Job'
-        && k != 'io'
-        && k != 'modelTypes'
+
+    return !obj.isLeafType
+           //(obj.ownedBy === parentObj || !parentObj)
+        && obj.on
+        && obj.viewfilter(obj, objCtxName)
+        && modelType(obj) != 'Job'
+        && objCtxName != 'io'
+        && objCtxName != 'modelTypes'
 }
 
 function model2d3Hirarchy(d)
@@ -80,7 +89,7 @@ function model2d3Hirarchy(d)
             model:d.obj[k],
             depth:d.depth+1
         }))
-        .filter(c=> filter(c.obj, c.name, 0, d.obj))
+        .filter(c=> d3objFilter(c.obj, c.name, 0, d.obj))
 }
 
 function update_Hierarchy_Tree(view)

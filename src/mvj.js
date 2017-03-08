@@ -108,15 +108,17 @@
                     this[id] = exports.model(p, v)
 
                     if (!this[id])
-                        console.log('this id = undef'
-                                    + '\nid: ' + id
-                                    + '\nv: ' + JSON.stringify(v)
-                                    + '\npath: '+ p)
+                        console.log('this id = undef' + '\nid: ' + id + '\nv: ' + JSON.stringify(v) + '\npath: '+ p)
 
                     if (this[id].path != p) {
                         this[id].isLink = this[id].isLink ? this[id].isLink.concat(p) : [p]
                         //console.log('isLink=true ' + p +' --> '+ this[id].path)
+                        this[id].usedBy.push(this)
                     }
+                    else {
+                        this[id].ownedBy = this
+                    }
+
 
                     this.changes.newMembers[id] = this[id]
                     this.changes.diff[id]       = this[id] // ja, das ganze?
@@ -136,7 +138,7 @@
         return this
     }
 
-    function commit_()
+    function commit_() // REC
     {
         if (this.changes) {
             //console.log('comitting ' + this.path)
@@ -164,7 +166,7 @@
         //    console.warn(this.path + ' should not be in chaged list (has no changes but is in diff of parent)')
     }
 
-    function destroyRecursive(parent)
+    function destroyRecursive(parent) // REC
     {
         var changes = { sender:this, diff:{}, newMembers:{}, deletedMembers:{} }
 
@@ -220,6 +222,8 @@
 
         Object.defineProperty(model, 'path',             { writable:true, value:path })
         Object.defineProperty(model, 'isLink',           { writable:true, value:undefined })
+        Object.defineProperty(model, 'ownedBy',          { writable:true, value:undefined })
+        Object.defineProperty(model, 'usedBy',           { writable:true, value:[] })
 
         Object.defineProperty(model, '_callbacks',       { value:{} })
         Object.defineProperty(model, 'on',               { value:box.Emitter.on }) //mixin(model)

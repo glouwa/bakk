@@ -32,7 +32,7 @@
             layer:view.d3handler.layers.nodes.node(),
             onchangeBegin:()=> view.updated3Layout(view),
             itemDelegate:(v, k)=> radialTreeObject(v, view),
-            filter:filter
+            filter:d3objFilter
         })
 
         d3compositeBinding({
@@ -40,7 +40,7 @@
             view:view,
             layer:view.d3handler.layers.links.node(),
             itemDelegate:(v, k)=> radialTreeLink(v, view),
-            filter:filter
+            filter:d3objFilter
         })
         return view
     }
