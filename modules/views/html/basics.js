@@ -163,20 +163,12 @@ function jobRootButon(args)// name, args, src, noIcons, obj)   // der erstellt e
                 icon: '⎇',
                 desc: 'button ' + args.name,
                 params: args.args,
-                output:{},
+                output: {},
                 onCall: j=> {
                     if (args.obj) args.obj[args.name](j)   // model obj method?
                     else          args.onCall(j)              // project service?
                 }
             })
-
-                      /*
-            right.add({
-                highlight:true,
-                icon:job.id,
-                model:job,
-                contentViewFactory: m=>app.viewTypes.a4v.query('object')(m)
-            })*/
 
             updateView()
             job.state.on('change', updateView)
@@ -184,10 +176,10 @@ function jobRootButon(args)// name, args, src, noIcons, obj)   // der erstellt e
                 e.stopPropagation()
                 view.state.onClick() // ; unpdateButton() aber ohne gibts double cancels? nein.
             }
-            job.call()
+            job.call()                      
             //job.commit('UI creates and calls job') // mach jetzt das ui update
             // ist es richtig das hier nur änderungen innerhalb von job entstehen können?
-            // wie ist das bei project load?
+            // wie ist das bei project load?            
         })
     }
 

@@ -2,7 +2,7 @@
     type:'View',
     icon:'📈',
     modelTypes:['Job'],
-    idx:1,
+    idx:0,
     ctor:function jobStateGantD3View(jobModel)
     {
         function jobPlotGant(view, jobModel)
@@ -25,8 +25,8 @@
             function handleMouseOut() { }
 
             var w = 820
-            var h = 400
-            var m = { top:30, right:10, bottom:30, left:80 }
+            var h = 820
+            var m = { top:30, right:30, bottom:30, left:100 }
             var data = { jobs:[] }
             var t = 500//750
             var mergeDotR = 5
@@ -73,8 +73,9 @@
 
                 this.vis = d3.select(view)
                     .append("svg")
-                    .attr("width", '100%')
-                    .attr("height", '100%')
+                    //.attr("width", '100%')
+                    //.attr("height", '100%')
+                    .attr('viewBox', '0 0 820 820')
                     .call(this.zoom)
 
                 this.x = this.xz0 = d3.scaleTime()
@@ -177,7 +178,7 @@
                 var v = this.vis.select('.d3jobs').select("#d3job-"+jm.id.valueOf())
                 //var c = jm.id.valueOf() + JSON.stringify(changes.diff, 0, 4)
                 var diffCopy = JSON.parse(JSON.stringify(changes.diff, 0, 4))
-                var diffId = "focustmp-d3job-" + jm.id.valueOf() + '-' + uiUpdateConut++
+                var diffId = "d3j-" + jm.id.valueOf() + '-' + uiUpdateConut++
                 app.merge({ tmp:{ [diffId]:diffCopy }})
                 var c = app.tmp[diffId]
                 //var c = diffCopy

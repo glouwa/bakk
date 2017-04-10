@@ -26,6 +26,7 @@ function d3base(view)
             .append('svg')
                 .attr('width', '100%')
                 .attr('height', '100%')
+                .attr('viewBox', '-410 -0 820 250')
                 //.on("click", ()=> d3view.zoom.fit())
                 .call(d3view.zoom)
 
@@ -75,6 +76,7 @@ function d3objFilter(obj, objCtxName, objCtxIdx, parentObj)
         && modelType(obj) != 'Job'
         && objCtxName != 'io'
         && objCtxName != 'modelTypes'
+        && objCtxName != 'tmp'
 }
 
 function model2d3Hirarchy(d)

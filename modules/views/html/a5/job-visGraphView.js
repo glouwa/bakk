@@ -2,7 +2,7 @@
     type:'View',
     icon:'🌳',
     modelTypes:['Job'],
-    idx:0,
+    idx:1,
     ctor: function jobStateGraphView(jobModel)
     {
         var jobStateGraphConfig = {

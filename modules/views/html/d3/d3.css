@@ -26,14 +26,13 @@
   text-align: center;
 }
 
-
+/*
 .radial-tree-node{
     -webkit-transition: transform 5s ease-in;
     -moz-transition: transform 5s ease-in;
     -o-transition: transform 5s ease-in;
      transition: transform 5s ease-in;
-
-}
+}*/
 
 .voronoiCell{    
     opacity:0.1;

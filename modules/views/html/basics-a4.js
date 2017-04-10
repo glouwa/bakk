@@ -29,12 +29,12 @@ function makePaper(p, paperStack)
         this.content.classList.add('cm')
     }
     p.paperStack = paperStack
-    if (paperStack.header.childNodes.length === 0 || p.highlight)
+    if (paperStack.header.childNodes.length === 0 || p.highlight || paperStack.autoShow)
         p.setActive()
     return p
 }
 
-function paperStack(model)
+function paperStack(model, autoShow)
 {
     var view = htmlElement('div', 'paperstack-top', model)
         view.header = htmlElement('div', 'header', model)
@@ -48,11 +48,12 @@ function paperStack(model)
                 model:m,
                 highlight:true,
                 contentViewFactory:m=> app.viewTypes.a4v.objectSplitterView.ctor(m)
-            })
+            })            
         }
         view.content = htmlElement('div', 'ps-content', model)
         view.active = undefined
-        view.add = p=> view.header.appendChild(makePaper(p, view).flap)
+        view.add = p=> view.header.appendChild(makePaper(p, view).flap)      
+        view.autoShow = autoShow
         view.appendChild(view.header)
         view.appendChild(view.content)
 

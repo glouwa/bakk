@@ -8,7 +8,7 @@
         compositeBinding({
             model:model,
             view:view,
-            itemDelegate:(v,k,idx)=>  paperStack(v)
+            itemDelegate:(v,k,idx)=>  paperStack(v, idx==1)
         })
         return view
     }
